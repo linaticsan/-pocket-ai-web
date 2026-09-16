@@ -26,6 +26,13 @@ addDiagnostics();
 // Enter to send chat on desktop; Shift+Enter keeps a new line.
 f('prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&innerWidth>650){e.preventDefault();f('chatForm').requestSubmit(f('chatSend'));}});
 
+// Tab changes must land at the top immediately. Smooth scrolling could leave the next panel under the sticky navigation.
+document.addEventListener('click',e=>{const go=e.target.closest?.('[data-go]');if(!go)return;requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));},{capture:false});
+
+// Keep empty workspaces visually intentional rather than looking unfinished.
+function syncWorkspaceStates(){f('github')?.classList.toggle('is-empty',!f('ghResults')?.children.length);f('surface')?.classList.toggle('is-empty',!f('surfaceResults')?.children.length&&!f('researchReport')?.hidden===false);}
+f('ghForm')?.addEventListener('submit',()=>f('github')?.classList.remove('is-empty'),{capture:true});f('surfaceForm')?.addEventListener('submit',()=>f('surface')?.classList.remove('is-empty'),{capture:true});f('deepResearch')?.addEventListener('click',()=>f('surface')?.classList.remove('is-empty'),{capture:true});syncWorkspaceStates();
+
 // Friendly network status in the active tools.
 function networkState(){document.documentElement.dataset.network=navigator.onLine?'online':'offline';}
 addEventListener('online',networkState);addEventListener('offline',networkState);networkState();
