@@ -16,5 +16,5 @@ document.addEventListener('click',e=>{const go=e.target.closest?.('[data-go]');i
 function syncWorkspaceStates(){f('github')?.classList.toggle('is-empty',!f('ghResults')?.children.length);f('surface')?.classList.toggle('is-empty',!f('surfaceResults')?.children.length&&!f('researchReport')?.hidden===false);}
 f('ghForm')?.addEventListener('submit',()=>f('github')?.classList.remove('is-empty'),{capture:true});f('surfaceForm')?.addEventListener('submit',()=>f('surface')?.classList.remove('is-empty'),{capture:true});f('deepResearch')?.addEventListener('click',()=>f('surface')?.classList.remove('is-empty'),{capture:true});syncWorkspaceStates();
 function networkState(){document.documentElement.dataset.network=navigator.onLine?'online':'offline';}addEventListener('online',networkState);addEventListener('offline',networkState);networkState();
-const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-2';document.head.appendChild(v3style);
-import('./v3.js?v=20260916-2').then(()=>import('./v3-guard.js?v=20260916-1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
+const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-3';document.head.appendChild(v3style);
+import('./v3.js?v=20260916-2').then(()=>import('./v3-guard.js?v=20260916-3')).catch(err=>console.error('Pocket AI V3 failed to load',err));
