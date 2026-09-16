@@ -22,4 +22,4 @@ try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Arr
 
 const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-4';document.head.appendChild(v3style);
 const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260916-3';document.head.appendChild(v3hotfix);
-import('./v3.js?v=20260916-3').then(()=>import('./v3-guard.js?v=20260916-5')).catch(err=>console.error('Pocket AI V3 failed to load',err));
+import('./v3.js?v=20260916-3').then(()=>import('./v3-guard.js?v=20260916-5')).then(()=>import('./document-v3.js?v=20260916-1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
