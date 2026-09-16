@@ -23,11 +23,14 @@
 #chatSend{min-width:108px}
 
 /* Local AI */
-#local{scroll-margin-top:150px}.device-card{margin-top:18px!important;padding:16px 18px!important;border-radius:22px!important;background:linear-gradient(135deg,color-mix(in srgb,var(--purple) 8%,var(--glass)),var(--glass));box-shadow:none!important}
+#local{scroll-margin-top:18px}
+#local>.hero{padding-top:36px!important}
+.device-card{margin-top:18px!important;padding:16px 18px!important;border-radius:22px!important;background:linear-gradient(135deg,color-mix(in srgb,var(--purple) 8%,var(--glass)),var(--glass));box-shadow:none!important}
 .device-card>div{display:flex;align-items:center;gap:14px}.device-icon{display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:var(--glass);font-size:24px}.device-card strong,.device-card small,.device-card .muted{display:block}
 .local-status{margin-top:10px!important;padding:15px 18px!important;border-radius:20px!important}.status-dot{width:11px!important;height:11px!important;box-shadow:0 0 0 6px color-mix(in srgb,var(--purple) 10%,transparent)}
 #localProgress{width:calc(100% - 68px);height:9px;margin:14px 34px 3px!important;accent-color:var(--purple)}
-#localProgressText{margin-top:5px!important}.local-actions{margin-top:11px!important}
+#localProgressText{margin-top:5px!important;min-height:22px}.local-actions{margin-top:11px!important}
+#localConnect:disabled,#localSetup:disabled{cursor:wait;filter:saturate(.75)}
 .local-chat{margin-top:14px!important;padding:17px!important;border:1px solid var(--line);border-radius:22px!important;background:var(--glass2)}
 .local-chat label{font-weight:800}.local-chat textarea{margin-top:8px;min-height:110px}.local-chat #localSend{margin-top:10px}.answer{min-height:72px;margin-top:12px!important;padding:14px!important;border-radius:18px!important;background:color-mix(in srgb,var(--purple) 5%,var(--glass));border:1px solid var(--line);white-space:pre-wrap;overflow:auto;font-family:inherit!important;line-height:1.55}
 .advanced{margin-top:14px!important;padding:14px 16px!important;border:1px solid var(--line);border-radius:20px;background:var(--glass2)}.advanced summary{cursor:pointer;font-weight:850}.advanced[open] summary{margin-bottom:14px}
@@ -46,5 +49,5 @@
 .view button,.view input,.view textarea,.view select{transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease}.view button:active{transform:scale(.98)}.view input:focus,.view textarea:focus,.view select:focus{outline:none;border-color:color-mix(in srgb,var(--purple) 55%,var(--line))!important;box-shadow:0 0 0 4px color-mix(in srgb,var(--purple) 10%,transparent)!important}
 .diagnostics{margin-top:14px;padding:14px 16px;border:1px solid var(--line);border-radius:20px;background:var(--glass2)}.diag-list{display:grid;gap:7px;margin-top:10px}.diag-row{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;border-radius:12px;background:var(--glass)}.diag-pass{color:#15975c}.diag-warn{color:#b67900}.diag-fail{color:#c44562}
 
-@media(min-width:900px){#chat,#local,#surface{min-height:0!important}#github .cards:not(:empty){grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(min-width:900px){.tabs{position:relative!important;top:auto!important}#chat,#local,#surface{min-height:0!important}#github .cards:not(:empty){grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.view:not(.home-view){margin-top:8px!important;border-radius:22px!important}.view:not(.home-view)>.hero{padding:22px 18px 18px!important}.view:not(.home-view)>:not(.hero),#files>.eyebrow,#files>h1,#files>.muted,#github>.eyebrow,#github>h1,#github>.muted,#github>p{margin-left:16px!important;margin-right:16px!important}.hero .big{width:58px!important;height:58px!important;min-width:58px!important}.engine-row{align-items:flex-start;flex-direction:column}.message{max-width:92%}#chat .messages{min-height:260px;padding:13px}#chat .messages:not(:has(.message)){min-height:180px}.device-card{align-items:flex-start!important;gap:12px;flex-direction:column}.local-chat{padding:14px!important}.picker{flex-direction:column}.picker:before{margin:0 0 8px}.picker input{margin:10px 0 0;max-width:100%}#fileText{min-height:250px;max-height:none}.searchline{grid-template-columns:1fr!important}.searchline button{width:100%}.searchbox .row{display:grid!important;grid-template-columns:1fr 1fr}.searchbox select{grid-column:1/-1}.research-steps{grid-template-columns:repeat(2,1fr)}.resultgrid{grid-template-columns:1fr}.research-report{padding:17px!important}}
