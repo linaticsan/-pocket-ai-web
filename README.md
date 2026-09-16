@@ -17,3 +17,4 @@ No API keys are committed to this repository. Gemini keys are kept only in page 
 ## GitHub Pages
 
 This repository is designed to publish directly from the `main` branch root with GitHub Pages. After Pages is enabled, open the Pages URL in Safari and use **Share → Add to Home Screen**.
+Pocket AI Web
