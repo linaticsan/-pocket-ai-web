@@ -1,0 +1,31 @@
+const f=id=>document.getElementById(id);
+
+// Files: live size feedback and small UX safety.
+function updateFileCount(){const t=f('fileText')?.value||'';if(f('fileCount'))f('fileCount').textContent=`${t.length.toLocaleString()} characters • ${new Blob([t]).size.toLocaleString()} bytes`;}
+f('fileText')?.addEventListener('input',updateFileCount);f('fileInput')?.addEventListener('change',()=>setTimeout(updateFileCount,60));f('clearFile')?.addEventListener('click',()=>setTimeout(updateFileCount,20));updateFileCount();
+
+// GitHub discovery chips.
+document.querySelectorAll('[data-gh-chip]').forEach(b=>b.addEventListener('click',()=>{f('ghQuery').value=b.dataset.ghChip;f('ghForm').requestSubmit();}));
+
+// Deep Research progress indicator. The existing research engine remains the source of truth.
+f('deepResearch')?.addEventListener('click',()=>{if(!f('surfaceQuery').value.trim())return;const steps=f('researchSteps');steps.hidden=false;steps.querySelectorAll('span').forEach((s,i)=>{s.style.opacity=i?'.48':'1'});let i=0;const timer=setInterval(()=>{if(!f('deepResearch').disabled){clearInterval(timer);steps.querySelectorAll('span').forEach(s=>s.style.opacity='1');return}i=Math.min(i+1,3);steps.querySelectorAll('span').forEach((s,n)=>s.style.opacity=n<=i?'1':'.48');},1600);},{capture:true});
+
+// Runtime diagnostics: checks what can truthfully be tested in the user's browser.
+function addDiagnostics(){const box=document.createElement('details');box.className='diagnostics';box.innerHTML='<summary><strong>System check</strong> <span class="muted">• test this feature on this device</span></summary><div class="diag-list"></div><div class="row"><button type="button" class="run-diag">Run checks</button></div>';f('local')?.append(box);box.querySelector('.run-diag').onclick=runDiagnostics;}
+function row(name,state,text){const d=document.createElement('div');d.className='diag-row';const a=document.createElement('span');a.textContent=name;const b=document.createElement('strong');b.className='diag-'+state;b.textContent=text;d.append(a,b);return d;}
+async function fetchCheck(url,opts={}){try{const r=await fetch(url,{...opts,cache:'no-store'});return r.ok?['pass','OK']:['warn','HTTP '+r.status]}catch{return['fail','Blocked/offline']}}
+async function runDiagnostics(){const list=document.querySelector('.diag-list');list.replaceChildren(row('Browser','pass','Running'),row('HTTPS',location.protocol==='https:'?'pass':'warn',location.protocol==='https:'?'Secure':'Not HTTPS'),row('Network',navigator.onLine?'pass':'warn',navigator.onLine?'Online':'Offline'));
+ let storage='pass',storageText='Available';try{localStorage.setItem('__pocket_test','1');localStorage.removeItem('__pocket_test')}catch{storage='fail';storageText='Unavailable'}list.append(row('Device storage',storage,storageText));
+ let gpu='fail',gpuText='Unavailable';if(navigator.gpu){try{gpu=(await navigator.gpu.requestAdapter())?'pass':'warn';gpuText=gpu==='pass'?'WebGPU ready':'No adapter'}catch{gpu='fail'}}list.append(row('Local AI acceleration',gpu,gpuText));
+ const [ghState,ghText]=await fetchCheck('https://api.github.com/rate_limit',{headers:{Accept:'application/vnd.github+json'}});list.append(row('GitHub public API',ghState,ghText));
+ const [crState,crText]=await fetchCheck('https://api.crossref.org/works?rows=0');list.append(row('Research source',crState,crText));
+ list.append(row('Cloud Chat','warn','Test by sending a message'));list.append(row('Local model','warn',localStorage.getItem('pocket-local-webllm-installed')==='1'?'Installed • connect to test':'Not installed'));
+}
+addDiagnostics();
+
+// Enter to send chat on desktop; Shift+Enter keeps a new line.
+f('prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&innerWidth>650){e.preventDefault();f('chatForm').requestSubmit(f('chatSend'));}});
+
+// Friendly network status in the active tools.
+function networkState(){document.documentElement.dataset.network=navigator.onLine?'online':'offline';}
+addEventListener('online',networkState);addEventListener('offline',networkState);networkState();
