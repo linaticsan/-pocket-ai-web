@@ -1,7 +1,6 @@
 const form=document.getElementById('chatForm');
 form?.addEventListener('submit',()=>{const privacy=localStorage.getItem('pocket-privacy')||'balanced',router=document.getElementById('v3Router'),badge=document.getElementById('v3RouteBadge');if((privacy==='private'||privacy==='offline')&&router?.value==='auto'){router.value='local';if(badge)badge.textContent='🔒 Local only';}},true);
 
-// V3 identity is applied after the V2-compatible shell has finished loading.
-const homeVersion=document.querySelector('#home .eyebrow');
-if(homeVersion)homeVersion.textContent='POCKET AI V3';
-document.title='Pocket AI V3';
+// V3 creates a blank chat while booting. Keep only the newest empty placeholder so reloads never stack "New chat" rows.
+function cleanDuplicateBlankChats(){try{const key='pocket-v3-chats',raw=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(raw))return;let kept=false;const clean=raw.filter(c=>{const blank=(c?.title||'New chat')==='New chat'&&(!Array.isArray(c?.messages)||c.messages.length===0);if(!blank)return true;if(!kept){kept=true;return true}return false});if(clean.length!==raw.length)localStorage.setItem(key,JSON.stringify(clean));const list=document.getElementById('v3ChatList');if(list){let seen=false;[...list.querySelectorAll('.v3-chat-item')].forEach(item=>{const blank=item.querySelector('span')?.textContent?.trim()==='New chat';if(blank){if(seen)item.remove();else seen=true}})}}catch(err){console.warn('Pocket AI chat cleanup skipped',err)}}
+cleanDuplicateBlankChats();
