@@ -1,6 +1,7 @@
 // Pocket AI V3 — document intelligence UX layer.
 // Additive only: keeps the existing V3 attachment parser/router intact.
 (() => {
+  const ui=document.createElement('style');ui.textContent=`.v3-doc-actionbar{margin:0 16px 10px;padding:12px 14px;border:1px solid color-mix(in srgb,var(--purple,#8b5cf6) 20%,var(--line));border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--purple,#8b5cf6) 7%,var(--panel)),color-mix(in srgb,var(--pink,#e548a4) 5%,var(--panel)));box-shadow:0 8px 28px rgba(82,55,130,.06)}.v3-doc-actionbar[hidden]{display:none!important}.v3-doc-head,.v3-doc-head>div,.v3-doc-actions{display:flex;align-items:center}.v3-doc-head{justify-content:space-between;gap:12px;margin-bottom:10px}.v3-doc-head>div{gap:7px;min-width:0;flex-wrap:wrap}.v3-doc-head small{color:var(--muted);font-size:11px}.v3-doc-spark{display:grid;place-items:center;width:24px;height:24px;border-radius:9px;background:linear-gradient(135deg,var(--purple,#8b5cf6),var(--pink,#e548a4));color:white}.v3-doc-private{font-size:11px;color:var(--muted);white-space:nowrap}.v3-doc-actions{gap:7px;flex-wrap:wrap}.v3-doc-actions button{padding:7px 11px;border-radius:999px;font-size:12px;background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--line)}.v3-doc-actions button:hover{border-color:color-mix(in srgb,var(--purple,#8b5cf6) 55%,var(--line));transform:translateY(-1px)}.v3-file-chip{display:grid!important;grid-template-columns:auto 1fr auto!important;gap:2px 8px!important;text-align:left!important;align-items:center!important;padding:9px 12px!important}.v3-file-chip>span{font-weight:700;max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.v3-file-chip small,.v3-file-kind{font-size:10px!important;color:var(--muted)!important;font-style:normal!important}.v3-file-kind{grid-column:2}.v3-file-chip small{grid-column:2}.v3-text h2,.v3-text h3,.v3-text h4{margin:16px 0 7px;line-height:1.25}.v3-text h2{font-size:1.28em}.v3-text h3{font-size:1.14em}.v3-text h4{font-size:1.04em}.v3-text ul,.v3-text ol{margin:7px 0 12px;padding-left:23px}.v3-text li{margin:4px 0}.v3-text pre{overflow:auto;padding:12px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--ink) 5%,var(--panel))}@media(max-width:780px){.v3-doc-actionbar{margin:0 8px 8px;padding:10px}.v3-doc-head{align-items:flex-start}.v3-doc-private{display:none}.v3-doc-actions{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.v3-doc-actions button{flex:0 0 auto}}`;document.head.appendChild(ui);
   const q=id=>document.getElementById(id);
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const size=n=>n<1024?`${n} B`:n<1048576?`${(n/1024).toFixed(1)} KB`:`${(n/1048576).toFixed(1)} MB`;
@@ -53,7 +54,6 @@
     refresh();
   }
 
-  // Improve the readable presentation of model markdown without changing stored chat text.
   function markdownLite(raw){
     let s=esc(raw).replace(/\\([#*\-])/g,'$1');
     const code=[];s=s.replace(/```(?:[\w+-]+)?\n?([\s\S]*?)```/g,(_,c)=>`@@CODE${code.push(c)-1}@@`);
