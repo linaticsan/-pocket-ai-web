@@ -21,5 +21,5 @@ function networkState(){document.documentElement.dataset.network=navigator.onLin
 try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)){let kept=false;const clean=a.filter(c=>{const blank=(c?.title||'New chat')==='New chat'&&(!Array.isArray(c?.messages)||c.messages.length===0);if(!blank)return true;if(kept)return false;kept=true;return true});if(clean.length!==a.length)localStorage.setItem(k,JSON.stringify(clean));}}catch(err){console.warn('Pocket AI chat history cleanup skipped',err)}
 
 const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-4';document.head.appendChild(v3style);
-const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260916-1';document.head.appendChild(v3hotfix);
+const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260916-2';document.head.appendChild(v3hotfix);
 import('./v3.js?v=20260916-3').then(()=>import('./v3-guard.js?v=20260916-4')).catch(err=>console.error('Pocket AI V3 failed to load',err));
