@@ -7,7 +7,7 @@ const go=id=>document.querySelector(`[data-go="${id}"]`)?.click();
 function greeting(){const h=new Date().getHours();const word=h<12?'Good morning':h<18?'Good afternoon':'Good evening';q('homeGreeting').textContent=`${word}. What shall we work on?`;}
 function setTheme(t){document.documentElement.dataset.theme=t;safeSet('pocket-theme',t);document.querySelectorAll('[data-theme-choice]').forEach(b=>b.classList.toggle('active',b.dataset.themeChoice===t));}
 function setMotion(m){document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);document.querySelectorAll('[data-motion]').forEach(b=>b.classList.toggle('active',b.dataset.motion===m));}
-const modeText={balanced:'Uses the best available tool for the task.',private:'Prefer Local AI. Cloud features only when you choose them.',offline:'Designed for cached app + Local AI + local files. Web tools need internet.'};
+const modeText={balanced:'Uses Local AI first; web tools only when you open them.',private:'Local AI only for AI tasks. No account login required.',offline:'Cached app + Local AI + local files. Web tools need internet.'};
 function setPrivacy(m){safeSet('pocket-privacy',m);document.querySelectorAll('[data-privacy],[data-privacy-setting]').forEach(b=>{const v=b.dataset.privacy||b.dataset.privacySetting;b.classList.toggle('active',v===m)});q('modeHint').textContent=modeText[m]||modeText.balanced;}
 
 greeting();setTheme(safeGet('pocket-theme','light'));setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));
