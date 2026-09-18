@@ -23,7 +23,7 @@ try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Arr
 const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-4';document.head.appendChild(v3style);
 const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260918-mobile1';document.head.appendChild(v3hotfix);
 const codeStyle=document.createElement('link');codeStyle.rel='stylesheet';codeStyle.href='./coding-v1.css?v=20260918-1';document.head.appendChild(codeStyle);
-const mobile30=document.createElement('link');mobile30.rel='stylesheet';mobile30.href='./mobile-v30.css?v=20260919-3';document.head.appendChild(mobile30);
+const mobile30=document.createElement('link');mobile30.rel='stylesheet';mobile30.href='./mobile-v30.css?v=20260919-3';document.head.appendChild(mobile30);const files31=document.createElement('link');files31.rel='stylesheet';files31.href='./files-v31.css?v=20260919-2';document.head.appendChild(files31);
 // Emergency performance safe mode: keep the stable V3 core interactive and remove
 // additive workspaces that can leave expensive observers/DOM behind on mobile.
 try{
@@ -38,4 +38,4 @@ try{
   safeStyle.textContent='.pocket-performance-safe *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.pocket-performance-safe .mascot,.pocket-performance-safe [data-mascot]{animation:none!important}';
   document.head.appendChild(safeStyle);
 }catch(err){console.warn('Pocket AI safe-mode cleanup skipped',err)}
-import('./api-hub.js?v=20260919-1').then(()=>import('./v3.js?v=20260919-smartapi3')).then(()=>import('./v3-guard.js?v=20260918-safe1')).then(()=>import('./coding-v1.js?v=20260918-1')).catch(err=>console.error('Pocket AI module failed to load',err));
+import('./api-hub.js?v=20260919-1').then(()=>import('./v3.js?v=20260919-smartapi3')).then(()=>import('./v3-guard.js?v=20260918-safe1')).then(()=>import('./coding-v1.js?v=20260918-1')).then(()=>import('./files-v31.js?v=20260919-2')).catch(err=>console.error('Pocket AI module failed to load',err));
