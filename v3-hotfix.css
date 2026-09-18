@@ -18,3 +18,91 @@
 .pocket-v3 #messages .v3-engine{white-space:nowrap!important}
 .pocket-v3 #messages .v3-bubble footer{min-height:0!important;height:auto!important;margin-top:7px!important;padding:0!important}
 @media(max-width:780px){.pocket-v3 #chat{height:var(--pocket-chat-height,calc(100dvh - 94px))!important;min-height:0!important;border-radius:20px!important}.pocket-v3 #messages.v3-messages{padding:16px 10px!important}.pocket-v3 #messages .v3-msg{gap:8px!important;margin-bottom:18px!important}.pocket-v3 #messages .v3-avatar{flex-basis:30px!important;width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;border-radius:11px!important}.pocket-v3 #messages .v3-msg.user .v3-bubble{max-width:84%!important;padding:10px 13px!important}}
+
+/* 2026-09-18 mobile chat redesign — compact, touch-safe, no nav/composer overlap */
+@media(max-width:650px){
+  .pocket-v3 main{padding:8px 8px calc(88px + env(safe-area-inset-bottom))!important}
+  .pocket-v3 #chat{
+    height:calc(100dvh - 154px - env(safe-area-inset-bottom))!important;
+    min-height:480px!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:18px!important;
+    box-shadow:none!important;
+    background:color-mix(in srgb,var(--glass) 88%,transparent)!important;
+  }
+  .pocket-v3 #v3ChatShell{border-radius:18px!important}
+  .pocket-v3 .v3-chat-main{padding:0!important}
+  .pocket-v3 .v3-chat-top{
+    display:flex!important;
+    min-height:54px!important;
+    padding:7px 9px!important;
+    border-bottom:1px solid var(--line)!important;
+    background:var(--glass)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+    z-index:5!important;
+  }
+  .pocket-v3 .v3-top-controls{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;gap:6px!important;width:100%!important}
+  .pocket-v3 .v3-top-controls select,
+  .pocket-v3 .v3-top-controls button{height:40px!important;min-height:40px!important;padding:7px 9px!important;border-radius:12px!important;font-size:13px!important}
+  .pocket-v3 .v3-top-controls select{max-width:none!important;min-width:0!important}
+  .pocket-v3 #messages.v3-messages{
+    padding:16px 12px 10px!important;
+    scroll-padding-bottom:12px!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .pocket-v3 #messages .v3-msg{
+    width:100%!important;
+    max-width:none!important;
+    gap:9px!important;
+    margin:0 0 20px!important;
+  }
+  .pocket-v3 #messages .v3-bubble{width:calc(100% - 40px)!important;max-width:none!important}
+  .pocket-v3 #messages .v3-msg.user .v3-bubble{
+    width:auto!important;
+    max-width:82%!important;
+    padding:10px 13px!important;
+    border-radius:18px 6px 18px 18px!important;
+  }
+  .pocket-v3 #messages .v3-text{font-size:15px!important;line-height:1.55!important}
+  .pocket-v3 #messages .v3-bubble footer{opacity:.72!important;margin-top:8px!important}
+  .pocket-v3 #messages .v3-bubble footer button{min-height:34px!important;padding:5px 8px!important}
+  .pocket-v3 .v3-composer{
+    padding:8px 9px 9px!important;
+    background:var(--glass)!important;
+    border-top:1px solid var(--line)!important;
+    z-index:6!important;
+  }
+  .pocket-v3 .v3-composer textarea{
+    min-height:48px!important;
+    max-height:112px!important;
+    padding:12px 13px!important;
+    border-radius:16px!important;
+    resize:none!important;
+    background:color-mix(in srgb,var(--glass) 90%,transparent)!important;
+  }
+  .pocket-v3 .v3-compose-row{padding-top:6px!important;gap:6px!important}
+  .pocket-v3 .v3-compose-row button{min-height:38px!important;padding:7px 11px!important}
+  .pocket-v3 .tabs{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    left:7px!important;right:7px!important;
+    bottom:max(7px,env(safe-area-inset-bottom))!important;
+    overflow:visible!important;
+    gap:2px!important;
+    padding:5px!important;
+    border-radius:20px!important;
+  }
+  .pocket-v3 .tabs button{min-width:0!important;width:auto!important;padding:6px 1px!important;font-size:12px!important;gap:1px!important}
+  .pocket-v3 .tabs button span{font-size:8px!important;white-space:nowrap!important}
+  .pocket-v3 .topbar{box-shadow:0 8px 24px rgba(73,48,111,.07)!important}
+  .pocket-v3 .topbar .brand strong{font-size:18px!important}
+}
+@media(max-width:390px){
+  .pocket-v3 #chat{height:calc(100dvh - 150px - env(safe-area-inset-bottom))!important}
+  .pocket-v3 #v3Study{font-size:0!important;width:40px!important;padding:0!important}
+  .pocket-v3 #v3Study:after{content:'🎓';font-size:17px!important}
+  .pocket-v3 .tabs button span{font-size:7.5px!important}
+}
