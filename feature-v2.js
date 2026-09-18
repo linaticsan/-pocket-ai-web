@@ -21,7 +21,7 @@ function networkState(){document.documentElement.dataset.network=navigator.onLin
 try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)){let kept=false;const clean=a.filter(c=>{const blank=(c?.title||'New chat')==='New chat'&&(!Array.isArray(c?.messages)||c.messages.length===0);if(!blank)return true;if(kept)return false;kept=true;return true});if(clean.length!==a.length)localStorage.setItem(k,JSON.stringify(clean));}}catch(err){console.warn('Pocket AI chat history cleanup skipped',err)}
 
 const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-4';document.head.appendChild(v3style);
-const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260918-mobile1';document.head.appendChild(v3hotfix);
+const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260918-mobile1';document.head.appendChild(v3hotfix);\nconst codeStyle=document.createElement('link');codeStyle.rel='stylesheet';codeStyle.href='./coding-v1.css?v=20260918-1';document.head.appendChild(codeStyle);
 // Emergency performance safe mode: keep the stable V3 core interactive and remove
 // additive workspaces that can leave expensive observers/DOM behind on mobile.
 try{
@@ -36,4 +36,4 @@ try{
   safeStyle.textContent='.pocket-performance-safe *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.pocket-performance-safe .mascot,.pocket-performance-safe [data-mascot]{animation:none!important}';
   document.head.appendChild(safeStyle);
 }catch(err){console.warn('Pocket AI safe-mode cleanup skipped',err)}
-import('./v3.js?v=20260918-autolocal2').then(()=>import('./v3-guard.js?v=20260918-safe1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
+import('./v3.js?v=20260918-autolocal2').then(()=>import('./v3-guard.js?v=20260918-safe1')).then(()=>import('./coding-v1.js?v=20260918-1')).catch(err=>console.error('Pocket AI module failed to load',err));
