@@ -1,0 +1,52 @@
+/* Pocket AI V30 mobile layout repair + API Hub */
+.api-hub-dialog{width:min(760px,calc(100vw - 24px));max-height:min(86dvh,820px);overflow:auto}
+.api-provider-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+.api-provider{padding:14px;border:1px solid var(--line);border-radius:18px;background:color-mix(in srgb,var(--glass) 92%,transparent)}
+.api-provider>div{display:flex;flex-direction:column;gap:2px;margin-bottom:10px}.api-provider small{color:var(--muted)}
+.api-provider label{display:block;margin-top:9px}.api-provider input{width:100%;margin-top:5px}
+.api-security,.api-shared-note{display:flex;gap:8px;align-items:flex-start;padding:12px;border-radius:16px;margin:12px 0;background:color-mix(in srgb,var(--purple) 7%,var(--glass));border:1px solid var(--line)}
+.api-security{flex-wrap:wrap}.api-security span{width:100%;color:var(--muted);font-size:13px}.api-shared-note{display:block;font-size:13px;line-height:1.5}
+@media(max-width:760px){.api-provider-grid{grid-template-columns:1fr}.api-hub-dialog{padding:18px}.api-actions{display:grid!important;grid-template-columns:1fr 1fr!important}}
+
+/* Turn plain URLs in reports into obvious one-tap links */
+.research-report a{color:var(--purple);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+
+/* Mobile: one clean column, no overlapping headers/cards/nav */
+@media(max-width:650px){
+  html,body{max-width:100%;overflow-x:hidden!important}
+  body{background-attachment:scroll!important}
+  .pocket-v3 .topbar{height:72px!important;min-height:72px!important;padding:10px 14px!important;position:sticky!important;top:0!important}
+  .pocket-v3 .topbar .brand{min-width:0!important}.pocket-v3 .topbar .brand small{display:none!important}
+  .pocket-v3 .topbar .brand .cat{width:42px!important;height:42px!important;flex:0 0 42px!important}
+  .pocket-v3 main{width:100%!important;max-width:100%!important;padding:8px 8px calc(92px + env(safe-area-inset-bottom))!important;margin:0!important}
+  .pocket-v3 .view{width:100%!important;max-width:100%!important;margin:0!important;border-radius:22px!important}
+  .pocket-v3 #chat{height:calc(100dvh - 172px - env(safe-area-inset-bottom))!important;min-height:520px!important;overflow:hidden!important}
+  .pocket-v3 #v3ChatShell{display:block!important;width:100%!important;height:100%!important;position:relative!important;overflow:hidden!important}
+  .pocket-v3 .v3-chat-main{display:flex!important;width:100%!important;height:100%!important;min-width:0!important}
+  .pocket-v3 .v3-chat-top{flex:0 0 54px!important;height:54px!important;padding:7px 8px!important}
+  .pocket-v3 .v3-top-controls{display:grid!important;grid-template-columns:minmax(0,1fr) 44px 44px!important;gap:6px!important}
+  .pocket-v3 .v3-top-controls select,.pocket-v3 .v3-top-controls button{width:100%!important;min-width:0!important;height:40px!important;margin:0!important}
+  .pocket-v3 #messages.v3-messages{flex:1 1 0!important;width:100%!important;min-height:0!important;padding:14px 10px!important;overflow-y:auto!important;overflow-x:hidden!important}
+  .pocket-v3 #messages .v3-msg{position:relative!important;display:flex!important;width:100%!important;max-width:100%!important;align-items:flex-start!important;gap:8px!important;margin:0 0 18px!important}
+  .pocket-v3 #messages .v3-bubble{position:relative!important;display:block!important;width:calc(100% - 38px)!important;max-width:calc(100% - 38px)!important;min-width:0!important;overflow:visible!important}
+  .pocket-v3 #messages .v3-bubble header{position:static!important;display:flex!important;min-height:24px!important;margin:0 0 7px!important;transform:none!important}
+  .pocket-v3 #messages .v3-text{position:static!important;display:block!important;width:100%!important;margin:0!important;padding:0!important;transform:none!important;font-size:15px!important;line-height:1.55!important}
+  .pocket-v3 #messages .v3-msg.user .v3-bubble{width:auto!important;max-width:84%!important}
+  .pocket-v3 .v3-welcome{margin:22px auto 10px!important;padding:0 6px!important}
+  .pocket-v3 .v3-welcome .cat{display:none!important}.pocket-v3 .v3-welcome h2{font-size:22px!important;margin:6px 0!important}
+  .pocket-v3 .v3-suggestions{grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:14px!important}.pocket-v3 .v3-suggestions button{padding:11px!important;font-size:13px!important}
+  .pocket-v3 .v3-composer{flex:0 0 auto!important;width:100%!important;padding:8px!important}
+  .pocket-v3 .v3-composer textarea{width:100%!important;min-height:46px!important;max-height:96px!important}
+  .pocket-v3 .v3-sidebar{display:none!important;position:absolute!important;inset:0 auto 0 0!important;width:min(82vw,310px)!important;height:100%!important;z-index:50!important;background:var(--glass)!important;backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important;box-shadow:20px 0 55px rgba(0,0,0,.18)!important}
+  .pocket-v3 #v3ChatShell.show-sidebar .v3-sidebar{display:block!important}
+  .pocket-v3 .tabs{position:fixed!important;z-index:90!important;left:8px!important;right:8px!important;bottom:max(8px,env(safe-area-inset-bottom))!important;width:auto!important;margin:0!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;background:color-mix(in srgb,var(--glass) 96%,transparent)!important;backdrop-filter:blur(22px)!important;-webkit-backdrop-filter:blur(22px)!important;box-shadow:0 12px 40px rgba(55,35,85,.16)!important}
+  .pocket-v3 .tabs button{min-width:0!important;height:58px!important;padding:5px 1px!important;font-size:18px!important;display:flex!important;flex-direction:column!important;gap:1px!important}
+  .pocket-v3 .tabs button span{font-size:9px!important;line-height:1.1!important}
+  .pocket-v3 #surface,.pocket-v3 #files,.pocket-v3 #github,.pocket-v3 #local,.pocket-v3 #home{padding:18px 14px 96px!important;overflow:visible!important}
+  .pocket-v3 #surface .row,.pocket-v3 #files .row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .pocket-v3 #surface .searchbox textarea{min-height:90px!important}
+  .pocket-v3 .research-report{max-height:none!important;overflow:visible!important;white-space:pre-wrap!important}
+  .pocket-v3 #files textarea{width:100%!important;max-width:100%!important}
+  .pocket-v3 footer{padding-bottom:80px!important}
+}
+@media(max-width:390px){.pocket-v3 .v3-suggestions{grid-template-columns:1fr!important}.pocket-v3 .tabs button span{font-size:8px!important}}
