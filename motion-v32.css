@@ -1,0 +1,14 @@
+/* Pocket AI V32 motion system — lightweight, mobile-safe, accessible */
+@keyframes pocketFloat{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(1.5deg)}}
+@keyframes pocketGlow{0%,100%{box-shadow:0 0 0 rgba(176,83,255,0)}50%{box-shadow:0 0 24px rgba(176,83,255,.18)}}
+@keyframes pocketScan{0%{transform:translateX(-110%);opacity:0}20%{opacity:.8}100%{transform:translateX(310%);opacity:0}}
+@keyframes pocketIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+@keyframes pocketRead{0%,100%{opacity:.45;transform:scaleX(.35)}50%{opacity:1;transform:scaleX(1)}}
+.pocket-v3 .brand{animation:pocketIn .38s ease both}.pocket-v3 .mascot-stage{animation:pocketFloat 4.6s ease-in-out infinite;transform-origin:50% 70%}
+.pocket-v3 .tabs button{transition:transform .18s ease,background .2s ease,box-shadow .2s ease}.pocket-v3 .tabs button:active{transform:scale(.94)}.pocket-v3 .tabs button.active{animation:pocketGlow 2.8s ease-in-out infinite}
+.pocket-v3 .view.active>.card,.pocket-v3 .view.active>.glass,.pocket-v3 .v3-bubble{animation:pocketIn .26s ease both}
+.pocket-v3 .code-neon-line{position:relative;overflow:hidden}.pocket-v3 .code-neon-line:after{content:"";position:absolute;inset:0 auto 0 0;width:32%;background:linear-gradient(90deg,transparent,rgba(102,243,231,.8),rgba(91,124,255,.8),transparent);animation:pocketScan 3.4s ease-in-out infinite}
+.pocket-v3 .code-ai{transition:transform .2s ease,box-shadow .25s ease}.pocket-v3 .code-ai:focus-within{transform:translateY(-2px);box-shadow:0 16px 44px rgba(91,124,255,.12)}
+.pocket-v3 #files.is-reading .picker{position:relative;overflow:hidden}.pocket-v3 #files.is-reading .picker:after{content:"";position:absolute;left:10%;right:10%;bottom:8px;height:3px;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#ec4899,#22d3ee);transform-origin:left;animation:pocketRead 1.05s ease-in-out infinite}
+.pocket-v3 button[data-code-ai="animate"]{position:relative;overflow:hidden}.pocket-v3 button[data-code-ai="animate"]:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.25) 48%,transparent 75%);transform:translateX(-120%);animation:pocketScan 4.2s ease-in-out infinite;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.pocket-v3 *,.pocket-v3 *:before,.pocket-v3 *:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
