@@ -36,4 +36,4 @@ try{
   safeStyle.textContent='.pocket-performance-safe *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.pocket-performance-safe .mascot,.pocket-performance-safe [data-mascot]{animation:none!important}';
   document.head.appendChild(safeStyle);
 }catch(err){console.warn('Pocket AI safe-mode cleanup skipped',err)}
-import('./v3.js?v=20260918-safe1').then(()=>import('./v3-guard.js?v=20260918-safe1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
+import('./v3.js?v=20260918-authfix1').then(()=>import('./v3-guard.js?v=20260918-safe1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
