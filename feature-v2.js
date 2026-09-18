@@ -22,4 +22,18 @@ try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Arr
 
 const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260916-4';document.head.appendChild(v3style);
 const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260916-3';document.head.appendChild(v3hotfix);
-import('./v3.js?v=20260916-3').then(()=>import('./v3-guard.js?v=20260916-5')).then(()=>import('./document-v3.js?v=20260917-2')).then(()=>import('./local-v3.js?v=20260917-1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
+// Emergency performance safe mode: keep the stable V3 core interactive and remove
+// additive workspaces that can leave expensive observers/DOM behind on mobile.
+try{
+  const filesPanel=document.getElementById('files');
+  document.getElementById('artifactShell')?.remove();
+  filesPanel?.classList.remove('artifact-v3');
+  filesPanel?.querySelectorAll('.artifact-old').forEach(el=>el.classList.remove('artifact-old'));
+  document.querySelectorAll('dialog[open]').forEach(d=>{try{d.close()}catch{}});
+  document.documentElement.classList.add('pocket-performance-safe');
+  const safeStyle=document.createElement('style');
+  safeStyle.id='pocketPerformanceSafe';
+  safeStyle.textContent='.pocket-performance-safe *{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.pocket-performance-safe .mascot,.pocket-performance-safe [data-mascot]{animation:none!important}';
+  document.head.appendChild(safeStyle);
+}catch(err){console.warn('Pocket AI safe-mode cleanup skipped',err)}
+import('./v3.js?v=20260918-safe1').then(()=>import('./v3-guard.js?v=20260918-safe1')).catch(err=>console.error('Pocket AI V3 failed to load',err));
