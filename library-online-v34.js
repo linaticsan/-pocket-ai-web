@@ -1,4 +1,4 @@
-// Pocket AI V38 — free-book discovery + in-app reader
+// Pocket AI V40 — resilient free-book discovery + in-app reader
 (() => {
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)], by=id=>document.getElementById(id);
 let books=[],activeBook=null,activeText='';
@@ -15,7 +15,7 @@ function fixNavigation(){
 function ensureReader(){
  if(by('freeBookReader'))return;
  const d=document.createElement('dialog');d.id='freeBookReader';d.className='free-reader';
- d.innerHTML='<div class="free-reader-head"><div><small id="freeReaderSource">FREE BOOK</small><h2 id="freeReaderTitle">Book</h2><p id="freeReaderMeta"></p></div><button id="freeReaderClose" aria-label="Close reader">×</button></div><div class="free-reader-actions"><button id="freeReaderSave" class="primary">＋ Save to My Library</button><button id="freeReaderTop">↑ Top</button></div><div class="free-rights">Free access comes from Project Gutenberg. Catalog results are limited to items Gutendex marks <b>copyright=false</b> (public domain in the USA). Copyright can differ by country, so readers outside the U.S. should check local law.</div><pre id="freeReaderText" tabindex="0"></pre>';
+ d.innerHTML='<div class="free-reader-head"><div><small id="freeReaderSource">FREE BOOK</small><h2 id="freeReaderTitle">Book</h2><p id="freeReaderMeta"></p></div><button id="freeReaderClose" aria-label="Close reader">×</button></div><div class="free-reader-actions"><button id="freeReaderSave" class="primary">＋ Save to My Library</button><button id="freeReaderTop">↑ Top</button></div><div class="free-rights">Free access comes from Project Gutenberg. Catalog results are limited to items Gutendex marks <b>copyright=false</b> (public domain in the USA). Copyright can differ by country, so readers outside the U.S. should check local law. If Gutenberg blocks direct browser delivery, Pocket AI can use a no-key text-reader fallback to display the same public source.</div><pre id="freeReaderText" tabindex="0"></pre>';
  document.body.appendChild(d);
  by('freeReaderClose').onclick=()=>d.close();by('freeReaderTop').onclick=()=>{by('freeReaderText').scrollTop=0};
  by('freeReaderSave').onclick=saveActive;
@@ -24,14 +24,27 @@ function textURL(b){
  const f=b.formats||{},entries=Object.entries(f).filter(([k,u])=>u&&/^text\/plain/i.test(k)&&!/\.zip($|\?)/i.test(u));
  return entries.sort(([a],[b])=>(/utf-8/i.test(b)?1:0)-(/utf-8/i.test(a)?1:0))[0]?.[1]||'';
 }
+function htmlURL(b){const f=b.formats||{},e=Object.entries(f).filter(([k,u])=>u&&/^text\/html/i.test(k)&&!/\.zip($|\?)/i.test(u));return e[0]?.[1]||''}
 function coverURL(b){const f=b.formats||{};return f['image/jpeg']||''}
 function authorLine(b){return (b.authors||[]).map(a=>a.name).filter(Boolean).join(', ')||'Unknown author'}
 async function getJSON(url){const r=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store'});if(!r.ok)throw Error('Catalog returned HTTP '+r.status);return r.json()}
-async function getText(b){
- const u=textURL(b);if(!u)throw Error('This edition has no plain-text reading file.');
- const r=await fetch(u,{cache:'force-cache'});if(!r.ok)throw Error('Book text returned HTTP '+r.status);
- const len=+(r.headers.get('content-length')||0);if(len>MAX_READ)throw Error('This edition is too large for the mobile reader.');
- const t=await r.text();if(t.length<100)throw Error('No readable book text was returned.');return t.slice(0,MAX_READ);
+async function fetchReadable(url,timeout=16000){
+ const ac=new AbortController(),timer=setTimeout(()=>ac.abort(),timeout);
+ try{const r=await fetch(url,{cache:'no-store',signal:ac.signal,headers:{Accept:'text/plain,text/html;q=0.8,*/*;q=0.5'}});if(!r.ok)throw Error('HTTP '+r.status);const len=+(r.headers.get('content-length')||0);if(len>MAX_READ*1.5)throw Error('File is too large');const t=await r.text();if(t.trim().length<100)throw Error('Empty response');return t.slice(0,MAX_READ)}finally{clearTimeout(timer)}
+}
+async function getText(b,onStage){
+ const plain=textURL(b),html=htmlURL(b),errors=[];
+ if(!plain&&!html)throw Error('This edition has no readable text or HTML file.');
+ // First try the publisher file directly. Some mobile browsers block this because
+ // Gutenberg intentionally restricts deep-linked files, so failure is expected on some iPhones.
+ if(plain){try{onStage?.('Loading book…');return await fetchReadable(plain,12000)}catch(e){errors.push('direct: '+(e?.message||e))}}
+ // Jina Reader fetches the public source server-side and returns readable text.
+ // This is a no-key fallback for cross-origin/deep-link restrictions, not a book source.
+ for(const source of [plain,html].filter(Boolean)){
+  try{onStage?.('Direct delivery was blocked. Trying the backup reader…');return await fetchReadable('https://r.jina.ai/'+source,24000)}
+  catch(e){errors.push('backup: '+(e?.message||e))}
+ }
+ throw Error('Reader could not retrieve this edition. '+errors.slice(-2).join(' • '));
 }
 function addDiscovery(){
  by('libOnline')?.remove();const host=by('libStorage');if(!host||by('freeLibrary'))return;
@@ -56,7 +69,7 @@ function render(){
 async function openBook(i){
  const b=books[i];if(!b)return;activeBook=b;activeText='';ensureReader();const d=by('freeBookReader'),pre=by('freeReaderText');
  by('freeReaderTitle').textContent=b.title||'Book';by('freeReaderMeta').textContent=authorLine(b)+' • '+(b.languages||[]).join(', ').toUpperCase();pre.textContent='Loading book…';d.showModal();
- try{activeText=await getText(b);pre.textContent=activeText;pre.scrollTop=0}catch(e){pre.textContent='Could not load this edition inside Pocket AI.\n\n'+(e?.message||e)}
+ try{activeText=await getText(b,msg=>{pre.textContent=msg});pre.textContent=activeText;pre.scrollTop=0}catch(e){pre.textContent='Could not load this edition inside Pocket AI.\n\n'+(e?.message||e)+'\n\nTap “Read in app” again to retry.'}
 }
 async function saveBook(b,text){
  if(!b)return;const status=by('freeStatus');try{if(!text)text=await getText(b);const safe=(b.title||'Free book').replace(/[\\/:*?"<>|]+/g,'_').slice(0,90);const f=new File([text],safe+'.txt',{type:'text/plain'});await window.PocketLibrary.importFiles([f]);if(status)status.textContent='✓ Saved “'+b.title+'” to My Library on this device.';return true}catch(e){if(status)status.textContent='Could not save: '+(e?.message||e);return false}
