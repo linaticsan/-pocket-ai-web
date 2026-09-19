@@ -36,6 +36,7 @@ function enhance(){
  document.documentElement.classList.add('pocket-v36');makeMore();labels();status();libraryBadge();
  // Keep the four secondary tools out of the cramped iPhone bottom bar; they remain one tap away in More.
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(enhance,80));else setTimeout(enhance,80);
+function schedule(){setTimeout(enhance,80);setTimeout(enhance,650);setTimeout(enhance,1500)}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule);else schedule();
 window.PocketV36={go,closeMore};
 })();
