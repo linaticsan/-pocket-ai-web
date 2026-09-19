@@ -14,7 +14,7 @@ function chunks(text,size=2600,overlap=300){const a=[];text=String(text||'');for
 function terms(q){const s=String(q||'').toLowerCase().normalize('NFKC'),out=new Set((s.match(/[\p{L}\p{N}]{2,}/gu)||[]));const compact=s.replace(/\s+/g,'');for(let i=0;i<compact.length-1&&i<160;i++)out.add(compact.slice(i,i+2));return [...out].slice(0,80)}
 function score(text,ts){const s=String(text||'').toLowerCase().normalize('NFKC');let n=0;for(const t of ts){let p=s.indexOf(t);if(p>=0)n+=t.length>3?4:1;while(p>=0&&n<120){p=s.indexOf(t,p+t.length);if(p>=0)n++}}return n}
 async function retrieve(query,limit=10){const books=await allBooks(),ts=terms(query),hits=[],eligible=books.filter(b=>!selected.size||selected.has(b.id));for(const b of eligible){(b.chunks||chunks(b.text)).forEach((c,i)=>{const s=score(c,ts);if(s||!ts.length)hits.push({s,b,i,c})})}hits.sort((a,b)=>b.s-a.s);if(!hits.length&&eligible.length){for(const b of eligible){(b.chunks||chunks(b.text)).slice(0,Math.max(1,Math.ceil(limit/eligible.length))).forEach((c,i)=>hits.push({s:0,b,i,c}))}}return hits.slice(0,limit)}
-function prettyName(n){return n.replace(/^_OceanofPDF\.com_/,'').replace(/\(\d+\)(?=\.[^.]+$)/,'').replace(/_/g,' ')}
+function prettyName(n){return String(n||'').replace(/\(\d+\)(?=\.[^.]+$)/,'').replace(/_/g,' ')}
 function makeUI(){
  if(by('library'))return;
  const nav=$('.tabs');if(nav&&!$('[data-go="library"]')){const b=document.createElement('button');b.dataset.go='library';b.innerHTML='📚<span>Library</span>';nav.insertBefore(b,$('[data-go="files"]',nav)||null)}
