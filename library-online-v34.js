@@ -1,4 +1,4 @@
-// Pocket AI V40 — resilient free-book discovery + in-app reader
+// Pocket AI V41 — immersive mobile reading experience
 (() => {
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)], by=id=>document.getElementById(id);
 let books=[],activeBook=null,activeText='';
@@ -14,11 +14,21 @@ function fixNavigation(){
 }
 function ensureReader(){
  if(by('freeBookReader'))return;
- const d=document.createElement('dialog');d.id='freeBookReader';d.className='free-reader';
- d.innerHTML='<div class="free-reader-head"><div><small id="freeReaderSource">FREE BOOK</small><h2 id="freeReaderTitle">Book</h2><p id="freeReaderMeta"></p></div><button id="freeReaderClose" aria-label="Close reader">×</button></div><div class="free-reader-actions"><button id="freeReaderSave" class="primary">＋ Save to My Library</button><button id="freeReaderTop">↑ Top</button></div><div class="free-rights">Free access comes from Project Gutenberg. Catalog results are limited to items Gutendex marks <b>copyright=false</b> (public domain in the USA). Copyright can differ by country, so readers outside the U.S. should check local law. If Gutenberg blocks direct browser delivery, Pocket AI can use a no-key text-reader fallback to display the same public source.</div><pre id="freeReaderText" tabindex="0"></pre>';
+ const d=document.createElement('dialog');d.id='freeBookReader';d.className='free-reader reader-v41';
+ d.innerHTML='<header class="reader41-head"><button id="freeReaderClose" class="reader41-round" aria-label="Back">‹</button><div class="reader41-title"><small id="freeReaderSource">FREE BOOK</small><strong id="freeReaderTitle">Book</strong><span id="freeReaderMeta"></span></div><button id="reader41MenuBtn" class="reader41-round" aria-label="Reader menu">•••</button></header><div class="reader41-progress"><i id="reader41Progress"></i></div><pre id="freeReaderText" tabindex="0"></pre><nav class="reader41-dock" aria-label="Reading controls"><button id="reader41Smaller" aria-label="Smaller text">A−<span>Smaller</span></button><button id="reader41Larger" aria-label="Larger text">A＋<span>Larger</span></button><button id="reader41Theme" aria-label="Reading theme">◐<span>Theme</span></button><button id="freeReaderTop" aria-label="Go to top">↑<span>Top</span></button><button id="reader41More" aria-label="More reading options">•••<span>More</span></button></nav><aside id="reader41Menu" class="reader41-menu" hidden><button id="freeReaderSave" class="primary">＋ Save to My Library</button><button id="reader41Comfort">☕ Comfort spacing</button><details><summary>Book access information</summary><p>Free access comes from Project Gutenberg. Results are limited to items Gutendex marks <b>copyright=false</b> (public domain in the USA). Copyright can differ by country, so check local law.</p></details><button id="reader41MenuClose">Done</button></aside>';
  document.body.appendChild(d);
- by('freeReaderClose').onclick=()=>d.close();by('freeReaderTop').onclick=()=>{by('freeReaderText').scrollTop=0};
- by('freeReaderSave').onclick=saveActive;
+ const pre=by('freeReaderText'),menu=by('reader41Menu');let size=+(localStorage.getItem('pocket-reader-size')||18),comfort=localStorage.getItem('pocket-reader-comfort')!=='0';
+ const apply=()=>{pre.style.fontSize=size+'px';pre.classList.toggle('comfort',comfort)};
+ const toggleMenu=()=>{menu.hidden=!menu.hidden};
+ by('freeReaderClose').onclick=()=>d.close();by('freeReaderTop').onclick=()=>{pre.scrollTo({top:0,behavior:'smooth'})};
+ by('freeReaderSave').onclick=saveActive;by('reader41MenuBtn').onclick=toggleMenu;by('reader41More').onclick=toggleMenu;by('reader41MenuClose').onclick=()=>menu.hidden=true;
+ by('reader41Smaller').onclick=()=>{size=Math.max(14,size-2);localStorage.setItem('pocket-reader-size',size);apply()};
+ by('reader41Larger').onclick=()=>{size=Math.min(30,size+2);localStorage.setItem('pocket-reader-size',size);apply()};
+ by('reader41Comfort').onclick=()=>{comfort=!comfort;localStorage.setItem('pocket-reader-comfort',comfort?'1':'0');apply()};
+ by('reader41Theme').onclick=()=>{d.classList.toggle('reader-paper');localStorage.setItem('pocket-reader-paper',d.classList.contains('reader-paper')?'1':'0')};
+ if(localStorage.getItem('pocket-reader-paper')==='1')d.classList.add('reader-paper');apply();
+ pre.addEventListener('scroll',()=>{const max=pre.scrollHeight-pre.clientHeight,p=max>0?Math.min(100,Math.max(0,pre.scrollTop/max*100)):0;by('reader41Progress').style.width=p+'%';localStorage.setItem('pocket-reader-progress-'+(activeBook?.id||'book'),String(pre.scrollTop))},{passive:true});
+ d.addEventListener('close',()=>{menu.hidden=true});
 }
 function textURL(b){
  const f=b.formats||{},entries=Object.entries(f).filter(([k,u])=>u&&/^text\/plain/i.test(k)&&!/\.zip($|\?)/i.test(u));
@@ -68,8 +78,8 @@ function render(){
 }
 async function openBook(i){
  const b=books[i];if(!b)return;activeBook=b;activeText='';ensureReader();const d=by('freeBookReader'),pre=by('freeReaderText');
- by('freeReaderTitle').textContent=b.title||'Book';by('freeReaderMeta').textContent=authorLine(b)+' • '+(b.languages||[]).join(', ').toUpperCase();pre.textContent='Loading book…';d.showModal();
- try{activeText=await getText(b,msg=>{pre.textContent=msg});pre.textContent=activeText;pre.scrollTop=0}catch(e){pre.textContent='Could not load this edition inside Pocket AI.\n\n'+(e?.message||e)+'\n\nTap “Read in app” again to retry.'}
+ by('freeReaderTitle').textContent=b.title||'Book';by('freeReaderMeta').textContent=authorLine(b)+' • '+(b.languages||[]).join(', ').toUpperCase();pre.textContent='Loading book…';by('reader41Progress').style.width='0%';d.showModal();
+ try{activeText=await getText(b,msg=>{pre.textContent=msg});pre.textContent=activeText;requestAnimationFrame(()=>{const saved=+(localStorage.getItem('pocket-reader-progress-'+(b.id||'book'))||0);pre.scrollTop=Math.min(saved,Math.max(0,pre.scrollHeight-pre.clientHeight))})}catch(e){pre.textContent='Could not load this edition inside Pocket AI.\n\n'+(e?.message||e)+'\n\nClose and tap “Read in app” to retry.'}
 }
 async function saveBook(b,text){
  if(!b)return;const status=by('freeStatus');try{if(!text)text=await getText(b);const safe=(b.title||'Free book').replace(/[\\/:*?"<>|]+/g,'_').slice(0,90);const f=new File([text],safe+'.txt',{type:'text/plain'});await window.PocketLibrary.importFiles([f]);if(status)status.textContent='✓ Saved “'+b.title+'” to My Library on this device.';return true}catch(e){if(status)status.textContent='Could not save: '+(e?.message||e);return false}
