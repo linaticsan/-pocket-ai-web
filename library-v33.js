@@ -1,9 +1,9 @@
-// Pocket AI V33 — private on-device Library + grounded creation
+// Pocket AI V51 — books-only on-device Library
 (() => {
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], by=id=>document.getElementById(id);
+const $=s=>document.querySelector(s), by=id=>document.getElementById(id);
 const DB='pocket-ai-library-v33', STORE='books', MAX=20*1024*1024;
-const STARTER=[]; // V38: public builds never advertise private/copyrighted test filenames.
-let selected=new Set(), currentResult='', currentTitle='Pocket AI Library';
+let selected=new Set();
+
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function uid(){return crypto.randomUUID?.()||Date.now().toString(36)+Math.random().toString(36).slice(2)}
 function openDB(){return new Promise((ok,no)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{const db=r.result;if(!db.objectStoreNames.contains(STORE)){const s=db.createObjectStore(STORE,{keyPath:'id'});s.createIndex('name','name',{unique:false});s.createIndex('addedAt','addedAt',{unique:false})}};r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)})}
@@ -11,62 +11,92 @@ async function allBooks(){const db=await openDB();return new Promise((ok,no)=>{c
 async function putBook(x){const db=await openDB();return new Promise((ok,no)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).put(x);t.oncomplete=()=>ok(x);t.onerror=()=>no(t.error)})}
 async function delBook(id){const db=await openDB();return new Promise((ok,no)=>{const t=db.transaction(STORE,'readwrite');t.objectStore(STORE).delete(id);t.oncomplete=ok;t.onerror=()=>no(t.error)})}
 function chunks(text,size=2600,overlap=300){const a=[];text=String(text||'');for(let i=0;i<text.length;i+=size-overlap){a.push(text.slice(i,i+size));if(i+size>=text.length)break}return a}
-function terms(q){const s=String(q||'').toLowerCase().normalize('NFKC'),out=new Set((s.match(/[\p{L}\p{N}]{2,}/gu)||[]));const compact=s.replace(/\s+/g,'');for(let i=0;i<compact.length-1&&i<160;i++)out.add(compact.slice(i,i+2));return [...out].slice(0,80)}
+function terms(q){const s=String(q||'').toLowerCase().normalize('NFKC'),out=new Set((s.match(/[\p{L}\p{N}]{2,}/gu)||[]));const compact=s.replace(/\s+/g,'');for(let i=0;i<compact.length-1&&i<160;i++)out.add(compact.slice(i,i+2));return[...out].slice(0,80)}
 function score(text,ts){const s=String(text||'').toLowerCase().normalize('NFKC');let n=0;for(const t of ts){let p=s.indexOf(t);if(p>=0)n+=t.length>3?4:1;while(p>=0&&n<120){p=s.indexOf(t,p+t.length);if(p>=0)n++}}return n}
-async function retrieve(query,limit=10){const books=await allBooks(),ts=terms(query),hits=[],eligible=books.filter(b=>!selected.size||selected.has(b.id));for(const b of eligible){(b.chunks||chunks(b.text)).forEach((c,i)=>{const s=score(c,ts);if(s||!ts.length)hits.push({s,b,i,c})})}hits.sort((a,b)=>b.s-a.s);if(!hits.length&&eligible.length){for(const b of eligible){(b.chunks||chunks(b.text)).slice(0,Math.max(1,Math.ceil(limit/eligible.length))).forEach((c,i)=>hits.push({s:0,b,i,c}))}}return hits.slice(0,limit)}
+async function retrieve(query,limit=10){const books=await allBooks(),ts=terms(query),hits=[],eligible=books.filter(b=>!selected.size||selected.has(b.id));for(const b of eligible){(b.chunks||chunks(b.text)).forEach((c,i)=>{const s=score(c,ts);if(s||!ts.length)hits.push({s,b,i,c})})}hits.sort((a,b)=>b.s-a.s);return hits.slice(0,limit)}
 function prettyName(n){return String(n||'').replace(/\(\d+\)(?=\.[^.]+$)/,'').replace(/_/g,' ')}
+function iconFor(type){return type==='pdf'?'📕':type==='docx'?'📘':'📖'}
+
 function makeUI(){
- if(by('library'))return;
+ const old=by('library');
+ if(old?.classList.contains('library-books-only-v51'))return old;
+ if(old)old.remove();
  const nav=$('.tabs');
- if(nav&&!$('[data-go="library"]')){
+ if(nav&&!nav.querySelector('[data-go="library"]')){
   const b=document.createElement('button');b.dataset.go='library';b.innerHTML='📚<span>Library</span>';
-  nav.insertBefore(b,$('[data-go="files"]',nav)||null);
+  nav.insertBefore(b,nav.querySelector('[data-go="files"]')||null);
  }
- const s=document.createElement('section');s.id='library';s.className='view glass library-v33 library-books-only';s.hidden=true;
+ const s=document.createElement('section');
+ s.id='library';s.className='view glass library-v33 library-books-only library-books-only-v51';s.hidden=true;
  s.innerHTML=
- '<div class="lib-head book-only-head"><div><p class="eyebrow">LIBRARY • BOOKS</p><h1>Your reading shelf.</h1><p class="muted">Books only. Read free/open books, save your own books, continue reading, and keep web novels together.</p></div><span class="privacy-pill">📚 Book shelf</span></div>'+
+ '<div class="lib-head book-only-head"><div><p class="eyebrow">LIBRARY • BOOKS</p><h1>Your reading shelf.</h1><p class="muted">Books only. Read free/open books, save your own books and keep web novels together.</p></div><span class="privacy-pill">📚 Books</span></div>'+
  '<div class="book-library-toolbar"><label class="lib-upload">＋ Add my book<input id="libInput" type="file" multiple accept=".pdf,.docx,.txt,.md,application/pdf,text/plain,text/markdown" hidden></label><div class="lib-search"><input id="libSearch" placeholder="Search saved books…"><span id="libCount"></span></div></div>'+
  '<div id="libStatus" class="muted book-library-status"></div><div id="libStorage" class="muted book-library-storage"></div>'+
  '<div class="book-library-section"><div class="book-library-title"><div><p class="eyebrow">MY BOOKS</p><h2>Saved on this device</h2></div></div><div id="libGrid" class="lib-grid book-only-grid"></div></div>';
  const files=by('files');(files?.parentNode||$('main')).insertBefore(s,files||null);
- const homeGrid=$('.quick-grid');
- if(homeGrid&&!homeGrid.querySelector('[data-quick="library"]')){
-  const b=document.createElement('button');b.dataset.quick='library';b.innerHTML='<span>📚</span><strong>Library</strong><small>Books & novels</small>';
-  homeGrid.insertBefore(b,homeGrid.querySelector('[data-quick="files"]')||null);b.onclick=()=>document.querySelector('[data-go="library"]')?.click();
- }
- const commands=by('commandList');
- if(commands&&!commands.querySelector('[data-command="library"]')){
-  const b=document.createElement('button');b.dataset.command='library';b.innerHTML='📚 Library <kbd>Books</kbd>';
-  commands.insertBefore(b,commands.querySelector('[data-command="files"]')||null);
-  b.onclick=()=>{by('commandDialog')?.close();document.querySelector('[data-go="library"]')?.click()};
- }
+ return s;
 }
-function starterUI(books){const target=by('libStarter');if(!target)return;const have=new Set(books.map(b=>b.name));target.innerHTML=STARTER.map(n=>'<div class="starter-row"><span>'+esc(prettyName(n))+'</span><strong class="'+(have.has(n)?'ready':'need')+'">'+(have.has(n)?'✓ In Library':'Import once')+'</strong></div>').join('')}
-async function storageInfo(){if(!navigator.storage?.estimate)return;try{const e=await navigator.storage.estimate(),used=e.usage||0,quota=e.quota||0;by('libStorage').textContent='Device library storage: '+(used/1048576).toFixed(1)+' MB used'+(quota?' of '+(quota/1048576).toFixed(0)+' MB available to this site':'')+'. Browser storage can be cleared by the device/browser.'}catch{}}
-async function render(){const books=await allBooks(),q=(by('libSearch')?.value||'').toLowerCase();by('libCount').textContent=books.length+' saved';const show=books.filter(b=>!q||b.name.toLowerCase().includes(q)||(b.text||'').toLowerCase().includes(q));by('libGrid').innerHTML=show.length?show.map(b=>'<article class="lib-card '+(selected.has(b.id)?'selected':'')+'" data-id="'+b.id+'"><button class="lib-pick" aria-label="Select">'+(selected.has(b.id)?'✓':'○')+'</button><div class="lib-icon">'+(b.type==='pdf'?'📕':b.type==='docx'?'📘':b.type==='pptx'?'📙':b.type==='xlsx'?'📗':'📄')+'</div><strong>'+esc(prettyName(b.name))+'</strong><small>'+((b.text||'').length/1000).toFixed(1)+'k chars • '+(b.chunks?.length||0)+' chunks</small><div class="lib-card-actions"><button data-open="'+b.id+'">Open</button><button data-remove="'+b.id+'">Delete</button></div></article>').join(''):'<div class="lib-empty"><strong>No imported books yet.</strong><p>Add your PDFs, Word, PowerPoint, Excel or text files. They stay in this browser.</p></div>';starterUI(books);storageInfo()}
-async function importFiles(files){const status=by('libStatus');for(const f of [...files]){if(f.size>MAX){status.textContent=f.name+' is over 20 MB and was skipped.';continue}status.textContent='Reading '+f.name+'…';try{const text=await window.PocketFiles.readOne(f);const old=(await allBooks()).find(b=>b.name===f.name);const rec={id:old?.id||uid(),name:f.name,type:(f.name.split('.').pop()||'file').toLowerCase(),size:f.size,addedAt:Date.now(),text,blob:f,chunks:chunks(text)};await putBook(rec);selected.add(rec.id)}catch(e){status.textContent='Could not add '+f.name+': '+(e?.message||e)}}status.textContent='Library updated. Selected books are ready for AI.';await render()}
-async function openBook(id){const b=(await allBooks()).find(x=>x.id===id);if(!b)return;document.querySelector('[data-go="files"]')?.click();by('fileText').value=b.text||'';by('fileName').value=b.name.replace(/\.(pdf|docx|pptx|xlsx)$/i,'.txt');by('fileText').dispatchEvent(new Event('input'));by('fileStatus').textContent='Opened from Library: '+b.name}
-const taskPrompts={quiz:'Create a useful quiz only from the supplied library excerpts. Include questions first, then a separate answer key. Do not add facts not supported by the excerpts.',summary:'Summarize only the supplied library excerpts. Preserve important terminology and clearly state when the excerpts are insufficient.',study:'Create a structured study guide only from the supplied library excerpts: overview, key concepts, vocabulary, examples supported by the text, review questions, and answers.',slides:'Create a presentation using only the supplied library excerpts. Format every slide as "# Slide title" followed by concise bullet points. Include a final source slide listing the book names.',flashcards:'Create flashcards only from the supplied library excerpts. Format each as "Q: ..." then "A: ...".'};
-async function contextFor(query){const hits=await retrieve(query,10);if(!hits.length)return'';const body=hits.map((h,i)=>'[LIBRARY SOURCE '+(i+1)+' • '+h.b.name+' • chunk '+(h.i+1)+']\\n'+h.c).join('\\n\\n');return '\\n\\n--- POCKET LIBRARY CONTEXT (use only when relevant; do not invent missing facts) ---\\n'+body}
-async function askLibrary(task=''){const prompt=by('libPrompt').value.trim()||'Help me study the selected library books.';const books=await allBooks();if(!books.length){by('libStatus').textContent='No readable book is saved on this device yet. Tap “Add books & documents” above, or use Discover Online to add an open book.';by('libInput')?.closest('.lib-upload')?.scrollIntoView({behavior:'smooth',block:'center'});return}const hits=await retrieve(prompt,10);if(!hits.length){by('libStatus').textContent='The saved file has no readable text. Try another PDF/Word/PowerPoint, or open it in File Desk to check the extracted text.';return}const sourceNames=[...new Set(hits.map(h=>h.b.name))],context=hits.map((h,i)=>'[SOURCE '+(i+1)+' • '+h.b.name+' • chunk '+(h.i+1)+']\n'+h.c).join('\n\n');const instruction=taskPrompts[task]||'Answer the request using only the supplied library excerpts. If the excerpts do not support something, say so. Cite source names in the answer.';const messages=[{role:'system',content:'You are Pocket Library AI. '+instruction},{role:'user',content:'REQUEST:\n'+prompt+'\n\nLIBRARY EXCERPTS:\n'+context}];by('libStatus').textContent='Retrieved '+hits.length+' relevant passages from '+sourceNames.length+' book(s). Asking AI…';try{let text;if(window.PocketLocalAI?.isConnected?.())text=await window.PocketLocalAI.generate(messages);else if(window.PocketAPI?.hasKeys?.()){const r=await window.PocketAPI.generate(messages,{provider:'auto'});text=r.text}else throw Error('Connect Local AI, or configure an optional AI API.');currentResult=String(text||'');currentTitle=prompt.slice(0,70)||'Pocket AI Library';by('libResult').value=currentResult;by('libOutputName').value=(task?task+'-':'')+'Pocket-AI-Library';by('libStatus').textContent='Done • grounded in '+sourceNames.join(', ')}catch(e){by('libStatus').textContent='Library AI: '+(e?.message||e)}}
-function safeName(s){return (String(s||'Pocket-AI').replace(/[\\/:*?"<>|]+/g,'_').trim()||'Pocket-AI').slice(0,90)}
-function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)}
-function lines(t){return String(t||'').replace(/\r/g,'').split('\n')}
-async function exportDocx(text,name){const d=await import('https://cdn.jsdelivr.net/npm/docx@9.5.1/+esm');const kids=lines(text).map(x=>{const h=x.match(/^(#{1,3})\s+(.+)/);return new d.Paragraph({text:h?h[2]:x,heading:h?(h[1].length===1?d.HeadingLevel.HEADING_1:h[1].length===2?d.HeadingLevel.HEADING_2:d.HeadingLevel.HEADING_3):undefined,spacing:{after:100}})});const doc=new d.Document({sections:[{children:kids}]});download(await d.Packer.toBlob(doc),safeName(name)+'.docx')}
-async function exportPptx(text,name){const m=await import('https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/+esm'),P=m.default||m,p=new P();p.layout='LAYOUT_WIDE';let slides=[],cur=null;for(const x of lines(text).filter(x=>x.trim())){const h=x.match(/^#{1,3}\s+(.+)/);if(h){if(cur)slides.push(cur);cur={title:h[2],body:[]}}else{cur||=( {title:currentTitle,body:[]} );cur.body.push(x.replace(/^[-*•]\s*/,''));if(cur.body.length>=7){slides.push(cur);cur=null}}}if(cur)slides.push(cur);if(!slides.length)slides=[{title:currentTitle,body:lines(text).slice(0,7)}];for(const x of slides.slice(0,40)){const sl=p.addSlide();sl.addText(x.title,{x:.6,y:.45,w:12.1,h:.6,fontSize:26,bold:true});sl.addText(x.body.map(t=>({text:t,options:{bullet:{indent:16}}})),{x:.8,y:1.35,w:11.6,h:5.5,fontSize:17,breakLine:true,margin:.08})}await p.writeFile({fileName:safeName(name)+'.pptx'})}
-function exportPrintPDF(text,name){const w=open('','_blank');if(!w){alert('Allow pop-ups to create the PDF.');return}w.document.write('<!doctype html><meta charset="utf-8"><title>'+esc(name)+'</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans",sans-serif;max-width:800px;margin:40px auto;padding:0 24px;line-height:1.6;white-space:pre-wrap;color:#111}@media print{body{margin:0;max-width:none}}</style><body>'+esc(text)+'</body><script>setTimeout(()=>print(),350)<\/script>');w.document.close()}
-async function doExport(type){const text=by('libResult').value.trim();if(!text)return alert('Create or write something first.');const name=safeName(by('libOutputName').value);by('libStatus').textContent='Creating '+type.toUpperCase()+'…';try{if(type==='docx')await exportDocx(text,name);else if(type==='pptx')await exportPptx(text,name);else if(type==='pdf')exportPrintPDF(text,name);else download(new Blob([text],{type:'text/plain;charset=utf-8'}),name+'.'+type);by('libStatus').textContent=type==='pdf'?'Print preview opened — choose Save as PDF.':'File created.'}catch(e){by('libStatus').textContent='Export failed: '+(e?.message||e)}}
+
+async function storageInfo(){
+ if(!navigator.storage?.estimate||!by('libStorage'))return;
+ try{const e=await navigator.storage.estimate(),used=e.usage||0;by('libStorage').textContent='Private device storage used: '+(used/1048576).toFixed(1)+' MB.'}catch{}
+}
+
+async function render(){
+ const grid=by('libGrid');if(!grid)return;
+ const books=await allBooks(),q=(by('libSearch')?.value||'').toLowerCase();
+ if(by('libCount'))by('libCount').textContent=books.length+' saved';
+ const show=books.filter(b=>!q||b.name.toLowerCase().includes(q)||(b.text||'').toLowerCase().includes(q));
+ grid.innerHTML=show.length?show.map(b=>
+  '<article class="lib-card book-card" data-id="'+b.id+'"><div class="lib-icon book-spine">'+iconFor(b.type)+'</div><div class="book-card-copy"><strong>'+esc(prettyName(b.name))+'</strong><small>'+((b.text||'').length/1000).toFixed(1)+'k chars • saved privately</small><div class="lib-card-actions"><button data-open="'+b.id+'" class="book-open">📖 Open</button><button data-remove="'+b.id+'" class="book-remove">Delete</button></div></div></article>'
+ ).join(''):'<div class="lib-empty book-empty"><span>📚</span><strong>Your shelf is empty.</strong><p>Add a book above or save one from the Free Book Library below.</p></div>';
+ storageInfo();
+}
+
+async function importFiles(files){
+ const status=by('libStatus');
+ for(const f of [...files]){
+  if(f.size>MAX){if(status)status.textContent=f.name+' is over 20 MB and was skipped.';continue}
+  try{
+   if(status)status.textContent='Reading '+f.name+'…';
+   const text=await window.PocketFiles.readOne(f);
+   const old=(await allBooks()).find(b=>b.name===f.name);
+   const rec={id:old?.id||uid(),name:f.name,type:(f.name.split('.').pop()||'file').toLowerCase(),size:f.size,addedAt:Date.now(),text,blob:f,chunks:chunks(text)};
+   await putBook(rec);selected.add(rec.id);
+  }catch(e){if(status)status.textContent='Could not add '+f.name+': '+(e?.message||e)}
+ }
+ if(status)status.textContent='✓ Book shelf updated.';
+ await render();
+}
+
+async function openBook(id){
+ const b=(await allBooks()).find(x=>x.id===id);if(!b)return;
+ window.PocketV39?.show?.('files')||document.querySelector('[data-go="files"]')?.click();
+ const text=by('fileText'),name=by('fileName'),status=by('fileStatus');
+ if(text){text.value=b.text||'';text.dispatchEvent(new Event('input'))}
+ if(name)name.value=b.name.replace(/\.(pdf|docx)$/i,'.txt');
+ if(status)status.textContent='Opened from Library: '+b.name;
+}
+
+async function contextFor(query){
+ const hits=await retrieve(query,10);if(!hits.length)return'';
+ return '\n\n--- POCKET LIBRARY CONTEXT ---\n'+hits.map((h,i)=>'[SOURCE '+(i+1)+' • '+h.b.name+' • chunk '+(h.i+1)+']\n'+h.c).join('\n\n');
+}
+
 function bind(){
- const input=by('libInput');if(input)input.onchange=e=>{importFiles(e.target.files);e.target.value=''};
- const search=by('libSearch');if(search)search.oninput=render;
- const grid=by('libGrid');if(grid)grid.onclick=async e=>{
+ by('libInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
+ by('libSearch').oninput=render;
+ by('libGrid').onclick=async e=>{
   const card=e.target.closest('.lib-card');if(!card)return;const id=card.dataset.id;
   if(e.target.closest('[data-open]'))return openBook(id);
   if(e.target.closest('[data-remove]')){if(confirm('Remove this book from this device library?')){await delBook(id);selected.delete(id);render()}return}
  };
- document.addEventListener('click',e=>{const b=e.target.closest?.('[data-command="library"]');if(b){by('commandDialog')?.close();document.querySelector('[data-go="library"]')?.click()}});
 }
-async function init(){makeUI();bind();await render();try{if(navigator.storage?.persist)navigator.storage.persist()}catch{}}
+
+async function init(){
+ makeUI();bind();await render();
+ try{if(navigator.storage?.persist)navigator.storage.persist()}catch{}
+}
 init();
-window.PocketLibrary={allBooks,retrieve,importFiles,askLibrary,contextFor};
+window.PocketLibrary={allBooks,retrieve,importFiles,contextFor,render};
 })();
