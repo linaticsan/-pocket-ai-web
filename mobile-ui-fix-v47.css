@@ -258,3 +258,11 @@
   #chat .v3-composer{padding-bottom:18px!important}
   .home45-books,.home45-cats{position:relative!important;z-index:1!important}
 }
+
+
+/* V54 — safer bottom spacing under floating navigation */
+@media(max-width:650px){
+ main,.view,#home,#chat,#library,#files{padding-bottom:calc(165px + env(safe-area-inset-bottom))!important}
+ .tabs,.pocket-v3 .tabs{left:10px!important;right:10px!important;bottom:max(12px,env(safe-area-inset-bottom))!important}
+ .home45-books,.home45-cats{margin-bottom:8px!important}
+}
