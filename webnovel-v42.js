@@ -1,44 +1,47 @@
-// Pocket AI V43 — in-app novel discovery + rights-safe official sources
+// Pocket AI V44 — in-app-first Web Novel Library
 (() => {
 const by=id=>document.getElementById(id);
-const SOURCES=[
- {id:'wuxiaworld',name:'Wuxiaworld',icon:'⚔️',url:'https://www.wuxiaworld.com/',note:'Licensed translations • official reader required'},
- {id:'novelnow',name:'NovelNow',icon:'📖',url:'https://www.novelnow.com/',note:'Official web reader • access varies'},
- {id:'meganovel',name:'MegaNovel',icon:'✨',url:'https://www.meganovel.com/',note:'Official web reader • free/premium varies'},
- {id:'tapas',name:'Tapas',icon:'🎨',url:'https://tapas.io/',note:'Official comics & novels'},
- {id:'royalroad',name:'Royal Road',icon:'🏰',url:'https://www.royalroad.com/',note:'Author-published fiction'},
- {id:'scribblehub',name:'Scribble Hub',icon:'✍️',url:'https://www.scribblehub.com/',note:'Author-published fiction'}
+const FEATURED=[
+ {title:'Moby Dick',author:'Herman Melville',tag:'Adventure',icon:'🌊',tone:'ocean'},
+ {title:'Pride and Prejudice',author:'Jane Austen',tag:'Romance',icon:'🌸',tone:'rose'},
+ {title:'Dracula',author:'Bram Stoker',tag:'Horror',icon:'🌙',tone:'blood'},
+ {title:'Alice in Wonderland',author:'Lewis Carroll',tag:'Fantasy',icon:'♠️',tone:'sky'},
+ {title:'Frankenstein',author:'Mary Shelley',tag:'Dark fantasy',icon:'⚡',tone:'green'},
+ {title:'The Adventures of Sherlock Holmes',author:'Arthur Conan Doyle',tag:'Mystery',icon:'🔎',tone:'gold'}
 ];
-const KEY='pocket-webnovel-links-v43';
+const SOURCES=[
+ {name:'Wuxiaworld',url:'https://www.wuxiaworld.com/',note:'Licensed translations'},
+ {name:'NovelNow',url:'https://www.novelnow.com/',note:'Official web reader'},
+ {name:'MegaNovel',url:'https://www.meganovel.com/',note:'Official novels'},
+ {name:'Tapas',url:'https://tapas.io/',note:'Official comics & novels'},
+ {name:'Royal Road',url:'https://www.royalroad.com/',note:'Author-published fiction'},
+ {name:'Scribble Hub',url:'https://www.scribblehub.com/',note:'Author-published fiction'}
+];
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function loadLinks(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch{return[]}}
-function saveLinks(a){localStorage.setItem(KEY,JSON.stringify(a.slice(0,80)))}
-function openOfficial(url){try{const u=new URL(url);if(/^https?:$/.test(u.protocol))window.open(u.href,'_blank','noopener,noreferrer')}catch{}}
-function readInPocket(q){
- const input=by('freeSearch');if(!input)return;input.value=q||'';window.PocketLibraryOnline?.searchOnline?.();by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'});
+function showLibrary(){window.PocketLibraryOnline?.showLibrary?.()}
+async function read(q,btn){
+ showLibrary();if(btn){btn.disabled=true;btn.dataset.old=btn.textContent;btn.textContent='Opening…'}
+ try{const ok=await window.PocketLibraryOnline?.openByQuery?.(q);if(!ok)by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'})}
+ finally{if(btn){btn.disabled=false;btn.textContent=btn.dataset.old||'Read'}}
 }
-function sourceCard(s){return '<article class="wn42-source"><div class="wn42-icon">'+s.icon+'</div><div><strong>'+esc(s.name)+'</strong><small>'+esc(s.note)+'</small></div><button data-wn-official="'+s.id+'">Official</button></article>'}
+function featuredCard(x,i){return '<article class="wn44-book '+x.tone+'"><button data-wn44-read="'+i+'"><span class="wn44-cover"><i>'+x.icon+'</i><b>FREE</b><em>'+esc(x.tag)+'</em></span><strong>'+esc(x.title)+'</strong><small>'+esc(x.author)+'</small></button></article>'}
 function addHub(){
- const lib=by('library');if(!lib||by('webNovelHub'))return false;
- const free=by('freeLibrary'),anchor=free||by('libStorage')||lib.lastElementChild;
- const box=document.createElement('section');box.id='webNovelHub';box.className='wn42 wn43';
- box.innerHTML='<div class="wn42-head"><div><p class="eyebrow">WEB NOVEL • IN APP</p><h2>Discover stories</h2><p class="muted">Choose a genre and read free eligible books in the Pocket AI reader. Your reading position stays on this device.</p></div><span class="privacy-pill">📖 Pocket Reader</span></div><div class="wn42-tabs"><button class="active" data-wn-tab="discover">Discover</button><button data-wn-tab="saved">Reading list</button><button data-wn-tab="sources">Sources</button></div><div id="wn43Discover" class="wn42-panel"><div class="wn43-search"><button data-wn-query="fantasy"><span>🔮</span><strong>Fantasy</strong><small>Magic & worlds</small></button><button data-wn-query="adventure"><span>⚔️</span><strong>Adventure</strong><small>Quests & journeys</small></button><button data-wn-query="romance"><span>💗</span><strong>Romance</strong><small>Classic love stories</small></button><button data-wn-query="mystery"><span>🔎</span><strong>Mystery</strong><small>Crime & secrets</small></button><button data-wn-query="horror"><span>🌙</span><strong>Horror</strong><small>Dark classics</small></button><button data-wn-query="science fiction"><span>🚀</span><strong>Sci-Fi</strong><small>Future worlds</small></button></div><div class="wn43-feature"><div><small>READ WITHOUT LEAVING POCKET AI</small><strong>Free classics in a modern web-novel reader</strong><span>Search, open, change font/theme, remember progress and save to your Library.</span></div><button data-wn-query="">Explore free books →</button></div></div><div id="wn43Saved" class="wn42-panel" hidden></div><div id="wn43Sources" class="wn42-panel" hidden><p class="wn43-source-note">These publishers keep their copyrighted chapters in their own official readers. Pocket AI does not copy, scrape, frame, or bypass locked chapters.</p><div class="wn42-grid">'+SOURCES.map(sourceCard).join('')+'</div><details class="wn43-add"><summary>＋ Save an official novel/chapter link</summary><form id="wn42Form"><label>Novel or chapter link<input id="wn42Url" type="url" inputmode="url" placeholder="https://…" required></label><label>Title (optional)<input id="wn42Title" maxlength="120" placeholder="My web novel"></label><button class="primary">Save link</button></form></details></div>';
- anchor?.insertAdjacentElement('afterend',box);box.addEventListener('click',onClick);by('wn42Form').onsubmit=onSave;renderSaved();return true;
+ const lib=by('library'),free=by('freeLibrary');if(!lib||!free||by('webNovelHub'))return false;
+ const box=document.createElement('section');box.id='webNovelHub';box.className='wn44';
+ box.innerHTML='<header class="wn44-head"><div><p class="eyebrow">WEB NOVEL LIBRARY</p><h2>Discover & read in Pocket AI</h2><p>Free eligible books open in the full-screen Pocket Reader — not another website.</p></div><span>✨</span></header><form id="wn44Search" class="wn44-search"><span>⌕</span><input id="wn44Query" placeholder="Search free novels, authors, genres…" autocomplete="off"><button>Search</button></form><nav class="wn44-tabs"><button class="active" data-wn44-tab="discover">Discover</button><button data-wn44-tab="reading">Reading</button><button data-wn44-tab="more">•••</button></nav><div id="wn44Discover" class="wn44-panel"><div class="wn44-section"><div class="wn44-title"><h3>🔥 Featured free stories</h3><button data-wn44-all>See all ›</button></div><div class="wn44-books">'+FEATURED.map(featuredCard).join('')+'</div></div><div class="wn44-section"><div class="wn44-title"><h3>✨ Find by genre</h3></div><div class="wn44-genres"><button data-wn44-q="fantasy">🔮<b>Fantasy</b></button><button data-wn44-q="adventure">⚔️<b>Adventure</b></button><button data-wn44-q="romance">💗<b>Romance</b></button><button data-wn44-q="mystery">🔎<b>Mystery</b></button><button data-wn44-q="horror">🌙<b>Horror</b></button><button data-wn44-q="science fiction">🚀<b>Sci-Fi</b></button></div></div></div><div id="wn44Reading" class="wn44-panel" hidden><div class="wn44-empty"><span>📚</span><strong>Your books stay in Pocket AI</strong><p>Books you save from the reader appear in My Library on this device. Reading position, font size and theme are remembered locally.</p><button data-wn44-library>Open My Library</button></div></div><div id="wn44More" class="wn44-panel" hidden><div class="wn44-safe"><strong>About web-novel sites</strong><p>Pocket AI can give an in-app reader for public-domain/open books and files you add yourself. It does not copy, scrape, frame or bypass locks on copyrighted chapters from other publishers.</p></div><details class="wn44-sources"><summary>Official novel sites</summary>'+SOURCES.map((s,i)=>'<div><span><b>'+esc(s.name)+'</b><small>'+esc(s.note)+'</small></span><button data-wn44-source="'+i+'">Official ↗</button></div>').join('')+'</details></div>';
+ free.insertAdjacentElement('beforebegin',box);
+ box.addEventListener('click',onClick);by('wn44Search').onsubmit=e=>{e.preventDefault();const q=by('wn44Query').value.trim();if(q)read(q,e.submitter)};return true;
 }
-function setTab(name){
- document.querySelectorAll('.wn42-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.wnTab===name));
- ['Discover','Saved','Sources'].forEach(x=>{const el=by('wn43'+x);if(el)el.hidden=x.toLowerCase()!==name});if(name==='saved')renderSaved();
-}
+function tab(name){document.querySelectorAll('[data-wn44-tab]').forEach(b=>b.classList.toggle('active',b.dataset.wn44Tab===name));['Discover','Reading','More'].forEach(x=>{const e=by('wn44'+x);if(e)e.hidden=x.toLowerCase()!==name})}
 function onClick(e){
- const tab=e.target.closest('[data-wn-tab]');if(tab){setTab(tab.dataset.wnTab);return}
- const q=e.target.closest('[data-wn-query]');if(q){readInPocket(q.dataset.wnQuery);return}
- const op=e.target.closest('[data-wn-official]');if(op){const s=SOURCES.find(x=>x.id===op.dataset.wnOfficial);if(s)openOfficial(s.url);return}
- const saved=e.target.closest('[data-wn-saved]');if(saved){const a=loadLinks(),x=a[+saved.dataset.wnSaved];if(x)openOfficial(x.url);return}
- const del=e.target.closest('[data-wn-del]');if(del){const a=loadLinks();a.splice(+del.dataset.wnDel,1);saveLinks(a);renderSaved()}
+ const t=e.target.closest('[data-wn44-tab]');if(t)return tab(t.dataset.wn44Tab);
+ const r=e.target.closest('[data-wn44-read]');if(r)return read(FEATURED[+r.dataset.wn44Read].title,r);
+ const q=e.target.closest('[data-wn44-q]');if(q)return read(q.dataset.wn44Q,q);
+ if(e.target.closest('[data-wn44-all]')){by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'});return}
+ if(e.target.closest('[data-wn44-library]')){by('libStorage')?.scrollIntoView({block:'start',behavior:'smooth'});return}
+ const s=e.target.closest('[data-wn44-source]');if(s){const x=SOURCES[+s.dataset.wn44Source];if(x)window.open(x.url,'_blank','noopener,noreferrer')}
 }
-function onSave(e){e.preventDefault();const raw=by('wn42Url').value.trim(),title=by('wn42Title').value.trim();try{const u=new URL(raw);if(!/^https?:$/.test(u.protocol))throw Error();const a=loadLinks();a.unshift({url:u.href,title:title||u.hostname,added:Date.now()});saveLinks(a);e.target.reset();setTab('saved')}catch{by('wn42Url').setCustomValidity('Enter a valid http or https link');by('wn42Url').reportValidity();setTimeout(()=>by('wn42Url').setCustomValidity(''),500)}}
-function renderSaved(){const host=by('wn43Saved');if(!host)return;const a=loadLinks();host.innerHTML=a.length?'<div class="wn42-reading">'+a.map((x,i)=>'<article><button class="wn42-read" data-wn-saved="'+i+'"><span>🔖</span><div><strong>'+esc(x.title)+'</strong><small>'+esc(new URL(x.url).hostname)+' • official reader</small></div></button><button class="wn42-del" data-wn-del="'+i+'" aria-label="Remove">×</button></article>').join('')+'</div>':'<div class="lib-empty"><strong>No official links saved yet.</strong><p>Use Sources → Save link. Free eligible books you save from Pocket Reader appear in My Library above.</p></div>'}
-function boot(){let n=0;const t=setInterval(()=>{if(addHub()||++n>30)clearInterval(t)},120)}
+function boot(){let n=0;const t=setInterval(()=>{if(addHub()||++n>40)clearInterval(t)},120)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
-window.PocketWebNovels={sources:SOURCES,addHub,readInPocket};
+window.PocketWebNovels={featured:FEATURED,sources:SOURCES,read};
 })();
