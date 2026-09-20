@@ -4,3 +4,61 @@
 @media(max-width:650px){.library-v33{padding:16px 12px 98px!important}.lib-head{display:block}.lib-head .privacy-pill{display:inline-block;margin-top:8px}.lib-actions{display:grid;grid-template-columns:1fr 1fr}.lib-upload{justify-content:center}.lib-grid{grid-template-columns:1fr}.lib-ai{padding:14px}.pocket-v3 .tabs{grid-template-columns:repeat(8,minmax(0,1fr))!important}.pocket-v3 .tabs button{font-size:15px!important}.pocket-v3 .tabs button span{font-size:7px!important}}
 @media(max-width:390px){.lib-actions{grid-template-columns:1fr}.pocket-v3 .tabs button span{display:none!important}}
 @media(prefers-reduced-motion:reduce){.lib-card{transition:none!important}}
+
+/* V50 — Library is a calm books-only shelf */
+.library-books-only{position:relative;overflow:hidden}
+.book-only-head{
+  padding:22px;border-radius:24px;margin-bottom:16px;position:relative;overflow:hidden;
+  background:
+    radial-gradient(circle at 88% 18%,rgba(96,165,250,.23),transparent 27%),
+    radial-gradient(circle at 72% 92%,rgba(236,72,153,.14),transparent 30%),
+    linear-gradient(140deg,rgba(27,32,78,.96),rgba(20,16,54,.97));
+  border:1px solid rgba(148,126,255,.28);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 18px 42px rgba(0,0,0,.24);
+}
+.book-only-head h1{font-size:clamp(30px,6vw,48px);margin:3px 0 8px}
+.book-only-head p.muted{max-width:720px}
+.book-library-toolbar{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;margin:14px 0}
+.book-library-toolbar .lib-upload{white-space:nowrap;border-radius:16px}
+.book-library-toolbar .lib-search{margin:0;padding:5px 8px;border:1px solid var(--line);border-radius:17px;background:var(--glass2)}
+.book-library-toolbar .lib-search input{border:0!important;background:transparent!important}
+.book-library-status,.book-library-storage{margin:7px 2px;font-size:11px}
+.book-library-section{margin-top:18px}
+.book-library-title{display:flex;justify-content:space-between;align-items:end;margin:0 2px 10px}
+.book-library-title h2{margin:2px 0}
+.book-only-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.book-card{
+  display:grid!important;grid-template-columns:58px minmax(0,1fr)!important;gap:12px!important;
+  align-items:center!important;padding:14px!important;overflow:hidden!important;
+  background:linear-gradient(145deg,rgba(35,39,84,.88),rgba(18,21,53,.92))!important;
+  border:1px solid rgba(148,126,255,.22)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 10px 24px rgba(0,0,0,.18);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+}
+.book-card:hover{transform:translateY(-2px);border-color:rgba(167,139,250,.42)!important;box-shadow:0 14px 32px rgba(0,0,0,.25)}
+.book-spine{
+  grid-row:auto!important;width:54px;height:72px;display:grid;place-items:center;border-radius:14px;
+  background:linear-gradient(160deg,rgba(139,92,246,.30),rgba(59,130,246,.16));
+  border:1px solid rgba(255,255,255,.11);font-size:27px!important;
+}
+.book-card-copy{min-width:0}
+.book-card-copy>strong,.book-card-copy>small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.book-card-copy>strong{padding:0!important;font-size:14px}
+.book-card-copy>small{margin-top:4px;color:var(--muted);font-size:10px}
+.book-card .lib-card-actions{margin-top:10px;display:grid;grid-template-columns:minmax(0,1fr) auto}
+.book-card .lib-card-actions button{min-width:0}
+.book-remove{color:#f0a1b9!important}
+.book-empty{grid-column:1/-1;padding:42px 18px}
+.book-empty>span{display:block;font-size:44px;margin-bottom:8px}
+
+@media(max-width:650px){
+ .library-books-only{padding:12px 10px 150px!important}
+ .book-only-head{padding:18px 16px!important;margin-bottom:13px}
+ .book-only-head h1{font-size:31px!important;line-height:1.05!important}
+ .book-only-head p.muted{font-size:14px!important;line-height:1.5!important}
+ .book-library-toolbar{grid-template-columns:1fr!important}
+ .book-library-toolbar .lib-upload{width:100%;justify-content:center}
+ .book-only-grid{grid-template-columns:1fr!important}
+ .book-card{grid-template-columns:52px minmax(0,1fr)!important;padding:13px!important}
+ .book-spine{width:50px;height:66px}
+}
