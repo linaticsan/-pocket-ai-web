@@ -63,3 +63,38 @@
  .wn46-sources{grid-template-columns:1fr!important}
  .wn46-source{grid-template-columns:52px minmax(0,1fr) auto!important;min-height:88px!important}
 }
+
+
+/* V49 cleanup: one coherent web-novel surface */
+#webNovelHub{margin-top:18px!important}
+#webNovelHub .wn44-head{margin-bottom:14px}
+#webNovelHub .wn44-title{margin-top:14px}
+#webNovelHub .wn46-sources{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+#webNovelHub .wn46-source{min-width:0!important}
+#webNovelHub .wn46-source-copy{min-width:0!important}
+#webNovelHub .wn46-source-copy strong,
+#webNovelHub .wn46-source-copy small{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+
+.reader49-controls{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+.reader49-controls button{min-height:36px!important;padding:6px 9px!important;border-radius:11px!important}
+.free-reader[data-reader-theme="dark"]{background:#0b0c1b!important;color:#f8f7ff!important}
+.free-reader[data-reader-theme="dark"] pre{color:#f8f7ff!important;background:#0b0c1b!important}
+.free-reader[data-reader-theme="sepia"]{background:#f4ecd8!important;color:#3c3228!important}
+.free-reader[data-reader-theme="sepia"] pre{color:#3c3228!important;background:#f4ecd8!important}
+.free-reader[data-reader-theme="light"]{background:#fff!important;color:#171717!important}
+.free-reader[data-reader-theme="light"] pre{color:#171717!important;background:#fff!important}
+
+@media(max-width:650px){
+ #webNovelHub{margin:14px 0 20px!important;padding:12px!important;border-radius:22px!important}
+ #webNovelHub .wn44-head{padding:14px!important}
+ #webNovelHub .wn44-head h2{font-size:24px!important}
+ #webNovelHub .wn44-search{position:relative!important;top:auto!important;margin:12px 0!important}
+ #webNovelHub .wn44-tabs{position:relative!important;top:auto!important}
+ #webNovelHub .wn46-sources{grid-template-columns:1fr!important}
+ #webNovelHub .wn46-source{grid-template-columns:50px minmax(0,1fr) auto!important;min-height:86px!important}
+ #webNovelHub .wn44-books{padding-right:10px!important}
+ #webNovelHub .wn44-book{min-width:128px!important;width:128px!important}
+ #webNovelHub .wn44-cover{height:176px!important}
+ .reader49-controls{width:100%;margin-left:0}
+ .free-reader-actions{flex-wrap:wrap!important}
+}
