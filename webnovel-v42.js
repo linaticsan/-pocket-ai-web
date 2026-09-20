@@ -13,11 +13,11 @@ const SOURCES=[
  {id:'pocketfree',name:'Pocket Free Library',icon:'📚',url:'#freeLibrary',note:'Public-domain & open books',mode:'native',badge:'Native reader'},
  {id:'gutenberg',name:'Project Gutenberg',icon:'🏛️',url:'https://www.gutenberg.org/',note:'Public-domain books',mode:'native',badge:'Native reader'},
  {id:'internetarchive',name:'Internet Archive',icon:'🌐',url:'https://archive.org/',note:'Open-access collection',mode:'native',badge:'Native reader'},
- {id:'wuxiaworld',name:'Wuxiaworld',icon:'⚔️',url:'https://www.wuxiaworld.com/',note:'Licensed translations',mode:'official',badge:'Official reader',embed:false,reason:'Wuxiaworld controls how its licensed chapters may be displayed. Pocket AI can keep your link and launch the official reader, but it cannot strip the publisher UI or copy locked chapters.'},
- {id:'royalroad',name:'Royal Road',icon:'🏰',url:'https://www.royalroad.com/',note:'Author-published fiction',mode:'embed',badge:'Try in app',embed:'try'},
- {id:'scribblehub',name:'Scribble Hub',icon:'✍️',url:'https://www.scribblehub.com/',note:'Author-published fiction',mode:'embed',badge:'Try in app',embed:'try'},
- {id:'tapas',name:'Tapas',icon:'🎨',url:'https://tapas.io/',note:'Comics & novels',mode:'official',badge:'Official reader',embed:false,reason:'Tapas controls chapter access and display. Pocket AI keeps the source connected without copying or bypassing its reader.'},
- {id:'meganovel',name:'MegaNovel',icon:'✨',url:'https://www.meganovel.com/',note:'Free & premium novels',mode:'official',badge:'Official reader',embed:false,reason:'Pocket AI does not mirror or bypass this publisher’s reader or access controls.'}
+ {id:'royalroad',name:'Royal Road',icon:'🏰',url:'https://www.royalroad.com/',note:'Author-published fiction',mode:'embed',badge:'Try in app'},
+ {id:'scribblehub',name:'Scribble Hub',icon:'✍️',url:'https://www.scribblehub.com/',note:'Author-published fiction',mode:'embed',badge:'Try in app'},
+ {id:'wuxiaworld',name:'Wuxiaworld',icon:'⚔️',url:'https://www.wuxiaworld.com/',note:'Licensed translations',mode:'official',badge:'Official reader',reason:'Wuxiaworld controls how its licensed chapters may be displayed. Pocket AI can save and launch the source, but it cannot remove the publisher UI or copy locked chapters.'},
+ {id:'tapas',name:'Tapas',icon:'🎨',url:'https://tapas.io/',note:'Comics & novels',mode:'official',badge:'Official reader',reason:'Tapas controls chapter access and display. Pocket AI keeps the source connected without copying or bypassing its reader.'},
+ {id:'meganovel',name:'MegaNovel',icon:'✨',url:'https://www.meganovel.com/',note:'Free & premium novels',mode:'official',badge:'Official reader',reason:'Pocket AI does not mirror or bypass this publisher’s reader or access controls.'}
 ];
 const LINK_KEY='pocket-webnovel-links-v46';
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -45,17 +45,40 @@ function saveCurrent(){
  if(!currentWeb)return;const a=links();if(!a.some(x=>x.url===currentWeb.url)){a.unshift({title:currentWeb.title||currentWeb.name||new URL(currentWeb.url).hostname,url:currentWeb.url,added:Date.now()});store(a)}const b=by('webReader46Save');if(b){b.innerHTML='♥<span>Saved</span>';setTimeout(()=>b.innerHTML='♡<span>Save</span>',1200)}renderReading();
 }
 function openWeb(item){
- ensureWebReader();currentWeb={title:item.title||item.name,url:item.url};const d=by('webReader46'),stage=by('webReader46Stage'),host=new URL(item.url).hostname.replace(/^www\./,'');
- by('webReader46Title').textContent=item.title||item.name||'Web novel';by('webReader46Host').textContent=host;by('webReader46Official').onclick=()=>window.open(item.url,'_blank','noopener,noreferrer');
+ ensureWebReader();
+ currentWeb={title:item.title||item.name,url:item.url};
+ const d=by('webReader46'),stage=by('webReader46Stage');
+ let host='';
+ try{host=new URL(item.url).hostname.replace(/^www\./,'')}catch{}
+ by('webReader46Title').textContent=item.title||item.name||'Web novel';
+ by('webReader46Host').textContent=host;
+ by('webReader46Official').onclick=()=>{if(item.url&&item.url[0]!=='#')window.open(item.url,'_blank','noopener,noreferrer')};
  d.showModal();stage.innerHTML='';
- if(item.embed===false){
-  stage.innerHTML='<section class="webreader46-blocked"><span>🛡️</span><h2>Official reader required</h2><p>'+esc(item.reason||'This source does not allow Pocket AI to embed its reader.')+'</p><p>Pocket AI will not copy, scrape, or bypass the publisher’s chapter controls.</p><button id="webReader46OpenOfficial" class="primary">Open official reader ↗</button></section>';by('webReader46OpenOfficial').onclick=()=>window.open(item.url,'_blank','noopener,noreferrer');return;
+
+ if(item.mode==='native'){
+  d.close();showLibrary();setTimeout(()=>by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'}),100);return;
  }
- const f=document.createElement('iframe');f.title=(item.title||item.name||'Web novel')+' official reader';f.referrerPolicy='strict-origin-when-cross-origin';f.sandbox='allow-forms allow-scripts allow-same-origin allow-popups';f.src=item.url;stage.appendChild(f);
- const tip=document.createElement('div');tip.className='webreader46-tip';tip.innerHTML='<span>ⓘ</span><p>If this area stays blank, that publisher blocks embedded readers. Use <b>Official</b> below.</p>';stage.appendChild(tip);
+
+ if(item.mode==='official'||item.embed===false){
+  stage.innerHTML='<section class="webreader46-blocked"><span>🛡️</span><h2>Official reader required</h2><p>'+esc(item.reason||'This source controls how its chapters are displayed, so Pocket AI cannot show it as a clean native reader.')+'</p><p>You can still save the link in your reading list and open the official chapter page.</p><button id="webReader46OpenOfficial" class="primary">Open official reader ↗</button></section>';
+  by('webReader46OpenOfficial').onclick=()=>window.open(item.url,'_blank','noopener,noreferrer');return;
+ }
+
+ const f=document.createElement('iframe');
+ f.title=(item.title||item.name||'Web novel')+' reader';
+ f.referrerPolicy='strict-origin-when-cross-origin';
+ f.sandbox='allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox';
+ f.src=item.url;
+ stage.appendChild(f);
+ const tip=document.createElement('div');tip.className='webreader46-tip';
+ tip.innerHTML='<span>ⓘ</span><p>If the page stays blank or refuses to load, the publisher blocks embedded readers. Use <b>Official</b> below.</p>';
+ stage.appendChild(tip);
 }
 function featuredCard(x,i){return '<article class="wn44-book '+x.tone+'"><button data-wn44-read="'+i+'"><span class="wn44-cover"><i>'+x.icon+'</i><b>FREE</b><em>'+esc(x.tag)+'</em></span><strong>'+esc(x.title)+'</strong><small>'+esc(x.author)+'</small></button></article>'}
-function sourceCard(s){const cls=s.mode==='native'?'native':s.mode==='official'?'official':'embed';return '<article class="wn46-source '+cls+'"><span class="wn46-source-icon">'+s.icon+'</span><div class="wn46-source-copy"><strong>'+esc(s.name)+'</strong><small>'+esc(s.note)+'</small><em>'+esc(s.badge||'Connected')+'</em></div><button data-wn46-source="'+s.id+'">'+(s.mode==='native'?'Browse':s.mode==='official'?'Official':'Open')+'</button></article>'}
+function sourceCard(s){
+ const cls=s.mode==='native'?'native':s.mode==='official'?'official':'embed';
+ return '<article class="wn46-source '+cls+'"><span class="wn46-source-icon">'+s.icon+'</span><div class="wn46-source-copy"><strong>'+esc(s.name)+'</strong><small>'+esc(s.note)+'</small><em>'+esc(s.badge||'Connected')+'</em></div><button data-wn46-source="'+s.id+'">'+(s.mode==='native'?'Browse':s.mode==='official'?'Official':'Open')+'</button></article>';
+}
 async function renderReading(){
  const host=by('wn44Reading');if(!host)return;const saved=links();let local=[];
  try{const a=await window.PocketLibrary?.allBooks?.();if(Array.isArray(a))local=a.slice(0,8)}catch{}
@@ -75,7 +98,7 @@ function onClick(e){
  const t=e.target.closest('[data-wn44-tab]');if(t)return tab(t.dataset.wn44Tab);
  const r=e.target.closest('[data-wn44-read]');if(r)return readFree(FEATURED[+r.dataset.wn44Read].title,r);
  const q=e.target.closest('[data-wn44-q]');if(q)return readFree(q.dataset.wn44Q,q);
- const src=e.target.closest('[data-wn46-source]');if(src){const x=SOURCES.find(v=>v.id===src.dataset.wn46Source);if(x){if(x.mode==='native'){showLibrary();setTimeout(()=>by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'}),100);return}return openWeb(x)}}
+ const src=e.target.closest('[data-wn46-source]');if(src){const x=SOURCES.find(v=>v.id===src.dataset.wn46Source);if(x)return openWeb(x)}
  const sv=e.target.closest('[data-wn46-saved]');if(sv){const x=links()[+sv.dataset.wn46Saved];if(x)return openWeb({...x,embed:'try'})}
  const del=e.target.closest('[data-wn46-del]');if(del){const a=links();a.splice(+del.dataset.wn46Del,1);store(a);renderReading();return}
  if(e.target.closest('[data-wn44-all]'))return by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'});
@@ -84,4 +107,28 @@ function onClick(e){
 function boot(){let n=0;const t=setInterval(()=>{if(addHub()||++n>40)clearInterval(t)},120)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 window.PocketWebNovels={featured:FEATURED,sources:SOURCES,read:readFree,openWeb,renderReading};
+})();
+/* PocketReaderPrefsV49 — light/sepia/dark, font and progress helpers for the native free-book reader */
+(() => {
+ const KEY='pocket-reader-prefs-v49';
+ const read=()=>{try{return Object.assign({theme:'dark',font:17,line:1.72},JSON.parse(localStorage.getItem(KEY)||'{}'))}catch{return{theme:'dark',font:17,line:1.72}}};
+ const save=p=>localStorage.setItem(KEY,JSON.stringify(p));
+ function apply(){
+  const d=document.querySelector('.free-reader'); if(!d)return;
+  const p=read(); d.dataset.readerTheme=p.theme;
+  const pre=d.querySelector('pre'); if(pre){pre.style.fontSize=p.font+'px';pre.style.lineHeight=String(p.line)}
+ }
+ function install(){
+  const d=document.querySelector('.free-reader'); if(!d||document.getElementById('pocketReaderControls49'))return;
+  const actions=d.querySelector('.free-reader-actions'); if(!actions)return;
+  const controls=document.createElement('div');controls.id='pocketReaderControls49';controls.className='reader49-controls';
+  controls.innerHTML='<button type="button" data-reader49-theme="dark">🌙</button><button type="button" data-reader49-theme="sepia">☕</button><button type="button" data-reader49-theme="light">☀️</button><button type="button" data-reader49-font="-1">A−</button><button type="button" data-reader49-font="1">A+</button>';
+  actions.appendChild(controls);
+  controls.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=read();if(b.dataset.reader49Theme)p.theme=b.dataset.reader49Theme;if(b.dataset.reader49Font)p.font=Math.max(14,Math.min(24,p.font+Number(b.dataset.reader49Font)));save(p);apply()});
+  apply();
+ }
+ const obs=new MutationObserver(()=>{install();apply()});
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{install();obs.observe(document.body,{subtree:true,childList:true})},{once:true});
+ else{install();obs.observe(document.body,{subtree:true,childList:true})}
+ window.PocketReaderPrefsV49={apply};
 })();
