@@ -26,3 +26,55 @@
  html.pocket-v39 .tabs{background:linear-gradient(145deg,rgba(31,25,55,.80),rgba(12,10,26,.86))!important;border:1px solid rgba(179,164,255,.28)!important;box-shadow:inset 1px 1px 0 rgba(255,255,255,.13),0 16px 45px rgba(0,0,0,.38),0 0 28px rgba(92,65,190,.12)!important;-webkit-backdrop-filter:blur(28px) saturate(170%)!important;backdrop-filter:blur(28px) saturate(170%)!important}
 }
 @media(max-width:380px){html.pocket-v39 #home .quick-grid{gap:6px!important}html.pocket-v39 #home .quick-grid>[data-quick="library"],html.pocket-v39 #home .quick-grid>[data-quick="chat"],html.pocket-v39 #home .quick-grid>[data-quick="files"],html.pocket-v39 #home .quick-grid>[data-quick="more"]{height:106px!important;min-height:106px!important;border-radius:21px!important}.home45-hero{height:212px}.home45-hero strong{font-size:29px}.home45-art{font-size:57px}.home45-cats{gap:6px}.home45-cats button{height:78px!important;min-height:78px!important}}
+
+
+/* V54 — animated trending book covers and calmer home spacing */
+@media(max-width:650px){
+ .home45-books{gap:13px!important;padding:4px 2px 12px!important;scroll-snap-type:x proximity!important;-webkit-overflow-scrolling:touch}
+ .home45-books::-webkit-scrollbar{display:none}
+ .home45-books .animated-book-card{min-width:142px!important;width:142px!important;scroll-snap-align:start}
+ .home45-books .home45-cover{height:192px!important;border-radius:22px!important;padding:12px!important;transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+ .home45-books .animated-book-card:active .home45-cover{transform:scale(.985)}
+ .home45-books .animated-book-card strong{font-size:12px!important;margin-top:9px!important}
+ .home45-books .animated-book-card small{font-size:9px!important}
+ .home45-cover{isolation:isolate}
+ .home45-cover .book-scene{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;z-index:0}
+ .home45-cover .book-scene>i:first-child{font-style:normal;font-size:48px!important;filter:drop-shadow(0 0 16px rgba(255,255,255,.18));animation:bookFloat54 4.8s ease-in-out infinite}
+ .home45-cover .book-scene>i:not(:first-child){position:absolute;font-style:normal}
+ .home45-cover .ocean .ship{right:18px;bottom:32px;font-size:22px;animation:shipDrift54 6s ease-in-out infinite}
+ .home45-cover .blossom .petal{right:22px;top:46px;font-size:24px;color:#ffe1ee;animation:petal54 5s linear infinite}
+ .home45-cover .japan .sun{right:22px;top:28px;font-size:22px;color:#ffd166;animation:sunPulse54 3.2s ease-in-out infinite}
+ .home45-cover .learner .star{right:18px;top:28px;font-size:20px;color:#fff1a8;animation:starTwinkle54 2.4s ease-in-out infinite}
+ .home45-cover .cover-glow{position:absolute;inset:0;z-index:0;background:radial-gradient(circle at 70% 18%,rgba(255,255,255,.18),transparent 26%),linear-gradient(to top,rgba(3,5,17,.22),transparent 45%);pointer-events:none}
+ .home45-cover .cover-spark{position:absolute;z-index:2;color:#fff7ff;text-shadow:0 0 12px rgba(255,255,255,.65);font-style:normal;pointer-events:none;animation:spark54 2.8s ease-in-out infinite}
+ .home45-cover .cover-spark.s1{left:12px;top:12px}.home45-cover .cover-spark.s2{right:12px;bottom:44px;animation-delay:1.1s}
+ .home45-cover b,.home45-cover em{z-index:3}
+ .home45-cover em{font-size:11px!important;letter-spacing:.02em}
+ .home45-head{margin-top:24px!important}
+ .home45-head h2{font-size:20px!important}
+ .home45-hero{margin-bottom:22px!important}
+}
+@keyframes bookFloat54{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-7px) scale(1.03)}}
+@keyframes shipDrift54{0%,100%{transform:translateX(0) rotate(-2deg)}50%{transform:translateX(-12px) rotate(3deg)}}
+@keyframes petal54{0%{transform:translate(0,-8px) rotate(0);opacity:.15}20%{opacity:.9}100%{transform:translate(-30px,95px) rotate(240deg);opacity:0}}
+@keyframes sunPulse54{0%,100%{transform:scale(1);filter:drop-shadow(0 0 8px rgba(255,209,102,.25))}50%{transform:scale(1.14);filter:drop-shadow(0 0 18px rgba(255,209,102,.55))}}
+@keyframes starTwinkle54{0%,100%{transform:scale(.9) rotate(0);opacity:.55}50%{transform:scale(1.2) rotate(20deg);opacity:1}}
+@keyframes spark54{0%,100%{transform:translateY(0) scale(.9);opacity:.55}50%{transform:translateY(-5px) scale(1.1);opacity:1}}
+@media(prefers-reduced-motion:reduce){
+ .home45-cover .book-scene>i,.home45-cover .cover-spark{animation:none!important}
+}
+
+/* V54 — chat comfort polish */
+@media(max-width:650px){
+ #chat{padding:14px 10px calc(155px + env(safe-area-inset-bottom))!important}
+ #chat .v3-chat-shell{border-radius:24px!important;overflow:hidden!important;border:1px solid rgba(148,126,255,.18)!important;background:linear-gradient(180deg,rgba(13,16,42,.98),rgba(9,11,29,.99))!important;box-shadow:0 18px 44px rgba(0,0,0,.24)!important}
+ #chat .v3-chat-top{padding:12px!important;background:linear-gradient(180deg,rgba(25,28,67,.96),rgba(17,19,48,.94))!important}
+ #chat .v3-welcome{margin:12px!important;padding:22px 16px!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(22,26,63,.96),rgba(16,18,46,.94))!important;border:1px solid rgba(148,126,255,.16)!important}
+ #chat .v3-welcome h2{font-size:27px!important;line-height:1.12!important;margin-bottom:10px!important}
+ #chat .v3-suggestions{gap:9px!important}
+ #chat .v3-suggestions button{min-height:58px!important;border-radius:18px!important;padding:12px 14px!important;background:linear-gradient(145deg,rgba(31,35,78,.92),rgba(21,24,61,.92))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)!important}
+ #chat .v3-composer{margin:10px!important;padding:12px!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(20,23,58,.98),rgba(14,17,44,.98))!important;border:1px solid rgba(148,126,255,.18)!important;box-shadow:0 14px 32px rgba(0,0,0,.20)!important}
+ #chat .v3-composer textarea{min-height:92px!important;border-radius:17px!important;padding:14px!important;background:rgba(12,15,41,.92)!important}
+ #chat .v3-compose-row{margin-top:10px!important;gap:8px!important}
+ #chat .v3-compose-row button{border-radius:15px!important}
+}
