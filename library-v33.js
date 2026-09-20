@@ -19,7 +19,7 @@ function iconFor(type){return type==='pdf'?'📕':type==='docx'?'📘':'📖'}
 
 function makeUI(){
  const old=by('library');
- if(old?.classList.contains('library-books-only-v51'))return old;
+ if(old?.classList.contains('library-books-only-v53'))return old;
  if(old)old.remove();
  const nav=$('.tabs');
  if(nav&&!nav.querySelector('[data-go="library"]')){
@@ -27,12 +27,14 @@ function makeUI(){
   nav.insertBefore(b,nav.querySelector('[data-go="files"]')||null);
  }
  const s=document.createElement('section');
- s.id='library';s.className='view glass library-v33 library-books-only library-books-only-v51';s.hidden=true;
+ s.id='library';s.className='view glass library-v33 library-books-only library-books-only-v53';s.hidden=true;
  s.innerHTML=
- '<div class="lib-head book-only-head"><div><p class="eyebrow">LIBRARY • BOOKS</p><h1>Your reading shelf.</h1><p class="muted">Books only. Read free/open books, save your own books and keep web novels together.</p></div><span class="privacy-pill">📚 Books</span></div>'+
- '<div class="book-library-toolbar"><label class="lib-upload">＋ Add my book<input id="libInput" type="file" multiple accept=".pdf,.docx,.txt,.md,application/pdf,text/plain,text/markdown" hidden></label><div class="lib-search"><input id="libSearch" placeholder="Search saved books…"><span id="libCount"></span></div></div>'+
- '<div id="libStatus" class="muted book-library-status"></div><div id="libStorage" class="muted book-library-storage"></div>'+
- '<div class="book-library-section"><div class="book-library-title"><div><p class="eyebrow">MY BOOKS</p><h2>Saved on this device</h2></div></div><div id="libGrid" class="lib-grid book-only-grid"></div></div>';
+ '<header class="lib53-hero"><div class="lib53-copy"><p class="eyebrow">POCKET LIBRARY</p><h1>Find your next chapter.</h1><p>Saved books, free classics and connected web novels — all from one reading shelf.</p><div class="lib53-hero-actions"><button type="button" class="primary" data-lib53-jump="mine">📚 My books</button><button type="button" data-lib53-jump="free">✨ Discover free</button><button type="button" data-lib53-jump="novels">🌐 Web novels</button></div></div><div class="lib53-art" aria-hidden="true"><span>📖</span><i>✦</i></div></header>'+
+ '<div class="lib53-tabs" role="navigation" aria-label="Library sections"><button type="button" class="active" data-lib53-jump="mine">My Shelf</button><button type="button" data-lib53-jump="free">Free Books</button><button type="button" data-lib53-jump="novels">Web Novels</button></div>'+
+ '<section id="lib53Continue" class="lib53-continue" hidden></section>'+
+ '<section id="lib53Mine" class="lib53-mine"><div class="lib53-section-head"><div><p class="eyebrow">MY SHELF</p><h2>Your books</h2></div><span id="libCount" class="lib53-count">0 saved</span></div>'+
+ '<div class="lib53-tools"><div class="lib-search"><span>⌕</span><input id="libSearch" placeholder="Search your books…"></div><label class="lib-upload">＋ Add book<input id="libInput" type="file" multiple accept=".pdf,.docx,.txt,.md,application/pdf,text/plain,text/markdown" hidden></label></div>'+
+ '<div id="libStatus" class="muted book-library-status"></div><div id="libGrid" class="lib-grid book-only-grid"></div><div id="libStorage" class="muted book-library-storage"></div></section>';
  const files=by('files');(files?.parentNode||$('main')).insertBefore(s,files||null);
  return s;
 }
@@ -44,12 +46,21 @@ async function storageInfo(){
 
 async function render(){
  const grid=by('libGrid');if(!grid)return;
- const books=await allBooks(),q=(by('libSearch')?.value||'').toLowerCase();
+ const books=(await allBooks()).sort((a,b)=>(b.addedAt||0)-(a.addedAt||0)),q=(by('libSearch')?.value||'').toLowerCase();
  if(by('libCount'))by('libCount').textContent=books.length+' saved';
  const show=books.filter(b=>!q||b.name.toLowerCase().includes(q)||(b.text||'').toLowerCase().includes(q));
- grid.innerHTML=show.length?show.map(b=>
-  '<article class="lib-card book-card" data-id="'+b.id+'"><div class="lib-icon book-spine">'+iconFor(b.type)+'</div><div class="book-card-copy"><strong>'+esc(prettyName(b.name))+'</strong><small>'+((b.text||'').length/1000).toFixed(1)+'k chars • saved privately</small><div class="lib-card-actions"><button data-open="'+b.id+'" class="book-open">📖 Open</button><button data-remove="'+b.id+'" class="book-remove">Delete</button></div></div></article>'
- ).join(''):'<div class="lib-empty book-empty"><span>📚</span><strong>Your shelf is empty.</strong><p>Add a book above or save one from the Free Book Library below.</p></div>';
+ grid.innerHTML=show.length?show.map((b,i)=>
+  '<article class="lib-card book-card" data-id="'+b.id+'"><div class="book-cover53 c'+(i%5)+'"><span>'+iconFor(b.type)+'</span><small>'+esc((b.type||'BOOK').toUpperCase())+'</small></div><div class="book-card-copy"><strong>'+esc(prettyName(b.name))+'</strong><small>'+((b.text||'').length/1000).toFixed(1)+'k chars • private on device</small><div class="lib-card-actions"><button data-open="'+b.id+'" class="book-open">Read</button><button data-remove="'+b.id+'" class="book-remove" aria-label="Delete book">•••</button></div></div></article>'
+ ).join(''):'<div class="lib-empty book-empty"><span>📚</span><strong>Your shelf is empty.</strong><p>Add your first book, or explore free books below.</p></div>';
+
+ const cont=by('lib53Continue');
+ if(cont){
+  const recent=books[0];
+  if(recent){
+   cont.hidden=false;
+   cont.innerHTML='<div class="lib53-continue-cover">'+iconFor(recent.type)+'</div><div><p class="eyebrow">CONTINUE READING</p><strong>'+esc(prettyName(recent.name))+'</strong><small>Saved privately on this device</small></div><button type="button" data-open="'+recent.id+'">Continue →</button>';
+  }else cont.hidden=true;
+ }
  storageInfo();
 }
 
@@ -86,11 +97,22 @@ async function contextFor(query){
 function bind(){
  by('libInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
  by('libSearch').oninput=render;
- by('libGrid').onclick=async e=>{
-  const card=e.target.closest('.lib-card');if(!card)return;const id=card.dataset.id;
-  if(e.target.closest('[data-open]'))return openBook(id);
-  if(e.target.closest('[data-remove]')){if(confirm('Remove this book from this device library?')){await delBook(id);selected.delete(id);render()}return}
- };
+ by('library').addEventListener('click',async e=>{
+  const jump=e.target.closest('[data-lib53-jump]');
+  if(jump){
+   const kind=jump.dataset.lib53Jump;
+   by('library').querySelectorAll('.lib53-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.lib53Jump===kind));
+   const target=kind==='mine'?by('lib53Mine'):kind==='free'?by('freeLibrary'):by('webNovelHub');
+   if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+   else if(kind==='free')setTimeout(()=>by('freeLibrary')?.scrollIntoView({behavior:'smooth',block:'start'}),120);
+   else if(kind==='novels')setTimeout(()=>by('webNovelHub')?.scrollIntoView({behavior:'smooth',block:'start'}),120);
+   return;
+  }
+  const open=e.target.closest('[data-open]');
+  if(open)return openBook(open.dataset.open);
+  const remove=e.target.closest('[data-remove]');
+  if(remove){const card=remove.closest('.lib-card');if(card&&confirm('Remove this book from this device library?')){await delBook(card.dataset.id);selected.delete(card.dataset.id);render()}return}
+ });
 }
 
 async function init(){
