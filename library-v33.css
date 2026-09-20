@@ -62,3 +62,13 @@
  .book-card{grid-template-columns:52px minmax(0,1fr)!important;padding:13px!important}
  .book-spine{width:50px;height:66px}
 }
+
+
+/* V51 final books-only cleanup */
+.library-books-only-v51 .lib-actions,
+.library-books-only-v51 .lib-layout,
+.library-books-only-v51 .lib-ai,
+.library-books-only-v51 .lib-pick{display:none!important}
+.library-books-only-v51 .book-card{contain:layout paint!important}
+.library-books-only-v51 .book-card-copy{min-width:0!important}
+.library-books-only-v51 .book-card-copy>*{max-width:100%!important}
