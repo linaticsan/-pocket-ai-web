@@ -1,0 +1,266 @@
+/* Pocket AI V55 — soft glass UI inspired by the supplied reference image.
+   Light/Sakura themes are bright and calm; dark themes keep their existing palette. */
+
+:root{
+  --soft-bg:#f7f5ff;
+  --soft-surface:rgba(255,255,255,.82);
+  --soft-surface-2:rgba(255,255,255,.64);
+  --soft-ink:#181534;
+  --soft-muted:#716d88;
+  --soft-line:rgba(126,94,255,.13);
+  --soft-purple:#8d54ff;
+  --soft-pink:#ef68ba;
+  --soft-blue:#73a8ff;
+  --soft-green:#57cfa0;
+  --soft-shadow:0 16px 44px rgba(74,54,130,.10);
+}
+
+html[data-theme=light] body,
+html[data-theme=sakura] body{
+  color:var(--soft-ink)!important;
+  background:
+    radial-gradient(circle at 10% 7%,rgba(176,149,255,.20),transparent 26%),
+    radial-gradient(circle at 92% 20%,rgba(255,159,213,.17),transparent 25%),
+    linear-gradient(180deg,#fbfaff 0%,#f7f5ff 55%,#f4f2ff 100%)!important;
+}
+html[data-theme=light] .sky,
+html[data-theme=sakura] .sky{opacity:.42}
+
+html[data-theme=light] .topbar,
+html[data-theme=sakura] .topbar{
+  background:rgba(253,252,255,.90)!important;
+  border-bottom:1px solid var(--soft-line)!important;
+  box-shadow:0 8px 30px rgba(74,54,130,.07)!important;
+  color:var(--soft-ink)!important;
+  backdrop-filter:blur(24px) saturate(150%)!important;
+  -webkit-backdrop-filter:blur(24px) saturate(150%)!important;
+}
+html[data-theme=light] .brand strong,
+html[data-theme=sakura] .brand strong{color:#17142f!important}
+html[data-theme=light] .brand small,
+html[data-theme=sakura] .brand small{color:#8a86a0!important}
+html[data-theme=light] .crystal-round,
+html[data-theme=sakura] .crystal-round{
+  background:rgba(255,255,255,.78)!important;
+  border:1px solid rgba(136,111,230,.13)!important;
+  color:#4f4869!important;
+  box-shadow:inset 0 1px 0 #fff,0 8px 20px rgba(83,62,140,.08)!important;
+}
+html[data-theme=light] .home46-avatar,
+html[data-theme=sakura] .home46-avatar{
+  background:linear-gradient(145deg,#fff,#f4e7ff)!important;
+  border-color:#9d7cff!important;
+  box-shadow:0 0 0 2px rgba(237,104,186,.28),0 8px 20px rgba(93,67,166,.10)!important;
+}
+
+/* Home */
+@media(max-width:650px){
+  html[data-theme=light].pocket-v39 #home,
+  html[data-theme=sakura].pocket-v39 #home{
+    background:transparent!important;
+  }
+
+  html[data-theme=light].pocket-v39 #home .quick-grid>[data-quick],
+  html[data-theme=sakura].pocket-v39 #home .quick-grid>[data-quick]{
+    background:rgba(255,255,255,.74)!important;
+    border:1px solid rgba(128,100,230,.10)!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 12px 28px rgba(74,54,130,.08)!important;
+    color:#1e1938!important;
+  }
+  html[data-theme=light].pocket-v39 #home .quick-grid>[data-quick] strong,
+  html[data-theme=sakura].pocket-v39 #home .quick-grid>[data-quick] strong{color:#211b3d!important}
+  html[data-theme=light].pocket-v39 #home .quick-grid>[data-quick] small,
+  html[data-theme=sakura].pocket-v39 #home .quick-grid>[data-quick] small{color:#89849a!important;opacity:1!important}
+
+  html[data-theme=light] .home45-search,
+  html[data-theme=sakura] .home45-search{
+    background:rgba(255,255,255,.80)!important;
+    border-color:rgba(119,94,224,.14)!important;
+    box-shadow:0 10px 28px rgba(74,54,130,.08),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme=light] .home45-search input,
+  html[data-theme=sakura] .home45-search input{color:#27213d!important}
+  html[data-theme=light] .home45-search input::placeholder,
+  html[data-theme=sakura] .home45-search input::placeholder{color:#9a96aa!important}
+
+  html[data-theme=light] .home45-hero,
+  html[data-theme=sakura] .home45-hero{
+    background:
+      radial-gradient(circle at 82% 23%,rgba(255,168,221,.34),transparent 22%),
+      radial-gradient(circle at 74% 76%,rgba(121,156,255,.24),transparent 30%),
+      linear-gradient(135deg,#f1f4ff 0%,#f8efff 54%,#fff2fa 100%)!important;
+    border-color:rgba(138,111,235,.16)!important;
+    box-shadow:0 18px 40px rgba(82,61,147,.10),inset 0 1px 0 #fff!important;
+  }
+  html[data-theme=light] .home45-hero small,
+  html[data-theme=sakura] .home45-hero small{color:#6f56c7!important}
+  html[data-theme=light] .home45-hero em,
+  html[data-theme=sakura] .home45-hero em{color:#66617d!important}
+  html[data-theme=light] .home45-head h2,
+  html[data-theme=sakura] .home45-head h2{color:#1c1734!important}
+  html[data-theme=light] .home45-head button,
+  html[data-theme=sakura] .home45-head button{color:#817b92!important}
+
+  html[data-theme=light] .home45-cats button,
+  html[data-theme=sakura] .home45-cats button{
+    background:rgba(255,255,255,.72)!important;
+    border-color:rgba(132,104,231,.12)!important;
+    box-shadow:inset 0 1px 0 #fff,0 10px 24px rgba(74,54,130,.07)!important;
+  }
+  html[data-theme=light] .home45-cats strong,
+  html[data-theme=sakura] .home45-cats strong{color:#27213e!important}
+}
+
+/* Bottom nav */
+html[data-theme=light] .tabs,
+html[data-theme=sakura] .tabs{
+  background:rgba(255,255,255,.88)!important;
+  border-color:rgba(122,96,220,.12)!important;
+  box-shadow:0 14px 38px rgba(72,52,128,.12),inset 0 1px 0 #fff!important;
+  backdrop-filter:blur(26px) saturate(155%)!important;
+  -webkit-backdrop-filter:blur(26px) saturate(155%)!important;
+}
+html[data-theme=light] .tabs button,
+html[data-theme=sakura] .tabs button{color:#817c93!important;background:transparent!important}
+html[data-theme=light] .tabs button.active,
+html[data-theme=sakura] .tabs button.active{
+  color:#fff!important;
+  background:linear-gradient(145deg,#8e5af9,#e86ab8)!important;
+  box-shadow:0 9px 22px rgba(143,84,235,.23)!important;
+}
+
+/* Library */
+html[data-theme=light] .library-books-only-v53,
+html[data-theme=sakura] .library-books-only-v53{
+  background:transparent!important;
+}
+html[data-theme=light] .lib53-hero,
+html[data-theme=sakura] .lib53-hero{
+  background:
+    radial-gradient(circle at 83% 26%,rgba(255,183,227,.36),transparent 24%),
+    radial-gradient(circle at 82% 78%,rgba(130,165,255,.25),transparent 28%),
+    linear-gradient(135deg,#f3f4ff,#f9f0ff 56%,#fff3f8)!important;
+  border-color:rgba(132,106,230,.14)!important;
+  box-shadow:0 18px 42px rgba(77,58,137,.10),inset 0 1px 0 #fff!important;
+  color:#19152f!important;
+}
+html[data-theme=light] .lib53-copy>p:not(.eyebrow),
+html[data-theme=sakura] .lib53-copy>p:not(.eyebrow){color:#6d687e!important}
+html[data-theme=light] .lib53-tabs,
+html[data-theme=sakura] .lib53-tabs{
+  background:rgba(255,255,255,.86)!important;
+  border-color:rgba(128,101,225,.12)!important;
+  box-shadow:0 8px 22px rgba(70,50,120,.07)!important;
+}
+html[data-theme=light] .lib53-tabs button,
+html[data-theme=sakura] .lib53-tabs button{color:#858096!important}
+html[data-theme=light] .lib53-tabs button.active,
+html[data-theme=sakura] .lib53-tabs button.active{color:#fff!important}
+html[data-theme=light] .lib53-continue,
+html[data-theme=sakura] .lib53-continue,
+html[data-theme=light] .library-books-only-v53 .book-card,
+html[data-theme=sakura] .library-books-only-v53 .book-card{
+  background:rgba(255,255,255,.78)!important;
+  border-color:rgba(132,105,230,.11)!important;
+  box-shadow:0 12px 28px rgba(75,55,133,.08),inset 0 1px 0 #fff!important;
+  color:#201a3a!important;
+}
+html[data-theme=light] .lib53-continue small,
+html[data-theme=sakura] .lib53-continue small,
+html[data-theme=light] .library-books-only-v53 .book-card-copy>small,
+html[data-theme=sakura] .library-books-only-v53 .book-card-copy>small{color:#817c92!important}
+html[data-theme=light] .lib53-tools .lib-search,
+html[data-theme=sakura] .lib53-tools .lib-search{
+  background:rgba(255,255,255,.78)!important;
+  border-color:rgba(132,105,230,.11)!important;
+}
+html[data-theme=light] .lib53-tools .lib-search input,
+html[data-theme=sakura] .lib53-tools .lib-search input{color:#211b3d!important}
+
+/* Chat */
+html[data-theme=light] #chat,
+html[data-theme=sakura] #chat{background:transparent!important}
+html[data-theme=light] #chat .v3-chat-shell,
+html[data-theme=sakura] #chat .v3-chat-shell{
+  background:rgba(255,255,255,.62)!important;
+  border-color:rgba(132,105,230,.10)!important;
+  box-shadow:0 18px 42px rgba(77,57,137,.09)!important;
+}
+html[data-theme=light] #chat .v3-chat-top,
+html[data-theme=sakura] #chat .v3-chat-top,
+html[data-theme=light] #chat .v3-welcome,
+html[data-theme=sakura] #chat .v3-welcome,
+html[data-theme=light] #chat .v3-composer,
+html[data-theme=sakura] #chat .v3-composer{
+  background:rgba(255,255,255,.76)!important;
+  border-color:rgba(132,105,230,.10)!important;
+  color:#1d1836!important;
+}
+html[data-theme=light] #chat .v3-welcome p,
+html[data-theme=sakura] #chat .v3-welcome p{color:#716c82!important}
+html[data-theme=light] #chat .v3-suggestions button,
+html[data-theme=sakura] #chat .v3-suggestions button{
+  background:rgba(255,255,255,.84)!important;
+  color:#27213f!important;
+  border-color:rgba(132,105,230,.10)!important;
+  box-shadow:0 8px 20px rgba(76,57,132,.06)!important;
+}
+html[data-theme=light] #chat .v3-composer textarea,
+html[data-theme=sakura] #chat .v3-composer textarea{
+  background:#f7f5ff!important;
+  color:#241d3e!important;
+  border-color:rgba(132,105,230,.10)!important;
+}
+
+/* Files */
+html[data-theme=light] #files,
+html[data-theme=sakura] #files{
+  background:rgba(255,255,255,.64)!important;
+  border-color:rgba(132,105,230,.10)!important;
+  color:#1c1734!important;
+  box-shadow:0 18px 42px rgba(77,57,137,.09)!important;
+}
+html[data-theme=light] #files .picker,
+html[data-theme=sakura] #files .picker,
+html[data-theme=light] #files .file-type-strip span,
+html[data-theme=sakura] #files .file-type-strip span,
+html[data-theme=light] #files .document-studio-v50,
+html[data-theme=sakura] #files .document-studio-v50{
+  background:rgba(255,255,255,.76)!important;
+  border-color:rgba(132,105,230,.12)!important;
+  color:#221c3d!important;
+}
+html[data-theme=light] #files input,
+html[data-theme=sakura] #files input,
+html[data-theme=light] #files textarea,
+html[data-theme=sakura] #files textarea{
+  background:#fbfaff!important;
+  color:#211b3c!important;
+  border-color:rgba(132,105,230,.12)!important;
+}
+.v55-recent-files{margin-top:16px;padding:15px;border-radius:20px;background:var(--soft-surface-2);border:1px solid var(--soft-line)}
+.v55-recent-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.v55-recent-head h3{margin:0;font-size:16px}
+.v55-recent-list{display:grid;gap:8px}
+.v55-recent-item{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:10px;padding:10px;border-radius:15px;background:rgba(255,255,255,.58);border:1px solid rgba(132,105,230,.08)}
+.v55-recent-item>span:first-child{width:38px;height:38px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(145deg,#ebe6ff,#fce7f3)}
+.v55-recent-item strong,.v55-recent-item small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v55-recent-item small{color:#8a8599;font-size:10px}
+.v55-recent-empty{color:#8a8599;font-size:12px;padding:8px}
+
+/* Global comfort */
+@media(max-width:650px){
+  main{padding-left:10px!important;padding-right:10px!important}
+  .view{border-radius:24px!important}
+  button{touch-action:manipulation}
+  .home45,.library-books-only-v53,#chat,#files{scroll-margin-top:86px}
+}
+@media(prefers-reduced-motion:no-preference){
+  html[data-theme=light] .view.active,
+  html[data-theme=sakura] .view.active{animation:v55Fade .24s ease both}
+  html[data-theme=light] button,
+  html[data-theme=sakura] button{transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
+  html[data-theme=light] button:active,
+  html[data-theme=sakura] button:active{transform:scale(.985)}
+}
+@keyframes v55Fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
