@@ -239,3 +239,22 @@
  .book-card:active,.wn46-source button:active,.doc-studio-grid button:active,.tabs button:active{animation:pocketPress .16s ease}
  .tabs button.active{animation:pocketSoftGlow 2.8s ease-in-out infinite}
 }
+
+
+/* V51 mobile spacing / tap reliability */
+@media(max-width:650px){
+  main{padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+  #home,#chat,#library,#files{padding-bottom:calc(155px + env(safe-area-inset-bottom))!important}
+  .tabs,.pocket-v3 .tabs{z-index:70!important}
+  .view{position:relative!important}
+  .view button,.view input,.view textarea,.view select{position:relative;z-index:1}
+  .library-books-only-v51 .book-only-head{overflow:hidden!important}
+  .library-books-only-v51 .book-only-head h1{font-size:30px!important;line-height:1.06!important}
+  .library-books-only-v51 .book-only-head p{font-size:14px!important;line-height:1.48!important}
+  .library-books-only-v51 .book-library-toolbar{margin-bottom:12px!important}
+  .library-books-only-v51 .book-card{grid-template-columns:50px minmax(0,1fr)!important}
+  .library-books-only-v51 .book-card .lib-card-actions{grid-template-columns:minmax(0,1fr) auto!important}
+  #files .document-studio-v50{margin-bottom:18px!important}
+  #chat .v3-composer{padding-bottom:18px!important}
+  .home45-books,.home45-cats{position:relative!important;z-index:1!important}
+}
