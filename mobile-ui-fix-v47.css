@@ -191,3 +191,22 @@
   .tabs,.pocket-v3 .tabs{left:7px!important;right:7px!important}
   .tabs button,.pocket-v3 .tabs button{font-size:16px!important}
 }
+
+
+/* V49 library layout repair */
+@media(max-width:650px){
+ #library .lib-head{display:block!important;overflow:hidden!important}
+ #library .lib-head>div{min-width:0!important}
+ #library .lib-head h1{font-size:34px!important;line-height:1.05!important;margin:6px 0 12px!important}
+ #library .lib-head p{font-size:16px!important;line-height:1.55!important}
+ #library .lib-actions{grid-template-columns:1fr!important;gap:10px!important;margin-top:18px!important}
+ #library .lib-actions>*{width:100%!important;min-width:0!important}
+ #library .lib-layout{display:block!important}
+ #library .lib-grid{grid-template-columns:1fr!important}
+ #library .lib-card{grid-template-columns:46px minmax(0,1fr)!important}
+ #library .lib-card,.free-card{contain:layout paint!important}
+ #library .lib-card img,#library .free-card img,#library .free-cover{
+   width:62px!important;height:90px!important;max-width:62px!important;position:relative!important;left:auto!important;top:auto!important;transform:none!important
+ }
+ #library{padding-bottom:150px!important}
+}
