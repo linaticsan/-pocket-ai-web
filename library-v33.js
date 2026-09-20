@@ -17,15 +17,29 @@ async function retrieve(query,limit=10){const books=await allBooks(),ts=terms(qu
 function prettyName(n){return String(n||'').replace(/\(\d+\)(?=\.[^.]+$)/,'').replace(/_/g,' ')}
 function makeUI(){
  if(by('library'))return;
- const nav=$('.tabs');if(nav&&!$('[data-go="library"]')){const b=document.createElement('button');b.dataset.go='library';b.innerHTML='📚<span>Library</span>';nav.insertBefore(b,$('[data-go="files"]',nav)||null)}
- const s=document.createElement('section');s.id='library';s.className='view glass library-v33';s.hidden=true;
- s.innerHTML='<div class="lib-head"><div><p class="eyebrow">LIBRARY • PRIVATE</p><h1>Your books become AI context.</h1><p class="muted">Keep books and documents on this device, search their contents, make quizzes and create study files grounded in the selected sources.</p></div><span class="privacy-pill">🔒 IndexedDB</span></div>'+
- '<div class="lib-actions"><label class="lib-upload">＋ Add books & documents<input id="libInput" type="file" multiple accept=".pdf,.docx,.pptx,.xlsx,.txt,.md,.csv,.json,.html,.xml,.js,.ts,.css,.py,application/pdf" hidden></label><button id="libFileDesk">📁 File Desk</button><button id="libSelectAll">Select all</button><button id="libClearSel">Clear selection</button></div>'+
- '<div id="libStorage" class="muted"></div><div class="lib-layout"><div><div class="lib-search"><input id="libSearch" placeholder="Search your library…"><span id="libCount"></span></div><div id="libGrid" class="lib-grid"></div><div class="lib-starter-note"><strong>🔒 Private imports stay private.</strong><p class="muted">Your own uploaded documents are stored only in this browser. For books everyone can access, use the Free Book Library above.</p></div></div>'+
- '<aside class="lib-ai"><p class="eyebrow">ASK / CREATE</p><h2>Library AI</h2><p class="muted">Select one or more books. Pocket AI retrieves relevant passages before asking AI.</p><textarea id="libPrompt" rows="5" placeholder="Example: Make a 20-question N3 vocabulary quiz from my selected book."></textarea><div class="lib-chips"><button data-lib-task="quiz">Quiz</button><button data-lib-task="summary">Summary</button><button data-lib-task="study">Study guide</button><button data-lib-task="slides">Slides</button><button data-lib-task="flashcards">Flashcards</button></div><button id="libAsk" class="primary">✨ Create from Library</button><div id="libStatus" class="muted"></div><textarea id="libResult" rows="15" placeholder="AI result appears here…"></textarea><label>Output name<input id="libOutputName" value="Pocket-AI-Library"></label><div class="lib-export"><button data-lib-export="docx">Word</button><button data-lib-export="pptx">PowerPoint</button><button data-lib-export="pdf">PDF</button><button data-lib-export="md">Markdown</button><button data-lib-export="txt">Text</button></div></aside></div>';
+ const nav=$('.tabs');
+ if(nav&&!$('[data-go="library"]')){
+  const b=document.createElement('button');b.dataset.go='library';b.innerHTML='📚<span>Library</span>';
+  nav.insertBefore(b,$('[data-go="files"]',nav)||null);
+ }
+ const s=document.createElement('section');s.id='library';s.className='view glass library-v33 library-books-only';s.hidden=true;
+ s.innerHTML=
+ '<div class="lib-head book-only-head"><div><p class="eyebrow">LIBRARY • BOOKS</p><h1>Your reading shelf.</h1><p class="muted">Books only. Read free/open books, save your own books, continue reading, and keep web novels together.</p></div><span class="privacy-pill">📚 Book shelf</span></div>'+
+ '<div class="book-library-toolbar"><label class="lib-upload">＋ Add my book<input id="libInput" type="file" multiple accept=".pdf,.docx,.txt,.md,application/pdf,text/plain,text/markdown" hidden></label><div class="lib-search"><input id="libSearch" placeholder="Search saved books…"><span id="libCount"></span></div></div>'+
+ '<div id="libStatus" class="muted book-library-status"></div><div id="libStorage" class="muted book-library-storage"></div>'+
+ '<div class="book-library-section"><div class="book-library-title"><div><p class="eyebrow">MY BOOKS</p><h2>Saved on this device</h2></div></div><div id="libGrid" class="lib-grid book-only-grid"></div></div>';
  const files=by('files');(files?.parentNode||$('main')).insertBefore(s,files||null);
- const homeGrid=$('.quick-grid');if(homeGrid&&!homeGrid.querySelector('[data-quick="library"]')){const b=document.createElement('button');b.dataset.quick='library';b.innerHTML='<span>📚</span><strong>Library</strong><small>Ask your books</small>';homeGrid.insertBefore(b,homeGrid.querySelector('[data-quick="files"]')||null);b.onclick=()=>document.querySelector('[data-go="library"]')?.click()}
- const commands=by('commandList');if(commands&&!commands.querySelector('[data-command="library"]')){const b=document.createElement('button');b.dataset.command='library';b.innerHTML='📚 Library <kbd>Books</kbd>';commands.insertBefore(b,commands.querySelector('[data-command="files"]')||null);b.onclick=()=>{by('commandDialog')?.close();document.querySelector('[data-go="library"]')?.click()}}
+ const homeGrid=$('.quick-grid');
+ if(homeGrid&&!homeGrid.querySelector('[data-quick="library"]')){
+  const b=document.createElement('button');b.dataset.quick='library';b.innerHTML='<span>📚</span><strong>Library</strong><small>Books & novels</small>';
+  homeGrid.insertBefore(b,homeGrid.querySelector('[data-quick="files"]')||null);b.onclick=()=>document.querySelector('[data-go="library"]')?.click();
+ }
+ const commands=by('commandList');
+ if(commands&&!commands.querySelector('[data-command="library"]')){
+  const b=document.createElement('button');b.dataset.command='library';b.innerHTML='📚 Library <kbd>Books</kbd>';
+  commands.insertBefore(b,commands.querySelector('[data-command="files"]')||null);
+  b.onclick=()=>{by('commandDialog')?.close();document.querySelector('[data-go="library"]')?.click()};
+ }
 }
 function starterUI(books){const target=by('libStarter');if(!target)return;const have=new Set(books.map(b=>b.name));target.innerHTML=STARTER.map(n=>'<div class="starter-row"><span>'+esc(prettyName(n))+'</span><strong class="'+(have.has(n)?'ready':'need')+'">'+(have.has(n)?'✓ In Library':'Import once')+'</strong></div>').join('')}
 async function storageInfo(){if(!navigator.storage?.estimate)return;try{const e=await navigator.storage.estimate(),used=e.usage||0,quota=e.quota||0;by('libStorage').textContent='Device library storage: '+(used/1048576).toFixed(1)+' MB used'+(quota?' of '+(quota/1048576).toFixed(0)+' MB available to this site':'')+'. Browser storage can be cleared by the device/browser.'}catch{}}
@@ -43,11 +57,13 @@ async function exportPptx(text,name){const m=await import('https://cdn.jsdelivr.
 function exportPrintPDF(text,name){const w=open('','_blank');if(!w){alert('Allow pop-ups to create the PDF.');return}w.document.write('<!doctype html><meta charset="utf-8"><title>'+esc(name)+'</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Noto Sans",sans-serif;max-width:800px;margin:40px auto;padding:0 24px;line-height:1.6;white-space:pre-wrap;color:#111}@media print{body{margin:0;max-width:none}}</style><body>'+esc(text)+'</body><script>setTimeout(()=>print(),350)<\/script>');w.document.close()}
 async function doExport(type){const text=by('libResult').value.trim();if(!text)return alert('Create or write something first.');const name=safeName(by('libOutputName').value);by('libStatus').textContent='Creating '+type.toUpperCase()+'…';try{if(type==='docx')await exportDocx(text,name);else if(type==='pptx')await exportPptx(text,name);else if(type==='pdf')exportPrintPDF(text,name);else download(new Blob([text],{type:'text/plain;charset=utf-8'}),name+'.'+type);by('libStatus').textContent=type==='pdf'?'Print preview opened — choose Save as PDF.':'File created.'}catch(e){by('libStatus').textContent='Export failed: '+(e?.message||e)}}
 function bind(){
- by('libInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
- by('libSearch').oninput=render;by('libFileDesk').onclick=()=>document.querySelector('[data-go="files"]')?.click();
- by('libSelectAll').onclick=async()=>{(await allBooks()).forEach(b=>selected.add(b.id));render()};by('libClearSel').onclick=()=>{selected.clear();render()};
- by('libGrid').onclick=async e=>{const card=e.target.closest('.lib-card');if(!card)return;const id=card.dataset.id;if(e.target.matches('[data-open]'))return openBook(id);if(e.target.matches('[data-remove]')){if(confirm('Remove this book from this device library?')){await delBook(id);selected.delete(id);render()}return}selected.has(id)?selected.delete(id):selected.add(id);render()};
- by('libAsk').onclick=()=>askLibrary('');$$('[data-lib-task]').forEach(b=>b.onclick=()=>askLibrary(b.dataset.libTask));$$('[data-lib-export]').forEach(b=>b.onclick=()=>doExport(b.dataset.libExport));
+ const input=by('libInput');if(input)input.onchange=e=>{importFiles(e.target.files);e.target.value=''};
+ const search=by('libSearch');if(search)search.oninput=render;
+ const grid=by('libGrid');if(grid)grid.onclick=async e=>{
+  const card=e.target.closest('.lib-card');if(!card)return;const id=card.dataset.id;
+  if(e.target.closest('[data-open]'))return openBook(id);
+  if(e.target.closest('[data-remove]')){if(confirm('Remove this book from this device library?')){await delBook(id);selected.delete(id);render()}return}
+ };
  document.addEventListener('click',e=>{const b=e.target.closest?.('[data-command="library"]');if(b){by('commandDialog')?.close();document.querySelector('[data-go="library"]')?.click()}});
 }
 async function init(){makeUI();bind();await render();try{if(navigator.storage?.persist)navigator.storage.persist()}catch{}}
