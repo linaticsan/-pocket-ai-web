@@ -33,7 +33,7 @@ function addHome(){
  grid.insertAdjacentElement('afterend',box);
  by('home45Search').onsubmit=e=>{e.preventDefault();const q=by('home45Query').value.trim();showLibrarySearch(q)};
  by('home45Mic').onclick=startVoice;
- box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.hasAttribute('data-home-library'))showLibrarySearch('');if(b.dataset.book)showLibrarySearch(b.dataset.book);if(b.dataset.category)showLibrarySearch(b.dataset.category==='novel'?'':b.dataset.category);if(b.hasAttribute('data-novel-hub'))showNovelHub()});
+ box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.preventDefault();if(b.hasAttribute('data-home-library'))return showLibrarySearch('');if(b.dataset.book)return showLibrarySearch(b.dataset.book);if(b.dataset.category)return showLibrarySearch(b.dataset.category==='novel'?'fiction':b.dataset.category);if(b.hasAttribute('data-novel-hub'))return showNovelHub()});
  return true;
 }
 function boot(){upgradeHeader();let n=0;const t=setInterval(()=>{if(addHome()||++n>35)clearInterval(t)},100)}
