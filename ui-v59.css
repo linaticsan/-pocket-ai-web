@@ -178,3 +178,63 @@ html.pocket-v59 .tabs button.active{color:#9c4def!important;background:#f1e8ff!i
 }
 @keyframes v59in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:390px){html.pocket-v59 main{padding-left:9px!important;padding-right:9px!important}html.pocket-v59 .v3-suggestions{grid-template-columns:1fr!important}}
+
+
+/* V60 — navigation architecture fix */
+html.pocket-v59 .tabs{
+  left:50%!important;
+  right:auto!important;
+  width:min(620px,calc(100vw - 24px))!important;
+  max-width:620px!important;
+  transform:translateX(-50%)!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  overflow:hidden!important;
+}
+html.pocket-v59 .tabs>[data-go="coding"]{display:none!important}
+html.pocket-v59 .tabs>button{
+  min-width:0!important;
+  width:auto!important;
+  max-width:none!important;
+}
+html.pocket-v59 body.v39-more-open .tabs{
+  z-index:80!important;
+  pointer-events:none!important;
+}
+html.pocket-v59 .v39-more-sheet{z-index:1200!important}
+html.pocket-v59 .v39-more-sheet .v39-scrim{z-index:0!important}
+html.pocket-v59 .v39-more-sheet .v39-sheet{z-index:1!important}
+
+/* Fixed nav must never cover the last controls on long workspaces. */
+html.pocket-v59 #coding,
+html.pocket-v59 #files,
+html.pocket-v59 #library,
+html.pocket-v59 #chat,
+html.pocket-v59 #home{
+  padding-bottom:calc(110px + env(safe-area-inset-bottom))!important;
+}
+
+/* Desktop keeps the app phone-like and centered instead of stretching the dock edge-to-edge. */
+@media(min-width:651px){
+  html.pocket-v59 main{
+    max-width:620px!important;
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+  html.pocket-v59 .tabs{
+    bottom:18px!important;
+    width:620px!important;
+  }
+  html.pocket-v59 .tabs button{
+    height:52px!important;
+    min-height:52px!important;
+  }
+}
+
+/* Mobile keeps safe side margins and a single row. */
+@media(max-width:650px){
+  html.pocket-v59 .tabs{
+    width:calc(100vw - 20px)!important;
+    max-width:none!important;
+    bottom:max(8px,env(safe-area-inset-bottom))!important;
+  }
+}
