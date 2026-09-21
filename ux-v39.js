@@ -31,7 +31,30 @@ function bind(){
  // Capture navigation once, without observing/mutating classes continuously.
  document.addEventListener('click',e=>{
   const quick=e.target.closest?.('[data-quick]');
-  if(quick){const map={research:'surface',study:'chat',code:'coding'};const id=map[quick.dataset.quick]||quick.dataset.quick;if(show(id)){e.preventDefault();e.stopImmediatePropagation();return}}
+  if(quick){
+    const kind=quick.dataset.quick;
+    const map={research:'surface',study:'chat',code:'coding'};
+    const id=map[kind]||kind;
+    if(show(id)){
+      e.preventDefault();
+      if(kind==='research'){
+        setTimeout(()=>{
+          const mode=document.getElementById('surfaceMode');if(mode)mode.value='research';
+          document.getElementById('surfaceQuery')?.focus();
+        },60);
+      }else if(kind==='study'){
+        setTimeout(()=>{
+          const study=document.getElementById('v3Study');
+          if(study&&!study.classList.contains('active'))study.click();
+          const p=document.getElementById('prompt');
+          if(p&&!p.value)p.value='Teach me this step by step, then quiz me: ';
+          p?.focus();
+        },80);
+      }
+      e.stopImmediatePropagation();
+      return;
+    }
+  }
   const go=e.target.closest?.('[data-go]');
   if(go&&show(go.dataset.go)){e.preventDefault();e.stopImmediatePropagation()}
  },true);
