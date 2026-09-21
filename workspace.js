@@ -38,13 +38,16 @@ function setTheme(t){
     b.setAttribute('aria-pressed',active?'true':'false');
   });
 }
-function setMotion(m){document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);document.querySelectorAll('[data-motion]').forEach(b=>b.classList.toggle('active',b.dataset.motion===m));}
+function setMotion(m){
+ document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);
+ document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
+}
 const modeText={balanced:'Uses Local AI first; web tools only when you open them.',private:'Local AI only for AI tasks. No account login required.',offline:'Cached app + Local AI + local files. Web tools need internet.'};
 function setPrivacy(m){
  safeSet('pocket-privacy',m);
  document.querySelectorAll('[data-privacy],[data-privacy-setting]').forEach(b=>{
    const v=b.dataset.privacy||b.dataset.privacySetting;
-   b.classList.toggle('active',v===m);
+   const on=v===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false');
  });
  const hint=q('modeHint');if(hint)hint.textContent=modeText[m]||modeText.balanced;
 }
