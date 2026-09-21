@@ -2,8 +2,7 @@
 (() => {
  const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)], by=id=>document.getElementById(id);
  document.documentElement.classList.add('pocket-v59');
- document.documentElement.dataset.theme='light';
- try{localStorage.setItem('pocket-theme','light')}catch{}
+ try{document.documentElement.dataset.theme=localStorage.getItem('pocket-theme')||'light'}catch{document.documentElement.dataset.theme='light'}
 
  // Remove experimental classes that had conflicting overrides.
  document.documentElement.classList.remove('pocket-ref57');
@@ -93,3 +92,55 @@ document.addEventListener('click',e=>{
     e.preventDefault();const d=by('settingsDialog');if(d?.showModal&&!d.open)d.showModal();return;
   }
 },false);
+
+
+/* V64 — theme engine */
+(() => {
+  const root=document.documentElement;
+  const allowed=new Set(['light','dark','sakura','green','oled']);
+
+  function applyTheme(theme,{persist=true,close=true}={}){
+    const next=allowed.has(theme)?theme:'light';
+    root.dataset.theme=next;
+    root.style.colorScheme=(next==='dark'||next==='oled')?'dark':'light';
+    if(persist){try{localStorage.setItem('pocket-theme',next)}catch{}}
+    document.querySelectorAll('[data-theme-choice]').forEach(btn=>{
+      const on=btn.dataset.themeChoice===next;
+      btn.classList.toggle('active',on);
+      btn.setAttribute('aria-pressed',on?'true':'false');
+    });
+    const meta=document.querySelector('meta[name="theme-color"]');
+    const metaColors={light:'#f8f6ff',dark:'#151020',sakura:'#fff3f8',green:'#f2fff8',oled:'#000000'};
+    if(meta)meta.setAttribute('content',metaColors[next]||metaColors.light);
+    if(close){
+      const d=document.getElementById('settingsDialog');
+      if(d?.open) setTimeout(()=>d.close(),120);
+    }
+    window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:next}}));
+  }
+
+  window.PocketTheme={apply:applyTheme,get:()=>root.dataset.theme||'light'};
+
+  let saved='light';
+  try{saved=localStorage.getItem('pocket-theme')||'light'}catch{}
+  applyTheme(saved,{persist:false,close:false});
+
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest?.('[data-theme-choice]');
+    if(!btn)return;
+    e.preventDefault();
+    applyTheme(btn.dataset.themeChoice);
+  },true);
+
+  // Header palette opens theme settings; it no longer toggles/overwrites theme directly.
+  document.addEventListener('click',e=>{
+    const palette=e.target.closest?.('#theme');
+    if(!palette)return;
+    e.preventDefault();
+    const d=document.getElementById('settingsDialog');
+    if(d?.showModal&&!d.open)d.showModal();
+  },true);
+
+  const d=document.getElementById('settingsDialog');
+  d?.addEventListener('toggle',()=>applyTheme(root.dataset.theme||saved,{persist:false,close:false}));
+})();
