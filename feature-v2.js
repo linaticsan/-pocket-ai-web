@@ -49,7 +49,7 @@ try{
  const load=async(path)=>{try{return await import(path)}catch(err){console.error('Pocket AI optional module failed:',path,err);return null}};
  await Promise.all([load('./api-hub.js?v=20260921-v74'),load('./v3.js?v=20260921-v74')]);
  await load('./v3-guard.js?v=20260920-v56');
- await load('./ui-v59.js?v=20260921-v74');
+ await load('./ui-v59.js?v=20260921-v75');
  await Promise.all([
    load('./coding-v1.js?v=20260921-v74'),
    load('./files-v32.js?v=20260921-v74'),
