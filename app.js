@@ -3,8 +3,17 @@ let geminiKey='',geminiModel='gemini-2.5-flash',chatHistory=[];
 const notice=s=>$('notice').textContent=s||'';
 function show(id){document.querySelectorAll('.view').forEach(v=>{v.hidden=v.id!==id;v.classList.toggle('active',v.id===id)});document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));notice('');scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
-$('theme').onclick=()=>{const dark=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=dark?'light':'dark';try{localStorage.setItem('pocket-theme',dark?'light':'dark')}catch{}};
-try{document.documentElement.dataset.theme=localStorage.getItem('pocket-theme')||'light'}catch{}
+$('theme').onclick=()=>{$('settingsDialog')?.showModal?.()};
+try{
+  const savedTheme=localStorage.getItem('pocket-theme')||'light';
+  if(savedTheme==='system'){
+    document.documentElement.dataset.theme=matchMedia?.('(prefers-color-scheme: dark)')?.matches?'dark':'light';
+    document.documentElement.dataset.themeChoice='system';
+  }else{
+    document.documentElement.dataset.theme=savedTheme;
+    document.documentElement.dataset.themeChoice=savedTheme;
+  }
+}catch{}
 
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function isGreeting(prompt){return /^(hi|hello|hey|hiya|yo|good\s+(morning|afternoon|evening)|namaste|namaskar|こんにちは|こんばんは|おはよう|もしもし)[!,.?\s]*$/i.test(String(prompt||'').trim())}
