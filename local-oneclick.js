@@ -9,8 +9,24 @@ function saved(k){try{return localStorage.getItem(k)||''}catch{return''}}
 function store(k,v){try{localStorage.setItem(k,v)}catch{}}
 function setStatus(text,state='idle'){if(el('localStatus'))el('localStatus').textContent=text;if(el('localStatusCard'))el('localStatusCard').dataset.state=state;}
 function setProgress(value,text){const p=el('localProgress');if(!p)return;p.hidden=false;p.value=Math.max(0,Math.min(1,Number(value)||0));el('localProgressText').textContent=text||'Preparing Local AI…';lastProgressAt=Date.now();}
-function controls(connected){const installed=saved(LOCAL_INSTALLED)==='1';el('localSetup').hidden=installed;el('localConnect').hidden=connected||!installed;el('localDisconnect').hidden=!connected;el('localSend').disabled=!connected;el('localPrompt').disabled=!connected;}
-function busyUI(on){localBusy=on;el('localSetup').disabled=on;el('localConnect').disabled=on;if(on&&!el('localConnect').hidden)el('localConnect').textContent='⏳ Connecting…';else el('localConnect').textContent='⚡ Connect Local AI';}
+function controls(connected){
+ const installed=saved(LOCAL_INSTALLED)==='1';
+ const setup=el('localSetup'),connect=el('localConnect'),disconnect=el('localDisconnect'),send=el('localSend'),prompt=el('localPrompt');
+ if(setup)setup.hidden=installed;
+ if(connect)connect.hidden=connected||!installed;
+ if(disconnect)disconnect.hidden=!connected;
+ if(send)send.disabled=!connected;
+ if(prompt)prompt.disabled=!connected;
+}
+function busyUI(on){
+ localBusy=on;
+ const setup=el('localSetup'),connect=el('localConnect');
+ if(setup)setup.disabled=on;
+ if(connect){
+   connect.disabled=on;
+   connect.textContent=on&&!connect.hidden?'⏳ Connecting…':'⚡ Connect Local AI';
+ }
+}
 async function loadLibrary(){if(webllm)return webllm;setStatus('Loading the Local AI engine…','working');webllm=await import('https://esm.run/@mlc-ai/web-llm@0.2.85');return webllm;}
 async function webgpuReady(){if(!navigator.gpu)return false;try{return!!(await navigator.gpu.requestAdapter())}catch{return false}}
 function appConfig(lib){return{...lib.prebuiltAppConfig,cacheBackend:'cache'};}
@@ -24,4 +40,10 @@ async function sendLocal(){const box=el('localPrompt');const prompt=box.value.tr
 function clearLocalHistory(){localChatHistory=[localChatHistory[0]];if(el('localAnswer'))el('localAnswer').textContent='Local conversation cleared. Your downloaded model is unchanged.';}
 window.PocketLocalAI={isConnected:()=>!!localEngine,generate:generateLocal,connect:()=>connectLocal(false),disconnect:disconnectLocal,clearHistory:clearLocalHistory,model:LOCAL_MODEL};
 async function initLocal(){el('localDevice').textContent=deviceName();const supported=await webgpuReady();el('localCompatibility').textContent=supported?'WebGPU available ✓':'WebGPU unavailable';if(!supported){setStatus('This browser cannot run the built-in Local AI yet. Use current Chrome/Edge/Safari or the Advanced server connection below.','error');el('localSetup').disabled=true;el('localConnect').disabled=true;return}controls(false);try{const lib=await loadLibrary();const cached=await cacheState(lib);if(cached){store(LOCAL_INSTALLED,'1');if(saved(LOCAL_ENABLED)==='1'){setStatus('Reconnecting your saved Local AI…','working');await connectLocal(false);}else setStatus('Local AI model found in this browser. Press Connect to load it into memory.','idle');}else{store(LOCAL_INSTALLED,'0');store(LOCAL_ENABLED,'0');setStatus('Ready for first-time setup. Setup downloads the model once and saves it in this browser.','idle');controls(false);}}catch{setStatus('Local AI engine is ready to retry. Press Setup or Connect.','idle');}}
-el('localSetup').onclick=()=>connectLocal(true);el('localConnect').onclick=()=>connectLocal(false);el('localDisconnect').onclick=disconnectLocal;el('localSend').onclick=sendLocal;el('localPrompt').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendLocal();}});document.querySelectorAll('[data-go="local"]').forEach(b=>b.addEventListener('click',()=>{setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),40);}));initLocal();
+el('localSetup')?.addEventListener('click',()=>connectLocal(true));
+el('localConnect')?.addEventListener('click',()=>connectLocal(false));
+el('localDisconnect')?.addEventListener('click',disconnectLocal);
+el('localSend')?.addEventListener('click',sendLocal);
+el('localPrompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendLocal();}});
+document.querySelectorAll('[data-go="local"]').forEach(b=>b.addEventListener('click',()=>{setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),40);}));
+if(el('localDevice'))initLocal();
