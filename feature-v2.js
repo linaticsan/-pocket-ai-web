@@ -49,6 +49,6 @@ try{
  await load('./library-online-v34.js?v=20260921-v59');
  await load('./webnovel-v42.js?v=20260921-v59');
  await load('./home-v43.js?v=20260921-v59');
- await load('./ui-v59.js?v=20260921-v67');
+ await load('./ui-v59.js?v=20260921-v68');
 })();
 
