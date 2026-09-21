@@ -17,9 +17,11 @@
 
  function header(){
    const a=q('.top-actions');if(!a)return;
-   a.innerHTML='<button id="settings59" aria-label="Settings">⚙️</button><button id="theme59" aria-label="Theme">🎨</button>';
-   by('settings59').onclick=()=>by('settings')?.showModal?.()||by('settingsOpen')?.click();
-   by('theme59').onclick=()=>by('settings')?.showModal?.()||by('theme')?.click();
+   // Keep stable IDs used by the core app and More sheet.
+   a.innerHTML='<button id="settingsOpen" aria-label="Settings">⚙️</button><button id="theme" aria-label="Theme">🎨</button>';
+   const openSettings=()=>{const d=by('settingsDialog');if(d?.showModal&&!d.open)d.showModal()};
+   by('settingsOpen').onclick=openSettings;
+   by('theme').onclick=openSettings;
  }
 
  function ensureHome(){
@@ -77,3 +79,17 @@
    if((h&&by('library')&&q('.v3-chat-shell'))||++tries>80)clearInterval(timer);
  },100);
 })();
+
+/* V62 — fallback handlers for controls that must never be dead */
+document.addEventListener('click',e=>{
+  const by=id=>document.getElementById(id);
+  const go=e.target.closest?.('[data-go]');
+  if(go&&window.PocketV39?.show){e.preventDefault();window.PocketV39.show(go.dataset.go);return}
+  const more=e.target.closest?.('[data-more]');
+  if(more&&window.PocketV39?.openMore){e.preventDefault();window.PocketV39.openMore();return}
+  const tool=e.target.closest?.('[data-v39-go]');
+  if(tool&&window.PocketV39?.show){e.preventDefault();window.PocketV39.show(tool.dataset.v39Go);return}
+  if(e.target.closest?.('[data-v39-settings],[data-v39-theme]')){
+    e.preventDefault();const d=by('settingsDialog');if(d?.showModal&&!d.open)d.showModal();return;
+  }
+},false);
