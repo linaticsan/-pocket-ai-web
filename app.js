@@ -30,7 +30,25 @@ $('chatForm').onsubmit=async e=>{e.preventDefault();const prompt=$('prompt').val
 
 try{$('localUrl').value=localStorage.getItem('pocket-local-url')||'';$('localModel').value=localStorage.getItem('pocket-local-model')||''}catch{}
 $('localSave').onclick=()=>{try{localStorage.setItem('pocket-local-url',$('localUrl').value.trim());localStorage.setItem('pocket-local-model',$('localModel').value.trim());notice('Local AI connection saved on this device.')}catch{notice('Browser storage is unavailable.')}};
-$('localSend').onclick=async()=>{const base=$('localUrl').value.trim().replace(/\/$/,''),model=$('localModel').value.trim(),prompt=$('localPrompt').value.trim();if(!base||!model||!prompt){notice('Enter server URL, model and message.');return}$('localSend').disabled=true;$('localAnswer').textContent='Connecting…';try{if(location.protocol==='https:'&&base.startsWith('http:'))throw Error('Safari blocks an HTTP local server from this HTTPS app. Use an HTTPS endpoint or another secure tunnel.');const r=await fetch(base+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,messages:[{role:'user',content:prompt}],stream:false})});if(!r.ok)throw Error('Local server returned HTTP '+r.status);const d=await r.json();$('localAnswer').textContent=d.choices?.[0]?.message?.content||'The server returned no message.';notice('Local response received.')}catch(err){$('localAnswer').textContent='Could not connect. '+err.message+'\n\nCheck HTTPS, CORS, server address and that both devices are reachable.'}finally{$('localSend').disabled=false}};
+$('localAdvancedSend')?.addEventListener('click',async()=>{
+ const base=$('localUrl')?.value.trim().replace(/\/$/,'')||'';
+ const model=$('localModel')?.value.trim()||'';
+ const prompt=$('localPrompt')?.value.trim()||'';
+ const btn=$('localAdvancedSend'),answer=$('localAnswer');
+ if(!base||!model){notice('Enter the advanced server URL and model first.');return}
+ if(!prompt){notice('Write a message in Local AI first.');return}
+ if(btn)btn.disabled=true;if(answer)answer.textContent='Testing advanced server…';
+ try{
+   if(location.protocol==='https:'&&base.startsWith('http:'))throw Error('Safari blocks an HTTP local server from this HTTPS app. Use HTTPS or a secure tunnel.');
+   const r=await fetch(base+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,messages:[{role:'user',content:prompt}],stream:false})});
+   if(!r.ok)throw Error('Local server returned HTTP '+r.status);
+   const d=await r.json();
+   if(answer)answer.textContent=d.choices?.[0]?.message?.content||'The server returned no message.';
+   notice('Advanced server response received.');
+ }catch(err){
+   if(answer)answer.textContent='Could not connect. '+(err?.message||err)+'\n\nCheck HTTPS, CORS, server address and that both devices are reachable.';
+ }finally{if(btn)btn.disabled=false}
+});
 
 $('fileInput').onchange=async()=>{const f=$('fileInput').files[0];if(!f)return;if(f.size>5*1024*1024){$('fileStatus').textContent='Choose a text file under 5 MB.';return}try{$('fileText').value=await f.text();$('fileName').value=f.name;$('fileStatus').textContent='Opened locally on this device.'}catch{$('fileStatus').textContent='Could not read this file.'}};
 $('saveFile').onclick=()=>{const blob=new Blob([$('fileText').value],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=($('fileName').value.trim()||'pocket-notes.txt').replace(/[\\/:*?"<>|]/g,'_');a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);$('fileStatus').textContent='Download requested. Use Safari Downloads or Files to keep it.'};
