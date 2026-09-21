@@ -2,7 +2,7 @@
 (() => {
  const boot=document.getElementById('pocketBoot'),text=document.getElementById('pocketBootText');
  if(!boot)return;
- const lines=['Waking up Pocket AI…','Polishing your workspace…','Getting Chat ready…','Putting your books and files in place…','Almost ready ✨'];
+ const lines=['Getting the essentials ready…','Preparing Chat…','Loading your workspace…','Almost ready ✨'];
  let i=0,hidden=false;
  const timer=setInterval(()=>{if(text)text.textContent=lines[++i%lines.length]},850);
  const hide=()=>{
