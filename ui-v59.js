@@ -23,12 +23,12 @@
  function header(){
    const a=q('.top-actions');if(!a)return;
    // Keep stable IDs used by the core app and More sheet.
-   a.innerHTML='<button id="commandOpen" aria-label="Open command palette">⌘</button><button id="settingsOpen" aria-label="Settings">⚙️</button><button id="theme" aria-label="Theme">🎨</button>';
+   a.innerHTML='<button id="commandOpen" aria-label="Open command palette">⌘</button><button id="settingsOpen" aria-label="Settings and appearance">⚙️</button>';
    const openSettings=()=>{const d=by('settingsDialog');if(d?.showModal&&!d.open)d.showModal()};
    const openCommands=()=>{const d=by('commandDialog');if(d?.showModal&&!d.open){d.showModal();setTimeout(()=>by('commandSearch')?.focus(),50)}};
    by('commandOpen').onclick=openCommands;
    by('settingsOpen').onclick=openSettings;
-   by('theme').onclick=openSettings;
+
  }
 
  function ensureHome(){
@@ -37,8 +37,8 @@
    if(!box){
      box=document.createElement('section');box.id='homeV59';box.className='v59-home';
      box.innerHTML=
-      '<form class="v59-search" id="v59Search"><span>⌕</span><input id="v59Query" placeholder="Search books, documents, or ask anything…" autocomplete="off"><button aria-label="Search">✦</button></form>'+
-      '<div class="v59-shortcuts"><button class="v59-shortcut" data-v59-go="library"><i>📚</i><strong>Library</strong></button><button class="v59-shortcut" data-v59-go="chat"><i>💬</i><strong>Chat</strong></button><button class="v59-shortcut" data-v59-go="files"><i>📁</i><strong>Files</strong></button><button class="v59-shortcut" data-v59-more><i>•••</i><strong>More</strong></button></div>'+
+      '<form class="v59-search" id="v59Search"><span class="v84-search-icon" aria-hidden="true"></span><input id="v59Query" placeholder="Search or ask anything" autocomplete="off"><button aria-label="Ask Pocket AI">✦</button></form>'+
+      '<div class="v59-shortcuts"><button class="v59-shortcut" data-v59-go="surface" data-v84-icon="search"><i></i><strong>Research</strong></button><button class="v59-shortcut" data-v59-study data-v84-icon="study"><i></i><strong>Study</strong></button><button class="v59-shortcut" data-v59-go="coding" data-v84-icon="code"><i></i><strong>Code</strong></button><button class="v59-shortcut" data-v59-go="local" data-v84-icon="cpu"><i></i><strong>Local AI</strong></button></div>'+
       '<section class="v59-hero"><small>YOUR PERSONAL</small><h1>AI LIBRARY</h1><p>Discover • Read • Learn • Create</p><button data-v59-go="library">Explore Books →</button><span class="v59-hero-art">📚</span></section>'+
       '<div class="v59-section-head"><h2>🔥 Trending Books</h2><button data-v59-go="library">See All ›</button></div>'+
       '<div class="v59-books"><button class="v59-book" data-v59-book="Moby Dick"><span class="v59-cover blue"><span>🌊</span><b>MOBY DICK</b></span><strong>Moby Dick</strong><small>Herman Melville</small></button><button class="v59-book" data-v59-book="Pride and Prejudice"><span class="v59-cover pink"><span>🌸</span><b>PRIDE & PREJUDICE</b></span><strong>Pride and Prejudice</strong><small>Jane Austen</small></button><button class="v59-book" data-v59-go="library"><span class="v59-cover indigo"><span>🗾</span><b>DAILY JAPANESE</b></span><strong>Daily Japanese</strong><small>Your Library</small></button></div>';
@@ -57,13 +57,18 @@
  function normalizeChat(){
    const w=q('.v3-welcome');if(!w)return;
    const h=w.querySelector('h2');if(h)h.textContent='How can Pocket AI help you today?';
-   const p=w.querySelector('p');if(p)p.textContent='Use Local AI or Local only. Attach a document, start Study Mode, or just ask.';
+   const p=w.querySelector('p');if(p)p.textContent='Ask anything, attach a document, or start Study Mode.';
  }
 
  document.addEventListener('click',e=>{
    const go=e.target.closest?.('[data-v59-go]');
    if(go){e.preventDefault();show(go.dataset.v59Go);return}
    if(e.target.closest?.('[data-v59-more]')){e.preventDefault();window.PocketV39?.openMore?.();return}
+   if(e.target.closest?.('[data-v59-study]')){
+     e.preventDefault();show('chat');
+     setTimeout(()=>{const study=by('v3Study');if(study&&!study.classList.contains('active'))study.click();const p=by('prompt');if(p){p.value='Help me study this step by step: ';p.focus()}},70);
+     return;
+   }
    const book=e.target.closest?.('[data-v59-book]');
    if(book){
      e.preventDefault();show('library');
@@ -133,6 +138,8 @@ document.addEventListener('click',e=>{
     const meta=document.querySelector('meta[name="theme-color"]');
     const metaColors={light:'#f8f6ff',dark:'#111018',sakura:'#fff6fa',green:'#f3fbf7',oled:'#000000'};
     if(meta)meta.setAttribute('content',metaColors[resolved]||metaColors.light);
+    let apple=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if(apple)apple.setAttribute('content',(resolved==='dark'||resolved==='oled')?'black-translucent':'default');
 
     if(close){
       const d=document.getElementById('settingsDialog');
