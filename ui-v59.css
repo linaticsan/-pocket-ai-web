@@ -1502,3 +1502,176 @@ html.pocket-v59 body>#bottomNav{
   html.pocket-v59 .settings-dialog .theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   html.pocket-v59 .settings-dialog .theme-grid button{min-height:78px!important;padding:31px 11px 10px!important}
 }
+
+/* V69 — legacy variable bridge + mobile chat debug fix
+   Root cause: older modules still read --panel/--glass/--line/--purple etc,
+   while the new theme engine only changed --app-* variables. */
+html.pocket-v59{
+  --panel:var(--app-panel)!important;
+  --glass:var(--app-panel)!important;
+  --glass-strong:var(--app-panel)!important;
+  --line:var(--app-border)!important;
+  --muted:var(--app-muted)!important;
+  --accent:var(--app-accent)!important;
+  --purple:var(--app-accent)!important;
+  --pink:var(--app-accent-2)!important;
+  --bg:var(--app-bg)!important;
+}
+
+/* Chat must use the selected theme everywhere. */
+html.pocket-v59 #v3ChatShell,
+html.pocket-v59 .v3-chat-main,
+html.pocket-v59 .v3-sidebar,
+html.pocket-v59 .v3-chat-top,
+html.pocket-v59 #messages.v3-messages,
+html.pocket-v59 .v3-composer{
+  background:var(--app-panel)!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+}
+html.pocket-v59 #messages.v3-messages{
+  background:var(--app-panel)!important;
+}
+html.pocket-v59 .v3-welcome{
+  background:
+    radial-gradient(circle at 84% 20%,color-mix(in srgb,var(--app-accent-2) 18%,transparent),transparent 24%),
+    radial-gradient(circle at 20% 85%,color-mix(in srgb,var(--app-accent) 12%,transparent),transparent 30%),
+    var(--app-panel-2)!important;
+  color:var(--app-text)!important;
+  border:1px solid var(--app-border)!important;
+}
+html.pocket-v59 .v3-welcome h2,
+html.pocket-v59 .v3-welcome p,
+html.pocket-v59 .v3-suggestions button{
+  color:var(--app-text)!important;
+}
+html.pocket-v59 .v3-suggestions button,
+html.pocket-v59 .v3-top-controls button,
+html.pocket-v59 .v3-chat-item,
+html.pocket-v59 .v3-file-chip,
+html.pocket-v59 .v3-compose-row button:not(.primary){
+  background:var(--app-panel-2)!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+}
+html.pocket-v59 .v3-composer textarea{
+  background:var(--app-panel-2)!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+}
+html.pocket-v59 .v3-msg,
+html.pocket-v59 .v3-bubble,
+html.pocket-v59 .v3-text{
+  color:var(--app-text)!important;
+}
+html.pocket-v59 .v3-msg.user .v3-bubble{
+  background:color-mix(in srgb,var(--app-accent) 10%,var(--app-panel))!important;
+  border-color:var(--app-border)!important;
+}
+
+/* Light theme: absolutely no navy chat canvas. */
+html.pocket-v59[data-theme="light"] #chat,
+html.pocket-v59[data-theme="light"] #v3ChatShell,
+html.pocket-v59[data-theme="light"] .v3-chat-main,
+html.pocket-v59[data-theme="light"] #messages.v3-messages,
+html.pocket-v59[data-theme="light"] .v3-composer{
+  background:#fff!important;
+  color:#18142f!important;
+}
+html.pocket-v59[data-theme="light"] .v3-welcome{
+  background:linear-gradient(145deg,#fbfcff,#f5f0ff 58%,#fff5fa)!important;
+  color:#18142f!important;
+}
+html.pocket-v59[data-theme="light"] .v3-suggestions button{
+  background:#fff!important;color:#18142f!important;border-color:#e8e4f2!important;
+}
+
+/* Mobile chat: compact, readable, composer stays above nav. */
+@media(max-width:650px){
+  html.pocket-v59 #chat{
+    height:calc(100dvh - 150px - env(safe-area-inset-bottom))!important;
+    min-height:500px!important;
+    padding:0!important;
+    border-radius:18px!important;
+    overflow:hidden!important;
+  }
+  html.pocket-v59 #v3ChatShell{
+    height:100%!important;
+    min-height:0!important;
+    border-radius:18px!important;
+    overflow:hidden!important;
+  }
+  html.pocket-v59 .v3-chat-main{
+    height:100%!important;
+    min-height:0!important;
+    display:flex!important;
+    flex-direction:column!important;
+  }
+  html.pocket-v59 .v3-chat-top{
+    flex:0 0 52px!important;
+    min-height:52px!important;
+    padding:6px 8px!important;
+  }
+  html.pocket-v59 #messages.v3-messages{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    overflow-y:auto!important;
+    padding:12px 10px 10px!important;
+  }
+  html.pocket-v59 .v3-welcome{
+    margin:8px auto!important;
+    padding:16px 12px!important;
+    border-radius:18px!important;
+  }
+  html.pocket-v59 .v3-welcome .cat.big{
+    display:grid!important;
+    width:64px!important;
+    height:64px!important;
+    margin:0 auto 10px!important;
+    border-radius:22px!important;
+  }
+  html.pocket-v59 .v3-welcome .cat.big:after{font-size:24px!important}
+  html.pocket-v59 .v3-welcome h2{
+    font-size:21px!important;
+    line-height:1.12!important;
+    margin:0 0 6px!important;
+  }
+  html.pocket-v59 .v3-welcome p{
+    font-size:12px!important;
+    line-height:1.4!important;
+    margin:0 auto 12px!important;
+  }
+  html.pocket-v59 .v3-suggestions{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    margin-top:10px!important;
+  }
+  html.pocket-v59 .v3-suggestions button{
+    min-height:54px!important;
+    padding:10px!important;
+    font-size:12px!important;
+    border-radius:14px!important;
+  }
+  html.pocket-v59 .v3-composer{
+    flex:0 0 auto!important;
+    position:relative!important;
+    bottom:auto!important;
+    padding:8px!important;
+    border-top:1px solid var(--app-border)!important;
+    z-index:5!important;
+  }
+  html.pocket-v59 .v3-composer textarea{
+    min-height:44px!important;
+    max-height:88px!important;
+    padding:11px 12px!important;
+    border-radius:14px!important;
+  }
+  html.pocket-v59 body>#bottomNav{
+    z-index:1000!important;
+  }
+}
+
+/* Small phones: one suggestion per row if width is tight. */
+@media(max-width:380px){
+  html.pocket-v59 .v3-suggestions{grid-template-columns:1fr!important}
+}
