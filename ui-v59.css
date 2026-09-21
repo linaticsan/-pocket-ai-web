@@ -1675,3 +1675,46 @@ html.pocket-v59[data-theme="light"] .v3-suggestions button{
 @media(max-width:380px){
   html.pocket-v59 .v3-suggestions{grid-template-columns:1fr!important}
 }
+
+/* V74 — stability polish */
+html.pocket-v59 .topbar{max-width:none!important}
+html.pocket-v59 .top-actions button{display:grid!important;place-items:center!important}
+html.pocket-v59 button:focus-visible,
+html.pocket-v59 input:focus-visible,
+html.pocket-v59 textarea:focus-visible,
+html.pocket-v59 select:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--app-accent) 38%,transparent)!important;
+  outline-offset:2px!important;
+}
+html.pocket-v59 .v59-shortcut,
+html.pocket-v59 .v59-book,
+html.pocket-v59 .v3-suggestions button,
+html.pocket-v59 .doc-studio-grid button{
+  min-width:0!important;
+}
+html.pocket-v59 .v59-shortcut strong,
+html.pocket-v59 .v3-suggestions button,
+html.pocket-v59 .doc-studio-grid button strong{
+  line-height:1.25!important;
+}
+html.pocket-v59 .v59-hero,
+html.pocket-v59 .lib53-hero,
+html.pocket-v59 .v3-welcome,
+html.pocket-v59 #files,
+html.pocket-v59 #webNovelHub{
+  isolation:isolate!important;
+}
+@media(max-width:650px){
+  html.pocket-v59 main{padding-top:8px!important}
+  html.pocket-v59 .v59-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  html.pocket-v59 .v59-shortcut{min-height:72px!important}
+  html.pocket-v59 .v59-hero{margin-top:10px!important}
+  html.pocket-v59 .v59-section-head{margin-top:18px!important}
+  html.pocket-v59 .v59-books{padding-bottom:10px!important}
+  html.pocket-v59 #library,
+  html.pocket-v59 #files,
+  html.pocket-v59 #chat{scroll-margin-top:74px!important}
+}
+@media(min-width:1025px){
+  html.pocket-v59 .topbar{padding-left:max(24px,calc((100vw - 1200px)/2 + 28px))!important;padding-right:max(24px,calc((100vw - 1200px)/2 + 28px))!important}
+}
