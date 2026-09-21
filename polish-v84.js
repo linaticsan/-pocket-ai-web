@@ -1,6 +1,7 @@
 // Pocket AI V84 — product polish
 (() => {
- const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+ const $=(s,r=document)=>r.querySelector(s), $=(s,r=document)=>[...r.querySelectorAll(s)];
+ const ready=(name,fn)=>{let ran=false;const run=()=>{if(ran)return;ran=true;fn()};addEventListener(name,run,{once:true});if(name==='pocket-core-ready'&&document.documentElement.classList.contains('pocket-v59'))queueMicrotask(run);if(name==='pocket-features-ready'&&window.PocketFeatures?.ready)window.PocketFeatures.ready.then(run).catch(()=>{})};
  const ICONS={
  home:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3l8.5 7.5v9a1.5 1.5 0 0 1-1.5 1.5h-4.5v-6h-5v6H5a1.5 1.5 0 0 1-1.5-1.5z"/></svg>',
  chat:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5h16v11H9l-5 4z"/></svg>',
@@ -71,8 +72,8 @@
    const lib=$('#library');if(window.PocketLibrary?.setTab&&lib)window.PocketLibrary.setTab(lib.dataset.libraryTab||'mine');
  }
 
- window.addEventListener('pocket-core-ready',()=>{decorate();install();syncLibraryTab()},{once:true});
- window.addEventListener('pocket-features-ready',()=>{decorate();syncLibraryTab()},{once:true});
+ ready('pocket-core-ready',()=>{decorate();install();syncLibraryTab()});
+ ready('pocket-features-ready',()=>{decorate();syncLibraryTab()});
  document.addEventListener('click',e=>{if(e.target.closest?.('[data-more]'))setTimeout(decorate,0)});
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{decorate();install();dialogs();localTimeout()},{once:true});else{decorate();install();dialogs();localTimeout()}
 })();
