@@ -14,7 +14,14 @@ addDiagnostics();
 
 f('prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&innerWidth>650){e.preventDefault();f('chatForm').requestSubmit(f('chatSend'));}});
 document.addEventListener('click',e=>{const go=e.target.closest?.('[data-go]');if(!go)return;requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));},{capture:false});
-function syncWorkspaceStates(){f('github')?.classList.toggle('is-empty',!f('ghResults')?.children.length);f('surface')?.classList.toggle('is-empty',!f('surfaceResults')?.children.length&&!f('researchReport')?.hidden===false);}
+function syncWorkspaceStates(){
+ const ghEmpty=!(f('ghResults')?.children.length);
+ f('github')?.classList.toggle('is-empty',ghEmpty);
+ const hasResults=!!f('surfaceResults')?.children.length;
+ const report=f('researchReport');
+ const hasReport=!!report&&!report.hidden&&!!report.textContent.trim();
+ f('surface')?.classList.toggle('is-empty',!hasResults&&!hasReport);
+}
 f('ghForm')?.addEventListener('submit',()=>f('github')?.classList.remove('is-empty'),{capture:true});f('surfaceForm')?.addEventListener('submit',()=>f('surface')?.classList.remove('is-empty'),{capture:true});f('deepResearch')?.addEventListener('click',()=>f('surface')?.classList.remove('is-empty'),{capture:true});syncWorkspaceStates();
 function networkState(){document.documentElement.dataset.network=navigator.onLine?'online':'offline';}addEventListener('online',networkState);addEventListener('offline',networkState);networkState();
 
@@ -43,12 +50,12 @@ try{
  await load('./api-hub.js?v=20260920-v56');
  await load('./v3.js?v=20260921-v71');
  await load('./v3-guard.js?v=20260920-v56');
- await load('./coding-v1.js?v=20260921-v61');
+ await load('./coding-v1.js?v=20260921-v72');
  await load('./files-v32.js?v=20260921-v59');
  await load('./library-v33.js?v=20260921-v59');
  await load('./library-online-v34.js?v=20260921-v59');
  await load('./webnovel-v42.js?v=20260921-v59');
- await load('./home-v43.js?v=20260921-v59');
+ await load('./home-v43.js?v=20260921-v72');
  await load('./ui-v59.js?v=20260921-v71');
 })();
 
