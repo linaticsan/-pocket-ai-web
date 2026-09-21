@@ -21,7 +21,8 @@ const SOURCES=[
 ];
 const LINK_KEY='pocket-webnovel-links-v46';
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function links(){try{return JSON.parse(localStorage.getItem(LINK_KEY)||'[]')}catch{return[]}}
+function links(){try{const a=JSON.parse(localStorage.getItem(LINK_KEY)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
+function safeHost(url){try{return new URL(url).hostname}catch{return 'Saved link'}}
 function store(a){
  try{localStorage.setItem(LINK_KEY,JSON.stringify(a.slice(0,80)));return true}
  catch(e){console.warn('Pocket AI reading list could not be saved',e);return false}
@@ -99,7 +100,7 @@ function sourceCard(s){
 async function renderReading(){
  const host=by('wn44Reading');if(!host)return;const saved=links();let local=[];
  try{const a=await window.PocketLibrary?.allBooks?.();if(Array.isArray(a))local=a.slice(0,8)}catch{}
- host.innerHTML=(saved.length?'<div class="wn46-list"><h3>🔖 Web novel links</h3>'+saved.map((x,i)=>'<article><button data-wn46-saved="'+i+'"><span>🌐</span><div><strong>'+esc(x.title)+'</strong><small>'+esc(new URL(x.url).hostname)+'</small></div></button><button data-wn46-del="'+i+'" aria-label="Remove">×</button></article>').join('')+'</div>':'')+(local.length?'<div class="wn45-saved"><div class="wn44-title"><h3>📚 Saved books</h3><button data-wn44-library>My Library ›</button></div>'+local.map(x=>'<button data-wn44-library><span>📖</span><div><strong>'+esc(x.name||x.title||'Saved book')+'</strong><small>Private • on-device</small></div><b>›</b></button>').join('')+'</div>':'')+(!saved.length&&!local.length?'<div class="wn44-empty"><span>📚</span><strong>Your reading list is empty</strong><p>Open a free book or add a web-novel link.</p></div>':'');
+ host.innerHTML=(saved.length?'<div class="wn46-list"><h3>🔖 Web novel links</h3>'+saved.map((x,i)=>'<article><button data-wn46-saved="'+i+'"><span>🌐</span><div><strong>'+esc(x.title)+'</strong><small>'+esc(safeHost(x.url))+'</small></div></button><button data-wn46-del="'+i+'" aria-label="Remove">×</button></article>').join('')+'</div>':'')+(local.length?'<div class="wn45-saved"><div class="wn44-title"><h3>📚 Saved books</h3><button data-wn44-library>My Library ›</button></div>'+local.map(x=>'<button data-wn44-library><span>📖</span><div><strong>'+esc(x.name||x.title||'Saved book')+'</strong><small>Private • on-device</small></div><b>›</b></button>').join('')+'</div>':'')+(!saved.length&&!local.length?'<div class="wn44-empty"><span>📚</span><strong>Your reading list is empty</strong><p>Open a free book or add a web-novel link.</p></div>':'');
 }
 function addHub(){
  const lib=by('library'),free=by('freeLibrary');if(!lib||!free||by('webNovelHub'))return false;ensureWebReader();
