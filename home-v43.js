@@ -11,12 +11,12 @@ function showNovelHub(){
  setTimeout(()=>by('webNovelHub')?.scrollIntoView({block:'start',behavior:'smooth'}),120);
 }
 function upgradeHeader(){
- const top=document.querySelector('.topbar');if(!top||by('home46Top'))return;
- top.id='home46Top';const brand=top.querySelector('.brand');if(brand){const sm=brand.querySelector('small');if(sm)sm.textContent='Learn • Read • Create • Grow'}
- const a=top.querySelector('.top-actions');if(a)a.innerHTML='<button id="home46SearchBtn" class="round crystal-round" aria-label="Search">⌕</button><button id="home46Bell" class="round crystal-round notify" aria-label="Notifications">♢<i></i></button><button id="home46Avatar" class="home46-avatar" aria-label="Profile">🌸</button>';
- by('home46SearchBtn')?.addEventListener('click',()=>{window.PocketV39?.show?.('home');setTimeout(()=>by('home45Query')?.focus(),80)});
- by('home46Bell')?.addEventListener('click',()=>{const n=by('notice');if(n)n.textContent='✨ You are all caught up.'});
- by('home46Avatar')?.addEventListener('click',()=>by('settingsOpen')?.click());
+ const top=document.querySelector('.topbar');if(!top)return;
+ // Do not replace top-action buttons. Newer UI owns Command / Settings / Theme.
+ // Older Home code used to overwrite those controls and could make them disappear.
+ top.id='home46Top';
+ const brand=top.querySelector('.brand');
+ if(brand){const sm=brand.querySelector('small');if(sm)sm.textContent='Learn • Read • Create • Grow'}
 }
 function startVoice(){
  const SR=window.SpeechRecognition||window.webkitSpeechRecognition,input=by('home45Query');if(!SR||!input){input?.focus();return}
