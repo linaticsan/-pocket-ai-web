@@ -937,3 +937,144 @@ html.pocket-v59[data-theme="oled"] body>#bottomNav,
 html.pocket-v59[data-theme="oled"] .v39-more-sheet .v39-sheet{
   background:#050505!important;
 }
+
+/* V65 — strict Light theme cleanup
+   When Light is selected, no dark cards/inputs/sections should remain. */
+html.pocket-v59[data-theme="light"]{
+  --theme-bg:#f8f6ff;
+  --theme-surface:#ffffff;
+  --theme-surface-2:#f5f3fb;
+  --theme-ink:#18142f;
+  --theme-muted:#777286;
+  --theme-line:#ebe7f5;
+  --theme-accent:#9d57ef;
+  --theme-accent-2:#ec68b7;
+  --theme-shadow:0 10px 28px rgba(75,57,128,.09);
+  --theme-hero-a:#eff5ff;
+  --theme-hero-b:#f6efff;
+  --theme-hero-c:#fff2f8;
+}
+
+html.pocket-v59[data-theme="light"] body,
+html.pocket-v59[data-theme="light"] main,
+html.pocket-v59[data-theme="light"] .view{
+  background:#f8f6ff!important;
+  color:#18142f!important;
+}
+
+html.pocket-v59[data-theme="light"] .topbar,
+html.pocket-v59[data-theme="light"] .v59-shortcut,
+html.pocket-v59[data-theme="light"] .v3-composer,
+html.pocket-v59[data-theme="light"] .v3-suggestions button,
+html.pocket-v59[data-theme="light"] .lib53-continue,
+html.pocket-v59[data-theme="light"] .library-books-only-v53 .book-card,
+html.pocket-v59[data-theme="light"] #files,
+html.pocket-v59[data-theme="light"] .file-type-strip span,
+html.pocket-v59[data-theme="light"] .document-studio-v50,
+html.pocket-v59[data-theme="light"] .doc-studio-grid button,
+html.pocket-v59[data-theme="light"] .v39-more-sheet .v39-sheet,
+html.pocket-v59[data-theme="light"] .v39-tools button,
+html.pocket-v59[data-theme="light"] .v39-settings button,
+html.pocket-v59[data-theme="light"] body>#bottomNav,
+html.pocket-v59[data-theme="light"] .settings-dialog,
+html.pocket-v59[data-theme="light"] #webNovelHub,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn44-search,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn44-tabs,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn46-source,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn46-add,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn44-empty{
+  background:#fff!important;
+  color:#18142f!important;
+  border-color:#ebe7f5!important;
+}
+
+html.pocket-v59[data-theme="light"] .v59-search,
+html.pocket-v59[data-theme="light"] .lib53-tools .lib-search,
+html.pocket-v59[data-theme="light"] .v3-composer textarea,
+html.pocket-v59[data-theme="light"] #files input,
+html.pocket-v59[data-theme="light"] #files textarea,
+html.pocket-v59[data-theme="light"] #webNovelHub input,
+html.pocket-v59[data-theme="light"] #webNovelHub textarea,
+html.pocket-v59[data-theme="light"] .settings-dialog .theme-grid button,
+html.pocket-v59[data-theme="light"] .settings-dialog .segmented button{
+  background:#f7f5fb!important;
+  color:#18142f!important;
+  border-color:#ebe7f5!important;
+}
+
+html.pocket-v59[data-theme="light"] .v59-hero,
+html.pocket-v59[data-theme="light"] .lib53-hero,
+html.pocket-v59[data-theme="light"] .v3-welcome,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn44-head,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn48-head{
+  background:
+    radial-gradient(circle at 84% 20%,rgba(255,181,226,.43),transparent 22%),
+    radial-gradient(circle at 78% 79%,rgba(126,164,255,.28),transparent 28%),
+    linear-gradient(135deg,#eff5ff,#f6efff 54%,#fff2f8)!important;
+  color:#18142f!important;
+  border-color:#ebe7f5!important;
+}
+
+html.pocket-v59[data-theme="light"] h1,
+html.pocket-v59[data-theme="light"] h2,
+html.pocket-v59[data-theme="light"] h3,
+html.pocket-v59[data-theme="light"] strong,
+html.pocket-v59[data-theme="light"] label,
+html.pocket-v59[data-theme="light"] .v39-sheet-head h2,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn44-head h2,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn44-title h3,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn46-source strong{
+  color:#18142f!important;
+}
+html.pocket-v59[data-theme="light"] p,
+html.pocket-v59[data-theme="light"] small,
+html.pocket-v59[data-theme="light"] .muted,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn46-source small,
+html.pocket-v59[data-theme="light"] #webNovelHub .wn46-source em{
+  color:#777286!important;
+}
+
+html.pocket-v59[data-theme="light"] input,
+html.pocket-v59[data-theme="light"] textarea,
+html.pocket-v59[data-theme="light"] select{
+  background:#fff!important;
+  color:#18142f!important;
+  border-color:#ebe7f5!important;
+}
+html.pocket-v59[data-theme="light"] input::placeholder,
+html.pocket-v59[data-theme="light"] textarea::placeholder{color:#9b96a9!important}
+
+html.pocket-v59[data-theme="light"] .v39-more-sheet .v39-scrim{
+  background:rgba(67,51,109,.16)!important;
+}
+html.pocket-v59[data-theme="light"] .v39-close{
+  background:#f3effa!important;
+  color:#4f4862!important;
+}
+html.pocket-v59[data-theme="light"] .v39-tools small{color:#858092!important}
+
+html.pocket-v59[data-theme="light"] .lib53-tabs{
+  background:#f2eff8!important;
+}
+html.pocket-v59[data-theme="light"] .lib53-tabs button{
+  background:transparent!important;
+  color:#4f4962!important;
+}
+html.pocket-v59[data-theme="light"] .lib53-tabs button.active{
+  background:linear-gradient(90deg,#a45af3,#e968b6)!important;
+  color:#fff!important;
+}
+
+html.pocket-v59[data-theme="light"] body>#bottomNav button{
+  color:#777185!important;
+}
+html.pocket-v59[data-theme="light"] body>#bottomNav button.active{
+  background:#f1e8ff!important;
+  color:#9c4def!important;
+}
+
+/* Coding view keeps editor dark by design, but surrounding UI stays light. */
+html.pocket-v59[data-theme="light"] #coding{
+  background:transparent!important;
+  color:#18142f!important;
+}
