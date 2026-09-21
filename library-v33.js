@@ -34,7 +34,7 @@ function makeUI(){
  '<section id="lib53Continue" class="lib53-continue" hidden></section>'+
  '<section id="lib53Mine" class="lib53-mine"><div class="lib53-section-head"><div><p class="eyebrow">MY SHELF</p><h2>Your books</h2></div><span id="libCount" class="lib53-count">0 saved</span></div>'+
  '<div class="lib53-tools"><div class="lib-search"><span>⌕</span><input id="libSearch" placeholder="Search your books…"></div><label class="lib-upload">＋ Add book<input id="libInput" type="file" multiple accept=".pdf,.docx,.txt,.md,application/pdf,text/plain,text/markdown" hidden></label></div>'+
- '<div id="libStatus" class="muted book-library-status"></div><div id="libGrid" class="lib-grid book-only-grid"></div><div id="libStorage" class="muted book-library-storage"></div></section>';
+ '<div id="libStatus" class="muted book-library-status"></div><div id="libGrid" class="lib-grid book-only-grid"></div><div id="libStorage" class="muted book-library-storage"></div></section><section id="lib53TabState" class="lib-tab-state" hidden></section>';
  const files=by('files');(files?.parentNode||$('main')).insertBefore(s,files||null);
  return s;
 }
@@ -51,7 +51,7 @@ async function render(){
  const show=books.filter(b=>!q||b.name.toLowerCase().includes(q)||(b.text||'').toLowerCase().includes(q));
  grid.innerHTML=show.length?show.map((b,i)=>
   '<article class="lib-card book-card" data-id="'+b.id+'"><div class="book-cover53 c'+(i%5)+'"><span>'+iconFor(b.type)+'</span><small>'+esc((b.type||'BOOK').toUpperCase())+'</small></div><div class="book-card-copy"><strong>'+esc(prettyName(b.name))+'</strong><small>'+((b.text||'').length/1000).toFixed(1)+'k chars • private on device</small><div class="lib-card-actions"><button data-open="'+b.id+'" class="book-open">Read</button><button data-remove="'+b.id+'" class="book-remove" aria-label="Delete book">•••</button></div></div></article>'
- ).join(''):'<div class="lib-empty book-empty"><span>📚</span><strong>Your shelf is empty.</strong><p>Add your first book, or explore free books below.</p></div>';
+ ).join(''):'<div class="lib-empty book-empty"><span>📚</span><strong>Your shelf is empty.</strong><p>Add your first book or discover a free classic.</p><button type="button" class="primary" data-lib53-jump="free">Explore free books</button></div>';
 
  const cont=by('lib53Continue');
  if(cont){
@@ -94,18 +94,28 @@ async function contextFor(query){
  return '\n\n--- POCKET LIBRARY CONTEXT ---\n'+hits.map((h,i)=>'[SOURCE '+(i+1)+' • '+h.b.name+' • chunk '+(h.i+1)+']\n'+h.c).join('\n\n');
 }
 
+function activateLibraryTab(kind='mine'){
+ const root=by('library');if(!root)return;
+ root.dataset.libraryTab=kind;
+ root.querySelectorAll('.lib53-tabs button').forEach(b=>{const on=b.dataset.lib53Jump===kind;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});
+ const mine=by('lib53Mine'),free=by('freeLibrary'),novels=by('webNovelHub'),state=by('lib53TabState');
+ if(mine)mine.hidden=kind!=='mine';
+ if(free)free.hidden=kind!=='free';
+ if(novels)novels.hidden=kind!=='novels';
+ if(state){
+   const missing=(kind==='free'&&!free)||(kind==='novels'&&!novels);
+   state.hidden=!missing;
+   if(missing)state.innerHTML='<div class="lib-empty"><span>✦</span><strong>Loading '+(kind==='free'?'free books':'web novels')+'…</strong><p>This section is getting ready.</p></div>';
+ }
+ if(kind==='mine')by('libSearch')?.focus?.({preventScroll:true});
+}
 function bind(){
  by('libInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
  by('libSearch').oninput=render;
  by('library').addEventListener('click',async e=>{
   const jump=e.target.closest('[data-lib53-jump]');
   if(jump){
-   const kind=jump.dataset.lib53Jump;
-   by('library').querySelectorAll('.lib53-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.lib53Jump===kind));
-   const target=kind==='mine'?by('lib53Mine'):kind==='free'?by('freeLibrary'):by('webNovelHub');
-   if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
-   else if(kind==='free')setTimeout(()=>by('freeLibrary')?.scrollIntoView({behavior:'smooth',block:'start'}),120);
-   else if(kind==='novels')setTimeout(()=>by('webNovelHub')?.scrollIntoView({behavior:'smooth',block:'start'}),120);
+   activateLibraryTab(jump.dataset.lib53Jump);
    return;
   }
   const open=e.target.closest('[data-open]');
@@ -116,7 +126,8 @@ function bind(){
 }
 
 async function init(){
- makeUI();bind();
+ makeUI();bind();activateLibraryTab('mine');
+ window.addEventListener('pocket-features-ready',()=>activateLibraryTab(by('library')?.dataset.libraryTab||'mine'),{once:true});
  try{
    await render();
    try{if(navigator.storage?.persist)navigator.storage.persist()}catch{}
@@ -127,5 +138,5 @@ async function init(){
  }
 }
 init().catch(err=>console.warn('Pocket AI Library init failed',err));
-window.PocketLibrary={allBooks,retrieve,importFiles,contextFor,render};
+window.PocketLibrary={allBooks,retrieve,importFiles,contextFor,render,setTab:activateLibraryTab};
 })();
