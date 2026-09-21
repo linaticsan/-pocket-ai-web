@@ -4,7 +4,7 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 let sheet=null;
 function show(id){
  const view=$('#'+CSS.escape(id));if(!view)return false;
- $$('.view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
+ $('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
  $$('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
  $('[data-more]')?.classList.toggle('active',['local','coding','github','surface'].includes(id));
  closeMore();window.scrollTo({top:0,left:0,behavior:'auto'});return true;
@@ -21,8 +21,19 @@ function makeMore(){
  $('[data-v39-theme]',sheet).onclick=()=>{closeMore();$('#theme')?.click()};
 }
 function openMore(){makeMore();sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.body.classList.add('v39-more-open')}
+function normalizeViews(){
+ const views=$('body > main > .view');
+ if(!views.length)return;
+ let active=views.find(v=>v.classList.contains('active')&&!v.hidden) || views.find(v=>v.id==='home') || views[0];
+ views.forEach(v=>{
+   const on=v===active;
+   v.hidden=!on;
+   v.classList.toggle('active',on);
+ });
+}
 function bind(){
  document.documentElement.classList.add('pocket-v39');
+ normalizeViews();
  document.documentElement.style.pointerEvents='auto';document.body.style.pointerEvents='auto';
  // Remove obsolete repair sheets if a stale script created one before V39.
  $('#pocketMore')?.remove();document.body.classList.remove('more-open');
