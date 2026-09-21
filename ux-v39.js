@@ -41,6 +41,33 @@ function bind(){
  const more=$('[data-more]');if(more){more.onclick=e=>{e.preventDefault();e.stopPropagation();openMore()}}
  // Capture navigation once, without observing/mutating classes continuously.
  document.addEventListener('click',e=>{
+  const close=e.target.closest?.('dialog .close,#apiHubClose');
+  if(close){
+    const d=close.closest('dialog');
+    if(d?.open){e.preventDefault();e.stopImmediatePropagation();d.close();return}
+  }
+  const ai=e.target.closest?.('#aiSetup');
+  if(ai){
+    e.preventDefault();e.stopImmediatePropagation();
+    if(window.PocketAPI?.open)window.PocketAPI.open();
+    else {const d=$('#aiDialog');if(d?.showModal&&!d.open)d.showModal()}
+    return;
+  }
+  const sources=e.target.closest?.('#sourceSetup');
+  if(sources){
+    e.preventDefault();e.stopImmediatePropagation();
+    const d=$('#sourceDialog');if(d?.showModal&&!d.open)d.showModal();return;
+  }
+  const settings=e.target.closest?.('#settingsOpen,#theme,[data-v39-settings],[data-v39-theme]');
+  if(settings){
+    e.preventDefault();e.stopImmediatePropagation();
+    const d=$('#settingsDialog');if(d?.showModal&&!d.open)d.showModal();return;
+  }
+  const commands=e.target.closest?.('#commandOpen');
+  if(commands){
+    e.preventDefault();e.stopImmediatePropagation();
+    const d=$('#commandDialog');if(d?.showModal&&!d.open){d.showModal();setTimeout(()=>$('#commandSearch')?.focus(),50)}return;
+  }
   const quick=e.target.closest?.('[data-quick]');
   if(quick){
     const kind=quick.dataset.quick;
