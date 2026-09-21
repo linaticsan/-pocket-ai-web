@@ -8,7 +8,17 @@ cleanDuplicateBlankChats();
 // Size the chat from its actual on-screen position instead of guessing header heights.
 // This keeps the composer inside the visible viewport at different browser zoom levels,
 // desktop window sizes and mobile safe-area sizes while only the message list scrolls.
-function fitV3ChatViewport(){const chat=document.getElementById('chat');if(!chat||chat.hidden)return;const top=chat.getBoundingClientRect().top;const vh=window.visualViewport?.height||window.innerHeight;const bottomGap=innerWidth<=780?8:14;const available=Math.floor(vh-top-bottomGap);if(available>280)chat.style.setProperty('--pocket-chat-height',available+'px');}
+function fitV3ChatViewport(){
+ const chat=document.getElementById('chat');if(!chat||chat.hidden)return;
+ const top=Math.max(0,chat.getBoundingClientRect().top);
+ const vh=window.visualViewport?.height||window.innerHeight;
+ const mobile=innerWidth<=780;
+ const nav=document.getElementById('bottomNav');
+ const navH=mobile?(nav?.getBoundingClientRect().height||66):0;
+ const bottomGap=mobile?Math.max(12,navH+18):14;
+ const available=Math.floor(vh-top-bottomGap);
+ if(available>280)chat.style.setProperty('--pocket-chat-height',available+'px');
+}
 let fitFrame=0;function queueV3Fit(){cancelAnimationFrame(fitFrame);fitFrame=requestAnimationFrame(fitV3ChatViewport)}
 queueV3Fit();setTimeout(queueV3Fit,80);setTimeout(queueV3Fit,450);
 addEventListener('resize',queueV3Fit,{passive:true});addEventListener('orientationchange',queueV3Fit,{passive:true});window.visualViewport?.addEventListener('resize',queueV3Fit,{passive:true});
