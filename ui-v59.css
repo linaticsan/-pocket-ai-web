@@ -238,3 +238,41 @@ html.pocket-v59 #home{
     bottom:max(8px,env(safe-area-inset-bottom))!important;
   }
 }
+
+
+/* V61 — root-level bottom navigation hard lock */
+html.pocket-v59 body > #bottomNav.tabs.bottom-nav{
+  position:fixed!important;
+  top:auto!important;
+  bottom:max(12px,env(safe-area-inset-bottom))!important;
+  left:50%!important;
+  right:auto!important;
+  transform:translate3d(-50%,0,0)!important;
+  width:min(620px,calc(100vw - 24px))!important;
+  max-width:620px!important;
+  margin:0!important;
+  z-index:1000!important;
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  overflow:hidden!important;
+  contain:layout paint!important;
+}
+html.pocket-v59 body.v39-more-open > #bottomNav{
+  z-index:100!important;
+  pointer-events:none!important;
+  opacity:.65!important;
+}
+html.pocket-v59 body > main{
+  padding-bottom:calc(124px + env(safe-area-inset-bottom))!important;
+}
+html.pocket-v59 body > main > .view{
+  padding-bottom:calc(32px + env(safe-area-inset-bottom))!important;
+}
+@media(min-width:900px){
+  html.pocket-v59 body > #bottomNav.tabs.bottom-nav{
+    position:fixed!important;
+    top:auto!important;
+    bottom:18px!important;
+    width:620px!important;
+  }
+}
