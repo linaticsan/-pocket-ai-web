@@ -41,7 +41,7 @@ try{
 (async()=>{
  const load=async(path)=>{try{return await import(path)}catch(err){console.error('Pocket AI optional module failed:',path,err);return null}};
  await load('./api-hub.js?v=20260920-v56');
- await load('./v3.js?v=20260921-v70');
+ await load('./v3.js?v=20260921-v71');
  await load('./v3-guard.js?v=20260920-v56');
  await load('./coding-v1.js?v=20260921-v61');
  await load('./files-v32.js?v=20260921-v59');
@@ -49,6 +49,6 @@ try{
  await load('./library-online-v34.js?v=20260921-v59');
  await load('./webnovel-v42.js?v=20260921-v59');
  await load('./home-v43.js?v=20260921-v59');
- await load('./ui-v59.js?v=20260921-v70');
+ await load('./ui-v59.js?v=20260921-v71');
 })();
 
