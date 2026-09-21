@@ -305,3 +305,106 @@
   #messages .v3-welcome{padding:18px 12px 16px!important}
   #messages .v3-welcome h2{font-size:23px!important}
 }
+
+
+/* V81 — mobile viewport/composer fix */
+@media(max-width:650px){
+  html.pocket-v59 #chat{
+    height:var(--pocket-chat-height,calc(100dvh - 118px))!important;
+    min-height:560px!important;
+    max-height:none!important;
+    overflow:hidden!important;
+    display:block!important;
+    padding:0!important;
+  }
+
+  html.pocket-v59 #v3ChatShell{
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    display:block!important;
+    overflow:hidden!important;
+  }
+
+  html.pocket-v59 #v3ChatShell .v3-chat-main{
+    height:100%!important;
+    min-height:0!important;
+    max-height:100%!important;
+    display:flex!important;
+    flex-direction:column!important;
+    gap:10px!important;
+    overflow:hidden!important;
+  }
+
+  html.pocket-v59 #v3ChatShell .v3-chat-top{
+    flex:0 0 42px!important;
+  }
+
+  html.pocket-v59 #messages.v3-messages{
+    flex:1 1 auto!important;
+    min-height:0!important;
+    height:auto!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    padding:0 0 4px!important;
+  }
+
+  html.pocket-v59 #messages .v3-welcome{
+    margin:0!important;
+  }
+
+  html.pocket-v59 #chatForm.v3-composer{
+    position:relative!important;
+    left:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    flex:0 0 auto!important;
+    margin:0!important;
+    z-index:10!important;
+  }
+
+  html.pocket-v59 #chatForm.v3-composer textarea{
+    min-height:54px!important;
+    max-height:96px!important;
+  }
+
+  /* v3.css also adds a second + with :after on narrow screens. */
+  html.pocket-v59 #v3AttachBtn::after{
+    content:none!important;
+    display:none!important;
+  }
+
+  html.pocket-v59 #v3AttachBtn::before{
+    content:'＋'!important;
+    display:block!important;
+    line-height:1!important;
+    font-size:24px!important;
+  }
+
+  html.pocket-v59 #v3AttachBtn{
+    display:grid!important;
+    place-items:center!important;
+    overflow:hidden!important;
+    line-height:1!important;
+  }
+
+  /* The nav is fixed, so reserve space in the app canvas rather than letting it
+     create a large apparent gap below the composer. */
+  html.pocket-v59 main{
+    min-height:0!important;
+    padding-bottom:calc(82px + env(safe-area-inset-bottom))!important;
+  }
+}
+
+@media(max-width:390px){
+  html.pocket-v59 #chat{
+    min-height:520px!important;
+  }
+  html.pocket-v59 #messages .v3-welcome{
+    padding:16px 11px 14px!important;
+  }
+  html.pocket-v59 #messages .v3-suggestions button{
+    min-height:70px!important;
+  }
+}
