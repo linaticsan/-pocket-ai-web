@@ -97,33 +97,53 @@ document.addEventListener('click',e=>{
 /* V64 — theme engine */
 (() => {
   const root=document.documentElement;
-  const allowed=new Set(['light','dark','sakura','green','oled']);
+  const allowed=new Set(['system','light','dark','sakura','green','oled']);
+
+  const media=window.matchMedia?.('(prefers-color-scheme: dark)');
+  let selected='light';
+
+  function resolveTheme(choice){
+    return choice==='system' ? (media?.matches?'dark':'light') : choice;
+  }
 
   function applyTheme(theme,{persist=true,close=true}={}){
-    const next=allowed.has(theme)?theme:'light';
-    root.dataset.theme=next;
-    root.style.colorScheme=(next==='dark'||next==='oled')?'dark':'light';
-    if(persist){try{localStorage.setItem('pocket-theme',next)}catch{}}
+    const choice=allowed.has(theme)?theme:'light';
+    selected=choice;
+    const resolved=resolveTheme(choice);
+    root.dataset.theme=resolved;
+    root.dataset.themeChoice=choice;
+    root.style.colorScheme=(resolved==='dark'||resolved==='oled')?'dark':'light';
+
+    if(persist){try{localStorage.setItem('pocket-theme',choice)}catch{}}
+
     document.querySelectorAll('[data-theme-choice]').forEach(btn=>{
-      const on=btn.dataset.themeChoice===next;
+      const on=btn.dataset.themeChoice===choice;
       btn.classList.toggle('active',on);
       btn.setAttribute('aria-pressed',on?'true':'false');
     });
+
     const meta=document.querySelector('meta[name="theme-color"]');
-    const metaColors={light:'#f8f6ff',dark:'#151020',sakura:'#fff3f8',green:'#f2fff8',oled:'#000000'};
-    if(meta)meta.setAttribute('content',metaColors[next]||metaColors.light);
+    const metaColors={light:'#f8f6ff',dark:'#111018',sakura:'#fff6fa',green:'#f3fbf7',oled:'#000000'};
+    if(meta)meta.setAttribute('content',metaColors[resolved]||metaColors.light);
+
     if(close){
       const d=document.getElementById('settingsDialog');
       if(d?.open) setTimeout(()=>d.close(),120);
     }
-    window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:next}}));
+
+    window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:resolved,choice}}));
   }
 
-  window.PocketTheme={apply:applyTheme,get:()=>root.dataset.theme||'light'};
+  window.PocketTheme={
+    apply:applyTheme,
+    get:()=>root.dataset.theme||'light',
+    getChoice:()=>root.dataset.themeChoice||selected
+  };
 
   let saved='light';
   try{saved=localStorage.getItem('pocket-theme')||'light'}catch{}
   applyTheme(saved,{persist:false,close:false});
+  media?.addEventListener?.('change',()=>{if(selected==='system')applyTheme('system',{persist:false,close:false})});
 
   document.addEventListener('click',e=>{
     const btn=e.target.closest?.('[data-theme-choice]');
@@ -162,23 +182,24 @@ window.addEventListener('pocket-theme-change',e=>{
 /* V66 — polished themes: persistent, immediate, and accessible */
 (() => {
   const root=document.documentElement;
-  const names={light:'Light',dark:'Dark',sakura:'Sakura',green:'Green',oled:'OLED'};
-  const icons={light:'☀️',dark:'🌙',sakura:'🌸',green:'🌿',oled:'◼️'};
+  const names={system:'System',light:'Light',dark:'Dark',sakura:'Sakura',green:'Green',oled:'OLED'};
+  const icons={system:'🖥️',light:'☀️',dark:'🌙',sakura:'🌸',green:'🌿',oled:'◼️'};
 
   function syncThemeUI(){
     const current=root.dataset.theme||'light';
+    const choice=root.dataset.themeChoice||current;
     document.querySelectorAll('[data-theme-choice]').forEach(btn=>{
-      const active=btn.dataset.themeChoice===current;
+      const active=btn.dataset.themeChoice===choice;
       btn.classList.toggle('active',active);
       btn.setAttribute('aria-pressed',active?'true':'false');
     });
     const palette=document.getElementById('theme');
     if(palette){
-      palette.title='Theme: '+(names[current]||current);
-      palette.setAttribute('aria-label','Theme: '+(names[current]||current));
-      palette.textContent=icons[current]||'🎨';
+      palette.title='Theme: '+(names[choice]||choice);
+      palette.setAttribute('aria-label','Theme: '+(names[choice]||choice));
+      palette.textContent=icons[choice]||icons[current]||'🎨';
     }
-    document.body.dataset.themeName=names[current]||current;
+    document.body.dataset.themeName=names[choice]||choice;
   }
 
   window.addEventListener('pocket-theme-change',syncThemeUI);
