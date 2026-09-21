@@ -53,3 +53,8 @@ dialog .close,.api-hub-close{
   background:var(--app-panel-2,#f7f4fd)!important;color:var(--app-text,#1b1732)!important;
   border:1px solid var(--app-border,#e8e4f2)!important;font-size:28px!important;font-weight:800!important
 }
+
+.pocket-boot-skeleton{display:grid;gap:9px;margin:18px auto 2px;width:min(240px,72vw)}
+.pocket-boot-skeleton i{display:block;height:12px;border-radius:999px;background:linear-gradient(90deg,#eee8f8 20%,#fff 45%,#eee8f8 70%);background-size:220% 100%;animation:pocketSkeleton 1.25s ease-in-out infinite}
+.pocket-boot-skeleton i:nth-child(2){width:82%;margin:auto}.pocket-boot-skeleton i:nth-child(3){width:64%;margin:auto}
+@keyframes pocketSkeleton{to{background-position:-220% 0}}
