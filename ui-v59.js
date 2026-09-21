@@ -144,3 +144,16 @@ document.addEventListener('click',e=>{
   const d=document.getElementById('settingsDialog');
   d?.addEventListener('toggle',()=>applyTheme(root.dataset.theme||saved,{persist:false,close:false}));
 })();
+
+
+/* V65 — force a complete repaint when switching themes */
+window.addEventListener('pocket-theme-change',e=>{
+  const t=e.detail?.theme;
+  if(!t)return;
+  document.documentElement.classList.remove('theme-light-repaint');
+  if(t==='light'){
+    // Force the browser to recalculate all legacy dark selectors immediately.
+    void document.documentElement.offsetWidth;
+    document.documentElement.classList.add('theme-light-repaint');
+  }
+});
