@@ -1078,3 +1078,303 @@ html.pocket-v59[data-theme="light"] #coding{
   background:transparent!important;
   color:#18142f!important;
 }
+
+/* V66 — unified theme system
+   One visual language across Home, Chat, Library, Files, Web Novel, More, Local AI,
+   Research, GitHub and Coding. Loaded last to neutralize legacy hard-coded colors. */
+
+html.pocket-v59{
+  --app-bg:#f7f6fb;
+  --app-panel:#ffffff;
+  --app-panel-2:#f4f2f8;
+  --app-panel-3:#efedf5;
+  --app-text:#18142f;
+  --app-muted:#777286;
+  --app-border:#e8e4f2;
+  --app-accent:#9d57ef;
+  --app-accent-2:#ec68b7;
+  --app-success:#37b47d;
+  --app-shadow:0 10px 28px rgba(74,57,126,.09);
+  --app-shadow-soft:0 5px 18px rgba(74,57,126,.06);
+  --app-hero-1:#eff5ff;
+  --app-hero-2:#f5efff;
+  --app-hero-3:#fff2f8;
+}
+
+html.pocket-v59[data-theme="dark"]{
+  --app-bg:#111018;
+  --app-panel:#1a1822;
+  --app-panel-2:#24212e;
+  --app-panel-3:#2c2837;
+  --app-text:#f7f3ff;
+  --app-muted:#b9b1c6;
+  --app-border:#373241;
+  --app-accent:#9c74ff;
+  --app-accent-2:#e86ab3;
+  --app-success:#56cf98;
+  --app-shadow:0 12px 34px rgba(0,0,0,.32);
+  --app-shadow-soft:0 6px 20px rgba(0,0,0,.20);
+  --app-hero-1:#1b2136;
+  --app-hero-2:#251c33;
+  --app-hero-3:#311d2d;
+}
+html.pocket-v59[data-theme="sakura"]{
+  --app-bg:#fff6fa;
+  --app-panel:#fffdfd;
+  --app-panel-2:#fceff5;
+  --app-panel-3:#f8e5ee;
+  --app-text:#3a2232;
+  --app-muted:#8a6a7a;
+  --app-border:#f0d9e4;
+  --app-accent:#d75c97;
+  --app-accent-2:#f18ab5;
+  --app-success:#54b986;
+  --app-shadow:0 10px 28px rgba(180,82,126,.10);
+  --app-shadow-soft:0 5px 18px rgba(180,82,126,.07);
+  --app-hero-1:#fff8fb;
+  --app-hero-2:#fdebf3;
+  --app-hero-3:#fae5ef;
+}
+html.pocket-v59[data-theme="green"]{
+  --app-bg:#f3fbf7;
+  --app-panel:#ffffff;
+  --app-panel-2:#ecf7f1;
+  --app-panel-3:#e2f1e9;
+  --app-text:#17352c;
+  --app-muted:#6b7f77;
+  --app-border:#d9ebe2;
+  --app-accent:#2f9c74;
+  --app-accent-2:#6bc69b;
+  --app-success:#2f9c74;
+  --app-shadow:0 10px 28px rgba(43,128,96,.09);
+  --app-shadow-soft:0 5px 18px rgba(43,128,96,.06);
+  --app-hero-1:#f1fbf6;
+  --app-hero-2:#eaf7f0;
+  --app-hero-3:#f7fdf9;
+}
+html.pocket-v59[data-theme="oled"]{
+  --app-bg:#000000;
+  --app-panel:#050505;
+  --app-panel-2:#0b0b0b;
+  --app-panel-3:#111111;
+  --app-text:#ffffff;
+  --app-muted:#a8a8a8;
+  --app-border:#242424;
+  --app-accent:#a67cff;
+  --app-accent-2:#ff66bb;
+  --app-success:#5bd49d;
+  --app-shadow:0 12px 32px rgba(0,0,0,.7);
+  --app-shadow-soft:0 6px 18px rgba(0,0,0,.55);
+  --app-hero-1:#060606;
+  --app-hero-2:#0b0b0b;
+  --app-hero-3:#120a10;
+}
+
+/* global canvas */
+html.pocket-v59 body,
+html.pocket-v59 main,
+html.pocket-v59 .view,
+html.pocket-v59 #home,
+html.pocket-v59 #homeV59,
+html.pocket-v59 #chat,
+html.pocket-v59 #library,
+html.pocket-v59 #files,
+html.pocket-v59 #local,
+html.pocket-v59 #github,
+html.pocket-v59 #surface,
+html.pocket-v59 #coding{
+  background:var(--app-bg)!important;
+  color:var(--app-text)!important;
+}
+
+/* remove the dark band visible in Light mode and make Home consistent */
+html.pocket-v59 .v59-search,
+html.pocket-v59 .v59-shortcuts,
+html.pocket-v59 .v59-section-head,
+html.pocket-v59 .v59-books{
+  background:transparent!important;
+}
+html.pocket-v59 .v59-shortcut,
+html.pocket-v59 .v59-book{
+  color:var(--app-text)!important;
+}
+html.pocket-v59 .v59-section-head h2,
+html.pocket-v59 .v59-book>strong{color:var(--app-text)!important}
+html.pocket-v59 .v59-book>small{color:var(--app-muted)!important}
+
+/* common surfaces */
+html.pocket-v59 .topbar,
+html.pocket-v59 .v59-shortcut,
+html.pocket-v59 .v3-composer,
+html.pocket-v59 .v3-suggestions button,
+html.pocket-v59 .lib53-continue,
+html.pocket-v59 .library-books-only-v53 .book-card,
+html.pocket-v59 #files,
+html.pocket-v59 .file-type-strip span,
+html.pocket-v59 .document-studio-v50,
+html.pocket-v59 .doc-studio-grid button,
+html.pocket-v59 .v39-more-sheet .v39-sheet,
+html.pocket-v59 .v39-tools button,
+html.pocket-v59 .v39-settings button,
+html.pocket-v59 body>#bottomNav,
+html.pocket-v59 .settings-dialog,
+html.pocket-v59 #webNovelHub,
+html.pocket-v59 #webNovelHub .wn44-search,
+html.pocket-v59 #webNovelHub .wn44-tabs,
+html.pocket-v59 #webNovelHub .wn46-source,
+html.pocket-v59 #webNovelHub .wn46-add,
+html.pocket-v59 #webNovelHub .wn44-empty,
+html.pocket-v59 .device-card,
+html.pocket-v59 .local-status,
+html.pocket-v59 .diagnostics,
+html.pocket-v59 .diag-row,
+html.pocket-v59 .project-card,
+html.pocket-v59 .result-card{
+  background:var(--app-panel)!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+  box-shadow:var(--app-shadow-soft)!important;
+}
+
+/* secondary surfaces */
+html.pocket-v59 .v59-search,
+html.pocket-v59 .lib53-tabs,
+html.pocket-v59 .lib53-tools .lib-search,
+html.pocket-v59 .v3-composer textarea,
+html.pocket-v59 #files input,
+html.pocket-v59 #files textarea,
+html.pocket-v59 #webNovelHub input,
+html.pocket-v59 #webNovelHub textarea,
+html.pocket-v59 .settings-dialog .theme-grid button,
+html.pocket-v59 .settings-dialog .segmented button,
+html.pocket-v59 .engine-row,
+html.pocket-v59 .status-badge,
+html.pocket-v59 .privacy-pill{
+  background:var(--app-panel-2)!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+}
+
+/* hero panels */
+html.pocket-v59 .v59-hero,
+html.pocket-v59 .lib53-hero,
+html.pocket-v59 .v3-welcome,
+html.pocket-v59 #webNovelHub .wn44-head,
+html.pocket-v59 #webNovelHub .wn48-head{
+  background:
+    radial-gradient(circle at 84% 20%,color-mix(in srgb,var(--app-accent-2) 24%,transparent),transparent 24%),
+    radial-gradient(circle at 78% 79%,color-mix(in srgb,var(--app-accent) 18%,transparent),transparent 30%),
+    linear-gradient(135deg,var(--app-hero-1),var(--app-hero-2) 55%,var(--app-hero-3))!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+  box-shadow:var(--app-shadow)!important;
+}
+
+/* typography */
+html.pocket-v59 h1,
+html.pocket-v59 h2,
+html.pocket-v59 h3,
+html.pocket-v59 h4,
+html.pocket-v59 strong,
+html.pocket-v59 label,
+html.pocket-v59 .v39-sheet-head h2,
+html.pocket-v59 #webNovelHub .wn44-title h3,
+html.pocket-v59 #webNovelHub .wn46-source strong{
+  color:var(--app-text)!important;
+}
+html.pocket-v59 p,
+html.pocket-v59 small,
+html.pocket-v59 .muted,
+html.pocket-v59 .v39-tools small,
+html.pocket-v59 #webNovelHub .wn46-source small,
+html.pocket-v59 #webNovelHub .wn46-source em{
+  color:var(--app-muted)!important;
+}
+html.pocket-v59 input::placeholder,
+html.pocket-v59 textarea::placeholder{color:color-mix(in srgb,var(--app-muted) 78%,transparent)!important}
+
+/* interactive accents */
+html.pocket-v59 .v59-hero button,
+html.pocket-v59 .lib53-tabs button.active,
+html.pocket-v59 .lib53-tools .lib-upload,
+html.pocket-v59 .v3-compose-row .primary,
+html.pocket-v59 #webNovelHub .wn44-tabs button.active,
+html.pocket-v59 .primary,
+html.pocket-v59 .settings-dialog .theme-grid button.active,
+html.pocket-v59 .settings-dialog .theme-grid button[aria-pressed="true"]{
+  background:linear-gradient(90deg,var(--app-accent),var(--app-accent-2))!important;
+  color:#fff!important;
+  border-color:transparent!important;
+}
+html.pocket-v59 body>#bottomNav button{color:var(--app-muted)!important}
+html.pocket-v59 body>#bottomNav button.active{
+  background:color-mix(in srgb,var(--app-accent) 14%,var(--app-panel))!important;
+  color:var(--app-accent)!important;
+}
+html.pocket-v59 .eyebrow,
+html.pocket-v59 .v39-sheet-head small{color:var(--app-accent)!important}
+
+/* modal layering */
+html.pocket-v59 .v39-more-sheet .v39-scrim{
+  background:color-mix(in srgb,var(--app-bg) 58%,rgba(0,0,0,.38))!important;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+/* theme picker looks like a polished settings screen */
+html.pocket-v59 .settings-dialog .theme-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button{
+  min-height:64px!important;
+  border-radius:16px!important;
+  padding:12px 14px!important;
+  font-weight:750!important;
+  text-align:left!important;
+  transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button:active{transform:scale(.985)}
+html.pocket-v59 .settings-dialog .theme-grid button.active,
+html.pocket-v59 .settings-dialog .theme-grid button[aria-pressed="true"]{
+  box-shadow:0 8px 22px color-mix(in srgb,var(--app-accent) 24%,transparent)!important;
+}
+
+/* smoother theme switching without flashy animations */
+html.pocket-v59 body,
+html.pocket-v59 .topbar,
+html.pocket-v59 .view,
+html.pocket-v59 .v59-shortcut,
+html.pocket-v59 .v59-hero,
+html.pocket-v59 .v3-welcome,
+html.pocket-v59 #files,
+html.pocket-v59 #webNovelHub,
+html.pocket-v59 .v39-sheet,
+html.pocket-v59 body>#bottomNav{
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+}
+
+/* keep book covers colorful in every theme, while their surrounding shelf follows theme */
+html.pocket-v59 .v59-cover{box-shadow:var(--app-shadow-soft)!important}
+
+/* dark/OLED specific contrast corrections */
+html.pocket-v59:is([data-theme="dark"],[data-theme="oled"]) .v59-search button,
+html.pocket-v59:is([data-theme="dark"],[data-theme="oled"]) .top-actions button,
+html.pocket-v59:is([data-theme="dark"],[data-theme="oled"]) .v39-close{
+  background:var(--app-panel-3)!important;
+  color:var(--app-text)!important;
+}
+html.pocket-v59[data-theme="oled"] .topbar,
+html.pocket-v59[data-theme="oled"] body>#bottomNav,
+html.pocket-v59[data-theme="oled"] .v39-more-sheet .v39-sheet{background:#050505!important}
+
+/* mobile: remove visible theme seams */
+@media(max-width:650px){
+  html.pocket-v59 #homeV59,
+  html.pocket-v59 #chat,
+  html.pocket-v59 #library,
+  html.pocket-v59 #files{border-radius:0!important}
+  html.pocket-v59 .v59-shortcuts{padding:0!important}
+  html.pocket-v59 .settings-dialog .theme-grid{grid-template-columns:1fr 1fr!important}
+}
