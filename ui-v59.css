@@ -733,3 +733,207 @@ html.pocket-v59 .document-studio-v50 button span{
   width:100%!important;
   margin:0!important;
 }
+
+/* V64 — real theme palettes for consolidated UI */
+html.pocket-v59{
+  --theme-bg:#f8f6ff;
+  --theme-surface:#ffffff;
+  --theme-surface-2:#f4f1fb;
+  --theme-ink:#18142f;
+  --theme-muted:#777286;
+  --theme-line:#ebe7f5;
+  --theme-accent:#9d57ef;
+  --theme-accent-2:#ec68b7;
+  --theme-shadow:0 10px 28px rgba(75,57,128,.09);
+  --theme-hero-a:#eff5ff;
+  --theme-hero-b:#f6efff;
+  --theme-hero-c:#fff2f8;
+}
+
+html.pocket-v59[data-theme="dark"]{
+  --theme-bg:#151020;
+  --theme-surface:#21192f;
+  --theme-surface-2:#2b213b;
+  --theme-ink:#f8f3ff;
+  --theme-muted:#c4b9d3;
+  --theme-line:rgba(203,177,255,.18);
+  --theme-accent:#9f73ff;
+  --theme-accent-2:#f06db9;
+  --theme-shadow:0 14px 34px rgba(0,0,0,.28);
+  --theme-hero-a:#1d2345;
+  --theme-hero-b:#2b1d43;
+  --theme-hero-c:#381d35;
+}
+html.pocket-v59[data-theme="sakura"]{
+  --theme-bg:#fff3f8;
+  --theme-surface:#fffafd;
+  --theme-surface-2:#fdeef5;
+  --theme-ink:#3b2234;
+  --theme-muted:#87697a;
+  --theme-line:rgba(219,102,154,.18);
+  --theme-accent:#d95d98;
+  --theme-accent-2:#f38db8;
+  --theme-shadow:0 12px 30px rgba(184,82,129,.10);
+  --theme-hero-a:#fff5fa;
+  --theme-hero-b:#fdebf4;
+  --theme-hero-c:#fce5ef;
+}
+html.pocket-v59[data-theme="green"]{
+  --theme-bg:#f2fff8;
+  --theme-surface:#fbfffd;
+  --theme-surface-2:#eaf9f1;
+  --theme-ink:#17382e;
+  --theme-muted:#637d74;
+  --theme-line:rgba(35,153,112,.18);
+  --theme-accent:#2c9b72;
+  --theme-accent-2:#72c99e;
+  --theme-shadow:0 12px 30px rgba(36,133,98,.10);
+  --theme-hero-a:#effcf6;
+  --theme-hero-b:#e6f8f0;
+  --theme-hero-c:#f3fff9;
+}
+html.pocket-v59[data-theme="oled"]{
+  --theme-bg:#000;
+  --theme-surface:#090909;
+  --theme-surface-2:#101010;
+  --theme-ink:#fff;
+  --theme-muted:#aaa;
+  --theme-line:#2b2b2b;
+  --theme-accent:#a67cff;
+  --theme-accent-2:#ff62ba;
+  --theme-shadow:0 12px 34px rgba(0,0,0,.65);
+  --theme-hero-a:#090909;
+  --theme-hero-b:#101010;
+  --theme-hero-c:#151015;
+}
+
+/* Apply theme variables over the light-first V59 rules */
+html.pocket-v59 body{
+  background:
+    radial-gradient(circle at 8% 0%,color-mix(in srgb,var(--theme-accent) 16%,transparent),transparent 26%),
+    radial-gradient(circle at 96% 14%,color-mix(in srgb,var(--theme-accent-2) 14%,transparent),transparent 24%),
+    var(--theme-bg)!important;
+  color:var(--theme-ink)!important;
+}
+html.pocket-v59 .topbar{
+  background:color-mix(in srgb,var(--theme-surface) 94%,transparent)!important;
+  border-color:var(--theme-line)!important;
+}
+html.pocket-v59 .topbar .brand strong,
+html.pocket-v59 .view,
+html.pocket-v59 h1,
+html.pocket-v59 h2,
+html.pocket-v59 h3,
+html.pocket-v59 strong{color:var(--theme-ink)!important}
+html.pocket-v59 .muted,
+html.pocket-v59 p,
+html.pocket-v59 small{color:var(--theme-muted)!important}
+
+html.pocket-v59 .top-actions button,
+html.pocket-v59 .v59-search,
+html.pocket-v59 .v59-shortcut,
+html.pocket-v59 .v3-suggestions button,
+html.pocket-v59 .v3-composer,
+html.pocket-v59 .lib53-continue,
+html.pocket-v59 .library-books-only-v53 .book-card,
+html.pocket-v59 #files,
+html.pocket-v59 .file-type-strip span,
+html.pocket-v59 .document-studio-v50,
+html.pocket-v59 .doc-studio-grid button,
+html.pocket-v59 .v39-more-sheet .v39-sheet,
+html.pocket-v59 .v39-tools button,
+html.pocket-v59 .v39-settings button,
+html.pocket-v59 body>#bottomNav{
+  background:var(--theme-surface)!important;
+  color:var(--theme-ink)!important;
+  border-color:var(--theme-line)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+
+html.pocket-v59 .v59-hero,
+html.pocket-v59 .lib53-hero,
+html.pocket-v59 .v3-welcome{
+  background:
+    radial-gradient(circle at 84% 20%,color-mix(in srgb,var(--theme-accent-2) 24%,transparent),transparent 24%),
+    radial-gradient(circle at 78% 79%,color-mix(in srgb,var(--theme-accent) 18%,transparent),transparent 30%),
+    linear-gradient(135deg,var(--theme-hero-a),var(--theme-hero-b) 55%,var(--theme-hero-c))!important;
+  border-color:var(--theme-line)!important;
+  box-shadow:var(--theme-shadow)!important;
+}
+
+html.pocket-v59 .v59-search input,
+html.pocket-v59 .lib53-tools .lib-search,
+html.pocket-v59 .lib53-tools .lib-search input,
+html.pocket-v59 .v3-composer textarea,
+html.pocket-v59 #files input,
+html.pocket-v59 #files textarea,
+html.pocket-v59 #webNovelHub .wn44-search input,
+html.pocket-v59 #webNovelHub .wn46-add input{
+  background:var(--theme-surface-2)!important;
+  color:var(--theme-ink)!important;
+  border-color:var(--theme-line)!important;
+}
+html.pocket-v59 input::placeholder,
+html.pocket-v59 textarea::placeholder{color:var(--theme-muted)!important}
+
+html.pocket-v59 .lib53-tabs,
+html.pocket-v59 #webNovelHub .wn44-search,
+html.pocket-v59 #webNovelHub .wn44-tabs,
+html.pocket-v59 #webNovelHub .wn46-source,
+html.pocket-v59 #webNovelHub .wn46-add,
+html.pocket-v59 #webNovelHub .wn44-empty,
+html.pocket-v59 #webNovelHub{
+  background:var(--theme-surface)!important;
+  color:var(--theme-ink)!important;
+  border-color:var(--theme-line)!important;
+}
+html.pocket-v59 #webNovelHub .wn44-head,
+html.pocket-v59 #webNovelHub .wn48-head{
+  background:linear-gradient(135deg,var(--theme-hero-a),var(--theme-hero-b),var(--theme-hero-c))!important;
+  color:var(--theme-ink)!important;
+}
+html.pocket-v59 #webNovelHub .wn44-head h2,
+html.pocket-v59 #webNovelHub .wn44-head p,
+html.pocket-v59 #webNovelHub .wn44-title h3,
+html.pocket-v59 #webNovelHub .wn46-source strong,
+html.pocket-v59 #webNovelHub .wn46-source small,
+html.pocket-v59 #webNovelHub .wn46-source em{color:var(--theme-ink)!important}
+
+html.pocket-v59 .v59-hero button,
+html.pocket-v59 .lib53-tabs button.active,
+html.pocket-v59 .lib53-tools .lib-upload,
+html.pocket-v59 .v3-compose-row .primary,
+html.pocket-v59 #webNovelHub .wn44-tabs button.active{
+  background:linear-gradient(90deg,var(--theme-accent),var(--theme-accent-2))!important;
+  color:#fff!important;
+}
+html.pocket-v59 body>#bottomNav button{color:var(--theme-muted)!important}
+html.pocket-v59 body>#bottomNav button.active{
+  background:color-mix(in srgb,var(--theme-accent) 14%,var(--theme-surface))!important;
+  color:var(--theme-accent)!important;
+}
+
+html.pocket-v59 .settings-dialog{
+  background:var(--theme-surface)!important;
+  color:var(--theme-ink)!important;
+  border-color:var(--theme-line)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button,
+html.pocket-v59 .settings-dialog .segmented button{
+  background:var(--theme-surface-2)!important;
+  color:var(--theme-ink)!important;
+  border-color:var(--theme-line)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button.active,
+html.pocket-v59 .settings-dialog .theme-grid button[aria-pressed="true"]{
+  background:linear-gradient(90deg,var(--theme-accent),var(--theme-accent-2))!important;
+  color:#fff!important;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--theme-accent) 24%,transparent)!important;
+}
+
+/* OLED should remain truly black */
+html.pocket-v59[data-theme="oled"] .topbar,
+html.pocket-v59[data-theme="oled"] body>#bottomNav,
+html.pocket-v59[data-theme="oled"] .v39-more-sheet .v39-sheet{
+  background:#050505!important;
+}
