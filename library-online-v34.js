@@ -22,10 +22,10 @@ function ensureReader(){
  const toggleMenu=()=>{menu.hidden=!menu.hidden};
  by('freeReaderClose').onclick=()=>d.close();by('freeReaderTop').onclick=()=>{pre.scrollTo({top:0,behavior:'smooth'})};
  by('freeReaderSave').onclick=saveActive;by('reader41MenuBtn').onclick=toggleMenu;by('reader41More').onclick=toggleMenu;by('reader41MenuClose').onclick=()=>menu.hidden=true;
- by('reader41Smaller').onclick=()=>{size=Math.max(14,size-2);localStorage.setItem('pocket-reader-size',size);apply()};
- by('reader41Larger').onclick=()=>{size=Math.min(30,size+2);localStorage.setItem('pocket-reader-size',size);apply()};
- by('reader41Comfort').onclick=()=>{comfort=!comfort;localStorage.setItem('pocket-reader-comfort',comfort?'1':'0');apply()};
- by('reader41Theme').onclick=()=>{d.classList.toggle('reader-paper');localStorage.setItem('pocket-reader-paper',d.classList.contains('reader-paper')?'1':'0')};
+ by('reader41Smaller').onclick=()=>{size=Math.max(14,size-2);try{localStorage.setItem('pocket-reader-size',size)}catch{};apply()};
+ by('reader41Larger').onclick=()=>{size=Math.min(30,size+2);try{localStorage.setItem('pocket-reader-size',size)}catch{};apply()};
+ by('reader41Comfort').onclick=()=>{comfort=!comfort;try{localStorage.setItem('pocket-reader-comfort',comfort?'1':'0')}catch{};apply()};
+ by('reader41Theme').onclick=()=>{d.classList.toggle('reader-paper');try{localStorage.setItem('pocket-reader-paper',d.classList.contains('reader-paper')?'1':'0')}catch{}};
  if(localStorage.getItem('pocket-reader-paper')==='1')d.classList.add('reader-paper');apply();
  let progressTimer=0;
  pre.addEventListener('scroll',()=>{
