@@ -2,7 +2,13 @@
 (() => {
  const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)], by=id=>document.getElementById(id);
  document.documentElement.classList.add('pocket-v59');
- try{document.documentElement.dataset.theme=localStorage.getItem('pocket-theme')||'light'}catch{document.documentElement.dataset.theme='light'}
+ try{
+   const saved=localStorage.getItem('pocket-theme')||'light';
+   document.documentElement.dataset.themeChoice=saved;
+   document.documentElement.dataset.theme=saved==='system'
+     ? (window.matchMedia?.('(prefers-color-scheme: dark)')?.matches?'dark':'light')
+     : saved;
+ }catch{document.documentElement.dataset.theme='light';document.documentElement.dataset.themeChoice='light'}
 
  // Remove experimental classes that had conflicting overrides.
  document.documentElement.classList.remove('pocket-ref57');
@@ -205,4 +211,75 @@ window.addEventListener('pocket-theme-change',e=>{
   window.addEventListener('pocket-theme-change',syncThemeUI);
   document.addEventListener('DOMContentLoaded',syncThemeUI,{once:true});
   setTimeout(syncThemeUI,0);
+})();
+
+
+/* V68 — runtime self-check and dead-control repair */
+(() => {
+  const by=id=>document.getElementById(id);
+  const requiredViews=['home','chat','library','files','local','github','surface','coding'];
+
+  function safeShow(id){
+    if(window.PocketV39?.show?.(id)) return true;
+    const view=by(id);
+    if(!view) return false;
+    document.querySelectorAll('.view').forEach(v=>{
+      const on=v===view;
+      v.hidden=!on;
+      v.classList.toggle('active',on);
+    });
+    document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+    return true;
+  }
+
+  function audit(){
+    const issues=[];
+    requiredViews.forEach(id=>{if(!by(id))issues.push('Missing view: '+id)});
+    const nav=by('bottomNav');
+    if(!nav)issues.push('Missing bottom navigation');
+    else{
+      const navTargets=[...nav.querySelectorAll('[data-go]')].map(b=>b.dataset.go);
+      ['home','chat','library','files'].forEach(id=>{if(!navTargets.includes(id))issues.push('Missing nav target: '+id)});
+    }
+    if(!by('settingsDialog'))issues.push('Missing settings dialog');
+    if(!by('v39More'))issues.push('More sheet not ready');
+
+    document.documentElement.dataset.health=issues.length?'degraded':'ok';
+    if(issues.length)console.warn('Pocket AI self-check:',issues);
+    return issues;
+  }
+
+  // One delegated fallback for controls that may be injected after boot.
+  document.addEventListener('click',e=>{
+    const go=e.target.closest?.('[data-v59-go]');
+    if(go){e.preventDefault();safeShow(go.dataset.v59Go);return}
+
+    const more=e.target.closest?.('[data-v59-more],[data-more]');
+    if(more&&window.PocketV39?.openMore){e.preventDefault();window.PocketV39.openMore();return}
+
+    const extra=e.target.closest?.('[data-v39-go]');
+    if(extra){e.preventDefault();safeShow(extra.dataset.v39Go);return}
+
+    const settings=e.target.closest?.('#settingsOpen,[data-v39-settings],[data-v39-theme],#theme');
+    if(settings){
+      e.preventDefault();
+      const d=by('settingsDialog');
+      if(d?.showModal&&!d.open)d.showModal();
+    }
+  },false);
+
+  window.PocketDebug={
+    audit,
+    show:safeShow,
+    getState:()=>({
+      theme:document.documentElement.dataset.theme,
+      themeChoice:document.documentElement.dataset.themeChoice,
+      health:document.documentElement.dataset.health||'unknown',
+      online:navigator.onLine
+    })
+  };
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(audit,700),{once:true});
+  else setTimeout(audit,700);
 })();
