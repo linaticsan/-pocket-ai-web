@@ -23,8 +23,10 @@
  function header(){
    const a=q('.top-actions');if(!a)return;
    // Keep stable IDs used by the core app and More sheet.
-   a.innerHTML='<button id="settingsOpen" aria-label="Settings">⚙️</button><button id="theme" aria-label="Theme">🎨</button>';
+   a.innerHTML='<button id="commandOpen" aria-label="Open command palette">⌘</button><button id="settingsOpen" aria-label="Settings">⚙️</button><button id="theme" aria-label="Theme">🎨</button>';
    const openSettings=()=>{const d=by('settingsDialog');if(d?.showModal&&!d.open)d.showModal()};
+   const openCommands=()=>{const d=by('commandDialog');if(d?.showModal&&!d.open){d.showModal();setTimeout(()=>by('commandSearch')?.focus(),50)}};
+   by('commandOpen').onclick=openCommands;
    by('settingsOpen').onclick=openSettings;
    by('theme').onclick=openSettings;
  }
