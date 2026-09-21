@@ -2,7 +2,21 @@ const polish=document.createElement('link');polish.rel='stylesheet';polish.href=
 const q=id=>document.getElementById(id);
 const safeGet=(k,f='')=>{try{return localStorage.getItem(k)||f}catch{return f}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-const go=id=>document.querySelector(`[data-go="${id}"]`)?.click();
+const go=id=>{
+  if(window.PocketV39?.show?.(id))return true;
+  const btn=document.querySelector(`[data-go="${CSS.escape(id)}"]`);
+  if(btn){btn.click();return true}
+  const view=document.getElementById(id);
+  if(!view)return false;
+  document.querySelectorAll('.view').forEach(v=>{
+    const on=v===view;
+    v.hidden=!on;
+    v.classList.toggle('active',on);
+  });
+  document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
+  window.scrollTo({top:0,left:0,behavior:'auto'});
+  return true;
+};
 
 function greeting(){const h=new Date().getHours();const word=h<12?'Good morning':h<18?'Good afternoon':'Good evening';q('homeGreeting').textContent=`${word}. What shall we work on?`;}
 function setTheme(t){
@@ -32,7 +46,16 @@ document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.
 
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();q('commandDialog').showModal();setTimeout(()=>q('commandSearch').focus(),50)}});
 q('commandSearch').oninput=e=>{const s=e.target.value.toLowerCase();q('commandList').querySelectorAll('button').forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(s));};
-function command(name){q('commandDialog').close();if(name==='settings'){q('settingsDialog').showModal();return}if(name==='research'){go('surface');setTimeout(()=>{q('surfaceMode').value='research';q('surfaceQuery').focus()},100);return}go(name);}
+function command(name){
+  q('commandDialog').close();
+  if(name==='settings'){q('settingsDialog').showModal();return}
+  if(name==='research'){
+    go('surface');
+    setTimeout(()=>{if(q('surfaceMode'))q('surfaceMode').value='research';q('surfaceQuery')?.focus()},100);
+    return;
+  }
+  if(!go(name))q('notice').textContent='That workspace is still loading. Try again in a moment.';
+}
 document.querySelectorAll('[data-command]').forEach(b=>b.onclick=()=>command(b.dataset.command));
 
 q('homeComposer').onsubmit=e=>{e.preventDefault();const text=q('homePrompt').value.trim();if(!text)return;go('chat');q('prompt').value=text;q('homePrompt').value='';setTimeout(()=>q('chatForm').requestSubmit(q('chatSend')),80);addRecent('💬',text,'chat');};
@@ -48,4 +71,14 @@ function syncLocalHome(){const installed=safeGet('pocket-local-webllm-installed'
 
 const mascots=document.querySelectorAll('[data-mascot]');function mascot(face,ms=1800){mascots.forEach(x=>x.textContent=face);setTimeout(()=>mascots.forEach(x=>x.textContent='◕‿◕'),ms)}q('chatForm').addEventListener('submit',()=>mascot('•ᴗ•'));q('deepResearch').addEventListener('click',()=>mascot('◉‿◉',3000));q('localSend').addEventListener('click',()=>mascot('•̀ᴗ•́'));
 
-window.addEventListener('online',()=>{document.body.dataset.network='online'});window.addEventListener('offline',()=>{document.body.dataset.network='offline';if(safeGet('pocket-privacy')==='balanced')setPrivacy('offline')});
+window.addEventListener('online',()=>{
+  document.body.dataset.network='online';
+  const mode=safeGet('pocket-privacy','balanced');
+  setPrivacy(mode);
+});
+window.addEventListener('offline',()=>{
+  document.body.dataset.network='offline';
+  // Network loss is temporary: do not overwrite the user's saved privacy preference.
+  const hint=q('modeHint');
+  if(hint)hint.textContent='Offline right now. Local AI and local files still work; web tools will resume when internet returns.';
+});
