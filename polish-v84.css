@@ -113,3 +113,42 @@ html[data-theme="green"]{--app-muted:#516d62!important}
   #chatForm.v3-composer .v3-input-row{grid-template-columns:44px minmax(0,1fr) 78px!important}
   .v3-top-controls button{min-width:50px!important}
 }
+
+/* V84 authoritative overrides loaded after legacy Chat/Library/Files CSS */
+html.pocket-v59 .v3-top-controls button{
+  width:auto!important;min-width:54px!important;height:46px!important;padding:5px 7px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:1px!important
+}
+html.pocket-v59 .v3-top-controls button small{display:block!important;font-size:8px!important;line-height:1!important;color:inherit!important}
+html.pocket-v59 #chatForm.v3-composer{
+  padding:8px!important;
+}
+html.pocket-v59 #chatForm.v3-composer .v3-input-row{
+  display:grid!important;grid-template-columns:46px minmax(0,1fr) auto!important;gap:8px!important;align-items:center!important
+}
+html.pocket-v59 #chatForm.v3-composer .v3-input-row textarea{
+  min-height:46px!important;max-height:112px!important;height:auto!important;margin:0!important;padding:12px!important
+}
+html.pocket-v59 #chatForm.v3-composer #v3AttachBtn{
+  display:grid!important;place-items:center!important;width:46px!important;min-width:46px!important;height:46px!important;min-height:46px!important;padding:0!important
+}
+html.pocket-v59 #chatForm.v3-composer #chatSend{
+  height:46px!important;min-height:46px!important;min-width:84px!important;padding:0 15px!important
+}
+html.pocket-v59 #chatForm.v3-composer .v3-compose-meta{
+  display:flex!important;justify-content:space-between!important;align-items:center!important;gap:8px!important;margin-top:6px!important
+}
+html.pocket-v59 #chatForm.v3-composer .v3-compose-row{display:none!important}
+html.pocket-v59 body>#bottomNav{
+  bottom:max(8px,env(safe-area-inset-bottom))!important;
+  padding-bottom:max(6px,env(safe-area-inset-bottom))!important;
+}
+html.pocket-v59 body>main>.view{
+  padding-bottom:calc(110px + env(safe-area-inset-bottom))!important;
+}
+html.pocket-v59 #library,html.pocket-v59 #files{
+  padding-bottom:calc(110px + env(safe-area-inset-bottom))!important;
+}
+@media(max-width:650px){
+  html.pocket-v59 #chatForm.v3-composer .v3-input-row{grid-template-columns:44px minmax(0,1fr) 78px!important}
+}
