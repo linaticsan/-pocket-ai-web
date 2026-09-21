@@ -22,7 +22,10 @@ const SOURCES=[
 const LINK_KEY='pocket-webnovel-links-v46';
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function links(){try{return JSON.parse(localStorage.getItem(LINK_KEY)||'[]')}catch{return[]}}
-function store(a){localStorage.setItem(LINK_KEY,JSON.stringify(a.slice(0,80)))}
+function store(a){
+ try{localStorage.setItem(LINK_KEY,JSON.stringify(a.slice(0,80)));return true}
+ catch(e){console.warn('Pocket AI reading list could not be saved',e);return false}
+}
 function showLibrary(){window.PocketLibraryOnline?.showLibrary?.()}
 async function readFree(q,btn){
  showLibrary();if(btn){btn.disabled=true;btn.dataset.old=btn.textContent;btn.textContent='Opening…'}
@@ -42,7 +45,21 @@ function ensureWebReader(){
 }
 let currentWeb=null;
 function saveCurrent(){
- if(!currentWeb)return;const a=links();if(!a.some(x=>x.url===currentWeb.url)){a.unshift({title:currentWeb.title||currentWeb.name||new URL(currentWeb.url).hostname,url:currentWeb.url,added:Date.now()});store(a)}const b=by('webReader46Save');if(b){b.innerHTML='♥<span>Saved</span>';setTimeout(()=>b.innerHTML='♡<span>Save</span>',1200)}renderReading();
+ if(!currentWeb)return;
+ const a=links();
+ let ok=true;
+ if(!a.some(x=>x.url===currentWeb.url)){
+   let title=currentWeb.title||currentWeb.name||'Saved novel';
+   try{title=title||new URL(currentWeb.url).hostname}catch{}
+   a.unshift({title,url:currentWeb.url,added:Date.now()});
+   ok=store(a);
+ }
+ const b=by('webReader46Save');
+ if(b){
+   b.innerHTML=ok?'♥<span>Saved</span>':'!<span>Save failed</span>';
+   setTimeout(()=>b.innerHTML='♡<span>Save</span>',1200);
+ }
+ renderReading();
 }
 function openWeb(item){
  ensureWebReader();
