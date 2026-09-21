@@ -27,7 +27,15 @@ function ensureReader(){
  by('reader41Comfort').onclick=()=>{comfort=!comfort;localStorage.setItem('pocket-reader-comfort',comfort?'1':'0');apply()};
  by('reader41Theme').onclick=()=>{d.classList.toggle('reader-paper');localStorage.setItem('pocket-reader-paper',d.classList.contains('reader-paper')?'1':'0')};
  if(localStorage.getItem('pocket-reader-paper')==='1')d.classList.add('reader-paper');apply();
- pre.addEventListener('scroll',()=>{const max=pre.scrollHeight-pre.clientHeight,p=max>0?Math.min(100,Math.max(0,pre.scrollTop/max*100)):0;by('reader41Progress').style.width=p+'%';localStorage.setItem('pocket-reader-progress-'+(activeBook?.id||'book'),String(pre.scrollTop))},{passive:true});
+ let progressTimer=0;
+ pre.addEventListener('scroll',()=>{
+   const max=pre.scrollHeight-pre.clientHeight,p=max>0?Math.min(100,Math.max(0,pre.scrollTop/max*100)):0;
+   const bar=by('reader41Progress');if(bar)bar.style.width=p+'%';
+   clearTimeout(progressTimer);
+   progressTimer=setTimeout(()=>{
+     try{localStorage.setItem('pocket-reader-progress-'+(activeBook?.id||'book'),String(pre.scrollTop))}catch{}
+   },180);
+ },{passive:true});
  d.addEventListener('close',()=>{menu.hidden=true});
 }
 function textURL(b){
