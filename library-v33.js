@@ -116,9 +116,16 @@ function bind(){
 }
 
 async function init(){
- makeUI();bind();await render();
- try{if(navigator.storage?.persist)navigator.storage.persist()}catch{}
+ makeUI();bind();
+ try{
+   await render();
+   try{if(navigator.storage?.persist)navigator.storage.persist()}catch{}
+ }catch(err){
+   const status=by('libStatus');
+   if(status)status.textContent='Library storage is unavailable in this browser mode: '+(err?.message||err);
+   console.warn('Pocket AI Library unavailable',err);
+ }
 }
-init();
+init().catch(err=>console.warn('Pocket AI Library init failed',err));
 window.PocketLibrary={allBooks,retrieve,importFiles,contextFor,render};
 })();
