@@ -285,3 +285,15 @@ window.addEventListener('pocket-theme-change',e=>{
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(audit,700),{once:true});
   else setTimeout(audit,700);
 })();
+
+
+/* V74 — module health */
+setTimeout(()=>{
+ const missing=[];
+ if(!window.PocketV39)missing.push('navigation');
+ if(!window.PocketTheme)missing.push('themes');
+ if(!window.PocketLibrary)missing.push('library');
+ if(!window.PocketFiles)missing.push('files');
+ document.documentElement.dataset.modules=missing.length?'partial':'ready';
+ if(missing.length)console.warn('Pocket AI modules still loading or unavailable:',missing);
+},1600);
