@@ -13,12 +13,12 @@ function closeMore(){if(!sheet)return;sheet.classList.remove('open');sheet.setAt
 function makeMore(){
  sheet=$('#v39More');if(sheet)return;
  sheet=document.createElement('div');sheet.id='v39More';sheet.className='v39-more-sheet';sheet.setAttribute('aria-hidden','true');
- sheet.innerHTML='<button class="v39-scrim" aria-label="Close tools"></button><section class="v39-sheet" role="dialog" aria-modal="true" aria-label="More Pocket AI tools"><div class="v39-handle"></div><div class="v39-sheet-head"><div><small>POCKET AI</small><h2>More tools</h2></div><button class="v39-close" aria-label="Close">×</button></div><div class="v39-tools"><button data-v39-go="local"><b>🧠</b><span>Local AI</span><small>Private model</small></button><button data-v39-go="coding"><b>⌨️</b><span>Code</span><small>Build & preview</small></button><button data-v39-go="github"><b>💻</b><span>GitHub</span><small>Repositories</small></button><button data-v39-go="surface"><b>🔎</b><span>Research</span><small>Open sources</small></button></div><div class="v39-settings"><button data-v39-settings>⚙️ Settings</button><button data-v39-theme>🎨 Theme</button></div></section>';
+ sheet.innerHTML='<button class="v39-scrim" aria-label="Close tools"></button><section class="v39-sheet" role="dialog" aria-modal="true" aria-label="More Pocket AI tools"><div class="v39-handle"></div><div class="v39-sheet-head"><div><small>POCKET AI</small><h2>More tools</h2></div><button class="v39-close" aria-label="Close">×</button></div><div class="v39-tools"><button data-v39-go="local" data-v84-icon="cpu"><b></b><span>Local AI</span><small>Private model</small></button><button data-v39-go="coding" data-v84-icon="code"><b></b><span>Code</span><small>Build & preview</small></button><button data-v39-go="github" data-v84-icon="github"><b></b><span>GitHub</span><small>Repositories</small></button><button data-v39-go="surface" data-v84-icon="search"><b></b><span>Research</span><small>Open sources</small></button></div><div class="v39-settings"><button data-v39-settings>Settings & appearance</button></div></section>';
  document.body.appendChild(sheet);
  $('.v39-scrim',sheet).onclick=closeMore;$('.v39-close',sheet).onclick=closeMore;
  $$('[data-v39-go]',sheet).forEach(b=>b.onclick=()=>show(b.dataset.v39Go));
  $('[data-v39-settings]',sheet).onclick=()=>{closeMore();$('#settingsOpen')?.click()};
- $('[data-v39-theme]',sheet).onclick=()=>{closeMore();$('#theme')?.click()};
+
 }
 function openMore(){makeMore();sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.body.classList.add('v39-more-open')}
 function normalizeViews(){
@@ -96,7 +96,8 @@ function bind(){
   const go=e.target.closest?.('[data-go]');
   if(go&&show(go.dataset.go)){e.preventDefault();e.stopImmediatePropagation()}
  },true);
- document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMore()});
+ document.addEventListener('pointerdown',e=>{const d=e.target.closest?.('dialog[open]');if(d&&e.target===d){e.preventDefault();d.close()}},{capture:true});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeMore();document.querySelectorAll('dialog[open]').forEach(d=>{try{d.close()}catch{}})}});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 window.PocketV39={show,openMore,closeMore};
