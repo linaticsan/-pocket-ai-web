@@ -1378,3 +1378,127 @@ html.pocket-v59[data-theme="oled"] .v39-more-sheet .v39-sheet{background:#050505
   html.pocket-v59 .v59-shortcuts{padding:0!important}
   html.pocket-v59 .settings-dialog .theme-grid{grid-template-columns:1fr 1fr!important}
 }
+
+/* V67 — premium/simple theme picker and full consistency */
+html.pocket-v59 .settings-dialog{
+  width:min(560px,calc(100vw - 28px))!important;
+  max-width:560px!important;
+  border-radius:24px!important;
+  padding:20px!important;
+}
+html.pocket-v59 .settings-dialog h2{margin:2px 0 18px!important}
+html.pocket-v59 .settings-dialog h3{margin:18px 0 10px!important}
+html.pocket-v59 .settings-dialog .theme-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button{
+  position:relative!important;
+  min-height:86px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+  align-items:flex-start!important;
+  gap:3px!important;
+  padding:34px 14px 12px!important;
+  overflow:hidden!important;
+  border:1px solid var(--app-border)!important;
+  background:var(--app-panel-2)!important;
+  color:var(--app-text)!important;
+  box-shadow:none!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button::before{
+  content:'';position:absolute;left:12px;top:12px;width:56px;height:13px;border-radius:999px;
+  border:1px solid rgba(0,0,0,.06);
+}
+html.pocket-v59 .settings-dialog .theme-grid button[data-theme-choice="system"]::before{
+  background:linear-gradient(90deg,#fff 0 50%,#15131b 50% 100%)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button[data-theme-choice="light"]::before{
+  background:linear-gradient(90deg,#fff,#f0e8ff,#ffddec)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button[data-theme-choice="dark"]::before{
+  background:linear-gradient(90deg,#111018,#292238,#654c8d)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button[data-theme-choice="sakura"]::before{
+  background:linear-gradient(90deg,#fff6fa,#f9d9e7,#ef8bb7)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button[data-theme-choice="green"]::before{
+  background:linear-gradient(90deg,#f4fff9,#d9f2e5,#65bd94)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button[data-theme-choice="oled"]::before{
+  background:linear-gradient(90deg,#000,#090909,#a67cff)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid .theme-name{
+  display:block!important;font-size:13px!important;font-weight:800!important;line-height:1.1!important
+}
+html.pocket-v59 .settings-dialog .theme-grid small{
+  display:block!important;font-size:10px!important;color:var(--app-muted)!important
+}
+html.pocket-v59 .settings-dialog .theme-grid button.active,
+html.pocket-v59 .settings-dialog .theme-grid button[aria-pressed="true"]{
+  border-color:var(--app-accent)!important;
+  background:color-mix(in srgb,var(--app-accent) 10%,var(--app-panel))!important;
+  color:var(--app-text)!important;
+}
+html.pocket-v59 .settings-dialog .theme-grid button.active::after,
+html.pocket-v59 .settings-dialog .theme-grid button[aria-pressed="true"]::after{
+  content:'✓';position:absolute;right:11px;top:10px;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;background:var(--app-accent);color:#fff;font-size:12px;font-weight:900;
+}
+
+/* every major workspace inherits theme background/surfaces */
+html.pocket-v59 #local .hero,
+html.pocket-v59 #github .hero,
+html.pocket-v59 #surface .hero,
+html.pocket-v59 #coding .hero{
+  background:linear-gradient(135deg,var(--app-hero-1),var(--app-hero-2),var(--app-hero-3))!important;
+  color:var(--app-text)!important;
+  border-color:var(--app-border)!important;
+}
+html.pocket-v59 #local button:not(.primary),
+html.pocket-v59 #github button:not(.primary),
+html.pocket-v59 #surface button:not(.primary),
+html.pocket-v59 #coding button:not(.primary){
+  background:var(--app-panel-2)!important;color:var(--app-text)!important;border-color:var(--app-border)!important
+}
+html.pocket-v59 #local input,
+html.pocket-v59 #local textarea,
+html.pocket-v59 #github input,
+html.pocket-v59 #surface input{
+  background:var(--app-panel)!important;color:var(--app-text)!important;border-color:var(--app-border)!important
+}
+
+/* Light must be completely bright, with no dark section seams */
+html.pocket-v59[data-theme="light"] #homeV59,
+html.pocket-v59[data-theme="light"] .v59-section-head,
+html.pocket-v59[data-theme="light"] .v59-books,
+html.pocket-v59[data-theme="light"] #library,
+html.pocket-v59[data-theme="light"] #chat,
+html.pocket-v59[data-theme="light"] #files{
+  background:#f7f6fb!important;
+}
+html.pocket-v59[data-theme="light"] .v59-shortcuts{background:transparent!important}
+
+/* Theme changes should feel immediate but calm */
+html.pocket-v59,
+html.pocket-v59 body,
+html.pocket-v59 .topbar,
+html.pocket-v59 .view,
+html.pocket-v59 .v59-shortcut,
+html.pocket-v59 .v59-hero,
+html.pocket-v59 .v3-welcome,
+html.pocket-v59 #files,
+html.pocket-v59 #webNovelHub,
+html.pocket-v59 .settings-dialog,
+html.pocket-v59 body>#bottomNav{
+  transition:background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+}
+
+@media(max-width:650px){
+  html.pocket-v59 .settings-dialog{
+    width:calc(100vw - 18px)!important;max-width:none!important;padding:16px!important;border-radius:22px!important
+  }
+  html.pocket-v59 .settings-dialog .theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.pocket-v59 .settings-dialog .theme-grid button{min-height:78px!important;padding:31px 11px 10px!important}
+}
