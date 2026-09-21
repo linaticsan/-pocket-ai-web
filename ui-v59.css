@@ -276,3 +276,126 @@ html.pocket-v59 body > main > .view{
     width:620px!important;
   }
 }
+
+/* Pocket AI V62 — responsive cleanup + light-theme consistency */
+html.pocket-v59 #home>.quick-grid{display:none!important}
+html.pocket-v59 #homeV45{display:none!important}
+
+/* consistent app widths */
+html.pocket-v59 main{width:100%!important}
+html.pocket-v59 #homeV59,
+html.pocket-v59 #chat,
+html.pocket-v59 #library,
+html.pocket-v59 #files,
+html.pocket-v59 #coding,
+html.pocket-v59 #local,
+html.pocket-v59 #github,
+html.pocket-v59 #surface{margin-left:auto!important;margin-right:auto!important;width:100%!important}
+
+/* light Web Novel section so Library doesn't suddenly turn dark */
+html.pocket-v59 #webNovelHub{
+  background:#fff!important;
+  color:#1b1633!important;
+  border:1px solid var(--v59-line)!important;
+  box-shadow:var(--v59-shadow)!important;
+}
+html.pocket-v59 #webNovelHub .wn44-head,
+html.pocket-v59 #webNovelHub .wn48-head{
+  background:linear-gradient(135deg,#f1f5ff,#f9efff 58%,#fff4f9)!important;
+  color:#1b1633!important;
+  border-color:var(--v59-line)!important;
+}
+html.pocket-v59 #webNovelHub .wn44-head h2,
+html.pocket-v59 #webNovelHub .wn44-head p,
+html.pocket-v59 #webNovelHub .wn44-title h3,
+html.pocket-v59 #webNovelHub .wn46-source strong,
+html.pocket-v59 #webNovelHub .wn46-source small,
+html.pocket-v59 #webNovelHub .wn46-source em{color:#241e3b!important}
+html.pocket-v59 #webNovelHub .wn44-search,
+html.pocket-v59 #webNovelHub .wn44-tabs,
+html.pocket-v59 #webNovelHub .wn46-source,
+html.pocket-v59 #webNovelHub .wn46-add,
+html.pocket-v59 #webNovelHub .wn44-empty{
+  background:#fbfaff!important;
+  border-color:var(--v59-line)!important;
+  color:#241e3b!important;
+}
+html.pocket-v59 #webNovelHub .wn44-search input,
+html.pocket-v59 #webNovelHub .wn46-add input{background:#fff!important;color:#241e3b!important}
+html.pocket-v59 #webNovelHub .wn44-tabs button{color:#716b80!important}
+html.pocket-v59 #webNovelHub .wn44-tabs button.active{color:#fff!important;background:linear-gradient(90deg,#a45af3,#e968b6)!important}
+html.pocket-v59 #webNovelHub .wn48-badges span{background:#fff!important;color:#5b536d!important;border-color:var(--v59-line)!important}
+
+/* desktop/tablet sizing */
+@media(min-width:1025px){
+  html.pocket-v59 main{max-width:980px!important;padding-left:24px!important;padding-right:24px!important}
+  html.pocket-v59 #homeV59,
+  html.pocket-v59 #library,
+  html.pocket-v59 #files{max-width:840px!important}
+  html.pocket-v59 #chat{max-width:800px!important}
+  html.pocket-v59 #coding,
+  html.pocket-v59 #local,
+  html.pocket-v59 #github,
+  html.pocket-v59 #surface{max-width:920px!important}
+  html.pocket-v59 .v59-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  html.pocket-v59 .v59-shortcut{height:96px!important}
+  html.pocket-v59 .v59-hero{min-height:210px!important;padding:24px!important}
+  html.pocket-v59 .v59-hero h1{font-size:38px!important}
+  html.pocket-v59 .v59-hero-art{font-size:76px!important}
+  html.pocket-v59 .v59-book{flex-basis:138px!important}
+  html.pocket-v59 .v59-cover{height:188px!important}
+  html.pocket-v59 body>#bottomNav{width:min(760px,calc(100vw - 40px))!important;max-width:760px!important}
+  html.pocket-v59 .v39-more-sheet .v39-sheet{
+    left:50%!important;right:auto!important;width:min(640px,calc(100vw - 32px))!important;transform:translateX(-50%)!important
+  }
+}
+
+/* tablet */
+@media(min-width:651px) and (max-width:1024px){
+  html.pocket-v59 main{max-width:820px!important;padding-left:18px!important;padding-right:18px!important}
+  html.pocket-v59 #homeV59,
+  html.pocket-v59 #chat,
+  html.pocket-v59 #library,
+  html.pocket-v59 #files{max-width:760px!important}
+  html.pocket-v59 body>#bottomNav{width:min(700px,calc(100vw - 28px))!important;max-width:700px!important}
+}
+
+/* mobile */
+@media(max-width:650px){
+  html.pocket-v59 main{max-width:none!important;padding:10px 9px calc(112px + env(safe-area-inset-bottom))!important}
+  html.pocket-v59 .topbar{min-height:60px!important;padding:8px 10px!important}
+  html.pocket-v59 .topbar .brand strong{font-size:18px!important}
+  html.pocket-v59 .v59-shortcuts{gap:6px!important}
+  html.pocket-v59 .v59-shortcut{height:72px!important;border-radius:14px!important}
+  html.pocket-v59 .v59-shortcut i{width:30px!important;height:30px!important;font-size:16px!important}
+  html.pocket-v59 .v59-hero{min-height:158px!important;padding:15px!important}
+  html.pocket-v59 .v59-hero h1{font-size:25px!important}
+  html.pocket-v59 .v59-hero-art{font-size:48px!important;right:12px!important}
+  html.pocket-v59 .v59-book{flex-basis:100px!important}
+  html.pocket-v59 .v59-cover{height:136px!important}
+  html.pocket-v59 .lib53-tools{grid-template-columns:1fr!important}
+  html.pocket-v59 .lib53-tools .lib-upload{width:100%!important;justify-content:center!important}
+  html.pocket-v59 .file-type-strip{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html.pocket-v59 .doc-studio-grid{grid-template-columns:1fr 1fr!important}
+  html.pocket-v59 body>#bottomNav{width:calc(100vw - 16px)!important;max-width:none!important;bottom:max(8px,env(safe-area-inset-bottom))!important}
+  html.pocket-v59 .tabs button{min-height:48px!important;height:48px!important}
+  html.pocket-v59 .v39-more-sheet .v39-sheet{left:8px!important;right:8px!important;bottom:8px!important;transform:none!important;width:auto!important}
+}
+
+/* small phones */
+@media(max-width:390px){
+  html.pocket-v59 .v59-shortcuts{grid-template-columns:repeat(2,1fr)!important}
+  html.pocket-v59 .v59-shortcut{height:64px!important;flex-direction:row!important;justify-content:flex-start!important;padding:8px 10px!important}
+  html.pocket-v59 .v3-suggestions{grid-template-columns:1fr!important}
+  html.pocket-v59 .doc-studio-grid{grid-template-columns:1fr!important}
+}
+
+/* prevent accidental horizontal overflow everywhere */
+html.pocket-v59 #home,
+html.pocket-v59 #chat,
+html.pocket-v59 #library,
+html.pocket-v59 #files,
+html.pocket-v59 #coding,
+html.pocket-v59 #local,
+html.pocket-v59 #github,
+html.pocket-v59 #surface{overflow-x:hidden!important}
