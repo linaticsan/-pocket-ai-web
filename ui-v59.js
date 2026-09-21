@@ -297,3 +297,21 @@ setTimeout(()=>{
  document.documentElement.dataset.modules=missing.length?'partial':'ready';
  if(missing.length)console.warn('Pocket AI modules still loading or unavailable:',missing);
 },1600);
+
+
+/* V75 — structural audit */
+setTimeout(()=>{
+ const issues=[];
+ const seen=new Map();
+ document.querySelectorAll('[id]').forEach(el=>{
+   const id=el.id;if(!id)return;
+   if(seen.has(id))issues.push('Duplicate id: '+id);else seen.set(id,el);
+ });
+ document.querySelectorAll('#bottomNav [data-go]').forEach(btn=>{
+   const id=btn.dataset.go;if(id&&!document.getElementById(id))issues.push('Nav target missing: '+id);
+ });
+ const active=[...document.querySelectorAll('.view.active:not([hidden])')];
+ if(active.length>1)issues.push('Multiple active views: '+active.map(x=>x.id).join(', '));
+ document.documentElement.dataset.structure=issues.length?'degraded':'ok';
+ if(issues.length)console.warn('Pocket AI structural audit:',issues);
+},2200);
