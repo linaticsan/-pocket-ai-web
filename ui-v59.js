@@ -157,3 +157,31 @@ window.addEventListener('pocket-theme-change',e=>{
     document.documentElement.classList.add('theme-light-repaint');
   }
 });
+
+
+/* V66 — polished themes: persistent, immediate, and accessible */
+(() => {
+  const root=document.documentElement;
+  const names={light:'Light',dark:'Dark',sakura:'Sakura',green:'Green',oled:'OLED'};
+  const icons={light:'☀️',dark:'🌙',sakura:'🌸',green:'🌿',oled:'◼️'};
+
+  function syncThemeUI(){
+    const current=root.dataset.theme||'light';
+    document.querySelectorAll('[data-theme-choice]').forEach(btn=>{
+      const active=btn.dataset.themeChoice===current;
+      btn.classList.toggle('active',active);
+      btn.setAttribute('aria-pressed',active?'true':'false');
+    });
+    const palette=document.getElementById('theme');
+    if(palette){
+      palette.title='Theme: '+(names[current]||current);
+      palette.setAttribute('aria-label','Theme: '+(names[current]||current));
+      palette.textContent=icons[current]||'🎨';
+    }
+    document.body.dataset.themeName=names[current]||current;
+  }
+
+  window.addEventListener('pocket-theme-change',syncThemeUI);
+  document.addEventListener('DOMContentLoaded',syncThemeUI,{once:true});
+  setTimeout(syncThemeUI,0);
+})();
