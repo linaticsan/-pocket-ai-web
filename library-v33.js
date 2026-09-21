@@ -109,6 +109,20 @@ function activateLibraryTab(kind='mine'){
  }
  if(kind==='mine')by('libSearch')?.focus?.({preventScroll:true});
 }
+function activateLibraryTab(kind='mine'){
+ const root=by('library');if(!root)return;
+ root.dataset.libraryTab=kind;
+ root.querySelectorAll('.lib53-tabs button').forEach(b=>{const on=b.dataset.lib53Jump===kind;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});
+ const mine=by('lib53Mine'),free=by('freeLibrary'),novels=by('webNovelHub'),state=by('lib53TabState');
+ if(mine)mine.hidden=kind!=='mine';
+ if(free)free.hidden=kind!=='free';
+ if(novels)novels.hidden=kind!=='novels';
+ if(state){
+   const missing=(kind==='free'&&!free)||(kind==='novels'&&!novels);
+   state.hidden=!missing;
+   if(missing)state.innerHTML='<div class="lib-empty"><span>✦</span><strong>Loading '+(kind==='free'?'free books':'web novels')+'…</strong><p>This section is getting ready.</p></div>';
+ }
+}
 function bind(){
  by('libInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
  by('libSearch').oninput=render;
