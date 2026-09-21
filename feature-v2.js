@@ -9,7 +9,7 @@ f('deepResearch')?.addEventListener('click',()=>{if(!f('surfaceQuery').value.tri
 function addDiagnostics(){const box=document.createElement('details');box.className='diagnostics';box.innerHTML='<summary><strong>System check</strong> <span class="muted">• test this feature on this device</span></summary><div class="diag-list"></div><div class="row"><button type="button" class="run-diag">Run checks</button></div>';f('local')?.append(box);box.querySelector('.run-diag').onclick=runDiagnostics;}
 function row(name,state,text){const d=document.createElement('div');d.className='diag-row';const a=document.createElement('span');a.textContent=name;const b=document.createElement('strong');b.className='diag-'+state;b.textContent=text;d.append(a,b);return d;}
 async function fetchCheck(url,opts={}){try{const r=await fetch(url,{...opts,cache:'no-store'});return r.ok?['pass','OK']:['warn','HTTP '+r.status]}catch{return['fail','Blocked/offline']}}
-async function runDiagnostics(){const list=document.querySelector('.diag-list');list.replaceChildren(row('Browser','pass','Running'),row('HTTPS',location.protocol==='https:'?'pass':'warn',location.protocol==='https:'?'Secure':'Not HTTPS'),row('Network',navigator.onLine?'pass':'warn',navigator.onLine?'Online':'Offline'));let storage='pass',storageText='Available';try{localStorage.setItem('__pocket_test','1');localStorage.removeItem('__pocket_test')}catch{storage='fail';storageText='Unavailable'}list.append(row('Device storage',storage,storageText));let gpu='fail',gpuText='Unavailable';if(navigator.gpu){try{gpu=(await navigator.gpu.requestAdapter())?'pass':'warn';gpuText=gpu==='pass'?'WebGPU ready':'No adapter'}catch{gpu='fail'}}list.append(row('Local AI acceleration',gpu,gpuText));const [ghState,ghText]=await fetchCheck('https://api.github.com/rate_limit',{headers:{Accept:'application/vnd.github+json'}});list.append(row('GitHub public API',ghState,ghText));const [crState,crText]=await fetchCheck('https://api.crossref.org/works?rows=0');list.append(row('Research source',crState,crText));list.append(row('Pocket AI','pass','Local-first • no AI account login'));list.append(row('Local model','warn',localStorage.getItem('pocket-local-webllm-installed')==='1'?'Installed • connect to test':'Not installed'));}
+async function runDiagnostics(){const list=document.querySelector('.diag-list');if(!list)return;list.replaceChildren(row('Browser','pass','Running'),row('HTTPS',location.protocol==='https:'?'pass':'warn',location.protocol==='https:'?'Secure':'Not HTTPS'),row('Network',navigator.onLine?'pass':'warn',navigator.onLine?'Online':'Offline'));let storage='pass',storageText='Available';try{localStorage.setItem('__pocket_test','1');localStorage.removeItem('__pocket_test')}catch{storage='fail';storageText='Unavailable'}list.append(row('Device storage',storage,storageText));let gpu='fail',gpuText='Unavailable';if(navigator.gpu){try{gpu=(await navigator.gpu.requestAdapter())?'pass':'warn';gpuText=gpu==='pass'?'WebGPU ready':'No adapter'}catch{gpu='fail'}}list.append(row('Local AI acceleration',gpu,gpuText));const [ghState,ghText]=await fetchCheck('https://api.github.com/rate_limit',{headers:{Accept:'application/vnd.github+json'}});list.append(row('GitHub public API',ghState,ghText));const [crState,crText]=await fetchCheck('https://api.crossref.org/works?rows=0');list.append(row('Research source',crState,crText));list.append(row('Pocket AI','pass','Local-first • no AI account login'));list.append(row('Local model','warn',localStorage.getItem('pocket-local-webllm-installed')==='1'?'Installed • connect to test':'Not installed'));}
 addDiagnostics();
 
 f('prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&innerWidth>650){e.preventDefault();f('chatForm').requestSubmit(f('chatSend'));}});
@@ -47,15 +47,17 @@ try{
 }catch(err){console.warn('Pocket AI safe-mode cleanup skipped',err)}
 (async()=>{
  const load=async(path)=>{try{return await import(path)}catch(err){console.error('Pocket AI optional module failed:',path,err);return null}};
- await Promise.all([load('./api-hub.js?v=20260921-v74'),load('./v3.js?v=20260921-v78')]);
+ await Promise.all([load('./api-hub.js?v=20260921-v74'),load('./v3.js?v=20260921-v79')]);
  await load('./v3-guard.js?v=20260920-v56');
  await load('./ui-v59.js?v=20260921-v78');
  await Promise.all([
-   load('./coding-v1.js?v=20260921-v74'),
+   load('./coding-v1.js?v=20260921-v79'),
    load('./files-v32.js?v=20260921-v74'),
-   load('./library-v33.js?v=20260921-v74')
+   load('./library-v33.js?v=20260921-v79')
  ]);
- await load('./library-online-v34.js?v=20260921-v74');
- await load('./webnovel-v42.js?v=20260921-v74');
+ await load('./library-online-v34.js?v=20260921-v79');
+ await load('./webnovel-v42.js?v=20260921-v79');
 })();
 
+
+import('./qa-v79.js?v=20260921-v79').catch(err=>console.warn('Pocket AI QA module failed',err));
