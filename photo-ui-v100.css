@@ -376,3 +376,12 @@ html.photo-ui-v100 #photoFilesPromo{display:none}
  html.photo-ui-v100 #settingsDialog{width:min(780px,calc(100% - 70px))!important}
  html.photo-ui-v100 #settingsDialog .theme-grid{grid-template-columns:repeat(4,1fr)!important}
 }
+
+
+/* V102 remove final legacy Home artifacts */
+html.photo-ui-v100 #home:before,
+html.photo-ui-v100 #home:after{content:none!important;display:none!important}
+html.photo-ui-v100 #home>.home-composer{display:flex!important}
+@media(min-width:1025px){
+ html.photo-ui-v100 #home>.home-composer{display:flex!important;margin:12px 0 18px!important;width:min(76%,780px)!important}
+}
