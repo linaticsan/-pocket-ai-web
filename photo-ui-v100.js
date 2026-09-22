@@ -21,12 +21,12 @@ function tuneChrome(){
  }
 }
 function tuneHome(){
- const grid=q('#home>.quick-grid');if(!grid)return;
+ const grid=q('#home>.home-step1 .quick-grid');if(!grid)return;
  const wanted=[
   ['chat','💬','Chat','Ask anything'],
-  ['research','🔎','Research','Find & explore'],
-  ['files','📁','Files','Upload & work'],
-  ['coding','🧑‍💻','Code','Build & create']
+  ['coding','💻','Code','Build things'],
+  ['files','📁','Files','Work with your files'],
+  ['research','🔎','Research','Search & understand']
  ];
  wanted.forEach(([key,icon,title,sub],order)=>{
   const b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;
@@ -35,16 +35,8 @@ function tuneHome(){
  });
  qa('[data-quick]',grid).forEach(b=>{
   const keep=wanted.some(x=>x[0]===b.dataset.quick);
-  if(!keep){b.hidden=true;b.style.display='none'}else{b.hidden=false;b.style.removeProperty('display')}
+  if(!keep)b.remove();
  });
- let mot=q('#photoMotivation');
- if(!mot){
-  mot=document.createElement('section');mot.id='photoMotivation';
-  mot.innerHTML='<div class="photo-motivation-icon">⭐</div><div><strong>Daily Motivation</strong><small>“You’re closer to your goals than you think.”</small></div>';
-  grid.insertAdjacentElement('afterend',mot);
- }
- renderRecent();
- renderSuggestions();
 }
 function renderSuggestions(){
  const home=q('#home');if(!home)return;
