@@ -10,16 +10,18 @@ function buildSidebar(){
  aside.className='pa-desktop-sidebar';
  aside.setAttribute('aria-label','Pocket AI navigation');
  aside.innerHTML=
- '<div class="pa-side-brand"><span class="pa-side-logo" aria-hidden="true">◕‿◕</span><strong>Pocket AI</strong><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+
- '<button class="pa-new-chat" type="button" data-pa-action="new-chat"><span>＋</span> New Chat</button>'+
+ '<div class="pa-side-mobile-head"><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+
+ '<button class="pa-new-chat" type="button" data-pa-action="new-chat"><span>＋</span><strong>New Chat</strong></button>'+
  '<nav>'+
-  '<button type="button" data-pa-side="home"><i>⌂</i><span>Home</span></button>'+
-  '<button type="button" data-pa-side="chat"><i>◉</i><span>Chat</span></button>'+
-  '<button type="button" data-pa-side="coding"><i>⌘</i><span>Code</span></button>'+
-  '<button type="button" data-pa-side="files"><i>□</i><span>Files</span></button>'+
-  '<button type="button" data-pa-side="surface"><i>⌕</i><span>Research</span></button>'+
-  '<button type="button" data-pa-side="study"><i>◇</i><span>Study</span></button>'+
-  '<button type="button" data-pa-side="projects"><i>▦</i><span>Projects</span></button>'+
+  '<div class="pa-nav-group"><small class="pa-nav-label">HOME</small><button type="button" data-pa-side="home"><i>⌂</i><span>Home</span></button></div>'+
+  '<div class="pa-nav-group"><small class="pa-nav-label">WORK</small>'+
+   '<button type="button" data-pa-side="chat"><i>💬</i><span>Chat</span></button>'+
+   '<button type="button" data-pa-side="coding"><i>⌘</i><span>Code</span></button>'+
+   '<button type="button" data-pa-side="files"><i>▱</i><span>Files</span></button>'+
+   '<button type="button" data-pa-side="surface"><i>⌕</i><span>Research</span></button>'+
+   '<button type="button" data-pa-side="study"><i>🎓</i><span>Study</span></button>'+
+   '<button type="button" data-pa-side="projects"><i>▦</i><span>Projects</span></button>'+
+  '</div>'+
  '</nav>'+
  '<div class="pa-side-bottom">'+
   '<button type="button" data-pa-side="settings"><i>⚙</i><span>Settings</span></button>'+
@@ -58,9 +60,9 @@ function closeDrawer(){document.documentElement.classList.remove('pa-nav-open');
 function syncStatus(){
  const out=$('#paLocalState'),dot=$('.pa-status-dot');if(!out)return;
  const source=$('#localStatus');
- const text=(source?.textContent||'Checking…').trim();
- out.textContent=text.length>28?text.slice(0,28)+'…':text;
- const connected=/connected|ready/i.test(text)&&!/not connected|disconnected/i.test(text);
+ const text=(source?.textContent||'').trim();
+ const connected=/connected|ready/i.test(text)&&!/not connected|disconnected|not ready/i.test(text);
+ out.textContent=connected?'Ready':'Not connected';
  dot?.classList.toggle('is-connected',connected);
 }
 function syncActive(){
