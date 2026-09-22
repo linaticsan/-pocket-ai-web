@@ -1,0 +1,94 @@
+/* Pocket AI V127 — GLOBAL COLOR SYSTEM ONLY */
+:root{
+ --pa-bg:#0B0F14;
+ --pa-sidebar:#0F141B;
+ --pa-surface:#111820;
+ --pa-card:#151D26;
+ --pa-border:#26313D;
+ --pa-text:#F5F7FA;
+ --pa-secondary:#9AA6B2;
+ --pa-muted:#687482;
+ --pa-accent:#5B8CFF;
+ --pa-accent-hover:#6D9AFF;
+ --pa-success:#35C98A;
+ --pa-error:#FF6B6B;
+ --p100-bg:var(--pa-bg)!important;
+ --p100-panel:var(--pa-surface)!important;
+ --p100-card:var(--pa-card)!important;
+ --p100-text:var(--pa-text)!important;
+ --p100-muted:var(--pa-secondary)!important;
+ --p100-line:var(--pa-border)!important;
+ --p100-purple:var(--pa-accent)!important;
+ --p100-pink:var(--pa-accent)!important;
+ --p100-blue:var(--pa-accent)!important;
+ --p100-green:var(--pa-success)!important;
+ --p100-orange:var(--pa-accent)!important;
+ --p100-shadow:0 18px 48px rgba(0,0,0,.28)!important;
+ --p100-soft:0 8px 24px rgba(0,0,0,.18)!important;
+ color-scheme:dark;
+}
+html.photo-ui-v100,html.photo-ui-v100 body{background:var(--pa-bg)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 body{background-image:none!important}
+html.photo-ui-v100 .glass,html.photo-ui-v100 .topbar,html.photo-ui-v100 .view{background:var(--pa-surface)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 .muted,html.photo-ui-v100 small{color:var(--pa-secondary)!important}
+html.photo-ui-v100 input,html.photo-ui-v100 textarea,html.photo-ui-v100 select{background:var(--pa-card)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 input::placeholder,html.photo-ui-v100 textarea::placeholder{color:var(--pa-muted)!important}
+html.photo-ui-v100 a,html.photo-ui-v100 .link{color:var(--pa-accent)!important}
+html.photo-ui-v100 a:hover,html.photo-ui-v100 .link:hover{color:var(--pa-accent-hover)!important}
+html.photo-ui-v100 .primary,
+html.photo-ui-v100 .pa-new-chat{background:var(--pa-accent)!important;border-color:var(--pa-accent)!important;color:#fff!important}
+html.photo-ui-v100 .primary:hover,
+html.photo-ui-v100 .pa-new-chat:hover{background:var(--pa-accent-hover)!important;border-color:var(--pa-accent-hover)!important}
+html.photo-ui-v100 .cat,.pa-side-logo{background:var(--pa-accent)!important;color:#fff!important}
+.pa-desktop-sidebar{background:var(--pa-sidebar)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+.pa-desktop-sidebar nav button,.pa-side-bottom button{color:var(--pa-secondary)!important}
+.pa-desktop-sidebar button.active{background:rgba(91,140,255,.12)!important;color:var(--pa-accent)!important}
+.pa-desktop-sidebar nav button:hover,.pa-side-bottom button:hover{background:rgba(91,140,255,.08)!important;color:var(--pa-text)!important}
+.pa-nav-label{color:var(--pa-muted)!important}
+.pa-side-bottom{border-color:var(--pa-border)!important}
+.pa-status-dot{background:var(--pa-muted)!important}
+.pa-status-dot.is-connected{background:var(--pa-success)!important}
+html.photo-ui-v100 #home .home-step1>.home-composer,
+html.photo-ui-v100 #home .home-step1 .quick-grid>button,
+html.photo-ui-v100 #home .home-recent .recent-rows,
+html.photo-ui-v100 #home .home-projects .project-card,
+html.photo-ui-v100 #home .home-projects .project-empty{background:var(--pa-card)!important;border-color:var(--pa-border)!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button:hover,
+html.photo-ui-v100 #home .home-projects .project-card:hover,
+html.photo-ui-v100 #home .home-recent .recent-row:hover{background:#18222D!important;border-color:#344252!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button>small,
+html.photo-ui-v100 #home .home-recent .recent-copy small,
+html.photo-ui-v100 #home .home-recent .recent-row time,
+html.photo-ui-v100 #home .home-projects .project-copy small,
+html.photo-ui-v100 #home .home-projects .project-copy em,
+html.photo-ui-v100 #home .home-ai-status,
+html.photo-ui-v100 #home .quick-arrow,
+html.photo-ui-v100 #home .project-arrow{color:var(--pa-secondary)!important}
+html.photo-ui-v100 #home .home-ai-dot{background:var(--pa-muted)!important}
+html.photo-ui-v100 #home .home-ai-dot.is-connected{background:var(--pa-success)!important}
+html.photo-ui-v100 #home .home-projects .project-create{background:var(--pa-accent)!important;border-color:var(--pa-accent)!important;color:#fff!important}
+html.photo-ui-v100 #home .home-projects .project-create:hover{background:var(--pa-accent-hover)!important;border-color:var(--pa-accent-hover)!important}
+html.photo-ui-v100 #home .home-projects>#newProject,
+html.photo-ui-v100 #home .home-projects .project-view-all,
+html.photo-ui-v100 #home .home-recent .recent-view-all,
+html.photo-ui-v100 #home .home-ai-status button{color:var(--pa-accent)!important}
+html.photo-ui-v100 #home .home-projects>#newProject:hover,
+html.photo-ui-v100 #home .home-projects .project-view-all:hover,
+html.photo-ui-v100 #home .home-recent .recent-view-all:hover,
+html.photo-ui-v100 #home .home-ai-status button:hover{color:var(--pa-accent-hover)!important}
+html.photo-ui-v100 .header-workspace:hover,html.photo-ui-v100 .header-workspace[aria-expanded="true"],
+html.photo-ui-v100 #settingsOpen.header-settings,.header-workspace-menu{background:var(--pa-card)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 .header-avatar{background:rgba(91,140,255,.12)!important;color:var(--pa-accent)!important}
+.header-workspace-menu button{color:var(--pa-text)!important}.header-workspace-menu button:hover{background:rgba(91,140,255,.08)!important}
+html.photo-ui-v100 #settingsDialog,
+html.photo-ui-v100 #paMoreSheet .pa-more-panel,
+html.photo-ui-v100 #v39More .v39-sheet{background:var(--pa-surface)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 #settingsDialog .theme-grid button,
+html.photo-ui-v100 #paMoreSheet .pa-more-grid button{background:var(--pa-card)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 #settingsDialog .theme-grid button.active{border-color:var(--pa-accent)!important;box-shadow:0 0 0 3px rgba(91,140,255,.12)!important}
+html.photo-ui-v100 .lib53-tabs,
+html.photo-ui-v100 #lib53Mine,html.photo-ui-v100 #freeLibrary,html.photo-ui-v100 #webNovelHub,
+html.photo-ui-v100 .book-card,html.photo-ui-v100 .free-card,html.photo-ui-v100 .wn46-source{background:var(--pa-card)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
+html.photo-ui-v100 .lib53-tabs button.active{background:var(--pa-accent)!important;color:#fff!important}
+html.photo-ui-v100 .danger,html.photo-ui-v100 .danger-soft,[class*="error"]{color:var(--pa-error)!important}
+html.photo-ui-v100 .connected,[class*="success"]{color:var(--pa-success)!important}
