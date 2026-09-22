@@ -505,3 +505,11 @@ html.photo-ui-v100 #paMoreSheet .pa-more-panel{position:relative!important}
  html.photo-ui-v100 .photo-recent-card,
  html.photo-ui-v100 .photo-suggestion-grid button{transition:none!important}
 }
+
+
+/* V109 honor explicit Full motion without ignoring OS reduced-motion */
+@media(prefers-reduced-motion:no-preference){
+ html.photo-ui-v100[data-motion="full"] #home .cat.mega{animation:p108Mascot 3.4s ease-in-out infinite!important}
+ html.photo-ui-v100[data-motion="full"] #home>.home-hero>.mascot-stage:before{animation:p108Glow 3.4s ease-in-out infinite!important}
+ html.photo-ui-v100[data-motion="full"] #home>.home-hero>.mascot-stage:after{animation:p108Heart 3.4s ease-in-out infinite!important}
+}
