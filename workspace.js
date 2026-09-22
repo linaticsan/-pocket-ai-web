@@ -20,7 +20,7 @@ const go=id=>{
 function greeting(){
  const el=q('homeGreeting');if(!el)return;
  const h=new Date().getHours(),word=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
- el.textContent=`${word}. What shall we work on?`;
+ el.textContent=word+' ✨';
 }
 function setTheme(t){
   if(window.PocketTheme?.apply){window.PocketTheme.apply(t);return}
@@ -99,12 +99,19 @@ function combinedRecent(){
 function renderRecent(limit=5){
  const box=q('recentActivity');if(!box)return;
  const arr=combinedRecent();
- if(!arr.length){box.className='recent-list is-empty';box.innerHTML='<div class="recent-empty"><span class="friendly-empty-icon" aria-hidden="true">✦</span><strong>No activity yet</strong><span>Start something with Pocket AI and it’ll show up here.</span></div>';return}
+ const head=q('home')?.querySelector('.home-recent .recent-view-all');
+ if(!arr.length){
+   box.className='recent-list is-empty';
+   box.innerHTML='<div class="recent-empty"><strong>No adventures yet.</strong><span>Start a chat, research something, or open a file.</span><button type="button" class="recent-start">Start chatting</button></div>';
+   box.querySelector('.recent-start').onclick=()=>go('chat');
+   if(head)head.hidden=true;
+   return;
+ }
  box.className='recent-list has-items';
  const shown=arr.slice(0,limit);
- box.innerHTML='<div class="recent-rows">'+shown.map((x,i)=>'<button type="button" class="recent-row" data-recent-index="'+i+'"><span class="recent-icon">'+(x.icon||recentIcon(x.target))+'</span><span class="recent-copy"><strong></strong><small>'+(x.type||recentType(x.target))+'</small></span><time>'+recentTime(x.time)+'</time><b aria-hidden="true">→</b></button>').join('')+'</div>'+(arr.length>limit?'<button type="button" class="recent-view-all">View all →</button>':'');
- box.querySelectorAll('[data-recent-index]').forEach((b,i)=>{b.querySelector('.recent-copy strong').textContent=shown[i].title||'Recent item';b.onclick=()=>go(shown[i].target||'home')});
- box.querySelector('.recent-view-all')?.addEventListener('click',()=>renderRecent(Math.min(10,arr.length)));
+ box.innerHTML='<div class="recent-rows">'+shown.map((x,i)=>'<button type="button" class="recent-row" data-recent-index="'+i+'"><span class="recent-icon"></span><span class="recent-copy"><strong></strong><small>'+(x.type||recentType(x.target))+'</small></span><span class="recent-kind">'+(x.type||recentType(x.target))+'</span><time>'+recentTime(x.time)+'</time><b aria-hidden="true">→</b></button>').join('')+'</div>';
+ box.querySelectorAll('[data-recent-index]').forEach((b,i)=>{b.querySelector('.recent-copy strong').textContent=shown[i].title||'Recent item';b.dataset.recentType=shown[i].type||recentType(shown[i].target);b.onclick=()=>go(shown[i].target||'home')});
+ if(head){head.hidden=arr.length<=limit;head.onclick=()=>renderRecent(Math.min(10,arr.length))}
 }
 renderRecent();
 q('chatForm')?.addEventListener('submit',()=>{const t=q('prompt')?.value.trim()||'';if(t)addRecent('💬',t,'chat','Chat')},true);
@@ -150,16 +157,29 @@ renderProjects();
 if(q('newProject'))q('newProject').onclick=createProject;
 
 function syncLocalHome(){
- const badge=q('homeLocalBadge'),text=q('homeLocalText');if(!badge||!text)return;
- const installed=safeGet('pocket-local-webllm-installed')==='1',enabled=safeGet('pocket-local-webllm-enabled')==='1';
- if(installed&&enabled){badge.textContent='Ready';badge.classList.add('connected');text.textContent='Local AI is installed on this device and set to reconnect.'}
- else if(installed){badge.textContent='Installed';badge.classList.remove('connected');text.textContent='Your model is saved. Reconnect it with one tap.'}
- else{badge.textContent='Not set up';badge.classList.remove('connected');text.textContent='Set up a small private on-device model with one tap.'}
-}syncLocalHome();document.querySelectorAll('[data-go="home"],[data-go="local"]').forEach(b=>b.addEventListener('click',()=>setTimeout(syncLocalHome,150)));
+ const status=q('homeAiStatus'),pill=q('home')?.querySelector('.home-ai-status'),mood=q('homeMood'),moodText=q('homeMoodText');
+ if(!status||!pill)return;
+ const ready=!!window.PocketLocalAI?.isConnected?.()||(safeGet('pocket-local-webllm-installed')==='1'&&safeGet('pocket-local-webllm-enabled')==='1');
+ const model=window.PocketLocalAI?.model||'';
+ pill.classList.toggle('is-ready',ready);
+ mood?.classList.toggle('is-ready',ready);
+ status.textContent=ready?('Local AI ready'+(model?' · '+model:'')):'Local AI not set up';
+ if(moodText)moodText.textContent=ready?'Pocket is ready ✦':'Ready when you are';
+}
+syncLocalHome();document.querySelectorAll('[data-go="home"],[data-go="local"]').forEach(b=>b.addEventListener('click',()=>setTimeout(syncLocalHome,150)));
 
-const mascots=document.querySelectorAll('[data-mascot]');function mascot(face,ms=1800){mascots.forEach(x=>x.textContent=face);setTimeout(()=>mascots.forEach(x=>x.textContent='◕‿◕'),ms)}q('chatForm')?.addEventListener('submit',()=>mascot('•ᴗ•'));
-q('deepResearch')?.addEventListener('click',()=>mascot('◉‿◉',3000));
-q('localSend')?.addEventListener('click',()=>mascot('•̀ᴗ•́'));
+const mascots=document.querySelectorAll('[data-mascot]');
+function mascot(state='normal',ms=1800){
+ const home=q('homeMascot');
+ if(home){
+   home.dataset.mascotState=state;
+   clearTimeout(mascot._timer);
+   mascot._timer=setTimeout(()=>home.dataset.mascotState='normal',ms);
+ }
+}
+q('chatForm')?.addEventListener('submit',()=>mascot('sending'));
+q('deepResearch')?.addEventListener('click',()=>mascot('thinking',3000));
+q('localSend')?.addEventListener('click',()=>mascot('local'));
 
 window.addEventListener('online',()=>{
   document.body.dataset.network='online';
