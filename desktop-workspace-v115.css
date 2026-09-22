@@ -41,3 +41,33 @@
  html.photo-ui-v100 #bottomNav{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){.pa-desktop-sidebar{transition:none}}
+
+/* V118 — requested sidebar refinements only */
+.pa-side-mobile-head{display:none;min-height:8px}
+.pa-nav-group{display:grid;gap:4px}
+.pa-nav-group+.pa-nav-group{margin-top:18px}
+.pa-nav-label{display:block;padding:0 11px 5px;color:var(--p100-muted);font-size:9px;font-weight:850;letter-spacing:.13em}
+.pa-new-chat{justify-content:flex-start!important;min-height:48px!important;padding:0 15px!important;font-size:14px!important;letter-spacing:0!important}
+.pa-new-chat span{font-size:19px;line-height:1}
+.pa-side-bottom{gap:7px!important}
+.pa-local-status{align-items:center!important}
+.pa-local-status .pa-status-dot{align-self:center}
+.pa-local-status span{gap:1px}
+.pa-local-status strong{font-size:12px!important}
+.pa-local-status small{font-size:10px!important;line-height:1.2!important}
+#photoSideProfile{min-height:54px!important;margin-top:8px!important;padding:8px 9px!important;border-radius:12px!important;box-shadow:none!important}
+#photoSideProfile .photo-avatar{width:30px!important;height:30px!important;min-width:30px!important}
+#photoSideProfile span:not(.photo-avatar){min-width:0}
+#photoSideProfile strong{font-size:11px!important}
+#photoSideProfile small{font-size:9px!important;white-space:nowrap!important}
+#photoSideProfile b{font-size:11px!important}
+@media(min-width:768px){
+ .pa-desktop-sidebar{padding-top:18px!important}
+ .pa-new-chat{margin:0 3px 24px!important}
+ .pa-side-bottom{padding-top:10px!important}
+}
+@media(max-width:767px){
+ .pa-side-mobile-head{display:flex;justify-content:flex-end}
+ .pa-side-close{display:grid!important;place-items:center!important}
+ .pa-new-chat{margin:4px 2px 22px!important}
+}
