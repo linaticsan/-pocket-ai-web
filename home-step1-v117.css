@@ -157,3 +157,29 @@ html.photo-ui-v100 #home .home-projects .project-empty>span{font-size:25px!impor
 html.photo-ui-v100 #home .home-projects .project-empty>strong{font-size:14px!important;margin-bottom:6px!important}
 html.photo-ui-v100 #home .home-projects .project-empty>p{max-width:360px!important;margin:0 0 14px!important;font-size:10px!important;line-height:1.5!important;color:var(--p100-muted)!important}
 html.photo-ui-v100 #home .home-projects .project-create{min-height:36px!important;padding:6px 13px!important;border:1px solid var(--p100-line)!important;border-radius:10px!important;background:var(--p100-panel)!important;color:var(--p100-text)!important;font-size:11px!important;font-weight:750!important}
+
+/* V125 — Home vertical spacing ONLY */
+html.photo-ui-v100 #home .home-step1{
+ padding-top:40px!important;
+ padding-bottom:40px!important;
+}
+html.photo-ui-v100 #home .home-welcome{margin-bottom:20px!important}
+html.photo-ui-v100 #home .home-step1>.home-composer{margin-bottom:7px!important}
+html.photo-ui-v100 #home .home-ai-status{margin-bottom:36px!important}
+html.photo-ui-v100 #home .home-step-section{margin-bottom:40px!important}
+html.photo-ui-v100 #home .home-step-section>h2{margin-bottom:16px!important}
+html.photo-ui-v100 #home .home-projects>.project-head{margin-bottom:16px!important}
+html.photo-ui-v100 #home .home-step-section:last-child{margin-bottom:0!important}
+@media(max-width:1024px){
+ html.photo-ui-v100 #home .home-step1{padding-top:32px!important;padding-bottom:36px!important}
+ html.photo-ui-v100 #home .home-ai-status{margin-bottom:32px!important}
+ html.photo-ui-v100 #home .home-step-section{margin-bottom:36px!important}
+}
+@media(max-width:620px){
+ html.photo-ui-v100 #home .home-step1{padding-top:24px!important;padding-bottom:30px!important}
+ html.photo-ui-v100 #home .home-welcome{margin-bottom:16px!important}
+ html.photo-ui-v100 #home .home-ai-status{margin-bottom:28px!important}
+ html.photo-ui-v100 #home .home-step-section{margin-bottom:30px!important}
+ html.photo-ui-v100 #home .home-step-section>h2,
+ html.photo-ui-v100 #home .home-projects>.project-head{margin-bottom:12px!important}
+}
