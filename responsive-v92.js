@@ -18,8 +18,8 @@ function tuneHome(){
  const order=[
   ['chat','💬','Chat','Ask anything'],
   ['research','🔎','Research','Find & explore'],
-  ['files','📁','Files','Upload & work'],
-  ['coding','🧑‍💻','Code','Build & create']
+  ['local','🧠','Local AI','Private & on-device'],
+  ['library','📚','Library','Read free books & ask yours']
  ];
  order.forEach(([key,icon,name,sub],i)=>{const b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;b.style.order=i;b.innerHTML='<span>'+icon+'</span><strong>'+name+'</strong><small>'+sub+'</small>';b.style.display=''});
  [...grid.children].forEach(b=>{const keep=order.some(x=>b.dataset.quick===x[0]);if(!keep){b.hidden=true;b.style.display='none'}else{b.hidden=false;b.style.display=''}});
@@ -32,6 +32,8 @@ function sync(){
  document.documentElement.classList.add('reference-ui-active','responsive-v92');
  q('#homeV59')?.remove();q('#homeV45')?.remove();buildSidebar();tuneHome();themeGallery();
  const css=q('link[href*="responsive-v92.css"]');if(css&&css!==document.head.lastElementChild)document.head.append(css);
+ const desktop=q('link[href*="desktop-v97.css"]');if(desktop&&desktop!==document.head.lastElementChild)document.head.append(desktop);
+ const nav=q('#bottomNav');if(nav){if(matchMedia('(min-width:900px)').matches)nav.style.setProperty('display','none','important');else nav.style.removeProperty('display')}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
 addEventListener('pocket-core-ready',sync);addEventListener('pocket-features-ready',sync);addEventListener('pocket-theme-change',themeGallery);
