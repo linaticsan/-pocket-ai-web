@@ -385,3 +385,12 @@ html.photo-ui-v100 #home>.home-composer{display:flex!important}
 @media(min-width:1025px){
  html.photo-ui-v100 #home>.home-composer{display:flex!important;margin:12px 0 18px!important;width:min(76%,780px)!important}
 }
+
+
+/* V103 prevent closed overlays from bleeding behind the active shell */
+html.photo-ui-v100 #paMoreSheet:not(.open),
+html.photo-ui-v100 #v39More:not(.open){
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
