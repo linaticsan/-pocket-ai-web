@@ -22,3 +22,28 @@ html.photo-ui-v100 #home>#photoMotivation,html.photo-ui-v100 #home>#photoSuggest
  html.photo-ui-v100 #home .home-step1>h1{font-size:28px}
  html.photo-ui-v100 #home .home-step1 .quick-grid{grid-template-columns:1fr!important}
 }
+
+/* V120 — Home content width and spacing only */
+html.photo-ui-v100 #home .home-step1{
+ width:100%!important;
+ max-width:1180px!important;
+ margin-left:auto!important;
+ margin-right:auto!important;
+ padding:24px 32px 48px!important;
+}
+html.photo-ui-v100 #home .home-step1>h1{margin-bottom:24px!important}
+html.photo-ui-v100 #home .home-step1>.home-composer{margin-bottom:30px!important}
+html.photo-ui-v100 #home .home-step-section{width:100%!important;margin-bottom:28px!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid{width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+html.photo-ui-v100 #home .home-recent .recent-list,
+html.photo-ui-v100 #home .home-projects{width:100%!important}
+@media(max-width:1024px){
+ html.photo-ui-v100 #home .home-step1{padding-left:24px!important;padding-right:24px!important}
+}
+@media(max-width:620px){
+ html.photo-ui-v100 #home .home-step1{padding:18px 16px 32px!important}
+ html.photo-ui-v100 #home .home-step1 .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+}
+@media(max-width:390px){
+ html.photo-ui-v100 #home .home-step1 .quick-grid{grid-template-columns:1fr!important}
+}
