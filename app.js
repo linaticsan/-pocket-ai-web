@@ -3,7 +3,7 @@ let geminiKey='',geminiModel='gemini-2.5-flash',chatHistory=[];
 const notice=s=>$('notice').textContent=s||'';
 function show(id){document.querySelectorAll('.view').forEach(v=>{v.hidden=v.id!==id;v.classList.toggle('active',v.id===id)});document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));notice('');scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
-$('theme').onclick=()=>{$('settingsDialog')?.showModal?.()};
+$('theme')?.addEventListener('click',()=>{$('settingsDialog')?.showModal?.()});
 try{
   const savedTheme=localStorage.getItem('pocket-theme')||'light';
   if(savedTheme==='system'){
