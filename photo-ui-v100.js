@@ -103,9 +103,10 @@ function openMore(e){
 function tuneMore(){
  const sheet=q('#paMoreSheet');if(!sheet)return;
  const panel=q('.pa-more-panel',sheet);
- if(panel&&!q('.photo-more-close',panel)){
-  const close=document.createElement('button');close.type='button';close.className='photo-more-close';close.setAttribute('aria-label','Close menu');close.textContent='×';
-  close.onclick=()=>{sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')};panel.prepend(close);
+ if(panel){
+  let close=q('.photo-more-close',panel);
+  if(!close){close=document.createElement('button');close.type='button';close.className='photo-more-close';close.setAttribute('aria-label','Close menu');close.textContent='×';panel.prepend(close)}
+  if(!close.dataset.photoBound){close.dataset.photoBound='1';close.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')})}
  }
  const grid=q('.pa-more-grid',sheet);if(!grid)return;
  grid.innerHTML=[
