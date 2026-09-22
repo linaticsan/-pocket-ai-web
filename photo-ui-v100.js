@@ -8,16 +8,35 @@ function keepCssLast(){
 }
 function tuneChrome(){
  const top=q('.top-actions');
- if(top&&!q('#photoProfileButton',top)){
-  const b=document.createElement('button');b.id='photoProfileButton';b.type='button';b.className='photo-profile-button';b.setAttribute('aria-label','Open workspace menu');
-  b.innerHTML='<span class="photo-avatar">P</span><span class="photo-profile-copy"><strong>My workspace</strong><small>Local profile</small></span><span aria-hidden="true">⌄</span>';
-  b.onclick=openMore;top.prepend(b);
+ const b=q('#headerWorkspace',top);
+ if(b&&!b.dataset.bound){
+  b.dataset.bound='1';
+  b.onclick=(e)=>{e.preventDefault();e.stopPropagation();toggleWorkspaceMenu(b)};
  }
  const side=q('#paDesktopSidebar');
  if(side&&!q('#photoSideProfile',side)){
   const p=document.createElement('button');p.id='photoSideProfile';p.type='button';p.className='photo-side-profile';
   p.innerHTML='<span class="photo-avatar">P</span><span><strong>My workspace</strong><small>Stored on this device</small></span><b aria-hidden="true">•••</b>';
   p.onclick=openMore;side.appendChild(p);
+ }
+}
+function toggleWorkspaceMenu(anchor){
+ let menu=q('#headerWorkspaceMenu');
+ if(!menu){
+  menu=document.createElement('div');menu.id='headerWorkspaceMenu';menu.className='header-workspace-menu';menu.setAttribute('role','menu');
+  menu.innerHTML='<small>WORKSPACES</small><button type="button" class="workspace-current"><span>✓</span><span><strong>My workspace</strong><em>Stored on this device</em></span></button><hr><button type="button" data-workspace-new>＋ New workspace</button><button type="button" data-workspace-manage>Manage workspaces</button>';
+  document.body.appendChild(menu);
+  q('[data-workspace-new]',menu).onclick=()=>{menu.hidden=true;anchor.setAttribute('aria-expanded','false')};
+  q('[data-workspace-manage]',menu).onclick=()=>{menu.hidden=true;anchor.setAttribute('aria-expanded','false')};
+  document.addEventListener('click',e=>{if(!e.target.closest('#headerWorkspaceMenu,#headerWorkspace')){menu.hidden=true;anchor.setAttribute('aria-expanded','false')}});
+ }
+ const opening=menu.hidden!==false;
+ menu.hidden=!opening;
+ anchor.setAttribute('aria-expanded',String(opening));
+ if(opening){
+  const r=anchor.getBoundingClientRect();
+  menu.style.top=(r.bottom+7)+'px';
+  menu.style.right=Math.max(10,innerWidth-r.right)+'px';
  }
 }
 function tuneHome(){
