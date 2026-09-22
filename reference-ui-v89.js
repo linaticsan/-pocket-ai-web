@@ -26,7 +26,7 @@ function greeting(){
  const sub=$('.home-hero .muted');if(sub)sub.textContent=h<12?'What will you explore today?':'Let’s explore something new.';
 }
 function tuneQuickCards(){
- const wanted=[['chat','💬','Chat','Ask anything'],['research','🔎','Research','Find & explore'],['files','📁','Files','Upload & work'],['coding','🧑‍💻','Code','Build & create']];
+ const wanted=[['chat','💬','Chat','Ask anything'],['research','🔎','Research','Find & explore'],['local','🧠','Local AI','Private & on-device'],['library','📚','Library','Read free books & ask yours']];
  const grid=$('.quick-grid');if(!grid)return;
  wanted.forEach(([key,icon,title,sub],i)=>{let b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;b.hidden=false;b.style.display='';b.style.order=i;b.innerHTML='<span>'+icon+'</span><strong>'+title+'</strong><small>'+sub+'</small>'});
  [...grid.children].forEach(b=>{if(b.matches?.('[data-quick]')&&!wanted.some(x=>x[0]===b.dataset.quick)){b.hidden=true;b.style.display='none'}});
