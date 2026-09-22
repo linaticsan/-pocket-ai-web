@@ -113,8 +113,42 @@ q('deepResearch')?.addEventListener('click',()=>{const t=q('surfaceQuery')?.valu
 q('fileInput')?.addEventListener('change',()=>{const file=q('fileInput')?.files?.[0];if(file)addRecent('📄',file.name,'files','File')},true);
 document.addEventListener('click',e=>{const p=e.target.closest?.('#projectGrid .project-card');if(p){const name=p.querySelector('strong')?.textContent?.trim();if(name)addRecent('▦',name,'home','Project')}},true);
 
-const PROJ='pocket-projects-v2';const defaults=[{emoji:'🎓',name:'Study',note:'Notes, exam prep and learning'},{emoji:'💻',name:'Pocket AI',note:'Development and ideas'},{emoji:'🔬',name:'Research',note:'Saved research topics'}];function projects(){try{const a=JSON.parse(localStorage.getItem(PROJ)||'null');return Array.isArray(a)?a:defaults}catch{return defaults}}function saveProjects(a){safeSet(PROJ,JSON.stringify(a));renderProjects()}function renderProjects(){const grid=q('projectGrid');if(!grid)return;grid.replaceChildren(...projects().map((x,i)=>{const b=document.createElement('button');b.className='project-card';b.innerHTML=`<span class="emoji">${x.emoji}</span><strong></strong><small></small>`;b.querySelector('strong').textContent=x.name;b.querySelector('small').textContent=x.note||'Local workspace';b.onclick=()=>{go('chat');q('prompt').value=`Project: ${x.name}\n`;q('prompt').focus()};b.oncontextmenu=e=>{e.preventDefault();if(confirm(`Delete project “${x.name}”?`)){const a=projects();a.splice(i,1);saveProjects(a)}};return b}))}renderProjects();
-if(q('newProject'))q('newProject').onclick=()=>{const name=prompt('Project name');if(!name?.trim())return;const a=projects();a.push({emoji:'✨',name:name.trim().slice(0,50),note:'Personal workspace'});saveProjects(a)};
+const PROJ='pocket-projects-v2';
+function projects(){try{const a=JSON.parse(localStorage.getItem(PROJ)||'null');return Array.isArray(a)?a:[]}catch{return[]}}
+function saveProjects(a){safeSet(PROJ,JSON.stringify(a));renderProjects()}
+function projectTime(t){if(!t)return'';const m=Math.max(0,Math.floor((Date.now()-t)/60000));if(m<1)return'Updated just now';if(m<60)return'Updated '+m+' min ago';const h=Math.floor(m/60);if(h<24)return'Updated '+h+' hr ago';if(h<48)return'Updated yesterday';return'Updated '+new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'})}
+function createProject(){
+ const name=prompt('Project name');if(!name?.trim())return;
+ const a=projects();a.unshift({id:Date.now().toString(36),emoji:'✨',name:name.trim().slice(0,50),note:'Personal workspace',updated:Date.now(),items:{chats:[],files:[],code:[],research:[],notes:[]}});
+ saveProjects(a);
+}
+function openProject(x){
+ const a=projects(),i=a.findIndex(p=>(p.id&&p.id===x.id)||p.name===x.name);
+ if(i>=0){a[i]={...a[i],updated:Date.now(),items:a[i].items||{chats:[],files:[],code:[],research:[],notes:[]}};safeSet(PROJ,JSON.stringify(a))}
+ addRecent(x.emoji||'▦',x.name,'home','Project');
+ go('chat');if(q('prompt')){q('prompt').value='Project: '+x.name+'\n';q('prompt').focus()}
+}
+function renderProjects(limit=3){
+ const section=document.querySelector('#home .home-projects'),grid=q('projectGrid'),create=q('newProject');if(!section||!grid)return;
+ let head=section.querySelector('.project-head');
+ if(!head){const h=section.querySelector(':scope>h2');head=document.createElement('div');head.className='project-head';head.innerHTML='<h2>Projects</h2><button type="button" class="project-view-all">View all →</button>';h?.replaceWith(head)}
+ const arr=projects();
+ if(!arr.length){
+  grid.className='project-grid is-empty';
+  grid.innerHTML='<div class="project-empty"><span>＋</span><strong>Create your first project</strong><p>Keep chats, files, code and research organized in one workspace.</p><button type="button" class="project-create">Create project</button></div>';
+  grid.querySelector('.project-create').onclick=createProject;
+  head.querySelector('.project-view-all').hidden=true;
+  if(create)create.hidden=true;
+  return;
+ }
+ grid.className='project-grid has-items';
+ const shown=arr.slice(0,limit);
+ grid.replaceChildren(...shown.map(x=>{const b=document.createElement('button');b.type='button';b.className='project-card';b.innerHTML='<span class="emoji"></span><span class="project-copy"><strong></strong><small></small><em></em></span><span class="project-arrow">→</span>';b.querySelector('.emoji').textContent=x.emoji||'▦';b.querySelector('strong').textContent=x.name;b.querySelector('small').textContent=x.note||'Project workspace';b.querySelector('em').textContent=projectTime(x.updated);b.onclick=()=>openProject(x);return b}));
+ const view=head.querySelector('.project-view-all');view.hidden=arr.length<=limit;view.onclick=()=>renderProjects(arr.length);
+ if(create){create.hidden=false;create.textContent='＋ New project';create.onclick=createProject}
+}
+renderProjects();
+if(q('newProject'))q('newProject').onclick=createProject;
 
 function syncLocalHome(){
  const badge=q('homeLocalBadge'),text=q('homeLocalText');if(!badge||!text)return;
