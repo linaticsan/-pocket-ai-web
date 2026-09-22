@@ -38,7 +38,7 @@
      box=document.createElement('section');box.id='homeV59';box.className='v59-home';
      box.innerHTML=
       '<form class="v59-search" id="v59Search"><span class="v84-search-icon" aria-hidden="true"></span><input id="v59Query" placeholder="Search or ask anything" autocomplete="off"><button aria-label="Ask Pocket AI">✦</button></form>'+
-      '<div class="v59-shortcuts"><button class="v59-shortcut" data-v59-go="surface" data-v84-icon="search"><i></i><strong>Research</strong></button><button class="v59-shortcut" data-v59-study data-v84-icon="study"><i></i><strong>Study</strong></button><button class="v59-shortcut" data-v59-go="coding" data-v84-icon="code"><i></i><strong>Code</strong></button><button class="v59-shortcut" data-v59-go="local" data-v84-icon="cpu"><i></i><strong>Local AI</strong></button></div>'+
+
       '<section class="v59-hero"><small>YOUR PERSONAL</small><h1>AI LIBRARY</h1><p>Discover • Read • Learn • Create</p><button data-v59-go="library">Explore Books →</button><span class="v59-hero-art">📚</span></section>'+
       '<div class="v59-section-head"><h2>🔥 Trending Books</h2><button data-v59-go="library">See All ›</button></div>'+
       '<div class="v59-books"><button class="v59-book" data-v59-book="Moby Dick"><span class="v59-cover blue"><span>🌊</span><b>MOBY DICK</b></span><strong>Moby Dick</strong><small>Herman Melville</small></button><button class="v59-book" data-v59-book="Pride and Prejudice"><span class="v59-cover pink"><span>🌸</span><b>PRIDE & PREJUDICE</b></span><strong>Pride and Prejudice</strong><small>Jane Austen</small></button><button class="v59-book" data-v59-go="library"><span class="v59-cover indigo"><span>🗾</span><b>DAILY JAPANESE</b></span><strong>Daily Japanese</strong><small>Your Library</small></button></div>';
@@ -62,7 +62,7 @@
 
  document.addEventListener('click',e=>{
    const go=e.target.closest?.('[data-v59-go]');
-   if(go){e.preventDefault();e.stopImmediatePropagation();show(go.dataset.v59Go);return}
+   if(go){e.preventDefault();e.stopImmediatePropagation();document.querySelector('.v39-more-sheet')?.remove();show(go.dataset.v59Go);return}
    if(e.target.closest?.('[data-v59-more]')){e.preventDefault();e.stopImmediatePropagation();window.PocketV39?.openMore?.();return}
    if(e.target.closest?.('[data-v59-study]')){
      e.preventDefault();e.stopImmediatePropagation();show('chat');
