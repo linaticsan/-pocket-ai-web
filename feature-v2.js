@@ -55,7 +55,7 @@ try{
    load('./v3.js?v=20260922-v88'),
    load('./v3-guard.js?v=20260922-v88'),
    load('./ui-v59.js?v=20260922-v90'),
-   load('./library-v33.js?v=20260922-v88')
+   load('./library-v33.js?v=20260922-v94')
  ]);
  window.dispatchEvent(new CustomEvent('pocket-core-ready',{detail:{ms:Math.round(performance.now()-started)}}));
 
@@ -64,8 +64,8 @@ try{
  const optional=new Promise(resolve=>idle(()=>Promise.allSettled([
    load('./coding-v1.js?v=20260922-v88'),
    load('./files-v32.js?v=20260922-v88'),
-   load('./library-online-v34.js?v=20260922-v93'),
-   load('./webnovel-v42.js?v=20260922-v88')
+   load('./library-online-v34.js?v=20260922-v94'),
+   load('./webnovel-v42.js?v=20260922-v94')
  ]).then(resolve)));
  window.PocketFeatures={ready:optional};
  optional.then(()=>window.dispatchEvent(new CustomEvent('pocket-features-ready')));
