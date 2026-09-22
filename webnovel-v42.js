@@ -122,7 +122,7 @@ function onClick(e){
  if(e.target.closest('[data-wn44-all]'))return by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'});
  if(e.target.closest('[data-wn44-library]'))return by('libStorage')?.scrollIntoView({block:'start',behavior:'smooth'});
 }
-function boot(){let n=0;const t=setInterval(()=>{if(addHub()||++n>40)clearInterval(t)},120)}
+function boot(){let n=0;const t=setInterval(()=>{if(addHub()||++n>100)clearInterval(t)},120)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
 window.PocketWebNovels={featured:FEATURED,sources:SOURCES,read:readFree,openWeb,renderReading};
 })();
