@@ -4,7 +4,7 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 let sheet=null;
 function show(id){
  const view=$('#'+CSS.escape(id));if(!view)return false;
- $('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
+ $$('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
  $$('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
  $('[data-more]')?.classList.toggle('active',['local','coding','github','surface'].includes(id));
  closeMore();window.scrollTo({top:0,left:0,behavior:'auto'});return true;
@@ -22,7 +22,7 @@ function makeMore(){
 }
 function openMore(){makeMore();sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');document.body.classList.add('v39-more-open')}
 function normalizeViews(){
- const views=$('body > main > .view');
+ const views=$$('body > main > .view');
  if(!views.length)return;
  let active=views.find(v=>v.classList.contains('active')&&!v.hidden) || views.find(v=>v.id==='home') || views[0];
  views.forEach(v=>{
