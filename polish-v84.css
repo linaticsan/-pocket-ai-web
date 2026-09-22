@@ -30,8 +30,8 @@ body>#bottomNav button{min-height:52px!important}
 .v59-search>span{font-size:0!important}
 .v59-search input{min-width:0!important}
 
-#home.home-view>:not(#homeV59){display:none!important}
-#home.home-view>#homeV59{display:block!important}
+html:not(.reference-ui-active) #home.home-view>:not(#homeV59){display:none!important}
+html:not(.reference-ui-active) #home.home-view>#homeV59{display:block!important}
 #homeV59 .v59-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 #homeV59 .v59-shortcut i{width:34px;height:34px;display:grid;place-items:center;color:var(--app-accent)}
 #homeV59 .v59-shortcut strong{font-size:12px!important}
