@@ -1,0 +1,99 @@
+/* Pocket AI V100 — photo reference behavior */
+(()=>{'use strict';
+const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
+function go(id){if(window.PocketV39?.show?.(id))return true;const b=q('[data-go="'+id+'"]');if(b){b.click();return true}return false}
+function keepCssLast(){
+ const link=q('link[href*="photo-ui-v100.css"]');
+ if(link&&link!==document.head.lastElementChild)document.head.appendChild(link);
+}
+function tuneHome(){
+ const grid=q('#home>.quick-grid');if(!grid)return;
+ const wanted=[
+  ['chat','💬','Chat','Ask anything'],
+  ['research','🔎','Research','Find & explore'],
+  ['files','📁','Files','Upload & work'],
+  ['coding','🧑‍💻','Code','Build & create']
+ ];
+ wanted.forEach(([key,icon,title,sub],order)=>{
+  const b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;
+  b.hidden=false;b.style.display='';b.style.order=order;
+  b.innerHTML='<span>'+icon+'</span><strong>'+title+'</strong><small>'+sub+'</small>';
+ });
+ qa('[data-quick]',grid).forEach(b=>{
+  const keep=wanted.some(x=>x[0]===b.dataset.quick);
+  if(!keep){b.hidden=true;b.style.display='none'}else{b.hidden=false;b.style.removeProperty('display')}
+ });
+ let mot=q('#photoMotivation');
+ if(!mot){
+  mot=document.createElement('section');mot.id='photoMotivation';
+  mot.innerHTML='<div class="photo-motivation-icon">⭐</div><div><strong>Daily Motivation</strong><small>“You’re closer to your goals than you think.”</small></div>';
+  grid.insertAdjacentElement('afterend',mot);
+ }
+ renderRecent();
+}
+function recentData(){
+ try{
+  const a=JSON.parse(localStorage.getItem('pocket-recent-v2')||'[]');
+  if(Array.isArray(a)&&a.length)return a.slice(0,4);
+ }catch{}
+ return [
+  {icon:'📖',title:'Pride and Prejudice',target:'library',meta:'Jane Austen'},
+  {icon:'📄',title:'Research Notes.pdf',target:'files',meta:'2.4 MB'},
+  {icon:'📘',title:'Project Plan.docx',target:'files',meta:'1.1 MB'},
+  {icon:'💡',title:'Daily Ideas',target:'chat',meta:'Today'}
+ ];
+}
+function renderRecent(){
+ const home=q('#home');if(!home)return;
+ let box=q('#photoRecent');
+ if(!box){box=document.createElement('section');box.id='photoRecent';home.appendChild(box)}
+ const items=recentData();
+ box.innerHTML='<div class="photo-recent-title">Recently used</div><div class="photo-recent-grid">'+items.map((x,i)=>'<button class="photo-recent-card" type="button" data-photo-recent="'+i+'"><b>'+(x.icon||'•')+' '+escapeHtml(x.title||'Recent item')+'</b><small>'+escapeHtml(x.meta||relative(x.time))+'</small></button>').join('')+'</div>';
+ qa('[data-photo-recent]',box).forEach(b=>b.onclick=()=>{const x=items[+b.dataset.photoRecent];go(x.target||'chat')});
+}
+function relative(t){if(!t)return 'Recent';const m=Math.max(1,Math.round((Date.now()-t)/60000));return m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':'Recent'}
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function tuneMore(){
+ const sheet=q('#paMoreSheet');if(!sheet)return;
+ const grid=q('.pa-more-grid',sheet);if(!grid)return;
+ grid.innerHTML=[
+  ['local','🧠','Local AI','Use models on your device'],
+  ['github','◉','GitHub','Connect your repositories'],
+  ['surface','🔎','Research','Explore sources'],
+  ['settings','⚙️','Settings & Appearance','Theme, animation, privacy'],
+  ['feedback','♥','Help & Feedback',"We’d love to hear from you"]
+ ].map(x=>'<button type="button" data-photo-more="'+x[0]+'"><i>'+x[1]+'</i><span><strong>'+x[2]+'</strong><small>'+x[3]+'</small></span></button>').join('');
+ qa('[data-photo-more]',grid).forEach(b=>b.onclick=()=>{
+  const id=b.dataset.photoMore;
+  sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true');
+  if(id==='settings'){const d=q('#settingsDialog');if(d?.showModal&&!d.open)d.showModal();return}
+  if(id==='feedback'){openFeedback();return}
+  go(id);
+ });
+}
+function openFeedback(){
+ let d=q('#photoFeedbackDialog');
+ if(!d){
+  d=document.createElement('dialog');d.id='photoFeedbackDialog';d.className='glass';
+  d.innerHTML='<form method="dialog"><button class="close" value="cancel">×</button></form><h2>Help & Feedback</h2><p class="muted">Tell us what you want improved in Pocket AI.</p><textarea id="photoFeedbackText" rows="5" placeholder="Write feedback…"></textarea><div class="row"><button type="button" id="photoCopyFeedback" class="primary">Copy feedback</button><a class="link" href="https://github.com/linaticsan/-pocket-ai-web" target="_blank" rel="noopener">Open GitHub ↗</a></div><p id="photoFeedbackStatus" class="muted"></p>';
+  document.body.appendChild(d);
+  q('#photoCopyFeedback',d).onclick=async()=>{const t=q('#photoFeedbackText',d).value.trim();if(!t)return;try{await navigator.clipboard.writeText(t);q('#photoFeedbackStatus',d).textContent='Copied. You can paste it into GitHub or a message.'}catch{q('#photoFeedbackStatus',d).textContent='Select and copy the text manually.'}};
+ }
+ if(!d.open)d.showModal();
+}
+function syncNav(){
+ const desktop=matchMedia('(min-width:1025px)').matches;
+ const nav=q('#bottomNav');
+ if(nav){if(desktop)nav.style.setProperty('display','none','important');else nav.style.removeProperty('display')}
+}
+function sync(){
+ document.documentElement.classList.add('photo-ui-v100','reference-ui-active');
+ tuneHome();tuneMore();syncNav();keepCssLast();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
+addEventListener('resize',syncNav);
+addEventListener('pocket-core-ready',()=>{sync();setTimeout(sync,80)});
+addEventListener('pocket-features-ready',()=>{sync();setTimeout(sync,100)});
+document.addEventListener('submit',e=>{if(e.target?.id==='chatForm'||e.target?.id==='surfaceForm')setTimeout(renderRecent,120)},true);
+setTimeout(sync,350);setTimeout(sync,1200);setTimeout(sync,2600);
+})();
