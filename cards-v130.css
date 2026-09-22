@@ -1,0 +1,138 @@
+/* Pocket AI V130 — GLOBAL CARD DESIGN ONLY */
+:root{
+ --pa-card-bg:#151D26;
+ --pa-card-border-color:#26313D;
+ --pa-card-border:1px solid var(--pa-card-border-color);
+ --pa-card-radius:14px;
+ --pa-card-padding:20px;
+ --pa-card-gap:12px;
+ --pa-card-hover-bg:#18222D;
+ --pa-card-hover-border:#344252;
+ --pa-card-title-size:16px;
+ --pa-card-description-size:14px;
+ --pa-card-meta-size:12px;
+ --pa-card-transition:background-color .17s ease,border-color .17s ease;
+}
+/* Reusable global card primitive. Existing card components inherit this surface. */
+.pa-card,
+.card,
+.result-card,
+.project-card,
+.book-card,
+.free-card,
+.wn46-source,
+.wn44-book,
+.photo-recent-card,
+.device-card,
+.local-status,
+.research-report,
+.v55-recent-item,
+.v39-tools>button,
+.v36-tool-grid>button,
+.theme-grid>button,
+.segmented>button,
+#v3ChatList .v3-chat-item,
+#coding [class*="card"],
+#files [class*="card"],
+#surface [class*="card"],
+#library [class*="card"],
+#local [class*="card"]{
+ background:var(--pa-card-bg)!important;
+ background-image:none!important;
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-card-radius)!important;
+ padding:var(--pa-card-padding)!important;
+ box-shadow:none!important;
+}
+/* Card typography only. */
+.pa-card>strong,.card>strong,.result-card>strong,.project-card strong,.book-card strong,.free-card strong,.wn46-source strong,.wn44-book strong,.photo-recent-card strong,
+.device-card strong,.local-status strong,.research-report h3,.v55-recent-item strong,.v39-tools>button>span,.v36-tool-grid>button>span,
+#v3ChatList .v3-chat-item strong,
+#coding [class*="card"] strong,#files [class*="card"] strong,#surface [class*="card"] strong,#library [class*="card"] strong{
+ font-size:var(--pa-card-title-size)!important;font-weight:600!important;
+}
+.pa-card p,.card p,.result-card p,.project-card small,.book-card p,.free-card p,.wn46-source small,.wn44-book small,.photo-recent-card small,
+.device-card .muted,.local-status small,.research-report p,.v55-recent-item small,
+#coding [class*="card"] p,#files [class*="card"] p,#surface [class*="card"] p,#library [class*="card"] p{
+ font-size:var(--pa-card-description-size)!important;color:var(--pa-secondary)!important;
+}
+.pa-card time,.pa-card em,.card time,.card em,.result-card time,.result-card em,.project-card em,.book-card time,.free-card time,.wn46-source em,
+#coding [class*="card"] time,#files [class*="card"] time,#surface [class*="card"] time,#library [class*="card"] time{
+ font-size:var(--pa-card-meta-size)!important;color:var(--pa-muted)!important;
+}
+/* Clickable cards: flat, fast hover; never move or glow. */
+button.project-card,
+button.photo-recent-card,
+button.recent-row,
+.quick-grid>button,
+[data-photo-recent],
+[data-recent-index],
+.book-card:has(button),
+.free-card:has(button),
+.wn46-source:has(button),
+.wn44-book:has(button),
+#v3ChatList .v3-chat-item{
+ cursor:pointer!important;
+ transition:var(--pa-card-transition)!important;
+}
+button.project-card:hover,
+button.photo-recent-card:hover,
+button.recent-row:hover,
+.quick-grid>button:hover,
+[data-photo-recent]:hover,
+[data-recent-index]:hover,
+.book-card:has(button):hover,
+.free-card:has(button):hover,
+.wn46-source:has(button):hover,
+.wn44-book:has(button):hover,
+#v3ChatList .v3-chat-item:hover{
+ background:var(--pa-card-hover-bg)!important;
+ border-color:var(--pa-card-hover-border)!important;
+ transform:none!important;
+ scale:none!important;
+ box-shadow:none!important;
+}
+/* Home cards use the same primitive. */
+html.photo-ui-v100 #home .quick-grid>button,
+html.photo-ui-v100 #home .recent-row,
+html.photo-ui-v100 #home .project-card,
+html.photo-ui-v100 #home .project-empty{
+ background:var(--pa-card-bg)!important;
+ background-image:none!important;
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-card-radius)!important;
+ padding:var(--pa-card-padding)!important;
+ box-shadow:none!important;
+}
+html.photo-ui-v100 #home .quick-grid>button strong,
+html.photo-ui-v100 #home .recent-row strong,
+html.photo-ui-v100 #home .project-card strong,
+html.photo-ui-v100 #home .project-empty>strong{
+ font-size:var(--pa-card-title-size)!important;font-weight:600!important;
+}
+html.photo-ui-v100 #home .quick-grid>button small,
+html.photo-ui-v100 #home .recent-row small,
+html.photo-ui-v100 #home .project-card small{
+ font-size:var(--pa-card-description-size)!important;color:var(--pa-secondary)!important;
+}
+html.photo-ui-v100 #home .recent-row time,
+html.photo-ui-v100 #home .project-card em{
+ font-size:var(--pa-card-meta-size)!important;color:var(--pa-muted)!important;
+}
+html.photo-ui-v100 #home .recent-row:last-child{border-bottom:var(--pa-card-border)!important}
+html.photo-ui-v100 #home .recent-rows{
+ display:grid!important;gap:var(--pa-card-gap)!important;
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+}
+/* Consistent spacing only between sibling cards in existing card collections. */
+.cards,.resultgrid,.project-grid.has-items,.photo-recent-grid,.lib-grid,.free-grid,.wn44-grid,.wn46-sources{
+ gap:var(--pa-card-gap)!important;
+}
+/* Nested card collections stay visually quiet instead of double-boxed. */
+.pa-card .pa-card,.card .card,.result-card .card,.research-report .card{
+ box-shadow:none!important;
+}
+/* Never animate card movement. */
+@media(prefers-reduced-motion:reduce){
+ .pa-card,.card,.result-card,.project-card,.book-card,.free-card,.wn46-source,.wn44-book,.photo-recent-card,.recent-row,.quick-grid>button{transition:none!important}
+}
