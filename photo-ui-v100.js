@@ -42,20 +42,17 @@ function toggleWorkspaceMenu(anchor){
 function tuneHome(){
  const grid=q('#home>.home-step1 .quick-grid');if(!grid)return;
  const wanted=[
-  ['chat','💬','Chat','Ask anything'],
-  ['coding','💻','Code','Build things'],
+  ['chat','💬','Chat','Talk with Pocket AI'],
+  ['coding','</>','Code','Build and debug'],
   ['files','📁','Files','Work with your files'],
-  ['research','🔎','Research','Search & understand']
+  ['research','🔎','Research','Search and analyze']
  ];
  wanted.forEach(([key,icon,title,sub],order)=>{
-  const b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;
-  b.hidden=false;b.style.display='';b.style.order=order;
-  b.innerHTML='<span>'+icon+'</span><strong>'+title+'</strong><small>'+sub+'</small>';
+  const card=grid.querySelector('[data-quick="'+key+'"]');if(!card)return;
+  card.hidden=false;card.style.display='';card.style.order=order;
+  card.innerHTML='<span class="quick-icon">'+icon+'</span><strong>'+title+'</strong><small>'+sub+'</small><b class="quick-arrow" aria-hidden="true">→</b>';
  });
- qa('[data-quick]',grid).forEach(b=>{
-  const keep=wanted.some(x=>x[0]===b.dataset.quick);
-  if(!keep)b.remove();
- });
+ qa('[data-quick]',grid).forEach(card=>{if(!wanted.some(x=>x[0]===card.dataset.quick))card.remove()});
 }
 function renderSuggestions(){
  const home=q('#home');if(!home)return;
