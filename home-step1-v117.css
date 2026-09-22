@@ -65,3 +65,50 @@ html.photo-ui-v100 #home .home-ai-status button:hover{color:var(--p100-text)!imp
  html.photo-ui-v100 #home .home-welcome>p{font-size:15px!important}
  html.photo-ui-v100 #home .home-step1>.home-composer{min-height:64px!important;padding-left:12px!important}
 }
+
+/* V122 — Quick Actions ONLY */
+html.photo-ui-v100 #home .home-step1 .quick-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:1fr!important;gap:14px!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button{
+ position:relative!important;
+ width:100%!important;
+ height:158px!important;
+ min-height:158px!important;
+ padding:18px 18px 17px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:flex-start!important;
+ justify-content:flex-start!important;
+ gap:0!important;
+ border:1px solid var(--p100-line)!important;
+ border-radius:16px!important;
+ background:var(--p100-card)!important;
+ color:var(--p100-text)!important;
+ text-align:left!important;
+ box-shadow:var(--p100-soft)!important;
+ cursor:pointer!important;
+ transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important;
+}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button:hover{
+ transform:translateY(-2px)!important;
+ border-color:color-mix(in srgb,var(--p100-purple) 28%,var(--p100-line))!important;
+ background:color-mix(in srgb,var(--p100-purple) 3%,var(--p100-card))!important;
+ box-shadow:var(--p100-shadow)!important;
+}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button:focus-visible{outline:2px solid var(--p100-purple)!important;outline-offset:2px!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button>.quick-icon{
+ width:auto!important;height:34px!important;min-height:34px!important;
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ margin:0 0 15px!important;padding:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;
+ font-size:26px!important;line-height:1!important;font-weight:800!important;
+}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button>strong{margin:0 0 4px!important;font-size:15px!important;line-height:1.2!important;font-weight:800!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button>small{margin:0!important;font-size:11px!important;line-height:1.35!important;color:var(--p100-muted)!important}
+html.photo-ui-v100 #home .home-step1 .quick-grid>button>.quick-arrow{position:absolute!important;right:17px!important;bottom:14px!important;font-size:17px!important;line-height:1!important;font-weight:500!important;color:var(--p100-muted)!important}
+@media(max-width:620px){
+ html.photo-ui-v100 #home .home-step1 .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+ html.photo-ui-v100 #home .home-step1 .quick-grid>button{height:146px!important;min-height:146px!important;padding:15px!important}
+ html.photo-ui-v100 #home .home-step1 .quick-grid>button>.quick-icon{font-size:24px!important;margin-bottom:12px!important}
+}
+@media(max-width:390px){html.photo-ui-v100 #home .home-step1 .quick-grid{grid-template-columns:1fr!important}}
+@media(prefers-reduced-motion:reduce){html.photo-ui-v100 #home .home-step1 .quick-grid>button{transition:none!important}}
