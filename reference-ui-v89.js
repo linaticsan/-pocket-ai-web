@@ -1,5 +1,6 @@
 /* Pocket AI reference UI controller — v89 */
 (()=>{'use strict';
+document.documentElement.classList.add('reference-ui-active');
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const themes=[
  ['light','Default','🟣'],['sakura','Sakura','🌸'],['mint','Mint','🌿'],['sky','Sky','☁️'],['lavender','Lavender','💜'],
@@ -47,9 +48,21 @@ function patchNavigation(){
  const map={home:'⌂',chat:'💬',library:'▣',files:'□'};
  $$('#bottomNav [data-go]').forEach(b=>{const span=b.querySelector('span');const id=b.dataset.go;if(span)b.innerHTML=(map[id]||'•')+'<span>'+span.textContent+'</span>'});
 }
+function enforceReferenceShell(){
+ document.documentElement.classList.add('reference-ui-active');
+ document.getElementById('homeV59')?.remove();
+ document.getElementById('homeV45')?.remove();
+ const link=document.querySelector('link[href*="reference-ui-v89.css"]');
+ if(link&&link!==document.head.lastElementChild)document.head.appendChild(link);
+ tuneQuickCards();
+}
 function boot(){
- greeting();buildThemes();tuneQuickCards();makeMoreSheet();patchNavigation();
+ greeting();buildThemes();tuneQuickCards();makeMoreSheet();patchNavigation();enforceReferenceShell();
  const settings=$('#settingsOpen');if(settings)settings.onclick=()=>$('#settingsDialog')?.showModal();
+ window.addEventListener('pocket-core-ready',enforceReferenceShell);
+ window.addEventListener('pocket-features-ready',enforceReferenceShell);
+ setTimeout(enforceReferenceShell,350);
+ setTimeout(enforceReferenceShell,1400);
  const mq=matchMedia('(prefers-color-scheme:dark)');mq.addEventListener?.('change',()=>{try{if(localStorage.getItem('pocket-theme')==='system')setTheme(mq.matches?'midnight':'light')}catch{}});
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot):boot();

@@ -53,3 +53,24 @@ dialog{color:var(--pa-text)!important;background:var(--pa-surface)!important;bor
 @media(max-width:720px){.top-actions #commandOpen{display:none!important}.command-desktop-tip{display:none!important}.view{padding:16px!important;border-radius:23px!important}.home-view{padding:0!important}.home-hero{min-height:164px!important;padding:20px 16px 16px!important}.quick-grid{grid-template-columns:repeat(2,1fr)!important}.quick-grid button{min-height:96px!important}.quick-grid button:nth-child(n+5){display:none!important}.home-hero .muted{font-size:.82rem!important}.bottom-nav{width:calc(100% - 20px)!important}.theme-grid{grid-template-columns:repeat(2,1fr)!important}}
 @media(min-width:721px){.quick-grid button:nth-child(n+5){display:none!important}.pa-more-panel{border-radius:28px;margin-bottom:92px}}
 @media(prefers-reduced-motion:reduce){.cat.mega{animation:none!important}.quick-grid button{transition:none!important}}
+
+
+/* V90: authoritative shell overrides after the legacy V59 modules finish loading */
+html.reference-ui-active main{width:min(100% - 24px,1080px)!important;max-width:1080px!important;margin:0 auto!important;padding:0 0 calc(104px + env(safe-area-inset-bottom))!important}
+html.reference-ui-active #home{display:block!important;padding:0!important;min-height:calc(100dvh - 164px)!important;overflow:visible!important}
+html.reference-ui-active #homeV59,html.reference-ui-active #homeV45{display:none!important}
+html.reference-ui-active #home>.home-hero{display:flex!important}
+html.reference-ui-active #home>.home-composer{display:flex!important}
+html.reference-ui-active #home>.mode-strip,html.reference-ui-active #home>.dashboard-grid,html.reference-ui-active #home>.projects-head,html.reference-ui-active #home>#projectGrid{display:none!important}
+html.reference-ui-active #home>.quick-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;margin:0 0 12px!important}
+html.reference-ui-active #home>.quick-grid>button{display:block!important;height:auto!important;min-height:108px!important}
+html.reference-ui-active #home>.quick-grid>button:nth-child(n+5){display:none!important}
+html.reference-ui-active .pa-inspiration{display:block!important}
+html.reference-ui-active .topbar{width:min(100% - 24px,1080px)!important;max-width:1080px!important;margin:max(8px,env(safe-area-inset-top)) auto 8px!important}
+html.reference-ui-active #bottomNav{display:grid!important;grid-template-columns:repeat(5,1fr)!important}
+@media(max-width:720px){
+ html.reference-ui-active main{width:calc(100% - 20px)!important}
+ html.reference-ui-active #home>.quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ html.reference-ui-active #home>.quick-grid>button{min-height:96px!important}
+ html.reference-ui-active .topbar{width:calc(100% - 20px)!important}
+}

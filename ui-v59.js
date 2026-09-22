@@ -32,6 +32,7 @@
  }
 
  function ensureHome(){
+   if(document.documentElement.classList.contains('reference-ui-active')){by('homeV59')?.remove();by('homeV45')?.remove();return !!by('home')}
    const home=by('home');if(!home)return false;
    let box=by('homeV59');
    if(!box){
