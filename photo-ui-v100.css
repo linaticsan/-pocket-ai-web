@@ -453,3 +453,13 @@ html.photo-ui-v100 .photo-suggestion-grid button b{color:var(--p100-muted)}
  html.photo-ui-v100 .photo-side-profile{display:grid!important;grid-template-columns:1fr!important;place-items:center!important;padding:8px!important}
  html.photo-ui-v100 .photo-suggestion-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+
+/* V107 keep desktop identity control horizontal */
+@media(min-width:768px){
+ html.photo-ui-v100 .top-actions{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;width:auto!important;min-width:0!important}
+ html.photo-ui-v100 #photoProfileButton{display:flex!important;width:154px!important;min-width:154px!important;max-width:154px!important;flex:0 0 154px!important}
+ html.photo-ui-v100 #photoProfileButton .photo-profile-copy{min-width:0;flex:1}
+ html.photo-ui-v100 #photoProfileButton .photo-profile-copy strong,
+ html.photo-ui-v100 #photoProfileButton .photo-profile-copy small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:88px}
+}
