@@ -75,10 +75,10 @@ async function surfaceSearch(){const q=$('surfaceQuery').value.trim(),mode=$('su
 $('surfaceForm').onsubmit=async e=>{e.preventDefault();$('surfaceSearch').disabled=true;try{await surfaceSearch()}finally{$('surfaceSearch').disabled=false}};
 $('deepResearch').onclick=async()=>{const q=$('surfaceQuery').value.trim();if(!q){$('surfaceStatus').textContent='Write a research question first.';return}const btn=$('deepResearch');btn.disabled=true;$('researchReport').hidden=false;renderResearchReport('Deep Research is gathering open sources…');$('surfaceStatus').textContent='Deep Research running…';try{const gathered=await collectSources(q,'research');$('surfaceResults').replaceChildren(...gathered.items.map(card));const sourceText=gathered.items.slice(0,20).map((x,i)=>`[${i+1}] ${x.title}\n${x.url}\n${x.text||''}`).join('\n\n');if(window.PocketLocalAI?.isConnected?.()&&sourceText){const prompt=`Research question: ${q}\n\nSynthesize ONLY the supplied sources. Produce: Summary, Key findings, Evidence/disagreements, Uncertainty, Sources. Keep the source URLs beside claims and never invent citations.\n\nSOURCES:\n${sourceText}`;const text=await window.PocketLocalAI.generate([{role:'system',content:'You are Surface Research. Use only supplied sources. Never invent citations.'},{role:'user',content:prompt}]);renderResearchReport(text||sourceText);$('surfaceStatus').textContent='Research sources synthesized locally • '+gathered.items.length+' results.';}else{renderResearchReport((sourceText||'No research sources were returned.')+'\n\nConnect Local AI if you want Pocket AI to summarize these sources on-device.');$('surfaceStatus').textContent='Research sources collected • Local AI is optional for synthesis.';}}catch(err){renderResearchReport('Research search failed: '+(err?.message||err));$('surfaceStatus').textContent='Research failed.'}finally{btn.disabled=false}};
 
-// Preview build V52: service worker disabled to prevent stale UI during active development.
+// Service worker registration is enabled for normal app-shell updates and offline support.
 
 // Keep the PWA/offline shell installed. Registration is delayed until load so
-// the build cleanup in <head> can finish unregistering stale workers first.
+// Service worker updates are handled by the browser; persistent caches are not globally cleared.
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
     setTimeout(()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{}),400);
