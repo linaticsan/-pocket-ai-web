@@ -29,7 +29,7 @@ function makeUI(){
  const s=document.createElement('section');
  s.id='library';s.className='view glass library-v33 library-books-only library-books-only-v53';s.hidden=true;
  s.innerHTML=
- '<header class="lib53-hero"><div class="lib53-copy"><p class="eyebrow">POCKET LIBRARY</p><h1>Find your next chapter.</h1><p>Saved books, free classics and connected web novels — all from one reading shelf.</p><div class="lib53-hero-actions"><button type="button" class="primary" data-lib53-jump="mine">📚 My books</button><button type="button" data-lib53-jump="free">✨ Discover free</button><button type="button" data-lib53-jump="novels">🌐 Web novels</button></div></div><div class="lib53-art" aria-hidden="true"><span>📖</span><i>✦</i></div></header>'+
+ '<header class="lib53-hero"><div class="lib53-copy"><p class="eyebrow">POCKET LIBRARY</p><h1>Find your next chapter.</h1><p>Saved books, free classics and connected web novels — all from one reading shelf.</p><div class="lib53-hero-actions"><button type="button" class="primary" data-lib53-jump="free">✨ Discover books</button></div></div><div class="lib53-art" aria-hidden="true"><span>📖</span><i>✦</i></div></header>'+
  '<div class="lib53-tabs" role="navigation" aria-label="Library sections"><button type="button" class="active" data-lib53-jump="mine">My Shelf</button><button type="button" data-lib53-jump="free">Free Books</button><button type="button" data-lib53-jump="novels">Web Novels</button></div>'+
  '<section id="lib53Continue" class="lib53-continue" hidden></section>'+
  '<section id="lib53Mine" class="lib53-mine"><div class="lib53-section-head"><div><p class="eyebrow">MY SHELF</p><h2>Your books</h2></div><span id="libCount" class="lib53-count">0 saved</span></div>'+
@@ -102,26 +102,20 @@ function activateLibraryTab(kind='mine'){
  if(mine)mine.hidden=kind!=='mine';
  if(free)free.hidden=kind!=='free';
  if(novels)novels.hidden=kind!=='novels';
+ const missing=(kind==='free'&&!free)||(kind==='novels'&&!novels);
  if(state){
-   const missing=(kind==='free'&&!free)||(kind==='novels'&&!novels);
    state.hidden=!missing;
-   if(missing)state.innerHTML='<div class="lib-empty"><span>✦</span><strong>Loading '+(kind==='free'?'free books':'web novels')+'…</strong><p>This section is getting ready.</p></div>';
+   if(missing)state.innerHTML='<div class="lib-empty lib-loading"><span>✨</span><strong>Opening '+(kind==='free'?'free books':'web novels')+'…</strong><p>Please wait a moment.</p></div>';
+ }
+ if(missing){
+   let tries=0;
+   const wait=setInterval(()=>{
+     const f=by('freeLibrary'),n=by('webNovelHub'),ready=kind==='free'?f:n;
+     if(ready){clearInterval(wait);activateLibraryTab(kind)}
+     else if(++tries>20){clearInterval(wait);if(state){state.hidden=false;state.innerHTML='<div class="lib-empty"><span>📚</span><strong>Could not open this section.</strong><p>Try again or return to My Shelf.</p><button type="button" data-lib53-jump="mine">Back to My Shelf</button></div>'}}
+   },150);
  }
  if(kind==='mine')by('libSearch')?.focus?.({preventScroll:true});
-}
-function activateLibraryTab(kind='mine'){
- const root=by('library');if(!root)return;
- root.dataset.libraryTab=kind;
- root.querySelectorAll('.lib53-tabs button').forEach(b=>{const on=b.dataset.lib53Jump===kind;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false')});
- const mine=by('lib53Mine'),free=by('freeLibrary'),novels=by('webNovelHub'),state=by('lib53TabState');
- if(mine)mine.hidden=kind!=='mine';
- if(free)free.hidden=kind!=='free';
- if(novels)novels.hidden=kind!=='novels';
- if(state){
-   const missing=(kind==='free'&&!free)||(kind==='novels'&&!novels);
-   state.hidden=!missing;
-   if(missing)state.innerHTML='<div class="lib-empty"><span>✦</span><strong>Loading '+(kind==='free'?'free books':'web novels')+'…</strong><p>This section is getting ready.</p></div>';
- }
 }
 function bind(){
  by('libInput').onchange=e=>{importFiles(e.target.files);e.target.value=''};
