@@ -22,13 +22,13 @@
 
  function header(){
    const a=q('.top-actions');if(!a)return;
-   // Keep stable IDs used by the core app and More sheet.
-   a.innerHTML='<button id="commandOpen" aria-label="Open command palette">⌘</button><button id="settingsOpen" aria-label="Settings and appearance">⚙️</button>';
-   const openSettings=()=>{const d=by('settingsDialog');if(d?.showModal&&!d.open)d.showModal()};
-   const openCommands=()=>{const d=by('commandDialog');if(d?.showModal&&!d.open){d.showModal();setTimeout(()=>by('commandSearch')?.focus(),50)}};
-   by('commandOpen').onclick=openCommands;
-   by('settingsOpen').onclick=openSettings;
-
+   // Never replace these nodes during boot. Replacing them every 100 ms made taps
+   // disappear on slower iPhones and could leave multiple handlers fighting.
+   let commands=by('commandOpen'),settings=by('settingsOpen');
+   if(!commands){commands=document.createElement('button');commands.id='commandOpen';commands.textContent='⌘';a.appendChild(commands)}
+   if(!settings){settings=document.createElement('button');settings.id='settingsOpen';settings.textContent='⚙️';a.appendChild(settings)}
+   commands.setAttribute('aria-label','Open command palette');
+   settings.setAttribute('aria-label','Settings and appearance');
  }
 
  function ensureHome(){
@@ -62,16 +62,16 @@
 
  document.addEventListener('click',e=>{
    const go=e.target.closest?.('[data-v59-go]');
-   if(go){e.preventDefault();show(go.dataset.v59Go);return}
-   if(e.target.closest?.('[data-v59-more]')){e.preventDefault();window.PocketV39?.openMore?.();return}
+   if(go){e.preventDefault();e.stopImmediatePropagation();show(go.dataset.v59Go);return}
+   if(e.target.closest?.('[data-v59-more]')){e.preventDefault();e.stopImmediatePropagation();window.PocketV39?.openMore?.();return}
    if(e.target.closest?.('[data-v59-study]')){
-     e.preventDefault();show('chat');
+     e.preventDefault();e.stopImmediatePropagation();show('chat');
      setTimeout(()=>{const study=by('v3Study');if(study&&!study.classList.contains('active'))study.click();const p=by('prompt');if(p){p.value='Help me study this step by step: ';p.focus()}},70);
      return;
    }
    const book=e.target.closest?.('[data-v59-book]');
    if(book){
-     e.preventDefault();show('library');
+     e.preventDefault();e.stopImmediatePropagation();show('library');
      setTimeout(()=>{
        const input=by('freeSearch');
        if(input){input.value=book.dataset.v59Book;window.PocketLibraryOnline?.searchOnline?.();by('freeLibrary')?.scrollIntoView({block:'start',behavior:'smooth'})}
@@ -86,10 +86,11 @@
  },true);
 
  let tries=0;
+ header();
  const timer=setInterval(()=>{
-   header();const h=ensureHome();normalizeLibrary();normalizeChat();
-   if((h&&by('library')&&q('.v3-chat-shell'))||++tries>80)clearInterval(timer);
- },100);
+   const h=ensureHome();normalizeLibrary();normalizeChat();
+   if((h&&by('library')&&q('.v3-chat-shell'))||++tries>40)clearInterval(timer);
+ },150);
 })();
 
 /* V62 — fallback handlers for controls that must never be dead */
