@@ -112,7 +112,7 @@ document.addEventListener('click',e=>{
 /* V64 — theme engine */
 (() => {
   const root=document.documentElement;
-  const allowed=new Set(['system','light','dark','sakura','green','oled']);
+  const allowed=new Set(['system','light','dark','sakura','green','mint','sky','lavender','sunset','forest','ocean','midnight','oled']);
 
   const media=window.matchMedia?.('(prefers-color-scheme: dark)');
   let selected='light';
@@ -199,8 +199,8 @@ window.addEventListener('pocket-theme-change',e=>{
 /* V66 — polished themes: persistent, immediate, and accessible */
 (() => {
   const root=document.documentElement;
-  const names={system:'System',light:'Light',dark:'Dark',sakura:'Sakura',green:'Green',oled:'OLED'};
-  const icons={system:'🖥️',light:'☀️',dark:'🌙',sakura:'🌸',green:'🌿',oled:'◼️'};
+  const names={system:'System',light:'Default',dark:'Dark',sakura:'Sakura',green:'Mint',mint:'Mint',sky:'Sky',lavender:'Lavender',sunset:'Sunset',forest:'Forest',ocean:'Ocean',midnight:'Midnight',oled:'OLED'};
+  const icons={system:'🖥️',light:'✨',dark:'🌙',sakura:'🌸',green:'🌿',mint:'🌿',sky:'☁️',lavender:'💜',sunset:'🌅',forest:'🌲',ocean:'🌊',midnight:'🌙',oled:'◼️'};
 
   function syncThemeUI(){
     const current=root.dataset.theme||'light';
