@@ -13,20 +13,6 @@
   --content-max-width:1180px;
   --sidebar-width:224px;
   --font-ui:"Noto Sans","Noto Sans JP","Noto Sans Devanagari","Yu Gothic","Hiragino Kaku Gothic ProN","Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-
-  --pa-bg:#0B0F14;
-  --pa-sidebar:#0F141B;
-  --pa-surface:#111820;
-  --pa-card:#151D26;
-  --pa-border:#26313D;
-  --pa-text:#F5F7FA;
-  --pa-secondary:#9AA6B2;
-  --pa-muted:#687482;
-  --pa-accent:#5B8CFF;
-  --pa-accent-hover:#6D9AFF;
-  --pa-success:#35C98A;
-  --pa-error:#FF6B6B;
-
   --btn-h:42px;
   --btn-sm:34px;
   --card-radius:14px;
@@ -34,7 +20,85 @@
   --modal-radius:14px;
   --card-gap:12px;
 }
-/* Preserve current theme selectors and aliases */
+/* Theme tokens: restored from the site's existing theme palettes. */
+:root,
+html[data-theme="light"]{
+  --pa-bg:#f7f8ff;
+  --pa-sidebar:#ffffff;
+  --pa-surface:rgba(255,255,255,.92);
+  --pa-card:#ffffff;
+  --pa-border:#e7e5fb;
+  --pa-text:#17183c;
+  --pa-secondary:#74789c;
+  --pa-muted:#8d91ad;
+  --pa-accent:#8b4df7;
+  --pa-accent-hover:#9b63f8;
+  --pa-success:#2fcf8d;
+  --pa-error:#d84f67;
+  color-scheme:light;
+}
+html[data-theme="dark"]{
+  --pa-bg:#080d24;
+  --pa-sidebar:#0f1635;
+  --pa-surface:rgba(15,22,53,.95);
+  --pa-card:#141d43;
+  --pa-border:#27305d;
+  --pa-text:#f7f7ff;
+  --pa-secondary:#aeb3d1;
+  --pa-muted:#858caf;
+  --pa-accent:#8858f3;
+  --pa-accent-hover:#9a6cf5;
+  --pa-success:#34c996;
+  --pa-error:#ff6b7f;
+  color-scheme:dark;
+}
+html[data-theme="sakura"]{
+  --pa-bg:#fff5fa;
+  --pa-sidebar:#fffafd;
+  --pa-surface:rgba(255,255,255,.93);
+  --pa-card:#fffafd;
+  --pa-border:#f6d9e8;
+  --pa-text:#35152c;
+  --pa-secondary:#916b80;
+  --pa-muted:#a98497;
+  --pa-accent:#f14c9c;
+  --pa-accent-hover:#f364aa;
+  --pa-success:#4dd39b;
+  --pa-error:#d95778;
+  color-scheme:light;
+}
+html[data-theme="green"]{
+  --pa-bg:#f0fff6;
+  --pa-sidebar:#fbfffd;
+  --pa-surface:rgba(255,255,255,.93);
+  --pa-card:#fbfffd;
+  --pa-border:#d8f0e4;
+  --pa-text:#17382e;
+  --pa-secondary:#5f8175;
+  --pa-muted:#78968c;
+  --pa-accent:#30bd82;
+  --pa-accent-hover:#43c990;
+  --pa-success:#28c984;
+  --pa-error:#d65b6c;
+  color-scheme:light;
+}
+html[data-theme="oled"]{
+  --pa-bg:#000000;
+  --pa-sidebar:#08080d;
+  --pa-surface:#0a0a10;
+  --pa-card:#0d0d15;
+  --pa-border:#22222c;
+  --pa-text:#ffffff;
+  --pa-secondary:#aaaaaa;
+  --pa-muted:#80808b;
+  --pa-accent:#a67cff;
+  --pa-accent-hover:#b590ff;
+  --pa-success:#34c996;
+  --pa-error:#ff6b7f;
+  color-scheme:dark;
+}
+/* "system" is resolved by JS to light or dark. */
+/* Temporary legacy aliases — defined once, derived from semantic tokens. */
 :root{
   --p100-bg:var(--pa-bg);
   --p100-panel:var(--pa-surface);
@@ -47,6 +111,13 @@
   --p100-blue:var(--pa-accent);
   --p100-green:var(--pa-success);
   --p100-orange:var(--pa-accent);
+  --glass:var(--pa-surface);
+  --glass2:var(--pa-card);
+  --purple:var(--pa-accent);
+  --pink:var(--pa-accent);
+  --blue:var(--pa-accent);
+  --green:var(--pa-success);
+  --muted:var(--pa-secondary);
 }
 /* 2. Reset / Base */
 *{box-sizing:border-box}
