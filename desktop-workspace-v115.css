@@ -1,0 +1,41 @@
+/* Pocket AI V115 — desktop workspace inspired by the approved computer mockup */
+@media(min-width:768px){
+ :root{--v92-side:224px!important}
+ html.photo-ui-v100 body{background:var(--p100-bg)!important}
+ html.photo-ui-v100 .topbar{left:224px!important;width:calc(100% - 224px)!important;height:64px!important;padding:10px 24px!important;border:0!important;border-bottom:1px solid var(--p100-line)!important;border-radius:0!important;box-shadow:none!important}
+ html.photo-ui-v100 .topbar .brand{display:none!important}
+ html.photo-ui-v100 .top-actions{margin-left:auto!important}
+ html.photo-ui-v100 main{margin:64px 0 0 224px!important;padding:28px 34px 42px!important;max-width:none!important;width:auto!important}
+ html.photo-ui-v100 .view{min-height:calc(100dvh - 134px)!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+ html.photo-ui-v100 .pa-desktop-sidebar{display:flex!important;left:0!important;top:0!important;bottom:0!important;width:224px!important;padding:18px 14px!important;border:0!important;border-right:1px solid var(--p100-line)!important;border-radius:0!important;background:var(--p100-panel)!important;box-shadow:none!important;z-index:150!important}
+ .pa-side-brand{display:flex;align-items:center;gap:10px;padding:2px 8px 18px;font-size:18px;color:var(--p100-text)}
+ .pa-side-logo{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:linear-gradient(145deg,var(--p100-pink),var(--p100-purple));color:#fff;font-size:12px}
+ .pa-new-chat{min-height:44px!important;margin:0 4px 20px!important;justify-content:center!important;background:linear-gradient(135deg,var(--p100-purple),var(--p100-pink))!important;color:#fff!important;font-weight:800!important}
+ .pa-side-label{padding:0 12px 8px;color:var(--p100-muted);font-size:10px;font-weight:800;letter-spacing:.12em}
+ html.photo-ui-v100 .pa-desktop-sidebar nav{display:grid!important;gap:4px!important}
+ html.photo-ui-v100 .pa-desktop-sidebar nav button,.pa-side-bottom button{min-height:42px!important;padding:10px 12px!important;border-radius:12px!important;font-size:13px!important;color:var(--p100-muted)!important}
+ html.photo-ui-v100 .pa-desktop-sidebar nav button i,.pa-side-bottom button i{width:22px;text-align:center;font-style:normal}
+ html.photo-ui-v100 .pa-desktop-sidebar button.active,html.photo-ui-v100 .pa-desktop-sidebar button:hover{background:color-mix(in srgb,var(--p100-purple) 11%,transparent)!important;color:var(--p100-purple)!important}
+ .pa-side-bottom{margin-top:auto;display:grid;gap:5px;padding-top:12px;border-top:1px solid var(--p100-line)}
+ .pa-side-bottom button{display:flex;align-items:center;gap:10px;border:0;background:transparent;text-align:left}
+ .pa-side-bottom button span{display:grid}.pa-side-bottom button small{font-size:9px;color:var(--p100-muted);font-weight:500}
+ html.photo-ui-v100 #home>.home-hero{min-height:230px!important;padding:34px 40px!important;border-radius:26px!important;max-width:1180px!important;margin:0 auto 18px!important}
+ html.photo-ui-v100 #home>.home-hero .eyebrow{display:none!important}
+ html.photo-ui-v100 #home>.home-hero h1{font-size:32px!important;margin-bottom:6px!important}
+ html.photo-ui-v100 #home>.home-hero .muted{font-size:14px!important}
+ html.photo-ui-v100 #home>.home-composer{width:min(760px,calc(100% - 80px))!important;margin:-92px auto 54px!important;position:relative!important;z-index:4!important;border-radius:18px!important}
+ html.photo-ui-v100 #home>.quick-grid{max-width:1180px!important;margin:0 auto 22px!important;grid-template-columns:repeat(4,1fr)!important;gap:12px!important}
+ html.photo-ui-v100 #home>.quick-grid>button{min-height:96px!important;border-radius:18px!important;padding:16px!important}
+ html.photo-ui-v100 #home>.dashboard-grid,html.photo-ui-v100 #home>.projects-head,html.photo-ui-v100 #home>#projectGrid,html.photo-ui-v100 #photoSuggestions{display:none!important}
+ html.photo-ui-v100 #photoMotivation{max-width:1180px!important;margin:0 auto!important}
+ html.photo-ui-v100 #library .lib53-hero{display:none!important}
+ html.photo-ui-v100 #library .lib53-tabs{position:sticky!important;top:0!important;max-width:1180px!important;margin:0 auto 16px!important;border-radius:16px!important}
+ html.photo-ui-v100 #library #lib53Mine,html.photo-ui-v100 #library #freeLibrary,html.photo-ui-v100 #library #webNovelHub{max-width:1180px!important;margin:0 auto!important;padding:24px!important;border-radius:22px!important}
+ html.photo-ui-v100 #files,html.photo-ui-v100 #surface,html.photo-ui-v100 #local,html.photo-ui-v100 #github,html.photo-ui-v100 #coding{max-width:1180px!important;margin:0 auto!important}
+ html.photo-ui-v100 #surface>.hero,html.photo-ui-v100 #local>.hero{display:none!important}
+ html.photo-ui-v100 #surface:before{content:"Research";display:block;font-size:30px;font-weight:850;margin-bottom:8px;color:var(--p100-text)}
+ html.photo-ui-v100 #local:before{content:"Local AI";display:block;font-size:30px;font-weight:850;margin-bottom:8px;color:var(--p100-text)}
+ html.photo-ui-v100 #files>h1{font-size:30px!important}
+ html.photo-ui-v100 #files>.eyebrow,html.photo-ui-v100 #files>h1+.muted{display:none!important}
+ html.photo-ui-v100 #bottomNav{display:none!important}
+}
