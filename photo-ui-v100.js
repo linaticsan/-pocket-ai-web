@@ -6,6 +6,20 @@ function keepCssLast(){
  const link=q('link[href*="photo-ui-v100.css"]');
  if(link&&link!==document.head.lastElementChild)document.head.appendChild(link);
 }
+function tuneChrome(){
+ const top=q('.top-actions');
+ if(top&&!q('#photoProfileButton',top)){
+  const b=document.createElement('button');b.id='photoProfileButton';b.type='button';b.className='photo-profile-button';b.setAttribute('aria-label','Open workspace menu');
+  b.innerHTML='<span class="photo-avatar">P</span><span class="photo-profile-copy"><strong>My workspace</strong><small>Local profile</small></span><span aria-hidden="true">⌄</span>';
+  b.onclick=openMore;top.prepend(b);
+ }
+ const side=q('#paDesktopSidebar');
+ if(side&&!q('#photoSideProfile',side)){
+  const p=document.createElement('button');p.id='photoSideProfile';p.type='button';p.className='photo-side-profile';
+  p.innerHTML='<span class="photo-avatar">P</span><span><strong>My workspace</strong><small>Stored on this device</small></span><b aria-hidden="true">•••</b>';
+  p.onclick=openMore;side.appendChild(p);
+ }
+}
 function tuneHome(){
  const grid=q('#home>.quick-grid');if(!grid)return;
  const wanted=[
@@ -30,6 +44,21 @@ function tuneHome(){
   grid.insertAdjacentElement('afterend',mot);
  }
  renderRecent();
+}
+function renderSuggestions(){
+ const home=q('#home');if(!home)return;
+ let box=q('#photoSuggestions');
+ if(!box){box=document.createElement('section');box.id='photoSuggestions';home.appendChild(box)}
+ const items=[
+  ['💡','Plan my study session','chat'],
+  ['📄','Summarize a document','files'],
+  ['🔎','Research a topic','surface'],
+  ['⌨️','Help me write code','coding'],
+  ['✍️','Improve my writing','chat'],
+  ['📚','Recommend a book','library']
+ ];
+ box.innerHTML='<div class="photo-section-head"><div><p class="eyebrow">START SOMETHING</p><h2>Suggested prompts</h2></div><span>Choose a shortcut to continue</span></div><div class="photo-suggestion-grid">'+items.map((x,i)=>'<button type="button" data-photo-suggestion="'+i+'"><i>'+x[0]+'</i><span>'+x[1]+'</span><b>→</b></button>').join('')+'</div>';
+ qa('[data-photo-suggestion]',box).forEach(b=>b.onclick=()=>go(items[+b.dataset.photoSuggestion][2]));
 }
 function recentData(){
  return [
