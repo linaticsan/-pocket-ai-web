@@ -147,6 +147,11 @@ addEventListener('resize',syncNav);
 addEventListener('pocket-core-ready',()=>{sync();setTimeout(sync,80)});
 addEventListener('pocket-features-ready',()=>{sync();setTimeout(sync,100)});
 document.addEventListener('click',e=>{
+ const close=e.target.closest?.('.photo-more-close');
+ if(close){
+  e.preventDefault();e.stopImmediatePropagation();
+  const sheet=q('#paMoreSheet');sheet?.classList.remove('open');sheet?.setAttribute('aria-hidden','true');return;
+ }
  const trigger=e.target.closest?.('[data-pa-side="more"],[data-more]');
  if(trigger)openMore(e);
 },true);
