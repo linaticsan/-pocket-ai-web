@@ -65,10 +65,18 @@ async function getText(b,onStage){
  throw Error('Reader could not retrieve this edition. '+errors.slice(-2).join(' • '));
 }
 function addDiscovery(){
- by('libOnline')?.remove();const host=by('libStorage');if(!host||by('freeLibrary'))return;
+ by('libOnline')?.remove();
+ const library=by('library'),mine=by('lib53Mine');
+ if(!library||!mine)return;
+ const existing=by('freeLibrary');
+ if(existing){
+   if(existing.parentElement!==library)mine.insertAdjacentElement('afterend',existing);
+   ensureReader();
+   return;
+ }
  const box=document.createElement('section');box.id='freeLibrary';box.className='free-library';
  box.innerHTML='<div class="free-head"><div><p class="eyebrow">FREE BOOKS • READ INSIDE POCKET AI</p><h2>Free Book Library</h2><p class="muted">Search free-access classics, open them here without leaving Pocket AI, and save a copy to your private on-device Library for study and AI questions.</p></div><span class="privacy-pill">📖 In-app reader</span></div><form id="freeSearchForm" class="free-search"><input id="freeSearch" placeholder="Search title or author…"><select id="freeLanguage" aria-label="Language"><option value="">Any language</option><option value="en">English</option><option value="ja">Japanese</option><option value="fr">French</option><option value="de">German</option><option value="es">Spanish</option></select><button class="primary">Search free books</button></form><div class="free-chips"><button data-free-q="children">Children</button><button data-free-q="japanese">Japanese</button><button data-free-q="psychology">Psychology</button><button data-free-q="crime">Crime</button><button data-free-q="history">History</button><button data-free-q="">Popular</button></div><p class="free-legal">Only catalog items marked public domain in the U.S. are shown. Availability outside the U.S. depends on local copyright law.</p><div id="freeStatus" class="muted"></div><div id="freeResults" class="free-results"></div>';
- host.insertAdjacentElement('afterend',box);ensureReader();
+ mine.insertAdjacentElement('afterend',box);ensureReader();
  by('freeSearchForm').onsubmit=e=>{e.preventDefault();search()};
  box.querySelectorAll('[data-free-q]').forEach(b=>b.onclick=()=>{by('freeSearch').value=b.dataset.freeQ;search()});
  by('freeLanguage').onchange=search;by('freeResults').onclick=actions;
