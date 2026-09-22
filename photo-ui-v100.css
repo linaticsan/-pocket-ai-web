@@ -463,3 +463,45 @@ html.photo-ui-v100 .photo-suggestion-grid button b{color:var(--p100-muted)}
  html.photo-ui-v100 #photoProfileButton .photo-profile-copy strong,
  html.photo-ui-v100 #photoProfileButton .photo-profile-copy small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:88px}
 }
+
+
+/* V108 balanced visual polish + intentional mascot motion */
+html.photo-ui-v100 #home>.home-hero{position:relative!important;isolation:isolate;background:linear-gradient(120deg,color-mix(in srgb,var(--p100-pink) 11%,var(--p100-card)),color-mix(in srgb,var(--p100-purple) 8%,var(--p100-card)) 54%,color-mix(in srgb,var(--p100-blue) 11%,var(--p100-card)))!important}
+html.photo-ui-v100 #home>.home-hero:before{content:"";position:absolute;inset:auto 9% -52px auto;width:220px;height:150px;border-radius:50%;background:color-mix(in srgb,var(--p100-purple) 8%,transparent);filter:blur(8px);z-index:-1}
+html.photo-ui-v100 #home>.home-hero>.mascot-stage{position:relative}
+html.photo-ui-v100 #home>.home-hero>.mascot-stage:before{content:"";position:absolute;width:154px;height:104px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--p100-purple) 19%,transparent),transparent 68%);animation:p108Glow 3.4s ease-in-out infinite}
+html.photo-ui-v100 #home>.home-hero>.mascot-stage:after{content:"♡";position:absolute;right:22px;top:10px;display:grid;place-items:center;width:28px;height:28px;border-radius:10px;background:var(--p100-card);color:var(--p100-pink);font-size:16px;font-weight:900;box-shadow:var(--p100-soft);animation:p108Heart 3.4s ease-in-out infinite}
+html.photo-ui-v100 #home .cat.mega{position:relative;z-index:2;animation:p108Mascot 3.4s ease-in-out infinite;filter:drop-shadow(0 14px 16px color-mix(in srgb,var(--p100-purple) 23%,transparent))}
+@keyframes p108Mascot{0%,100%{transform:translateY(0) rotate(0)}45%{transform:translateY(-7px) rotate(-1.5deg)}55%{transform:translateY(-7px) rotate(1.5deg)}}
+@keyframes p108Glow{0%,100%{transform:scale(.9);opacity:.55}50%{transform:scale(1.08);opacity:.95}}
+@keyframes p108Heart{0%,65%,100%{transform:translateY(0) scale(.92);opacity:.65}75%{transform:translateY(-7px) scale(1.08);opacity:1}}
+html.photo-ui-v100 #home>.home-composer{border:1px solid color-mix(in srgb,var(--p100-purple) 18%,var(--p100-line))!important;box-shadow:0 12px 30px rgba(67,54,127,.1)!important}
+html.photo-ui-v100 #home>.quick-grid>button{height:82px!important;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease!important}
+html.photo-ui-v100 #home>.quick-grid>button span{border:1px solid color-mix(in srgb,currentColor 8%,transparent)}
+html.photo-ui-v100 #photoRecent{padding:16px!important;border:1px solid var(--p100-line)!important;border-radius:18px!important;background:color-mix(in srgb,var(--p100-card) 82%,transparent)!important;box-shadow:var(--p100-soft)!important}
+html.photo-ui-v100 .photo-recent-title{font-size:15px!important;letter-spacing:-.01em}
+html.photo-ui-v100 .photo-recent-card{height:72px!important;transition:transform .18s ease,border-color .18s ease!important}
+html.photo-ui-v100 .photo-recent-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--p100-purple) 32%,var(--p100-line))!important}
+html.photo-ui-v100 #photoSuggestions{padding:16px!important;border:1px solid var(--p100-line)!important;border-radius:18px!important;background:linear-gradient(145deg,color-mix(in srgb,var(--p100-purple) 4%,var(--p100-card)),var(--p100-card))!important;box-shadow:var(--p100-soft)!important}
+html.photo-ui-v100 .photo-suggestion-grid button{height:58px!important;transition:transform .18s ease,border-color .18s ease,background .18s ease!important}
+html.photo-ui-v100 .photo-suggestion-grid button:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--p100-purple) 34%,var(--p100-line));background:color-mix(in srgb,var(--p100-purple) 3%,var(--p100-card))}
+html.photo-ui-v100 .pa-desktop-sidebar{gap:10px!important}
+html.photo-ui-v100 .pa-desktop-sidebar nav button{font-weight:650!important;letter-spacing:.01em!important}
+html.photo-ui-v100 .photo-more-close{position:absolute;right:14px;top:14px;z-index:2;width:36px;height:36px;border-radius:12px;border:1px solid var(--p100-line);background:var(--p100-card);color:var(--p100-text);font-size:22px;line-height:1}
+html.photo-ui-v100 #paMoreSheet .pa-more-panel{position:relative!important}
+@media(max-width:767px){
+ html.photo-ui-v100 #home>.home-hero>.mascot-stage:before{width:124px;height:84px}
+ html.photo-ui-v100 #home>.home-hero>.mascot-stage:after{right:6px;top:1px;width:24px;height:24px;font-size:13px}
+ html.photo-ui-v100 #home>.quick-grid>button{height:72px!important}
+ html.photo-ui-v100 #photoRecent{display:none!important}
+ html.photo-ui-v100 #photoSuggestions{padding:11px!important;border-radius:16px!important;margin-top:10px!important}
+ html.photo-ui-v100 .photo-suggestion-grid button{height:54px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ html.photo-ui-v100 #home .cat.mega,
+ html.photo-ui-v100 #home>.home-hero>.mascot-stage:before,
+ html.photo-ui-v100 #home>.home-hero>.mascot-stage:after{animation:none!important}
+ html.photo-ui-v100 #home>.quick-grid>button,
+ html.photo-ui-v100 .photo-recent-card,
+ html.photo-ui-v100 .photo-suggestion-grid button{transition:none!important}
+}

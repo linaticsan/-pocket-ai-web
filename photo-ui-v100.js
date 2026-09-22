@@ -51,15 +51,22 @@ function renderSuggestions(){
  let box=q('#photoSuggestions');
  if(!box){box=document.createElement('section');box.id='photoSuggestions';home.appendChild(box)}
  const items=[
-  ['💡','Plan my study session','chat'],
-  ['📄','Summarize a document','files'],
-  ['🔎','Research a topic','surface'],
-  ['⌨️','Help me write code','coding'],
-  ['✍️','Improve my writing','chat'],
-  ['📚','Recommend a book','library']
+  ['💡','Plan my study session','chat','Help me plan a focused study session for today.'],
+  ['📄','Summarize a document','files',''],
+  ['🔎','Research a topic','surface','Research this topic and compare reliable sources: '],
+  ['⌨️','Help me write code','coding','Help me build: '],
+  ['✍️','Improve my writing','chat','Improve this writing while keeping my meaning: '],
+  ['📚','Recommend a book','library','']
  ];
  box.innerHTML='<div class="photo-section-head"><div><p class="eyebrow">START SOMETHING</p><h2>Suggested prompts</h2></div><span>Choose a shortcut to continue</span></div><div class="photo-suggestion-grid">'+items.map((x,i)=>'<button type="button" data-photo-suggestion="'+i+'"><i>'+x[0]+'</i><span>'+x[1]+'</span><b>→</b></button>').join('')+'</div>';
- qa('[data-photo-suggestion]',box).forEach(b=>b.onclick=()=>go(items[+b.dataset.photoSuggestion][2]));
+ qa('[data-photo-suggestion]',box).forEach(b=>b.onclick=()=>runSuggestion(items[+b.dataset.photoSuggestion]));
+}
+function runSuggestion(item){
+ const [,label,target,prompt]=item;go(target);
+ setTimeout(()=>{
+  const field=target==='surface'?q('#surfaceQuery'):target==='chat'?q('#prompt'):null;
+  if(field&&prompt){field.value=prompt;field.focus();field.setSelectionRange?.(field.value.length,field.value.length)}
+ },80);
 }
 function recentData(){
  return [
@@ -95,6 +102,11 @@ function openMore(e){
 }
 function tuneMore(){
  const sheet=q('#paMoreSheet');if(!sheet)return;
+ const panel=q('.pa-more-panel',sheet);
+ if(panel&&!q('.photo-more-close',panel)){
+  const close=document.createElement('button');close.type='button';close.className='photo-more-close';close.setAttribute('aria-label','Close menu');close.textContent='×';
+  close.onclick=()=>{sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')};panel.prepend(close);
+ }
  const grid=q('.pa-more-grid',sheet);if(!grid)return;
  grid.innerHTML=[
   ['local','🧠','Local AI','Use models on your device'],
