@@ -518,3 +518,61 @@ html.photo-ui-v100 #paMoreSheet .pa-more-panel{position:relative!important}
 /* V111 native close state survives legacy handler rewrites */
 html.photo-ui-v100 #paMoreSheet:has(#photoMoreClosed:checked){display:none!important;visibility:hidden!important;pointer-events:none!important}
 html.photo-ui-v100 .photo-more-close{display:grid!important;place-items:center!important;cursor:pointer!important}
+
+
+/* V113 true desktop layouts — Chat, Files and More */
+@media(min-width:1025px){
+ html.photo-ui-v100 main{overflow-x:hidden!important}
+ html.photo-ui-v100 #chat,
+ html.photo-ui-v100 #files,
+ html.photo-ui-v100 #library{width:100%!important;max-width:none!important;margin:0!important}
+
+ /* Chat: desktop workspace, not a centered phone canvas */
+ html.photo-ui-v100 #chat .v3-chat-shell{
+  width:100%!important;max-width:none!important;height:calc(100dvh - 106px)!important;min-height:680px!important;
+  grid-template-columns:260px minmax(0,1fr)!important;border-radius:20px!important
+ }
+ html.photo-ui-v100 #chat .v3-sidebar{width:260px!important;min-width:0!important;overflow:hidden!important;padding:18px 14px!important}
+ html.photo-ui-v100 #chat .v3-sidebar *{max-width:100%!important;box-sizing:border-box!important}
+ html.photo-ui-v100 #chat .v3-history,
+ html.photo-ui-v100 #chat .v3-chat-list{overflow-x:hidden!important;overflow-y:auto!important;min-width:0!important}
+ html.photo-ui-v100 #chat .v3-history button,
+ html.photo-ui-v100 #chat .v3-chat-list button{width:100%!important;min-width:0!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+ html.photo-ui-v100 #chat .v3-chat-main{min-width:0!important;height:100%!important;display:grid!important;grid-template-rows:auto minmax(0,1fr) auto!important}
+ html.photo-ui-v100 #chat .v3-chat-top{padding:16px 22px!important;min-height:72px!important;border-bottom:1px solid var(--p100-line)!important}
+ html.photo-ui-v100 #chat .v3-welcome{width:min(100% - 48px,980px)!important;max-width:980px!important;min-height:330px!important;margin:24px auto!important;padding:30px 34px!important;display:grid!important;grid-template-columns:240px minmax(0,1fr)!important;align-items:center!important;gap:38px!important;border-radius:22px!important}
+ html.photo-ui-v100 #chat .v3-welcome .cat,
+ html.photo-ui-v100 #chat .v3-welcome [data-mascot]{justify-self:center!important}
+ html.photo-ui-v100 #chat .v3-welcome h1{font-size:clamp(28px,2.2vw,38px)!important;line-height:1.08!important;letter-spacing:-.025em!important}
+ html.photo-ui-v100 #chat .v3-suggestions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;justify-content:stretch!important}
+ html.photo-ui-v100 #chat .v3-suggestions button{width:100%!important;min-height:54px!important;border-radius:14px!important;text-align:left!important;padding:12px 14px!important}
+ html.photo-ui-v100 #chat #messages{min-width:0!important;overflow-x:hidden!important;padding:0 28px!important}
+ html.photo-ui-v100 #chat .v3-composer{width:min(100% - 48px,980px)!important;max-width:980px!important;margin:12px auto 20px!important}
+
+ /* Files: balanced editor plus useful illustration panel */
+ html.photo-ui-v100 #files{grid-template-columns:minmax(620px,1fr) 320px!important;gap:22px!important;padding:24px!important;min-height:calc(100dvh - 106px)!important;align-items:start!important}
+ html.photo-ui-v100 #files>*:not(#photoFilesPromo){grid-column:1!important;min-width:0!important}
+ html.photo-ui-v100 #photoFilesPromo{grid-column:2!important;grid-row:1/30!important;position:sticky!important;top:0!important;height:calc(100dvh - 154px)!important;min-height:620px!important;padding:30px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;text-align:center!important;overflow:hidden!important;background:linear-gradient(155deg,color-mix(in srgb,var(--p100-blue) 12%,var(--p100-card)),color-mix(in srgb,var(--p100-purple) 10%,var(--p100-card)) 52%,color-mix(in srgb,var(--p100-pink) 13%,var(--p100-card)))!important}
+ html.photo-ui-v100 #photoFilesPromo:before{content:"Private workspace";display:inline-flex;padding:7px 12px;margin-bottom:22px;border-radius:999px;background:var(--p100-card);color:var(--p100-purple);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;box-shadow:var(--p100-soft)}
+ html.photo-ui-v100 #photoFilesPromo strong{font-size:26px!important;line-height:1.28!important;letter-spacing:-.025em!important}
+ html.photo-ui-v100 #photoFilesPromo span{font-size:86px!important;margin-top:30px!important;filter:drop-shadow(0 14px 18px color-mix(in srgb,var(--p100-purple) 18%,transparent))}
+ html.photo-ui-v100 #files .picker,
+ html.photo-ui-v100 #files .artifact-drop-zone{min-height:210px!important;background:color-mix(in srgb,var(--p100-purple) 3%,var(--p100-card))!important}
+ html.photo-ui-v100 #files #fileText{min-height:260px!important}
+
+ /* More: fixed modal overlay instead of a document-flow block */
+ html.photo-ui-v100 #paMoreSheet{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;margin:0!important;padding:86px 24px 24px!important;z-index:1500!important;background:rgba(24,20,50,.28)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+ html.photo-ui-v100 #paMoreSheet.open{display:flex!important;align-items:center!important;justify-content:center!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-panel{width:min(620px,calc(100vw - 48px))!important;max-height:calc(100dvh - 120px)!important;overflow:auto!important;padding:26px!important;border-radius:24px!important;box-shadow:0 28px 80px rgba(31,24,74,.25)!important}
+ html.photo-ui-v100 #paMoreSheet h2{margin:0 0 18px!important;font-size:24px!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid{gap:10px!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid button{min-height:70px!important;padding:12px 14px!important;border-radius:16px!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid button strong{display:block!important;font-size:13px!important;margin-bottom:3px!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid button small{display:block!important;font-size:10px!important;color:var(--p100-muted)!important}
+}
+
+@media(min-width:1450px){
+ html.photo-ui-v100 #chat .v3-chat-shell{grid-template-columns:290px minmax(0,1fr)!important}
+ html.photo-ui-v100 #chat .v3-sidebar{width:290px!important}
+ html.photo-ui-v100 #files{grid-template-columns:minmax(760px,1fr) 360px!important}
+}
