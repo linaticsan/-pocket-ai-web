@@ -98,15 +98,16 @@ function tuneThemes(){
 function openMore(e){
  if(e){e.preventDefault();e.stopImmediatePropagation()}
  const sheet=q('#paMoreSheet');if(!sheet)return;
+ const nativeClose=q('#photoMoreClosed',sheet);if(nativeClose)nativeClose.checked=false;
  sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');
 }
 function tuneMore(){
  const sheet=q('#paMoreSheet');if(!sheet)return;
  const panel=q('.pa-more-panel',sheet);
- if(panel){
-  let close=q('.photo-more-close',panel);
-  if(!close){close=document.createElement('button');close.type='button';close.className='photo-more-close';close.setAttribute('aria-label','Close menu');close.textContent='×';panel.prepend(close)}
-  if(!close.dataset.photoBound){close.dataset.photoBound='1';close.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')})}
+ if(panel&&!q('#photoMoreClosed',panel)){
+  const nativeClose=document.createElement('input');nativeClose.type='checkbox';nativeClose.id='photoMoreClosed';nativeClose.hidden=true;
+  const close=document.createElement('label');close.className='photo-more-close';close.setAttribute('for','photoMoreClosed');close.setAttribute('aria-label','Close menu');close.textContent='×';
+  panel.prepend(close);panel.prepend(nativeClose);
  }
  const grid=q('.pa-more-grid',sheet);if(!grid)return;
  grid.innerHTML=[
@@ -148,12 +149,7 @@ addEventListener('resize',syncNav);
 addEventListener('pocket-core-ready',()=>{sync();setTimeout(sync,80)});
 addEventListener('pocket-features-ready',()=>{sync();setTimeout(sync,100)});
 document.addEventListener('click',e=>{
- const close=e.target.closest?.('.photo-more-close');
- if(close){
-  e.preventDefault();e.stopImmediatePropagation();
-  const sheet=q('#paMoreSheet');sheet?.classList.remove('open');sheet?.setAttribute('aria-hidden','true');return;
- }
- const trigger=e.target.closest?.('[data-pa-side="more"],[data-more]');
+  const trigger=e.target.closest?.('[data-pa-side="more"],[data-more]');
  if(trigger)openMore(e);
 },true);
 document.addEventListener('submit',e=>{if(e.target?.id==='chatForm'||e.target?.id==='surfaceForm')setTimeout(renderRecent,120)},true);
