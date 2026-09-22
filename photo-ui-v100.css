@@ -576,3 +576,12 @@ html.photo-ui-v100 .photo-more-close{display:grid!important;place-items:center!i
  html.photo-ui-v100 #chat .v3-sidebar{width:290px!important}
  html.photo-ui-v100 #files{grid-template-columns:minmax(760px,1fr) 360px!important}
 }
+
+
+/* V114 balance the desktop More modal */
+@media(min-width:1025px){
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid button{width:100%!important;min-width:0!important;grid-template-columns:46px minmax(0,1fr) 18px!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-grid button:last-child{grid-column:1/-1!important}
+ html.photo-ui-v100 #paMoreSheet .pa-more-panel{width:min(660px,calc(100vw - 48px))!important}
+}
