@@ -100,7 +100,7 @@ function combinedRecent(){
 function renderRecent(limit=5){
  const box=q('recentActivity');if(!box)return;
  const arr=combinedRecent();
- if(!arr.length){box.className='recent-list is-empty';box.innerHTML='<div class="recent-empty"><strong>No recent activity</strong><span>Your recent chats, files and projects will appear here.</span></div>';return}
+ if(!arr.length){box.className='recent-list is-empty';box.innerHTML='<div class="recent-empty"><span class="friendly-empty-icon" aria-hidden="true">✦</span><strong>No activity yet</strong><span>Start something with Pocket AI and it’ll show up here.</span></div>';return}
  box.className='recent-list has-items';
  const shown=arr.slice(0,limit);
  box.innerHTML='<div class="recent-rows">'+shown.map((x,i)=>'<button type="button" class="recent-row" data-recent-index="'+i+'"><span class="recent-icon">'+(x.icon||recentIcon(x.target))+'</span><span class="recent-copy"><strong></strong><small>'+(x.type||recentType(x.target))+'</small></span><time>'+recentTime(x.time)+'</time><b aria-hidden="true">→</b></button>').join('')+'</div>'+(arr.length>limit?'<button type="button" class="recent-view-all">View all →</button>':'');
@@ -135,7 +135,7 @@ function renderProjects(limit=3){
  const arr=projects();
  if(!arr.length){
   grid.className='project-grid is-empty';
-  grid.innerHTML='<div class="project-empty"><span>＋</span><strong>Create your first project</strong><p>Keep chats, files, code and research organized in one workspace.</p><button type="button" class="project-create">Create project</button></div>';
+  grid.innerHTML='<div class="project-empty"><span class="friendly-empty-icon" aria-hidden="true">◇</span><strong>Nothing here yet</strong><p>Create your first project and keep everything together.</p><button type="button" class="project-create">Create project</button></div>';
   grid.querySelector('.project-create').onclick=createProject;
   head.querySelector('.project-view-all').hidden=true;
   if(create)create.hidden=true;
