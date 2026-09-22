@@ -30,7 +30,7 @@ try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Arr
 const v3style=document.createElement('link');v3style.rel='stylesheet';v3style.href='./v3.css?v=20260921-v76';document.head.appendChild(v3style);
 const v3hotfix=document.createElement('link');v3hotfix.rel='stylesheet';v3hotfix.href='./v3-hotfix.css?v=20260921-v76';document.head.appendChild(v3hotfix);
 const codeStyle=document.createElement('link');codeStyle.rel='stylesheet';codeStyle.href='./coding-v1.css?v=20260918-1';document.head.appendChild(codeStyle);
-const mobile30=document.createElement('link');mobile30.rel='stylesheet';mobile30.href='./mobile-v30.css?v=20260921-v76';document.head.appendChild(mobile30);const lib33=document.createElement('link');lib33.rel='stylesheet';lib33.href='./library-v33.css?v=20260920-v53';document.head.appendChild(lib33);const lib34=document.createElement('link');lib34.rel='stylesheet';lib34.href='./library-online-v34.css?v=20260920-v52';document.head.appendChild(lib34);const wn42=document.createElement('link');wn42.rel='stylesheet';wn42.href='./webnovel-v42.css?v=20260920-v52';document.head.appendChild(wn42);const files31=document.createElement('link');files31.rel='stylesheet';files31.href='./files-v31.css?v=20260920-v52';document.head.appendChild(files31);const motion32=document.createElement('link');motion32.rel='stylesheet';motion32.href='./motion-v32.css?v=20260921-v59';document.head.appendChild(motion32);const ui59=document.createElement('link');ui59.rel='stylesheet';ui59.href='./ui-v59.css?v=20260922-v85';document.head.appendChild(ui59);const chat77=document.createElement('link');chat77.rel='stylesheet';chat77.href='./chat-v77.css?v=20260922-v85';document.head.appendChild(chat77);const files80=document.createElement('link');files80.rel='stylesheet';files80.href='./files-v80.css?v=20260922-v85';document.head.appendChild(files80);const vis82=document.createElement('link');vis82.rel='stylesheet';vis82.href='./visibility-v82.css?v=20260922-v85';document.head.appendChild(vis82);const polish84=document.createElement('link');polish84.rel='stylesheet';polish84.href='./polish-v84.css?v=20260922-v85';document.head.appendChild(polish84);
+const mobile30=document.createElement('link');mobile30.rel='stylesheet';mobile30.href='./mobile-v30.css?v=20260921-v76';document.head.appendChild(mobile30);const lib33=document.createElement('link');lib33.rel='stylesheet';lib33.href='./library-v33.css?v=20260920-v53';document.head.appendChild(lib33);const lib34=document.createElement('link');lib34.rel='stylesheet';lib34.href='./library-online-v34.css?v=20260920-v52';document.head.appendChild(lib34);const wn42=document.createElement('link');wn42.rel='stylesheet';wn42.href='./webnovel-v42.css?v=20260920-v52';document.head.appendChild(wn42);const files31=document.createElement('link');files31.rel='stylesheet';files31.href='./files-v31.css?v=20260920-v52';document.head.appendChild(files31);const motion32=document.createElement('link');motion32.rel='stylesheet';motion32.href='./motion-v32.css?v=20260921-v59';document.head.appendChild(motion32);const ui59=document.createElement('link');ui59.rel='stylesheet';ui59.href='./ui-v59.css?v=20260922-v86';document.head.appendChild(ui59);const chat77=document.createElement('link');chat77.rel='stylesheet';chat77.href='./chat-v77.css?v=20260922-v86';document.head.appendChild(chat77);const files80=document.createElement('link');files80.rel='stylesheet';files80.href='./files-v80.css?v=20260922-v86';document.head.appendChild(files80);const vis82=document.createElement('link');vis82.rel='stylesheet';vis82.href='./visibility-v82.css?v=20260922-v86';document.head.appendChild(vis82);const polish84=document.createElement('link');polish84.rel='stylesheet';polish84.href='./polish-v84.css?v=20260922-v86';document.head.appendChild(polish84);
 // Emergency performance safe mode: keep the stable V3 core interactive and remove
 // additive workspaces that can leave expensive observers/DOM behind on mobile.
 try{
@@ -51,21 +51,21 @@ try{
 
  // Core UI first: navigation/chat/settings should become tappable as quickly as possible.
  await Promise.all([
-   load('./api-hub.js?v=20260922-v85'),
-   load('./v3.js?v=20260922-v85'),
-   load('./v3-guard.js?v=20260922-v85'),
-   load('./ui-v59.js?v=20260922-v85'),
-   load('./library-v33.js?v=20260922-v85')
+   load('./api-hub.js?v=20260922-v86'),
+   load('./v3.js?v=20260922-v86'),
+   load('./v3-guard.js?v=20260922-v86'),
+   load('./ui-v59.js?v=20260922-v86'),
+   load('./library-v33.js?v=20260922-v86')
  ]);
  window.dispatchEvent(new CustomEvent('pocket-core-ready',{detail:{ms:Math.round(performance.now()-started)}}));
 
  // Heavier workspaces load in parallel after the core becomes interactive.
  const idle=cb=>window.requestIdleCallback?requestIdleCallback(cb,{timeout:700}):setTimeout(cb,220);
  const optional=new Promise(resolve=>idle(()=>Promise.allSettled([
-   load('./coding-v1.js?v=20260922-v85'),
-   load('./files-v32.js?v=20260922-v85'),
-   load('./library-online-v34.js?v=20260922-v85'),
-   load('./webnovel-v42.js?v=20260922-v85')
+   load('./coding-v1.js?v=20260922-v86'),
+   load('./files-v32.js?v=20260922-v86'),
+   load('./library-online-v34.js?v=20260922-v86'),
+   load('./webnovel-v42.js?v=20260922-v86')
  ]).then(resolve)));
  window.PocketFeatures={ready:optional};
  optional.then(()=>window.dispatchEvent(new CustomEvent('pocket-features-ready')));
