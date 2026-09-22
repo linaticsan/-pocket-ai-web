@@ -112,7 +112,7 @@ function activateLibraryTab(kind='mine'){
    const wait=setInterval(()=>{
      const f=by('freeLibrary'),n=by('webNovelHub'),ready=kind==='free'?f:n;
      if(ready){clearInterval(wait);activateLibraryTab(kind)}
-     else if(++tries>20){clearInterval(wait);if(state){state.hidden=false;state.innerHTML='<div class="lib-empty"><span>📚</span><strong>Could not open this section.</strong><p>Try again or return to My Shelf.</p><button type="button" data-lib53-jump="mine">Back to My Shelf</button></div>'}}
+     else if(++tries>80){clearInterval(wait);if(state){state.hidden=false;state.innerHTML='<div class="lib-empty"><span>📚</span><strong>Could not open this section.</strong><p>Try again or return to My Shelf.</p><button type="button" data-lib53-jump="mine">Back to My Shelf</button></div>'}}
    },150);
  }
  if(kind==='mine')by('libSearch')?.focus?.({preventScroll:true});
