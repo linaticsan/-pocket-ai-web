@@ -64,7 +64,7 @@ try{
  const optional=new Promise(resolve=>idle(()=>Promise.allSettled([
    load('./coding-v1.js?v=20260922-v88'),
    load('./files-v32.js?v=20260922-v88'),
-   load('./library-online-v34.js?v=20260922-v88'),
+   load('./library-online-v34.js?v=20260922-v93'),
    load('./webnovel-v42.js?v=20260922-v88')
  ]).then(resolve)));
  window.PocketFeatures={ready:optional};
