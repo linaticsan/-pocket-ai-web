@@ -98,17 +98,12 @@ function tuneThemes(){
 function openMore(e){
  if(e){e.preventDefault();e.stopImmediatePropagation()}
  const sheet=q('#paMoreSheet');if(!sheet)return;
- const nativeClose=q('#photoMoreClosed',sheet);if(nativeClose)nativeClose.checked=false;
  sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');
 }
 function tuneMore(){
  const sheet=q('#paMoreSheet');if(!sheet)return;
  const panel=q('.pa-more-panel',sheet);
- if(panel&&!q('#photoMoreClosed',panel)){
-  const nativeClose=document.createElement('input');nativeClose.type='checkbox';nativeClose.id='photoMoreClosed';nativeClose.hidden=true;
-  const close=document.createElement('label');close.className='photo-more-close';close.setAttribute('for','photoMoreClosed');close.setAttribute('aria-label','Close menu');close.textContent='×';
-  panel.prepend(close);panel.prepend(nativeClose);
- }
+
  const grid=q('.pa-more-grid',sheet);if(!grid)return;
  grid.innerHTML=[
   ['local','🧠','Local AI','Use models on your device'],
