@@ -32,10 +32,6 @@ function tuneHome(){
  renderRecent();
 }
 function recentData(){
- try{
-  const a=JSON.parse(localStorage.getItem('pocket-recent-v2')||'[]');
-  if(Array.isArray(a)&&a.length)return a.slice(0,4);
- }catch{}
  return [
   {icon:'📖',title:'Pride and Prejudice',target:'library',meta:'Jane Austen'},
   {icon:'📄',title:'Research Notes.pdf',target:'files',meta:'2.4 MB'},
@@ -53,6 +49,15 @@ function renderRecent(){
 }
 function relative(t){if(!t)return 'Recent';const m=Math.max(1,Math.round((Date.now()-t)/60000));return m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':'Recent'}
 function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function tuneFiles(){
+ const files=q('#files');if(!files||q('#photoFilesPromo',files))return;
+ const promo=document.createElement('aside');promo.id='photoFilesPromo';
+ promo.innerHTML='<strong>Organize<br>your ideas.<br>Create<br>your future ♡</strong><span>📁</span>';
+ files.appendChild(promo);
+}
+function tuneThemes(){
+ qa('.theme-grid [data-theme-choice]').forEach(b=>{if(q('.pa-theme-preview',b))return;const p=document.createElement('div');p.className='pa-theme-preview';b.prepend(p)});
+}
 function tuneMore(){
  const sheet=q('#paMoreSheet');if(!sheet)return;
  const grid=q('.pa-more-grid',sheet);if(!grid)return;
@@ -88,7 +93,7 @@ function syncNav(){
 }
 function sync(){
  document.documentElement.classList.add('photo-ui-v100','reference-ui-active');
- tuneHome();tuneMore();syncNav();keepCssLast();
+ tuneHome();tuneMore();tuneFiles();tuneThemes();syncNav();q('#installBanner')?.setAttribute('hidden','');keepCssLast();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
 addEventListener('resize',syncNav);

@@ -345,3 +345,34 @@ html.photo-ui-v100 #paMoreSheet .pa-more-grid button,html.photo-ui-v100 #v39More
   :root{--p100-side:190px}
   html.photo-ui-v100 #home{width:min(100%,1280px)!important}
 }
+
+
+/* V101 exact screenshot acceptance rules */
+html.photo-ui-v100 #installBanner{display:none!important}
+html.photo-ui-v100 #home>.mode-strip,
+html.photo-ui-v100 #home>.dashboard-grid,
+html.photo-ui-v100 #home>.projects-head,
+html.photo-ui-v100 #home>#projectGrid{display:none!important}
+html.photo-ui-v100 #home>.quick-grid>[data-quick]{display:none!important}
+html.photo-ui-v100 #home>.quick-grid>[data-quick="chat"],
+html.photo-ui-v100 #home>.quick-grid>[data-quick="research"],
+html.photo-ui-v100 #home>.quick-grid>[data-quick="files"],
+html.photo-ui-v100 #home>.quick-grid>[data-quick="coding"]{display:grid!important}
+html.photo-ui-v100 #photoFilesPromo{display:none}
+@media(max-width:767px){
+ html.photo-ui-v100 .pa-desktop-sidebar{display:none!important}
+ html.photo-ui-v100 #bottomNav{display:grid!important}
+}
+@media(min-width:768px) and (max-width:1024px){
+ html.photo-ui-v100 #bottomNav{display:none!important}
+}
+@media(min-width:1025px){
+ html.photo-ui-v100 #bottomNav{display:none!important}
+ html.photo-ui-v100 #files{display:grid!important;grid-template-columns:minmax(0,1fr) 250px!important;gap:16px!important;align-content:start!important}
+ html.photo-ui-v100 #files>*:not(#photoFilesPromo){grid-column:1}
+ html.photo-ui-v100 #photoFilesPromo{display:grid!important;grid-column:2!important;grid-row:1/30;min-height:100%;align-content:end;padding:24px;border:1px solid var(--p100-line);border-radius:18px;background:linear-gradient(160deg,color-mix(in srgb,var(--p100-blue) 8%,var(--p100-card)),color-mix(in srgb,var(--p100-pink) 10%,var(--p100-card)));color:var(--p100-purple)}
+ html.photo-ui-v100 #photoFilesPromo strong{font-size:19px;line-height:1.45}
+ html.photo-ui-v100 #photoFilesPromo span{font-size:72px;margin-top:24px}
+ html.photo-ui-v100 #settingsDialog{width:min(780px,calc(100% - 70px))!important}
+ html.photo-ui-v100 #settingsDialog .theme-grid{grid-template-columns:repeat(4,1fr)!important}
+}
