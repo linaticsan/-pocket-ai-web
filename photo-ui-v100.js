@@ -44,6 +44,7 @@ function tuneHome(){
   grid.insertAdjacentElement('afterend',mot);
  }
  renderRecent();
+ renderSuggestions();
 }
 function renderSuggestions(){
  const home=q('#home');if(!home)return;
@@ -127,7 +128,7 @@ function syncNav(){
 }
 function sync(){
  document.documentElement.classList.add('photo-ui-v100','reference-ui-active');
- tuneHome();tuneMore();tuneFiles();tuneThemes();syncNav();q('#installBanner')?.setAttribute('hidden','');keepCssLast();
+ tuneChrome();tuneHome();tuneMore();tuneFiles();tuneThemes();syncNav();q('#installBanner')?.setAttribute('hidden','');keepCssLast();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',sync,{once:true});else sync();
 addEventListener('resize',syncNav);
