@@ -22,7 +22,7 @@ function tuneHome(){
   ['coding','🧑‍💻','Code','Build & create']
  ];
  order.forEach(([key,icon,name,sub],i)=>{const b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;b.style.order=i;b.innerHTML='<span>'+icon+'</span><strong>'+name+'</strong><small>'+sub+'</small>';b.style.display=''});
- [...grid.children].forEach(b=>{if(!order.some(x=>b.dataset.quick===x[0]))b.style.order=99});
+ [...grid.children].forEach(b=>{const keep=order.some(x=>b.dataset.quick===x[0]);if(!keep){b.hidden=true;b.style.display='none'}else{b.hidden=false;b.style.display=''}});
  const quote=q('.pa-inspiration');if(quote)quote.textContent='“Small steps every day lead to big results. ♡”';
 }
 function themeGallery(){
