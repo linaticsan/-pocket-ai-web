@@ -513,3 +513,8 @@ html.photo-ui-v100 #paMoreSheet .pa-more-panel{position:relative!important}
  html.photo-ui-v100[data-motion="full"] #home>.home-hero>.mascot-stage:before{animation:p108Glow 3.4s ease-in-out infinite!important}
  html.photo-ui-v100[data-motion="full"] #home>.home-hero>.mascot-stage:after{animation:p108Heart 3.4s ease-in-out infinite!important}
 }
+
+
+/* V111 native close state survives legacy handler rewrites */
+html.photo-ui-v100 #paMoreSheet:has(#photoMoreClosed:checked){display:none!important;visibility:hidden!important;pointer-events:none!important}
+html.photo-ui-v100 .photo-more-close{display:grid!important;place-items:center!important;cursor:pointer!important}
