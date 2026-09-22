@@ -165,21 +165,89 @@ function syncLocalHome(){
  mood?.classList.toggle('is-ready',ready);
  status.textContent=ready?('Local AI ready'+(model?' · '+model:'')):'Local AI not set up';
  if(moodText)moodText.textContent=ready?'Pocket is ready ✦':'Ready when you are';
+ if(ready)setMascotState?.('happy',1400);
 }
 syncLocalHome();document.querySelectorAll('[data-go="home"],[data-go="local"]').forEach(b=>b.addEventListener('click',()=>setTimeout(syncLocalHome,150)));
 
 const mascots=document.querySelectorAll('[data-mascot]');
-function mascot(state='normal',ms=1800){
- const home=q('homeMascot');
- if(home){
-   home.dataset.mascotState=state;
-   clearTimeout(mascot._timer);
-   mascot._timer=setTimeout(()=>home.dataset.mascotState='normal',ms);
+const COMPANION_KEY='pocket-companion-interactions-v1';
+const mascotMoods={normal:'Ready',happy:'Happy',excited:'Excited',surprised:'Curious',sleepy:'Sleepy',thinking:'Thinking',wave:'Curious',petted:'Happy',sending:'Excited',local:'Happy',concerned:'Curious',secret:'Excited'};
+const tapStates=['happy','excited','surprised','sleepy','thinking','wave'];
+const tapMessages=['Hi! ✦','Ready!','What are we making?','Let\'s learn something.','You found me!','Need help?','Let\'s build!','Good to see you.'];
+let mascotIdleTimer=0,pressTimer=0,pressStarted=0,pressHandled=false,tapWindow=[];
+function motionMode(){return document.documentElement.dataset.motion||'full'}
+function setMascotState(state='normal',ms=1800){
+ const home=q('homeMascot'),label=q('pocketMoodLabel');if(!home)return;
+ home.dataset.mascotState=state;
+ if(label)label.textContent=mascotMoods[state]||'Ready';
+ clearTimeout(setMascotState._timer);
+ if(ms>0)setMascotState._timer=setTimeout(()=>{home.dataset.mascotState='normal';if(label)label.textContent='Ready'},ms);
+}
+function mascot(state='normal',ms=1800){setMascotState(state,ms)}
+function showPocketSpeech(text,ms=2400){
+ const b=q('pocketSpeech');if(!b)return;
+ b.textContent=text;b.classList.add('is-visible');
+ clearTimeout(showPocketSpeech._timer);
+ showPocketSpeech._timer=setTimeout(()=>b.classList.remove('is-visible'),ms);
+}
+function spawnPocketParticles(kind='star',count=3){
+ if(motionMode()==='off'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const box=q('pocketParticles');if(!box)return;
+ const limit=motionMode()==='gentle'?Math.min(count,2):count;
+ for(let i=0;i<limit;i++){
+   const p=document.createElement('i');p.className='pocket-particle '+(kind==='heart'?'heart':'star');p.setAttribute('aria-hidden','true');
+   const a=(Math.PI*2*i/limit)-Math.PI/2+(Math.random()-.5)*.6,r=36+Math.random()*20;
+   p.style.setProperty('--px',Math.cos(a)*r+'px');p.style.setProperty('--py',Math.sin(a)*r+'px');
+   box.appendChild(p);setTimeout(()=>p.remove(),1100);
  }
 }
+function bumpPocketInteractions(){
+ let n=parseInt(safeGet(COMPANION_KEY,'0'),10);if(!Number.isFinite(n))n=0;safeSet(COMPANION_KEY,String(n+1));
+}
+function scheduleMascotIdle(){
+ clearTimeout(mascotIdleTimer);
+ mascotIdleTimer=setTimeout(()=>{
+   const home=q('home'),prompt=q('homePrompt');
+   if(!home?.classList.contains('active')||prompt===document.activeElement||prompt?.value?.trim()){scheduleMascotIdle();return}
+   const state=Math.random()<.5?'thinking':'sleepy';setMascotState(state,1800);
+   scheduleMascotIdle();
+ },20000+Math.floor(Math.random()*20000));
+}
+function checkMascotSecret(){
+ const now=Date.now();tapWindow=tapWindow.filter(t=>now-t<4000);tapWindow.push(now);
+ if(tapWindow.length>=7){
+   tapWindow=[];setMascotState('secret',1200);showPocketSpeech('You found my secret! ✦',2600);spawnPocketParticles('star',4);return true;
+ }
+ return false;
+}
+function pocketTap(){
+ bumpPocketInteractions();
+ if(checkMascotSecret())return;
+ const state=tapStates[Math.floor(Math.random()*tapStates.length)];
+ setMascotState(state,1700);
+ if(state==='happy'||state==='excited')spawnPocketParticles(state==='happy'?'heart':'star',3);
+ if(Math.random()<.42)showPocketSpeech(tapMessages[Math.floor(Math.random()*tapMessages.length)],2200);
+ scheduleMascotIdle();
+}
+function pocketPet(){
+ pressHandled=true;bumpPocketInteractions();setMascotState('petted',2100);showPocketSpeech(Math.random()<.5?'Hehe ✦':'That tickles!',2200);spawnPocketParticles('heart',4);scheduleMascotIdle();
+}
+const homeMascot=q('homeMascot');
+if(homeMascot){
+ homeMascot.addEventListener('click',e=>{if(pressHandled){pressHandled=false;return}pocketTap()});
+ homeMascot.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;pressHandled=false;pressStarted=Date.now();homeMascot.setPointerCapture?.(e.pointerId);clearTimeout(pressTimer);pressTimer=setTimeout(()=>pocketPet(),600)});
+ const endPress=e=>{clearTimeout(pressTimer);try{homeMascot.releasePointerCapture?.(e.pointerId)}catch{}};
+ homeMascot.addEventListener('pointerup',endPress);homeMascot.addEventListener('pointercancel',endPress);homeMascot.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')clearTimeout(pressTimer)});
+ homeMascot.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pocketTap()}});
+}
+q('homePrompt')?.addEventListener('focus',()=>clearTimeout(mascotIdleTimer));
+q('homePrompt')?.addEventListener('input',()=>clearTimeout(mascotIdleTimer));
+q('homePrompt')?.addEventListener('blur',scheduleMascotIdle);
+q('homeComposer')?.addEventListener('submit',()=>setMascotState('sending',1800),true);
 q('chatForm')?.addEventListener('submit',()=>mascot('sending'));
 q('deepResearch')?.addEventListener('click',()=>mascot('thinking',3000));
 q('localSend')?.addEventListener('click',()=>mascot('local'));
+scheduleMascotIdle();
 
 window.addEventListener('online',()=>{
   document.body.dataset.network='online';
