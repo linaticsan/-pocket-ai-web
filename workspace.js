@@ -114,10 +114,148 @@ function renderRecent(limit=5){
  if(head){head.hidden=arr.length<=limit;head.onclick=()=>renderRecent(Math.min(10,arr.length))}
 }
 renderRecent();
-q('chatForm')?.addEventListener('submit',()=>{const t=q('prompt')?.value.trim()||'';if(t)addRecent('💬',t,'chat','Chat')},true);
-q('deepResearch')?.addEventListener('click',()=>{const t=q('surfaceQuery')?.value.trim()||'';if(t)addRecent('🔎',t,'surface','Research')},true);
-q('fileInput')?.addEventListener('change',()=>{const file=q('fileInput')?.files?.[0];if(file)addRecent('📄',file.name,'files','File')},true);
+q('chatForm')?.addEventListener('submit',()=>{const t=q('prompt')?.value.trim()||'';if(t){addRecent('💬',t,'chat','Chat');recordProgressionAction('chat')}},true);
+q('deepResearch')?.addEventListener('click',()=>{const t=q('surfaceQuery')?.value.trim()||'';if(t){addRecent('🔎',t,'surface','Research');recordProgressionAction('research')}},true);
+q('fileInput')?.addEventListener('change',()=>{const file=q('fileInput')?.files?.[0];if(file){addRecent('📄',file.name,'files','File');recordProgressionAction('file')}},true);
 document.addEventListener('click',e=>{const p=e.target.closest?.('#projectGrid .project-card');if(p){const name=p.querySelector('strong')?.textContent?.trim();if(name)addRecent('▦',name,'home','Project')}},true);
+
+
+/* STEP 5 — Pocket progression: cosmetic only; never gates app functionality. */
+const PROGRESSION_KEY='pocket-progression-v1';
+const XP_PER_LEVEL=100;
+const DISPLAY_LEVEL_CAP=20;
+const QUESTS={
+ chat:{reward:20},
+ research:{reward:30},
+ make:{reward:30}
+};
+const ACTION_REWARDS={
+ chat:{xp:10,cooldown:5*60*1000},
+ research:{xp:20,cooldown:10*60*1000},
+ file:{xp:15,cooldown:10*60*1000}
+};
+function localDayKey(d=new Date()){
+ const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+ return y+'-'+m+'-'+day;
+}
+function defaultProgression(){return{xp:0,completedQuests:[],rewardedActions:{},lastQuestReset:localDayKey()}}
+function loadProgression(){
+ let s=defaultProgression();
+ try{
+  const raw=JSON.parse(localStorage.getItem(PROGRESSION_KEY)||'null');
+  if(raw&&typeof raw==='object'){
+   s.xp=Math.max(0,Math.floor(Number(raw.xp)||0));
+   s.completedQuests=Array.isArray(raw.completedQuests)?raw.completedQuests.filter(x=>QUESTS[x]):[];
+   s.rewardedActions=raw.rewardedActions&&typeof raw.rewardedActions==='object'?raw.rewardedActions:{};
+   s.lastQuestReset=typeof raw.lastQuestReset==='string'?raw.lastQuestReset:localDayKey();
+  }
+ }catch{}
+ return s;
+}
+let progression=loadProgression();
+function saveProgression(){
+ try{localStorage.setItem(PROGRESSION_KEY,JSON.stringify(progression))}catch{}
+}
+function currentLevel(total=progression.xp){return Math.floor(Math.max(0,total)/XP_PER_LEVEL)+1}
+function displayLevel(total=progression.xp){return Math.min(DISPLAY_LEVEL_CAP,currentLevel(total))}
+function currentLevelXP(total=progression.xp){return Math.max(0,total)%XP_PER_LEVEL}
+function levelName(level=displayLevel()){
+ if(level<=3)return'Curious Pocket';
+ if(level<=6)return'Bright Pocket';
+ if(level<=10)return'Clever Pocket';
+ if(level<=15)return'Explorer Pocket';
+ return'Star Pocket';
+}
+function resetDailyQuestsIfNeeded(){
+ const today=localDayKey();
+ if(progression.lastQuestReset===today)return false;
+ progression.completedQuests=[];
+ progression.lastQuestReset=today;
+ saveProgression();
+ return true;
+}
+function showXPFeedback(text){
+ const el=q('pocketXPToast');if(!el)return;
+ el.textContent=text;el.classList.add('is-visible');
+ clearTimeout(showXPFeedback._timer);
+ showXPFeedback._timer=setTimeout(()=>el.classList.remove('is-visible'),1800);
+}
+function renderProgression(){
+ resetDailyQuestsIfNeeded();
+ const level=displayLevel(),within=currentLevelXP();
+ const inline=q('pocketLevelInline'),levelEl=q('pocketLevel'),xpText=q('pocketXPText'),fill=q('pocketXPFill'),name=q('pocketLevelName');
+ if(inline)inline.textContent='• Lv. '+level;
+ if(levelEl)levelEl.textContent='Lv. '+level;
+ if(xpText)xpText.textContent=within+' / 100 XP';
+ if(fill)fill.style.width=within+'%';
+ const track=q('pocketXP')?.querySelector('[role="progressbar"]');
+ if(track)track.setAttribute('aria-valuenow',String(within));
+ if(name)name.textContent=levelName(level);
+ q('homeMascot')?.classList.toggle('pocket-level-5',level>=5);
+ q('homeMascot')?.classList.toggle('pocket-level-10',level>=10);
+ renderQuests();
+}
+function awardXP(amount,label=''){
+ const add=Math.max(0,Math.floor(Number(amount)||0));if(!add)return false;
+ const before=currentLevel();
+ progression.xp+=add;
+ saveProgression();
+ renderProgression();
+ const after=currentLevel();
+ showXPFeedback((label?label+' ':'')+'+'+add+' XP ✦');
+ if(after>before){
+  setMascotState('excited',2200);
+  showPocketSpeech('Level up! ✦',2400);
+  spawnPocketParticles('star',4);
+  setTimeout(()=>showXPFeedback('Pocket reached Lv. '+displayLevel(),''),250);
+ }
+ return true;
+}
+function canRewardAction(category,cooldown){
+ const last=Number(progression.rewardedActions[category]||0);
+ return !last||Date.now()-last>=cooldown;
+}
+function rewardTimedAction(category){
+ const cfg=ACTION_REWARDS[category];if(!cfg||!canRewardAction(category,cfg.cooldown))return false;
+ progression.rewardedActions[category]=Date.now();
+ saveProgression();
+ return awardXP(cfg.xp);
+}
+function rewardLocalConnection(){
+ const today=localDayKey();
+ if(progression.rewardedActions.localDay===today)return false;
+ progression.rewardedActions.localDay=today;saveProgression();return awardXP(15);
+}
+function rewardProjectCreation(projectId){
+ const key='project:'+String(projectId||'');
+ if(!projectId||progression.rewardedActions[key])return false;
+ progression.rewardedActions[key]=1;saveProgression();return awardXP(25);
+}
+function completeQuest(id){
+ resetDailyQuestsIfNeeded();
+ if(!QUESTS[id]||progression.completedQuests.includes(id))return false;
+ progression.completedQuests.push(id);saveProgression();
+ awardXP(QUESTS[id].reward,'Quest complete!');
+ return true;
+}
+function renderQuests(){
+ const done=new Set(progression.completedQuests);
+ document.querySelectorAll('#pocketQuests [data-quest]').forEach(card=>{
+  const complete=done.has(card.dataset.quest);
+  card.classList.toggle('is-complete',complete);
+  const state=card.querySelector('.pocket-quest-state');
+  if(state)state.textContent=complete?'✓ Completed':'○ Ready';
+ });
+}
+function recordProgressionAction(kind,detail=''){
+ if(kind==='chat'){rewardTimedAction('chat');completeQuest('chat');}
+ else if(kind==='research'){rewardTimedAction('research');completeQuest('research');}
+ else if(kind==='file'){rewardTimedAction('file');completeQuest('make');}
+ else if(kind==='project'){rewardProjectCreation(detail);completeQuest('make');}
+ else if(kind==='local'){rewardLocalConnection();}
+}
+resetDailyQuestsIfNeeded();
+renderProgression();
 
 const PROJ='pocket-projects-v2';
 function projects(){try{const a=JSON.parse(localStorage.getItem(PROJ)||'null');return Array.isArray(a)?a:[]}catch{return[]}}
@@ -125,8 +263,10 @@ function saveProjects(a){safeSet(PROJ,JSON.stringify(a));renderProjects()}
 function projectTime(t){if(!t)return'';const m=Math.max(0,Math.floor((Date.now()-t)/60000));if(m<1)return'Updated just now';if(m<60)return'Updated '+m+' min ago';const h=Math.floor(m/60);if(h<24)return'Updated '+h+' hr ago';if(h<48)return'Updated yesterday';return'Updated '+new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric'})}
 function createProject(){
  const name=prompt('Project name');if(!name?.trim())return;
- const a=projects();a.unshift({id:Date.now().toString(36),emoji:'✨',name:name.trim().slice(0,50),note:'Personal workspace',updated:Date.now(),items:{chats:[],files:[],code:[],research:[],notes:[]}});
+ const a=projects(),project={id:Date.now().toString(36),emoji:'✨',name:name.trim().slice(0,50),note:'Personal workspace',updated:Date.now(),items:{chats:[],files:[],code:[],research:[],notes:[]}};
+ a.unshift(project);
  saveProjects(a);
+ recordProgressionAction('project',project.id);
 }
 function openProject(x){
  const a=projects(),i=a.findIndex(p=>(p.id&&p.id===x.id)||p.name===x.name);
@@ -168,6 +308,16 @@ function syncLocalHome(){
  if(ready)setMascotState?.('happy',1400);
 }
 syncLocalHome();document.querySelectorAll('[data-go="home"],[data-go="local"]').forEach(b=>b.addEventListener('click',()=>setTimeout(syncLocalHome,150)));
+const progressionLocalStatus=q('localStatus');
+if(progressionLocalStatus){
+ let wasLocalConnected=!!window.PocketLocalAI?.isConnected?.();
+ const localProgressObserver=new MutationObserver(()=>{
+  const now=!!window.PocketLocalAI?.isConnected?.()||q('localStatusCard')?.dataset.state==='connected';
+  if(now&&!wasLocalConnected)recordProgressionAction('local');
+  wasLocalConnected=now;
+ });
+ localProgressObserver.observe(progressionLocalStatus,{childList:true,subtree:true,characterData:true});
+}
 
 const mascots=document.querySelectorAll('[data-mascot]');
 const COMPANION_KEY='pocket-companion-interactions-v1';
