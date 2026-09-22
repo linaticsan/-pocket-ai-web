@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f8f6ff"><script>(function(){try{const c=localStorage.getItem("pocket-theme")||"light",dark=matchMedia("(prefers-color-scheme: dark)").matches,t=c==="system"?(dark?"dark":"light"):c,m={light:"#f8f6ff",dark:"#111018",sakura:"#fff6fa",green:"#f3fbf7",oled:"#000000"};document.querySelector('meta[name="theme-color"]')?.setAttribute("content",m[t]||m.light)}catch{}})()</script><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Pocket AI"><meta name="description" content="Pocket AI — a private, cute AI workspace for chat, local AI, files, GitHub and deep research."><title>Pocket AI</title><script>
 (function(){
-  const BUILD='step1-css-foundation-complete';
+  const BUILD='step2-home-redesign';
   try{
     if(sessionStorage.getItem('pocket-build')!==BUILD){
       sessionStorage.setItem('pocket-build',BUILD);
@@ -17,22 +17,43 @@
   }catch(e){}
 })();
 </script><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./boot-v83.css?v=20260922-v88">
-<link rel="stylesheet" href="./icons-v132.css?v=20260922-v132"><link rel="stylesheet" href="./ui-core.css?v=20260922-step1-final"></head><body><script>window.__pocketBootStarted=performance.now()</script><div id="pocketBoot" role="status" aria-live="polite"><div class="pocket-boot-card"><div class="pocket-boot-mascot"><span class="pocket-boot-eyes">◕◕</span></div><div class="pocket-boot-stars">✦ ✧ ✦</div><strong>Pocket AI</strong><span id="pocketBootText">Getting the essentials ready…</span><div class="pocket-boot-skeleton" aria-hidden="true"><i></i><i></i><i></i></div><div class="pocket-boot-dots"><i></i><i></i><i></i></div></div></div><div class="sky" aria-hidden="true"><i></i><i></i><i></i><b>✦</b><b>✧</b></div>
+<link rel="stylesheet" href="./icons-v132.css?v=20260922-v132"><link rel="stylesheet" href="./ui-core.css?v=20260922-step2-home"></head><body><script>window.__pocketBootStarted=performance.now()</script><div id="pocketBoot" role="status" aria-live="polite"><div class="pocket-boot-card"><div class="pocket-boot-mascot"><span class="pocket-boot-eyes">◕◕</span></div><div class="pocket-boot-stars">✦ ✧ ✦</div><strong>Pocket AI</strong><span id="pocketBootText">Getting the essentials ready…</span><div class="pocket-boot-skeleton" aria-hidden="true"><i></i><i></i><i></i></div><div class="pocket-boot-dots"><i></i><i></i><i></i></div></div></div><div class="sky" aria-hidden="true"><i></i><i></i><i></i><b>✦</b><b>✧</b></div>
 <header class="glass topbar"><button class="brand" data-go="home" aria-label="Pocket AI Home"><span class="cat" data-mascot>◕</span><span><strong>Pocket AI</strong></span></button><div class="top-actions"><button id="headerWorkspace" class="header-workspace" type="button" aria-haspopup="menu" aria-expanded="false"><span class="header-avatar">P</span><strong>My workspace</strong><span aria-hidden="true">⌄</span></button><button id="settingsOpen" class="round header-settings" aria-label="Open settings">⚙️</button></div></header>
 <main>
 <section id="home" class="view glass home-view active">
 <div class="home-step1">
-  <div class="home-welcome"><h1 id="homeGreeting">Good afternoon 👋</h1><p>What would you like to work on?</p></div>
-  <form id="homeComposer" class="home-composer"><textarea id="homePrompt" rows="2" maxlength="20000" placeholder="Ask Pocket AI anything..." required></textarea><button type="button" class="home-attach" aria-label="Attach a file" title="Attachments are available from Files" disabled>📎</button><button class="primary" aria-label="Send to chat">➤</button></form>
-  <div class="home-ai-status"><span class="home-ai-dot" aria-hidden="true"></span><span id="homeAiStatus">Local AI · SmolLM2 360M</span><button type="button" data-go="local">Change</button></div>
-  <section class="home-step-section"><h2>Quick actions</h2><div class="quick-grid">
-    <button data-quick="chat"><span>💬</span><strong>Chat</strong><small>Ask anything</small></button>
-    <button data-quick="coding"><span>💻</span><strong>Code</strong><small>Build things</small></button>
-    <button data-quick="files"><span>📁</span><strong>Files</strong><small>Work with your files</small></button>
-    <button data-quick="research"><span>🔎</span><strong>Research</strong><small>Search & understand</small></button>
+  <section class="home-hero">
+    <div class="home-hero-copy">
+      <div class="home-mood" id="homeMood"><span class="home-mood-dot" aria-hidden="true"></span><span id="homeMoodText">Ready when you are</span></div>
+      <div class="home-welcome"><h1 id="homeGreeting">Good afternoon ✨</h1><p>What would you like to make today?</p></div>
+      <form id="homeComposer" class="home-composer">
+        <button type="button" class="home-attach" aria-label="Attach a file" title="Attachments are available from Files" disabled></button>
+        <textarea id="homePrompt" rows="1" maxlength="20000" placeholder="Ask Pocket anything..." required></textarea>
+        <button class="primary home-send" aria-label="Send to chat"></button>
+      </form>
+      <button type="button" class="home-ai-status" data-go="local"><span class="home-ai-dot" aria-hidden="true"></span><span id="homeAiStatus">Local AI</span></button>
+    </div>
+    <div class="home-mascot-stage" aria-label="Pocket AI companion">
+      <div class="pocket-mascot" id="homeMascot" data-mascot-state="normal" aria-hidden="true">
+        <span class="pocket-antenna"><i></i></span>
+        <span class="pocket-eye pocket-eye-left"></span>
+        <span class="pocket-eye pocket-eye-right"></span>
+        <span class="pocket-mouth"></span>
+        <span class="pocket-blush pocket-blush-left"></span>
+        <span class="pocket-blush pocket-blush-right"></span>
+      </div>
+      <i class="home-sparkle home-sparkle-a"></i>
+      <i class="home-sparkle home-sparkle-b"></i>
+    </div>
+  </section>
+  <section class="home-step-section"><div class="home-section-head"><h2>Quick actions</h2></div><div class="quick-grid">
+    <button data-quick="chat" data-tone="lilac"><span class="quick-icon"></span><span class="quick-copy"><strong>Chat</strong><small>Talk, learn, or brainstorm.</small></span><b class="quick-arrow" aria-hidden="true">→</b></button>
+    <button data-quick="research" data-tone="mint"><span class="quick-icon"></span><span class="quick-copy"><strong>Research</strong><small>Explore something deeply.</small></span><b class="quick-arrow" aria-hidden="true">→</b></button>
+    <button data-quick="files" data-tone="sky"><span class="quick-icon"></span><span class="quick-copy"><strong>Files</strong><small>Ask questions about your files.</small></span><b class="quick-arrow" aria-hidden="true">→</b></button>
+    <button data-quick="coding" data-tone="peach"><span class="quick-icon"></span><span class="quick-copy"><strong>Code</strong><small>Build and fix things.</small></span><b class="quick-arrow" aria-hidden="true">→</b></button>
   </div></section>
-  <section class="home-step-section home-recent"><h2>Recent</h2><div id="recentActivity" class="recent-list"><p class="muted">No recent activity yet</p></div></section>
-  <section class="home-step-section home-projects"><h2>Projects</h2><button id="newProject">＋ New project</button><div id="projectGrid" class="project-grid"></div></section>
+  <section class="home-step-section home-recent"><div class="home-section-head"><h2>Recent activity</h2><button type="button" class="recent-view-all" hidden>View all</button></div><div id="recentActivity" class="recent-list"><p class="muted">No recent activity yet</p></div></section>
+  <section class="home-step-section home-projects"><div class="home-section-head"><h2>Projects</h2><button type="button" id="newProject">＋ New project</button></div><div id="projectGrid" class="project-grid"></div></section>
 </div>
 </section>
 <section id="chat" class="view glass" hidden><div class="hero"><span class="cat big" data-mascot>◕‿◕</span><div><p class="eyebrow">CHAT</p><h1>Talk with Pocket AI</h1><p class="muted">A clean conversation space for questions, writing, coding and study.</p></div></div><div class="engine-row"><span class="engine-badge">🔒 Local-first AI</span><button type="button" id="aiSetup">⚙️ AI options</button></div><div id="messages" class="messages"><p class="empty">✨ Start a conversation below. Pocket AI uses your on-device Local AI by default.</p></div><form id="chatForm"><textarea id="prompt" rows="4" maxlength="20000" placeholder="Message Pocket AI…" required></textarea><div class="row"><button type="button" id="clearChat">Clear</button><button class="primary" id="chatSend">Send ➤</button></div></form></section>
