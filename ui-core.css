@@ -495,7 +495,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 #home .pocket-xp-toast{position:absolute;z-index:5;left:50%;bottom:-28px;transform:translate(-50%,6px);max-width:220px;padding:6px 10px;border:1px solid var(--pa-hover-border);border-radius:999px;background:var(--pa-card);color:var(--pa-text);font-size:12px;font-weight:600;box-shadow:var(--pa-shadow);opacity:0;pointer-events:none;white-space:nowrap;transition:opacity 160ms ease,transform 160ms ease}
 #home .pocket-xp-toast.is-visible{opacity:1;transform:translate(-50%,0)}
 #home .pocket-mascot.pocket-level-5 .pocket-antenna i{box-shadow:0 0 0 5px var(--pa-accent-soft)}
-#home .pocket-mascot.pocket-level-10+.pocket-mascot::after{content:none}
 #home .pocket-mascot.pocket-level-10::after{content:"✦";position:absolute;right:-13px;top:10px;color:var(--pa-accent);font-size:12px}
 #home .home-quests .home-section-head>small{font-size:12px;color:var(--pa-muted)}
 #home .pocket-quest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
