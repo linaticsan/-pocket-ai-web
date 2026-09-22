@@ -1,0 +1,56 @@
+/* Pocket AI V132 — GLOBAL ICON SYSTEM ONLY
+   One outline icon language, shared sizing, spacing and state colors. */
+:root{
+ --pa-icon-nav:21px;
+ --pa-icon-action:24px;
+ --pa-icon-utility:17px;
+ --pa-icon-gap:9px;
+ --pa-icon-stroke:1.9;
+}
+.pa-icon{
+ width:1em;height:1em;display:inline-block;flex:0 0 auto;
+ fill:none;stroke:currentColor;stroke-width:var(--pa-icon-stroke);
+ stroke-linecap:round;stroke-linejoin:round;vertical-align:-.125em;
+}
+.pa-icon-nav{font-size:var(--pa-icon-nav)}
+.pa-icon-action{font-size:var(--pa-icon-action)}
+.pa-icon-utility{font-size:var(--pa-icon-utility)}
+/* Hide legacy glyph only where the shared SVG icon has been injected. */
+[data-pa-iconized]>.pa-legacy-icon{display:none!important}
+/* Consistent icon/text relationship */
+#paDesktopSidebar nav button,
+#paDesktopSidebar .pa-side-bottom button,
+#paDesktopSidebar .pa-new-chat,
+.quick-grid>button,
+.recent-row,
+.project-card,
+[data-command],
+[data-v39-go],
+[data-v36-go]{
+ column-gap:var(--pa-icon-gap)!important;
+}
+/* Navigation */
+#paDesktopSidebar nav button .pa-icon,
+#paDesktopSidebar .pa-side-bottom button .pa-icon{font-size:var(--pa-icon-nav);color:var(--pa-secondary)}
+#paDesktopSidebar button.active .pa-icon{color:var(--pa-accent)}
+#paDesktopSidebar .pa-local-status .pa-icon.is-success{color:var(--pa-success)}
+/* Home/action cards */
+html.photo-ui-v100 #home .quick-icon .pa-icon,
+html.photo-ui-v100 #home .recent-icon .pa-icon,
+html.photo-ui-v100 #home .project-card>.emoji .pa-icon{font-size:var(--pa-icon-action);color:var(--pa-secondary)}
+html.photo-ui-v100 #home .quick-grid>button:hover .pa-icon,
+html.photo-ui-v100 #home .recent-row:hover .pa-icon,
+html.photo-ui-v100 #home .project-card:hover .pa-icon{color:var(--pa-accent)}
+/* Utility icons and icon buttons */
+html.photo-ui-v100 #settingsOpen .pa-icon,
+html.photo-ui-v100 .close .pa-icon,
+html.photo-ui-v100 .home-attach .pa-icon,
+html.photo-ui-v100 #homeComposer>.primary .pa-icon,
+html.photo-ui-v100 [data-more] .pa-icon,
+.pa-icon-button .pa-icon{font-size:var(--pa-icon-utility)}
+.pa-icon-button{display:grid!important;place-items:center!important}
+/* Semantic states use only the existing system colors */
+.pa-icon.is-active,.pa-icon.is-important{color:var(--pa-accent)!important}
+.pa-icon.is-muted{color:var(--pa-muted)!important}
+.pa-icon.is-success{color:var(--pa-success)!important}
+.pa-icon.is-error,.danger-soft .pa-icon{color:var(--pa-error)!important}
