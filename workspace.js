@@ -85,17 +85,33 @@ if(q('homeComposer'))q('homeComposer').onsubmit=e=>{
 };
 document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>{const x=b.dataset.quick;if(x==='research'){go('surface');q('surfaceMode').value='research';setTimeout(()=>q('surfaceQuery').focus(),80)}else if(x==='study'){go('chat');q('prompt').value='Study mode: Help me learn this topic step by step. Explain simply first, then quiz me: ';q('prompt').focus()}else go(x)});
 
-const REC='pocket-recent-v2';function recent(){try{return JSON.parse(localStorage.getItem(REC)||'[]')}catch{return[]}}function addRecent(icon,title,target){const arr=[{icon,title:title.slice(0,80),target,time:Date.now()},...recent().filter(x=>x.title!==title)].slice(0,6);safeSet(REC,JSON.stringify(arr));renderRecent();}function renderRecent(){
+const REC='pocket-recent-v2';
+function recent(){try{const a=JSON.parse(localStorage.getItem(REC)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
+function addRecent(icon,title,target,type){const clean=String(title||'').trim();if(!clean)return;const arr=[{icon,title:clean.slice(0,80),target,type:type||recentType(target),time:Date.now()},...recent().filter(x=>!(x.title===clean&&x.target===target))].slice(0,20);safeSet(REC,JSON.stringify(arr));renderRecent()}
+function recentType(target){return target==='chat'?'Chat':target==='coding'?'Code':target==='files'?'File':target==='surface'?'Research':target==='home'?'Project':'Activity'}
+function recentIcon(target){return target==='chat'?'💬':target==='coding'?'💻':target==='files'?'📄':target==='surface'?'🔎':target==='home'?'▦':'•'}
+function recentTime(t){const d=Number(t)||0;if(!d)return'Recent';const diff=Date.now()-d,m=Math.max(0,Math.floor(diff/60000));if(m<1)return'Just now';if(m<60)return m+' min ago';const h=Math.floor(m/60);if(h<24)return h+' hr ago';if(h<48)return'Yesterday';return new Date(d).toLocaleDateString(undefined,{month:'short',day:'numeric'})}
+function combinedRecent(){
+ const items=[...recent()];
+ try{const chats=JSON.parse(localStorage.getItem('pocket-v3-chats')||'[]');if(Array.isArray(chats))chats.forEach(x=>{if((x.messages?.length||0)>0)items.push({icon:'💬',title:x.title||'Chat',target:'chat',type:'Chat',time:x.updated||x.created||0})})}catch{}
+ try{const research=JSON.parse(localStorage.getItem('pocket-v3-research')||'[]');if(Array.isArray(research))research.forEach(x=>items.push({icon:'🔎',title:x.q||'Research',target:'surface',type:'Research',time:x.time||0}))}catch{}
+ const seen=new Set();return items.sort((a,b)=>(Number(b.time)||0)-(Number(a.time)||0)).filter(x=>{const k=(x.target||'')+'|'+(x.title||'');if(seen.has(k))return false;seen.add(k);return true})
+}
+function renderRecent(limit=5){
  const box=q('recentActivity');if(!box)return;
- const arr=recent();
- if(!arr.length){box.innerHTML='<p class="muted">Your recent chats and research will appear here on this device.</p>';return}
- box.replaceChildren(...arr.slice(0,4).map(x=>{
-   const b=document.createElement('button');b.className='recent-item';
-   b.textContent=`${x.icon} ${x.title}`;b.onclick=()=>go(x.target);return b;
- }));
-}renderRecent();
-q('chatForm')?.addEventListener('submit',()=>{const t=q('prompt')?.value.trim()||'';if(t)addRecent('💬',t,'chat')},true);
-q('deepResearch')?.addEventListener('click',()=>{const t=q('surfaceQuery')?.value.trim()||'';if(t)addRecent('🔎',t,'surface')},true);
+ const arr=combinedRecent();
+ if(!arr.length){box.className='recent-list is-empty';box.innerHTML='<div class="recent-empty"><strong>No recent activity</strong><span>Your recent chats, files and projects will appear here.</span></div>';return}
+ box.className='recent-list has-items';
+ const shown=arr.slice(0,limit);
+ box.innerHTML='<div class="recent-rows">'+shown.map((x,i)=>'<button type="button" class="recent-row" data-recent-index="'+i+'"><span class="recent-icon">'+(x.icon||recentIcon(x.target))+'</span><span class="recent-copy"><strong></strong><small>'+(x.type||recentType(x.target))+'</small></span><time>'+recentTime(x.time)+'</time><b aria-hidden="true">→</b></button>').join('')+'</div>'+(arr.length>limit?'<button type="button" class="recent-view-all">View all →</button>':'');
+ box.querySelectorAll('[data-recent-index]').forEach((b,i)=>{b.querySelector('.recent-copy strong').textContent=shown[i].title||'Recent item';b.onclick=()=>go(shown[i].target||'home')});
+ box.querySelector('.recent-view-all')?.addEventListener('click',()=>renderRecent(Math.min(10,arr.length)));
+}
+renderRecent();
+q('chatForm')?.addEventListener('submit',()=>{const t=q('prompt')?.value.trim()||'';if(t)addRecent('💬',t,'chat','Chat')},true);
+q('deepResearch')?.addEventListener('click',()=>{const t=q('surfaceQuery')?.value.trim()||'';if(t)addRecent('🔎',t,'surface','Research')},true);
+q('fileInput')?.addEventListener('change',()=>{const file=q('fileInput')?.files?.[0];if(file)addRecent('📄',file.name,'files','File')},true);
+document.addEventListener('click',e=>{const p=e.target.closest?.('#projectGrid .project-card');if(p){const name=p.querySelector('strong')?.textContent?.trim();if(name)addRecent('▦',name,'home','Project')}},true);
 
 const PROJ='pocket-projects-v2';const defaults=[{emoji:'🎓',name:'Study',note:'Notes, exam prep and learning'},{emoji:'💻',name:'Pocket AI',note:'Development and ideas'},{emoji:'🔬',name:'Research',note:'Saved research topics'}];function projects(){try{const a=JSON.parse(localStorage.getItem(PROJ)||'null');return Array.isArray(a)?a:defaults}catch{return defaults}}function saveProjects(a){safeSet(PROJ,JSON.stringify(a));renderProjects()}function renderProjects(){const grid=q('projectGrid');if(!grid)return;grid.replaceChildren(...projects().map((x,i)=>{const b=document.createElement('button');b.className='project-card';b.innerHTML=`<span class="emoji">${x.emoji}</span><strong></strong><small></small>`;b.querySelector('strong').textContent=x.name;b.querySelector('small').textContent=x.note||'Local workspace';b.onclick=()=>{go('chat');q('prompt').value=`Project: ${x.name}\n`;q('prompt').focus()};b.oncontextmenu=e=>{e.preventDefault();if(confirm(`Delete project “${x.name}”?`)){const a=projects();a.splice(i,1);saveProjects(a)}};return b}))}renderProjects();
 if(q('newProject'))q('newProject').onclick=()=>{const name=prompt('Project name');if(!name?.trim())return;const a=projects();a.push({emoji:'✨',name:name.trim().slice(0,50),note:'Personal workspace'});saveProjects(a)};
