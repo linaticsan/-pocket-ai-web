@@ -28,7 +28,8 @@ function greeting(){
 function tuneQuickCards(){
  const wanted=[['chat','💬','Chat','Ask anything'],['research','🔎','Research','Find & explore'],['files','📁','Files','Upload & work'],['coding','🧑‍💻','Code','Build & create']];
  const grid=$('.quick-grid');if(!grid)return;
- wanted.forEach(([key,icon,title,sub],i)=>{let b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;b.style.order=i;b.innerHTML='<span>'+icon+'</span><strong>'+title+'</strong><small>'+sub+'</small>'});
+ wanted.forEach(([key,icon,title,sub],i)=>{let b=grid.querySelector('[data-quick="'+key+'"]');if(!b)return;b.hidden=false;b.style.display='';b.style.order=i;b.innerHTML='<span>'+icon+'</span><strong>'+title+'</strong><small>'+sub+'</small>'});
+ [...grid.children].forEach(b=>{if(b.matches?.('[data-quick]')&&!wanted.some(x=>x[0]===b.dataset.quick)){b.hidden=true;b.style.display='none'}});
  if(!grid.nextElementSibling?.classList.contains('pa-inspiration')){const p=document.createElement('div');p.className='pa-inspiration';p.textContent='“A little progress each day adds up to big results.”';grid.after(p)}
 }
 function makeMoreSheet(){
@@ -40,7 +41,7 @@ function makeMoreSheet(){
  document.body.append(sheet);
  const close=()=>{sheet.classList.remove('open');sheet.setAttribute('aria-hidden','true')};
  const open=()=>{sheet.classList.add('open');sheet.setAttribute('aria-hidden','false')};
- sheet.addEventListener('click',e=>{if(e.target===sheet)close();const b=e.target.closest('[data-sheet-go]');if(!b)return;const go=b.dataset.sheetGo;close();if(go==='settings')$('#settingsDialog')?.showModal();else if(go==='command')$('#commandDialog')?.showModal();else document.querySelector('[data-go="'+go+'"]')?.click()});
+ sheet.addEventListener('click',e=>{if(e.target===sheet)close();const b=e.target.closest('[data-sheet-go]');if(!b)return;const go=b.dataset.sheetGo;close();if(go==='settings')$('#settingsDialog')?.showModal();else if(go==='command')$('#commandDialog')?.showModal();else {const target=document.querySelector('[data-go="'+go+'"]');if(target)target.click();else window.PocketV39?.show?.(go)}});
  $$('[data-more]').forEach(b=>b.onclick=open);
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 }
