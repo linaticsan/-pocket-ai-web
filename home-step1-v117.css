@@ -47,3 +47,21 @@ html.photo-ui-v100 #home .home-projects{width:100%!important}
 @media(max-width:390px){
  html.photo-ui-v100 #home .home-step1 .quick-grid{grid-template-columns:1fr!important}
 }
+
+/* V121 — Home heading + AI input ONLY */
+html.photo-ui-v100 #home .home-welcome{margin:0 0 24px!important}
+html.photo-ui-v100 #home .home-welcome>h1{margin:0 0 6px!important;font-size:clamp(32px,3.2vw,36px)!important;line-height:1.12!important;font-weight:680!important;letter-spacing:-.025em!important;color:var(--p100-text)!important}
+html.photo-ui-v100 #home .home-welcome>p{margin:0!important;font-size:17px!important;line-height:1.45!important;color:var(--p100-muted)!important}
+html.photo-ui-v100 #home .home-step1>.home-composer{min-height:68px!important;height:auto!important;padding:7px 8px 7px 16px!important;gap:7px!important;margin-bottom:7px!important}
+html.photo-ui-v100 #home .home-step1>.home-composer textarea{height:52px!important;min-height:52px!important;padding:14px 4px!important;font-size:14px!important;line-height:1.5!important}
+html.photo-ui-v100 #home .home-step1>.home-composer .home-attach{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;padding:0!important;display:grid!important;place-items:center!important;border:0!important;border-radius:12px!important;background:transparent!important;color:var(--p100-muted)!important;box-shadow:none!important;font-size:17px!important;opacity:.58!important;cursor:default!important}
+html.photo-ui-v100 #home .home-step1>.home-composer .primary{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;flex:0 0 44px!important;border-radius:14px!important;padding:0!important;display:grid!important;place-items:center!important;font-size:17px!important}
+html.photo-ui-v100 #home .home-ai-status{display:flex!important;align-items:center!important;min-height:23px!important;margin:0 2px 30px!important;gap:6px!important;color:var(--p100-muted)!important;font-size:10px!important}
+html.photo-ui-v100 #home .home-ai-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#a7a9b8}
+html.photo-ui-v100 #home .home-ai-status button{margin-left:auto!important;min-height:24px!important;padding:2px 6px!important;border:0!important;background:transparent!important;box-shadow:none!important;color:var(--p100-muted)!important;font-size:10px!important}
+html.photo-ui-v100 #home .home-ai-status button:hover{color:var(--p100-text)!important}
+@media(max-width:620px){
+ html.photo-ui-v100 #home .home-welcome>h1{font-size:30px!important}
+ html.photo-ui-v100 #home .home-welcome>p{font-size:15px!important}
+ html.photo-ui-v100 #home .home-step1>.home-composer{min-height:64px!important;padding-left:12px!important}
+}
