@@ -1,0 +1,143 @@
+/* Pocket AI V129 — GLOBAL CARDS & CONTAINERS ONLY */
+:root{
+ --pa-card-radius:12px;
+ --pa-card-border:1px solid #26313D;
+ --pa-card-padding:20px;
+ --pa-card-padding-compact:16px;
+ --pa-card-padding-large:24px;
+ --pa-panel-radius:12px;
+ --pa-input-radius:11px;
+ --pa-modal-radius:14px;
+ --pa-surface-shadow:0 8px 24px rgba(0,0,0,.14);
+ --pa-surface-hover:#18222D;
+ --pa-border-hover:#344252;
+}
+/* reusable surface primitives */
+.pa-card,.card,.result-card,.project-card,.book-card,.free-card,.wn46-source,.photo-recent-card,
+.panel,.settings-section,.v3-panel,.file-panel,.research-panel,.code-panel{
+ background:var(--pa-card)!important;
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-card-radius)!important;
+ box-shadow:none!important;
+ background-image:none!important;
+}
+.pa-card,.card,.result-card,.panel,.settings-section,.v3-panel,.file-panel,.research-panel,.code-panel{padding:var(--pa-card-padding)!important}
+.pa-card.compact,.card.compact{padding:var(--pa-card-padding-compact)!important}
+.pa-card.large,.card.large{padding:var(--pa-card-padding-large)!important}
+.pa-card,.card,.result-card,.project-card,.book-card,.free-card,.wn46-source,.photo-recent-card{
+ transition:background-color .17s ease,border-color .17s ease!important;
+}
+.pa-card:hover,.card:hover,.result-card:hover,.project-card:hover,.book-card:hover,.free-card:hover,.wn46-source:hover,.photo-recent-card:hover{
+ background:var(--pa-surface-hover)!important;border-color:var(--pa-border-hover)!important;
+ transform:none!important;box-shadow:none!important;
+}
+/* major application panels */
+html.photo-ui-v100 #chat,
+html.photo-ui-v100 #files,
+html.photo-ui-v100 #surface,
+html.photo-ui-v100 #coding,
+html.photo-ui-v100 #local,
+html.photo-ui-v100 #library{
+ border-color:var(--pa-border)!important;
+ box-shadow:none!important;
+ background-image:none!important;
+}
+html.photo-ui-v100 #settingsDialog,
+html.photo-ui-v100 #paMoreSheet .pa-more-panel,
+html.photo-ui-v100 #v39More .v39-sheet,
+.header-workspace-menu{
+ background:var(--pa-card)!important;
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-modal-radius)!important;
+ box-shadow:var(--pa-surface-shadow)!important;
+ background-image:none!important;
+}
+html.photo-ui-v100 #settingsDialog{padding:var(--pa-card-padding-large)!important}
+.header-workspace-menu{padding:var(--pa-card-padding-compact)!important}
+/* home surfaces: preserve their established sizes, standardize only surface geometry */
+html.photo-ui-v100 #home .quick-grid>button,
+html.photo-ui-v100 #home .recent-rows,
+html.photo-ui-v100 #home .project-card,
+html.photo-ui-v100 #home .project-empty{
+ background:var(--pa-card)!important;
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-card-radius)!important;
+ box-shadow:none!important;
+ background-image:none!important;
+}
+html.photo-ui-v100 #home .quick-grid>button{padding:var(--pa-card-padding)!important}
+html.photo-ui-v100 #home .project-card{padding:var(--pa-card-padding-compact)!important}
+html.photo-ui-v100 #home .project-empty{padding:var(--pa-card-padding-large)!important}
+html.photo-ui-v100 #home .quick-grid>button:hover,
+html.photo-ui-v100 #home .project-card:hover{
+ background:var(--pa-surface-hover)!important;border-color:var(--pa-border-hover)!important;
+ transform:none!important;box-shadow:none!important;
+}
+/* nested list rows use dividers instead of boxed-card borders */
+html.photo-ui-v100 #home .recent-row{
+ background:transparent!important;
+ border:0!important;
+ border-bottom:1px solid var(--pa-border)!important;
+ border-radius:0!important;
+ box-shadow:none!important;
+}
+html.photo-ui-v100 #home .recent-row:last-child{border-bottom:0!important}
+html.photo-ui-v100 #home .recent-row:hover{background:var(--pa-surface-hover)!important}
+/* inputs and composer/input containers */
+html.photo-ui-v100 input,
+html.photo-ui-v100 textarea,
+html.photo-ui-v100 select,
+html.photo-ui-v100 .home-composer,
+html.photo-ui-v100 .lib-search,
+html.photo-ui-v100 .free-search,
+html.photo-ui-v100 .wn44-search{
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-input-radius)!important;
+ box-shadow:none!important;
+ background-image:none!important;
+}
+html.photo-ui-v100 input:focus,
+html.photo-ui-v100 textarea:focus,
+html.photo-ui-v100 select:focus,
+html.photo-ui-v100 .home-composer:focus-within,
+html.photo-ui-v100 .lib-search:focus-within,
+html.photo-ui-v100 .free-search:focus-within,
+html.photo-ui-v100 .wn44-search:focus-within{
+ border-color:var(--pa-accent)!important;
+ outline:1px solid var(--pa-accent)!important;
+ outline-offset:0!important;
+ box-shadow:none!important;
+}
+/* library/content cards */
+html.photo-ui-v100 .book-card,
+html.photo-ui-v100 .free-card,
+html.photo-ui-v100 .wn46-source{
+ padding:var(--pa-card-padding-compact)!important;
+ border-radius:var(--pa-card-radius)!important;
+ box-shadow:none!important;
+ background-image:none!important;
+}
+/* dialogs share one modal surface */
+html.photo-ui-v100 dialog{
+ border:var(--pa-card-border)!important;
+ border-radius:var(--pa-modal-radius)!important;
+ background:var(--pa-card)!important;
+ box-shadow:var(--pa-surface-shadow)!important;
+ background-image:none!important;
+}
+html.photo-ui-v100 dialog:not(#settingsDialog){padding:var(--pa-card-padding-large)!important}
+/* flat empty-state language */
+html.photo-ui-v100 .empty,
+html.photo-ui-v100 [class*="empty-state"],
+html.photo-ui-v100 .project-empty{
+ box-shadow:none!important;
+ background-image:none!important;
+}
+/* remove legacy decorative surface effects from current content containers */
+html.photo-ui-v100 .glass:not(.topbar):not(.view){
+ box-shadow:none!important;
+ background-image:none!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .pa-card,.card,.result-card,.project-card,.book-card,.free-card,.wn46-source,.photo-recent-card{transition:none!important}
+}
