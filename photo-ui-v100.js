@@ -58,6 +58,11 @@ function tuneFiles(){
 function tuneThemes(){
  qa('.theme-grid [data-theme-choice]').forEach(b=>{if(q('.pa-theme-preview',b))return;const p=document.createElement('div');p.className='pa-theme-preview';b.prepend(p)});
 }
+function openMore(e){
+ if(e){e.preventDefault();e.stopImmediatePropagation()}
+ const sheet=q('#paMoreSheet');if(!sheet)return;
+ sheet.classList.add('open');sheet.setAttribute('aria-hidden','false');
+}
 function tuneMore(){
  const sheet=q('#paMoreSheet');if(!sheet)return;
  const grid=q('.pa-more-grid',sheet);if(!grid)return;
@@ -99,6 +104,10 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 addEventListener('resize',syncNav);
 addEventListener('pocket-core-ready',()=>{sync();setTimeout(sync,80)});
 addEventListener('pocket-features-ready',()=>{sync();setTimeout(sync,100)});
+document.addEventListener('click',e=>{
+ const trigger=e.target.closest?.('[data-pa-side="more"],[data-more]');
+ if(trigger)openMore(e);
+},true);
 document.addEventListener('submit',e=>{if(e.target?.id==='chatForm'||e.target?.id==='surfaceForm')setTimeout(renderRecent,120)},true);
 setTimeout(sync,350);setTimeout(sync,1200);setTimeout(sync,2600);
 })();
