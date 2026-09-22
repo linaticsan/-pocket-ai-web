@@ -103,7 +103,7 @@ async function saveBook(b,text){
 async function saveActive(){const b=activeBook;if(!b)return;const btn=by('freeReaderSave');btn.disabled=true;btn.textContent='Saving…';const ok=await saveBook(b,activeText);btn.disabled=false;btn.textContent=ok?'✓ Saved to My Library':'＋ Save to My Library'}
 async function actions(e){const b=e.target.closest('button');if(!b)return;if(b.dataset.freeRead!=null)return openBook(+b.dataset.freeRead);if(b.dataset.freeSave!=null){b.disabled=true;try{await saveBook(books[+b.dataset.freeSave],'')}finally{b.disabled=false}}}
 async function openByQuery(q){const input=by('freeSearch');if(input)input.value=q||'';await search();if(books.length){await openBook(0);return true}return false}
-function init(){fixNavigation();addDiscovery()}
+function init(){fixNavigation();let tries=0;const start=()=>{addDiscovery();if(by('freeLibrary')||++tries>40)return;setTimeout(start,120)};start()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(init,0),{once:true});else setTimeout(init,0);
 window.PocketLibraryOnline={searchOnline:search,showLibrary,openBook,openByQuery};
 })();
