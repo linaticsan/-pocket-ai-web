@@ -275,11 +275,6 @@ dialog::backdrop{background:rgba(0,0,0,.42)}
   .header-workspace-menu{width:min(240px,calc(100vw - 32px));max-width:calc(100vw - 32px)}
   button,[role="button"],input[type="button"],input[type="submit"]{min-height:44px}
 }
-@media(max-width:360px){
-  .topbar .brand strong{display:none}
-  #home .recent-row time{display:none}
-}
-
 /* 19. Animations */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{scroll-behavior:auto!important}
