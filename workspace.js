@@ -1,4 +1,3 @@
-const polish=document.createElement('link');polish.rel='stylesheet';polish.href='./polish.css?v=20260916-1';document.head.appendChild(polish);
 const q=id=>document.getElementById(id);
 const safeGet=(k,f='')=>{try{return localStorage.getItem(k)||f}catch{return f}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
