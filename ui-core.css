@@ -702,3 +702,7 @@ html[data-motion="off"] .star-game-target{animation:none}
 @media(prefers-reduced-motion:reduce){.star-game-target{animation:none!important}}
 @media(max-width:767px){.star-game-dialog{width:min(430px,calc(100vw - 16px));padding:17px 12px}.star-game-field{height:280px}.star-game-target{width:52px;height:52px}.star-game-hud{font-size:10px}}
 @media(max-width:340px){.star-game-dialog{width:calc(100vw - 10px);padding:15px 9px}.star-game-field{height:260px}.star-game-result>div{flex-direction:column;width:min(180px,100%)}}
+
+/* STEP 8A — startup visibility fail-safe */
+#pocketStartupNotice{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));z-index:2147482999;transform:translateX(-50%);width:min(420px,calc(100vw - 28px));display:flex;gap:8px;align-items:center;justify-content:center;padding:10px 13px;border:1px solid var(--pa-border);border-radius:12px;background:var(--pa-card);color:var(--pa-text);box-shadow:var(--pa-shadow);font:12px/1.35 var(--font-ui)}
+#pocketStartupNotice span{color:var(--pa-secondary)}
