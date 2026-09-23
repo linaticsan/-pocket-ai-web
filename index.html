@@ -3,11 +3,31 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f8f6ff"><script>(function(){try{const c=localStorage.getItem("pocket-theme")||"light",dark=matchMedia("(prefers-color-scheme: dark)").matches,t=c==="system"?(dark?"dark":"light"):c,m={light:"#f8f6ff",dark:"#111018",sakura:"#fff6fa",green:"#f3fbf7",oled:"#000000"};document.querySelector('meta[name="theme-color"]')?.setAttribute("content",m[t]||m.light)}catch{}})()</script><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Pocket AI"><meta name="description" content="Pocket AI — a private, cute AI workspace for chat, local AI, files, GitHub and deep research."><title>Pocket AI</title><script>
 (function(){
-  const BUILD='step8-catch-stars';
+  const BUILD='step8a-visibility';
   try{sessionStorage.setItem('pocket-build',BUILD)}catch(e){}
 })();
+window.__pocketStartupUsable=false;
+window.addEventListener('pocket-core-ready',()=>{window.__pocketStartupUsable=true},{once:true});
+(function(){
+  let shown=false;
+  const reveal=()=>{
+    if(shown||window.__pocketStartupUsable)return;shown=true;
+    const show=()=>{
+      const boot=document.getElementById('pocketBoot');
+      if(boot){boot.classList.add('done');setTimeout(()=>boot.remove(),350)}
+      if(document.getElementById('pocketStartupNotice'))return;
+      const note=document.createElement('div');
+      note.id='pocketStartupNotice';note.setAttribute('role','alert');
+      note.innerHTML='<strong>Pocket AI had trouble starting.</strong><span>Refresh once to retry.</span>';
+      (document.body||document.documentElement).appendChild(note);
+    };
+    document.body?show():window.addEventListener('DOMContentLoaded',show,{once:true});
+  };
+  window.addEventListener('error',reveal);
+  window.addEventListener('unhandledrejection',reveal);
+})();
 </script><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./boot-v83.css?v=20260922-v88">
-<link rel="stylesheet" href="./icons-v132.css?v=20260922-v132"><link rel="stylesheet" href="./ui-core.css?v=20260923-step8-stars"></head><body><script>window.__pocketBootStarted=performance.now()</script><div id="pocketBoot" role="status" aria-live="polite"><div class="pocket-boot-card"><div class="pocket-boot-mascot"><span class="pocket-boot-eyes">◕◕</span></div><div class="pocket-boot-stars">✦ ✧ ✦</div><strong>Pocket AI</strong><span id="pocketBootText">Getting the essentials ready…</span><div class="pocket-boot-skeleton" aria-hidden="true"><i></i><i></i><i></i></div><div class="pocket-boot-dots"><i></i><i></i><i></i></div></div></div><div class="sky" aria-hidden="true"><i></i><i></i><i></i><b>✦</b><b>✧</b></div>
+<link rel="stylesheet" href="./icons-v132.css?v=20260922-v132"><link rel="stylesheet" href="./ui-core.css?v=20260923-step8a-visibility"></head><body><script>window.__pocketBootStarted=performance.now()</script><div id="pocketBoot" role="status" aria-live="polite"><div class="pocket-boot-card"><div class="pocket-boot-mascot"><span class="pocket-boot-eyes">◕◕</span></div><div class="pocket-boot-stars">✦ ✧ ✦</div><strong>Pocket AI</strong><span id="pocketBootText">Getting the essentials ready…</span><div class="pocket-boot-skeleton" aria-hidden="true"><i></i><i></i><i></i></div><div class="pocket-boot-dots"><i></i><i></i><i></i></div></div></div><div class="sky" aria-hidden="true"><i></i><i></i><i></i><b>✦</b><b>✧</b></div>
 <header class="glass topbar"><button class="brand" data-go="home" aria-label="Pocket AI Home"><span class="cat" data-mascot>◕</span><span><strong>Pocket AI</strong></span></button><div class="top-actions"><button id="headerWorkspace" class="header-workspace" type="button" aria-haspopup="menu" aria-expanded="false"><span class="header-avatar">P</span><strong>My workspace</strong><span aria-hidden="true">⌄</span></button><button id="settingsOpen" class="round header-settings" aria-label="Open settings">⚙️</button></div></header>
 <main>
 <section id="home" class="view glass home-view active">
