@@ -116,7 +116,7 @@ function renderRecent(limit=5){
 renderRecent();
 q('chatForm')?.addEventListener('submit',()=>{const t=q('prompt')?.value.trim()||'';if(t){addRecent('💬',t,'chat','Chat');recordProgressionAction('chat')}},true);
 q('deepResearch')?.addEventListener('click',()=>{const t=q('surfaceQuery')?.value.trim()||'';if(t){addRecent('🔎',t,'surface','Research');recordProgressionAction('research')}},true);
-q('fileInput')?.addEventListener('change',()=>{const file=q('fileInput')?.files?.[0];if(file){addRecent('📄',file.name,'files','File');recordProgressionAction('file')}},true);
+q('fileInput')?.addEventListener('change',()=>{const file=q('fileInput')?.files?.[0];if(file)addRecent('📄',file.name,'files','File')},true);
 document.addEventListener('click',e=>{const p=e.target.closest?.('#projectGrid .project-card');if(p){const name=p.querySelector('strong')?.textContent?.trim();if(name)addRecent('▦',name,'home','Project')}},true);
 
 
@@ -182,11 +182,11 @@ function showXPFeedback(text){
 }
 function renderProgression(){
  resetDailyQuestsIfNeeded();
- const level=displayLevel(),within=currentLevelXP();
+ const level=displayLevel(),isMax=progression.xp>=DISPLAY_LEVEL_CAP*XP_PER_LEVEL,within=isMax?XP_PER_LEVEL:currentLevelXP();
  const inline=q('pocketLevelInline'),levelEl=q('pocketLevel'),xpText=q('pocketXPText'),fill=q('pocketXPFill'),name=q('pocketLevelName');
  if(inline)inline.textContent='• Lv. '+level;
  if(levelEl)levelEl.textContent='Lv. '+level;
- if(xpText)xpText.textContent=within+' / 100 XP';
+ if(xpText)xpText.textContent=isMax?'MAX':within+' / 100 XP';
  if(fill)fill.style.width=within+'%';
  const track=q('pocketXP')?.querySelector('[role="progressbar"]');
  if(track)track.setAttribute('aria-valuenow',String(within));
@@ -197,11 +197,11 @@ function renderProgression(){
 }
 function awardXP(amount,label=''){
  const add=Math.max(0,Math.floor(Number(amount)||0));if(!add)return false;
- const before=currentLevel();
+ const before=displayLevel();
  progression.xp+=add;
  saveProgression();
  renderProgression();
- const after=currentLevel();
+ const after=displayLevel();
  showXPFeedback((label?label+' ':'')+'+'+add+' XP ✦');
  if(after>before){
   setMascotState('excited',2200);
@@ -256,6 +256,7 @@ function recordProgressionAction(kind,detail=''){
 }
 resetDailyQuestsIfNeeded();
 renderProgression();
+window.PocketProgression={recordAction:recordProgressionAction};
 
 const PROJ='pocket-projects-v2';
 function projects(){try{const a=JSON.parse(localStorage.getItem(PROJ)||'null');return Array.isArray(a)?a:[]}catch{return[]}}
