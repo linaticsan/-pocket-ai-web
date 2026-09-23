@@ -209,6 +209,7 @@ function awardXP(amount,label=''){
   showPocketSpeech('Level up! ✦',2400);
   spawnPocketParticles('star',4);
   setTimeout(()=>showXPFeedback('Pocket reached Lv. '+displayLevel(),''),250);
+  if(crossedRoomDecorThreshold(before,after))setTimeout(roomDecorUnlockedFeedback,650);
  }
  return true;
 }
@@ -259,12 +260,81 @@ resetDailyQuestsIfNeeded();
 renderProgression();
 window.PocketProgression={recordAction:recordProgressionAction};
 
+const ROOM_COSMETICS_KEY='pocket-room-cosmetics-v1';
+const ROOM_COSMETICS={
+ wall:{simple:{level:1},stars:{level:5},moon:{level:12}},
+ floor:{plain:{level:1},cloud:{level:8},stars:{level:15}},
+ desk:{simple:{level:1},lamp:{level:10},bot:{level:18}}
+};
+const ROOM_COSMETIC_DEFAULTS={wall:'simple',floor:'plain',desk:'simple'};
+const ROOM_DECOR_THRESHOLDS=[5,8,10,12,15,18];
+let roomCosmetics={...ROOM_COSMETIC_DEFAULTS};
+function validatedRoomCosmetics(raw,level=displayLevel()){
+ const out={...ROOM_COSMETIC_DEFAULTS};
+ for(const slot of Object.keys(ROOM_COSMETICS)){
+  const id=raw&&typeof raw[slot]==='string'?raw[slot]:'';
+  const item=ROOM_COSMETICS[slot][id];
+  if(item&&item.level<=level)out[slot]=id;
+ }
+ return out;
+}
+function loadRoomCosmetics(){
+ let raw=null;try{raw=JSON.parse(localStorage.getItem(ROOM_COSMETICS_KEY)||'null')}catch{}
+ roomCosmetics=validatedRoomCosmetics(raw);
+ applyRoomCosmetics(false);
+}
+function saveRoomCosmetics(){
+ try{localStorage.setItem(ROOM_COSMETICS_KEY,JSON.stringify({wall:roomCosmetics.wall,floor:roomCosmetics.floor,desk:roomCosmetics.desk}))}catch{}
+}
+function applyRoomCosmetics(save=true){
+ const room=q('pocketRoom');if(!room)return;
+ roomCosmetics=validatedRoomCosmetics(roomCosmetics);
+ room.dataset.roomWall=roomCosmetics.wall;
+ room.dataset.roomFloor=roomCosmetics.floor;
+ room.dataset.roomDesk=roomCosmetics.desk;
+ if(save)saveRoomCosmetics();
+ renderRoomCosmeticsPanel();
+}
+function renderRoomCosmeticsPanel(){
+ const level=displayLevel();
+ document.querySelectorAll('#roomDecorDialog [data-cosmetic-slot]').forEach(button=>{
+  const slot=button.dataset.cosmeticSlot,id=button.dataset.cosmeticId,item=ROOM_COSMETICS[slot]?.[id];
+  if(!item)return;
+  const locked=item.level>level,selected=roomCosmetics[slot]===id;
+  button.disabled=locked;
+  button.setAttribute('aria-pressed',String(selected));
+  button.classList.toggle('is-selected',selected);
+  button.classList.toggle('is-locked',locked);
+  const meta=button.querySelector('small'),state=button.querySelector('em');
+  if(meta)meta.textContent=locked?'Unlocks at Lv. '+item.level:'Lv. '+item.level;
+  if(state)state.textContent=selected?'✓ Selected':locked?'Locked':'Select';
+ });
+}
+function openRoomDecor(){
+ renderRoomCosmeticsPanel();
+ const dialog=q('roomDecorDialog');if(!dialog)return;
+ if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+}
+q('roomDecorateOpen')?.addEventListener('click',openRoomDecor);
+document.querySelectorAll('#roomDecorDialog [data-cosmetic-slot]').forEach(button=>button.addEventListener('click',()=>{
+ const slot=button.dataset.cosmeticSlot,id=button.dataset.cosmeticId,item=ROOM_COSMETICS[slot]?.[id];
+ if(!item||item.level>displayLevel())return;
+ roomCosmetics[slot]=id;applyRoomCosmetics(true);
+}));
+function crossedRoomDecorThreshold(before,after){
+ return ROOM_DECOR_THRESHOLDS.some(level=>before<level&&after>=level);
+}
+function roomDecorUnlockedFeedback(){
+ setMascotState('excited',1800);
+ showPocketSpeech('New room decor available ✦',2100);
+}
 function syncPocketRoom(){
  const room=q('pocketRoom');if(!room)return;
  const h=new Date().getHours();
  room.dataset.roomTime=h<10?'morning':h<17?'day':h<21?'evening':'night';
  room.dataset.roomLevel=String(displayLevel());
 }
+loadRoomCosmetics();
 const ROOM_REACTIONS={
  chat:{state:'happy',speech:"Let's talk! ✦",target:'chat'},
  research:{state:'thinking',speech:"Let's explore!",target:'surface'},
@@ -278,8 +348,10 @@ document.querySelectorAll('#pocketRoom [data-room-action]').forEach(button=>{
   setTimeout(()=>button.classList.remove('room-object-react'),260);
   setMascotState(cfg.state==='curious'?'surprised':cfg.state,650);
   showPocketSpeech(cfg.speech,900);
-  if(action==='research'){go('surface');if(q('surfaceMode'))q('surfaceMode').value='research';}
-  else go(cfg.target);
+  const navigate=()=>{if(action==='research'){go('surface');if(q('surfaceMode'))q('surfaceMode').value='research';}else go(cfg.target)};
+  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  const delay=motionMode()==='off'||reduced?0:140;
+  if(delay)setTimeout(navigate,delay);else navigate();
  });
 });
 syncPocketRoom();
