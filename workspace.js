@@ -335,6 +335,101 @@ function syncPocketRoom(){
  room.dataset.roomLevel=String(displayLevel());
 }
 loadRoomCosmetics();
+
+const STAR_GAME_KEY='pocket-star-game-v1';
+const STAR_GAME_SECONDS=20;
+let starGame={state:'ready',score:0,timeLeft:STAR_GAME_SECONDS};
+let starGameTimer=0,starGameTarget=null;
+function loadStarGameBest(){
+ let best=0;
+ try{
+  const raw=JSON.parse(localStorage.getItem(STAR_GAME_KEY)||'null');
+  best=Number.parseInt(raw?.best,10);
+ }catch{}
+ return Number.isFinite(best)?Math.min(999,Math.max(0,best)):0;
+}
+let starGameBest=loadStarGameBest();
+function saveStarGameBest(){
+ try{localStorage.setItem(STAR_GAME_KEY,JSON.stringify({best:starGameBest}))}catch{}
+}
+function renderStarGameHud(){
+ if(q('starGameScore'))q('starGameScore').textContent=String(starGame.score);
+ if(q('starGameBest'))q('starGameBest').textContent=String(starGameBest);
+ if(q('starGameTime'))q('starGameTime').textContent=String(Math.max(0,starGame.timeLeft));
+}
+function removeStarTarget(){
+ if(starGameTarget){starGameTarget.remove();starGameTarget=null}
+}
+function stopStarGame(resetReady=false){
+ if(starGameTimer){clearInterval(starGameTimer);starGameTimer=0}
+ removeStarTarget();
+ if(resetReady){
+  starGame={state:'ready',score:0,timeLeft:STAR_GAME_SECONDS};
+  q('starGameReady')?.removeAttribute('hidden');
+  if(q('starGameResult'))q('starGameResult').hidden=true;
+  renderStarGameHud();
+ }
+}
+function placeStarTarget(focusTarget=false){
+ removeStarTarget();
+ if(starGame.state!=='playing')return;
+ const field=q('starGameField');if(!field)return;
+ const target=document.createElement('button');
+ target.type='button';target.className='star-game-target';target.setAttribute('aria-label','Catch star');
+ target.innerHTML='<span aria-hidden="true"></span>';
+ const size=matchMedia('(max-width: 767px)').matches?52:46;
+ const hudSafe=12,pad=10;
+ const maxX=Math.max(pad,field.clientWidth-size-pad);
+ const minY=44,maxY=Math.max(minY,field.clientHeight-size-pad);
+ target.style.left=Math.round(pad+Math.random()*(maxX-pad))+'px';
+ target.style.top=Math.round(minY+Math.random()*(maxY-minY))+'px';
+ target.addEventListener('click',event=>{
+  if(starGame.state!=='playing')return;
+  const keyboard=event.detail===0;
+  starGame.score+=1;renderStarGameHud();placeStarTarget(keyboard);
+ });
+ field.appendChild(target);starGameTarget=target;
+ if(focusTarget)requestAnimationFrame(()=>target.focus());
+}
+function finishStarGame(){
+ if(starGame.state!=='playing')return;
+ if(starGameTimer){clearInterval(starGameTimer);starGameTimer=0}
+ removeStarTarget();starGame.state='finished';starGame.timeLeft=0;
+ const isBest=starGame.score>starGameBest;
+ if(isBest){starGameBest=Math.min(999,starGame.score);saveStarGameBest()}
+ renderStarGameHud();
+ if(q('starGameReady'))q('starGameReady').hidden=true;
+ const result=q('starGameResult');if(result)result.hidden=false;
+ if(q('starGameResultText'))q('starGameResultText').textContent='You caught '+starGame.score+' '+(starGame.score===1?'star.':'stars.');
+ if(q('starGameBestMessage'))q('starGameBestMessage').textContent=isBest?'New best! ✦':starGame.score>=10?'Amazing! ✦':'Nice catching!';
+ setMascotState(starGame.score>=10?'excited':'happy',1800);
+ showPocketSpeech(starGame.score>=10?'Amazing! ✦':'Nice catching!',1800);
+}
+function startStarGame(){
+ stopStarGame(false);
+ starGame={state:'playing',score:0,timeLeft:STAR_GAME_SECONDS};
+ if(q('starGameReady'))q('starGameReady').hidden=true;
+ if(q('starGameResult'))q('starGameResult').hidden=true;
+ renderStarGameHud();placeStarTarget(false);
+ setMascotState('excited',900);showPocketSpeech("Let's play! ✦",1200);
+ starGameTimer=setInterval(()=>{
+  if(starGame.state!=='playing'){stopStarGame(false);return}
+  starGame.timeLeft=Math.max(0,starGame.timeLeft-1);renderStarGameHud();
+  if(starGame.timeLeft===0)finishStarGame();
+ },1000);
+}
+function openStarGame(){
+ stopStarGame(true);starGameBest=loadStarGameBest();renderStarGameHud();
+ const dialog=q('starGameDialog');if(!dialog)return;
+ if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+}
+q('roomPlayOpen')?.addEventListener('click',openStarGame);
+q('starGameStart')?.addEventListener('click',startStarGame);
+q('starGameAgain')?.addEventListener('click',startStarGame);
+q('starGameClose')?.addEventListener('click',()=>q('starGameDialog')?.close());
+q('starGameDialog')?.addEventListener('close',()=>stopStarGame(true));
+q('starGameDialog')?.addEventListener('cancel',()=>stopStarGame(true));
+addEventListener('pagehide',()=>stopStarGame(false));
 const ROOM_REACTIONS={
  chat:{state:'happy',speech:"Let's talk! ✦",target:'chat'},
  research:{state:'thinking',speech:"Let's explore!",target:'surface'},
