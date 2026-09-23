@@ -193,6 +193,7 @@ function renderProgression(){
  if(name)name.textContent=levelName(level);
  q('homeMascot')?.classList.toggle('pocket-level-5',level>=5);
  q('homeMascot')?.classList.toggle('pocket-level-10',level>=10);
+ const room=q('pocketRoom');if(room)room.dataset.roomLevel=String(level);
  renderQuests();
 }
 function awardXP(amount,label=''){
@@ -257,6 +258,32 @@ function recordProgressionAction(kind,detail=''){
 resetDailyQuestsIfNeeded();
 renderProgression();
 window.PocketProgression={recordAction:recordProgressionAction};
+
+function syncPocketRoom(){
+ const room=q('pocketRoom');if(!room)return;
+ const h=new Date().getHours();
+ room.dataset.roomTime=h<10?'morning':h<17?'day':h<21?'evening':'night';
+ room.dataset.roomLevel=String(displayLevel());
+}
+const ROOM_REACTIONS={
+ chat:{state:'happy',speech:"Let's talk! ✦",target:'chat'},
+ research:{state:'thinking',speech:"Let's explore!",target:'surface'},
+ files:{state:'curious',speech:"Let's look inside!",target:'files'},
+ coding:{state:'excited',speech:"Let's build!",target:'coding'}
+};
+document.querySelectorAll('#pocketRoom [data-room-action]').forEach(button=>{
+ button.addEventListener('click',()=>{
+  const action=button.dataset.roomAction,cfg=ROOM_REACTIONS[action];if(!cfg)return;
+  button.classList.remove('room-object-react');void button.offsetWidth;button.classList.add('room-object-react');
+  setTimeout(()=>button.classList.remove('room-object-react'),260);
+  setMascotState(cfg.state==='curious'?'surprised':cfg.state,650);
+  showPocketSpeech(cfg.speech,900);
+  if(action==='research'){go('surface');if(q('surfaceMode'))q('surfaceMode').value='research';}
+  else go(cfg.target);
+ });
+});
+syncPocketRoom();
+
 
 const PROJ='pocket-projects-v2';
 function projects(){try{const a=JSON.parse(localStorage.getItem(PROJ)||'null');return Array.isArray(a)?a:[]}catch{return[]}}
