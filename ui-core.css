@@ -673,3 +673,32 @@ html[data-motion="gentle"] #home .room-star-lamp i,html[data-motion="off"] #home
 @media(max-width:340px){.room-cosmetic-group{grid-template-columns:1fr}#home .home-mascot-stage{min-height:208px}}
 @media(prefers-reduced-motion:reduce){#home .room-star-lamp i,.room-cosmetic-option{animation:none;transition:none}}
 html[data-motion="off"] .room-cosmetic-option{transition:none}
+
+
+/* STEP 8 — Catch the Stars */
+#home .room-mini-controls{display:flex;align-items:center;justify-content:center;gap:7px;pointer-events:none}
+#home .room-play-button{pointer-events:auto;min-height:32px;padding:5px 13px;border:1px solid var(--pa-border);border-radius:999px;background:var(--pa-card);color:var(--pa-secondary);font-size:11px;font-weight:600;box-shadow:none}
+#home .room-play-button:hover,#home .room-play-button:focus-visible{color:var(--pa-text);border-color:var(--pa-hover-border);background:var(--pa-hover)}
+.star-game-dialog{width:min(520px,calc(100vw - 28px));padding:22px;overflow:hidden}
+.star-game-dialog>form{position:absolute;right:12px;top:12px;z-index:5}.star-game-dialog>h2{margin:2px 40px 4px 0}.star-game-dialog>.muted{margin:0 0 12px}
+.star-game-hud{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:9px;padding:8px 10px;border:1px solid var(--pa-border);border-radius:11px;background:var(--pa-surface);font-size:11px;color:var(--pa-secondary)}
+.star-game-hud span:nth-child(2){text-align:center}.star-game-hud span:last-child{text-align:right}.star-game-hud strong{color:var(--pa-text)}
+.star-game-field{position:relative;width:100%;height:300px;overflow:hidden;border:1px solid var(--pa-border);border-radius:17px;background:linear-gradient(180deg,var(--pa-card),var(--pa-surface));isolation:isolate}
+.star-game-ready,.star-game-result{position:absolute;z-index:2;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:22px;text-align:center;background:color-mix(in srgb,var(--pa-card) 94%,transparent)}
+.star-game-ready[hidden],.star-game-result[hidden]{display:none}
+.star-game-ready>strong,.star-game-result>strong{font-size:17px;color:var(--pa-text)}.star-game-ready>span,.star-game-result>span{font-size:12px;color:var(--pa-secondary)}
+.star-game-ready>button,.star-game-result button{min-height:38px;padding:7px 16px;border:1px solid var(--pa-hover-border);border-radius:11px;background:var(--pa-accent);color:var(--pa-accent-ink);font-weight:700}
+.star-game-result em{min-height:18px;font-size:12px;font-style:normal;font-weight:700;color:var(--pa-accent)}.star-game-result>div{display:flex;gap:8px}.star-game-result>div button:last-child{background:var(--pa-card);color:var(--pa-text);border-color:var(--pa-border)}
+.star-game-pocket{position:relative;width:54px;height:46px;border:1px solid var(--pa-hover-border);border-radius:46% 46% 42% 42%;background:var(--pa-accent-soft);box-shadow:0 5px 14px color-mix(in srgb,var(--pa-text) 7%,transparent);pointer-events:none}
+.star-game-pocket i{position:absolute;top:18px;width:6px;height:7px;border-radius:50%;background:var(--pa-text)}.star-game-pocket i:first-child{left:14px}.star-game-pocket i:nth-child(2){right:14px}.star-game-pocket b{position:absolute;left:50%;top:29px;width:13px;height:6px;border-bottom:2px solid var(--pa-text);border-radius:50%;transform:translateX(-50%)}
+.star-game-target{position:absolute;z-index:3;width:46px;height:46px;min-width:44px;min-height:44px;padding:0;border:0;border-radius:50%;background:transparent;box-shadow:none;cursor:pointer;pointer-events:auto;animation:starTargetIn .16s ease-out both}
+.star-game-target:focus-visible{outline:2px solid var(--pa-accent);outline-offset:2px}
+.star-game-target span{position:absolute;left:50%;top:50%;width:23px;height:23px;border:2px solid var(--pa-accent);border-radius:6px;background:var(--pa-accent-soft);transform:translate(-50%,-50%) rotate(45deg);box-shadow:0 0 9px var(--room-glow);pointer-events:none}
+.star-game-target span::before,.star-game-target span::after{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;border-radius:50%;background:var(--pa-card);opacity:.62;transform:translate(-50%,-50%)}
+@keyframes starTargetIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+html[data-motion="gentle"] .star-game-target{animation:starTargetFade .14s ease-out both}
+@keyframes starTargetFade{from{opacity:0}to{opacity:1}}
+html[data-motion="off"] .star-game-target{animation:none}
+@media(prefers-reduced-motion:reduce){.star-game-target{animation:none!important}}
+@media(max-width:767px){.star-game-dialog{width:min(430px,calc(100vw - 16px));padding:17px 12px}.star-game-field{height:280px}.star-game-target{width:52px;height:52px}.star-game-hud{font-size:10px}}
+@media(max-width:340px){.star-game-dialog{width:calc(100vw - 10px);padding:15px 9px}.star-game-field{height:260px}.star-game-result>div{flex-direction:column;width:min(180px,100%)}}
