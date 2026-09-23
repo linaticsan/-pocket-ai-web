@@ -574,7 +574,7 @@ html[data-motion="off"] #home .pocket-xp-toast{transition:none}
 #home .room-mascot-zone .pocket-status{bottom:25px}
 #home .room-mascot-zone .pocket-xp{position:absolute;bottom:-22px;width:156px}
 #home .room-mascot-zone .pocket-xp-toast{bottom:-50px}
-#home .room-object{position:absolute;z-index:2;width:52px;height:52px;min-height:0;padding:0;border:1px solid var(--room-object-border);border-radius:14px;background:var(--room-object);box-shadow:0 5px 12px color-mix(in srgb,var(--pa-text) 7%,transparent);cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+#home .room-object{position:absolute;z-index:2;width:52px;height:52px;min-height:0;padding:0;pointer-events:auto;border:1px solid var(--room-object-border);border-radius:14px;background:var(--room-object);box-shadow:0 5px 12px color-mix(in srgb,var(--pa-text) 7%,transparent);cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}
 #home .room-object:hover,#home .room-object:focus-visible{border-color:var(--pa-accent);background:color-mix(in srgb,var(--room-object) 88%,var(--pa-accent-soft))}
 #home .room-object:focus-visible{outline:2px solid var(--pa-accent);outline-offset:3px}
 #home .room-tooltip{position:absolute;left:50%;bottom:calc(100% + 7px);padding:4px 7px;border:1px solid var(--pa-border);border-radius:8px;background:var(--pa-card);color:var(--pa-text);box-shadow:var(--pa-shadow);font-size:10px;font-weight:600;white-space:nowrap;opacity:0;transform:translate(-50%,3px);pointer-events:none;transition:opacity .15s ease,transform .15s ease}
@@ -622,7 +622,7 @@ html[data-motion="off"] #home .room-object,html[data-motion="off"] #home .room-t
 
 /* STEP 7 — Room cosmetics */
 #home .home-mascot-stage{position:relative;min-height:304px;flex-direction:column;gap:9px}
-#home .room-decorate-button{min-height:32px;padding:5px 11px;border:1px solid var(--pa-border);border-radius:999px;background:var(--pa-card);color:var(--pa-secondary);font-size:11px;font-weight:600;box-shadow:none}
+#home .room-decorate-button{min-height:32px;padding:5px 11px;pointer-events:auto;border:1px solid var(--pa-border);border-radius:999px;background:var(--pa-card);color:var(--pa-secondary);font-size:11px;font-weight:600;box-shadow:none}
 #home .room-decorate-button:hover{color:var(--pa-text);border-color:var(--pa-hover-border);background:var(--pa-hover)}
 #home .room-decor{position:absolute;pointer-events:none;opacity:0}
 #home .room-wall-garland{z-index:1;left:92px;top:18px;width:112px;height:32px;border-top:1px solid color-mix(in srgb,var(--pa-accent) 45%,transparent);border-radius:50%}
