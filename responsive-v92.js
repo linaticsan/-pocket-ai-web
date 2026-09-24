@@ -1,6 +1,8 @@
 /* Pocket AI V116 — navigation/sidebar only */
 (()=>{'use strict';
-const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const $=(s,r=document)=>r.querySelector(s), $=(s,r=document)=>[...r.querySelectorAll(s)];
+let drawerOpener=null;
+const focusables=()=>$('#paDesktopSidebar button:not([disabled]),#paDesktopSidebar [href],#paDesktopSidebar input:not([disabled]),#paDesktopSidebar [tabindex]:not([tabindex="-1"])');
 const go=id=>{if(window.PocketV39?.show?.(id))return true;const b=$('[data-go="'+id+'"]');if(b){b.click();return true}return false};
 
 function buildSidebar(){
@@ -30,7 +32,7 @@ function buildSidebar(){
  document.body.appendChild(aside);
 
  const backdrop=document.createElement('button');
- backdrop.id='paSidebarBackdrop';backdrop.className='pa-sidebar-backdrop';backdrop.type='button';backdrop.setAttribute('aria-label','Close menu');
+ backdrop.id='paSidebarBackdrop';backdrop.className='pa-sidebar-backdrop';backdrop.type='button';backdrop.tabIndex=-1;backdrop.setAttribute('aria-label','Close menu');
  document.body.appendChild(backdrop);
 
  const toggle=document.createElement('button');
@@ -43,19 +45,63 @@ function buildSidebar(){
    if(fresh){go('chat');setTimeout(()=>$('#v3NewChat')?.click(),80);closeDrawer();return}
    const b=e.target.closest('[data-pa-side]');if(!b)return;
    const id=b.dataset.paSide;
-   if(id==='settings'){const d=$('#settingsDialog');if(d?.showModal&&!d.open)d.showModal();closeDrawer();return}
-   if(id==='study'){go('chat');setTimeout(()=>$('#v3Study')?.click(),80);closeDrawer();return}
-   if(id==='projects'){go('home');setTimeout(()=>$('#projectGrid')?.scrollIntoView({block:'start',behavior:'smooth'}),80);closeDrawer();return}
-   go(id);closeDrawer();
+   if(id==='settings'){
+     closeDrawer(false);
+     const d=$('#settingsDialog');
+     if(window.PocketDialog?.open)window.PocketDialog.open(d,b);
+     else if(d?.showModal&&!d.open)d.showModal();
+     return
+   }
+   if(id==='study'){go('chat');closeDrawer(false);setTimeout(()=>{$('#v3Study')?.click();$('#prompt')?.focus()},80);return}
+   if(id==='projects'){go('home');closeDrawer(false);setTimeout(()=>{$('#projectGrid')?.scrollIntoView({block:'start',behavior:'smooth'});$('#newProject')?.focus({preventScroll:true})},80);return}
+   go(id);closeDrawer(false);setTimeout(()=>focusDestination(id),60);
  });
- toggle.addEventListener('click',()=>document.documentElement.classList.contains('pa-nav-open')?closeDrawer():openDrawer());
- backdrop.addEventListener('click',closeDrawer);
- addEventListener('keydown',e=>{if(e.key==='Escape')closeDrawer()});
+ toggle.addEventListener('click',()=>document.documentElement.classList.contains('pa-nav-open')?closeDrawer(true):openDrawer(toggle));
+ backdrop.addEventListener('click',()=>closeDrawer(true));
+ addEventListener('keydown',e=>{
+   if(e.key==='Escape'&&document.documentElement.classList.contains('pa-nav-open')){e.preventDefault();closeDrawer(true);return}
+   if(e.key!=='Tab'||!document.documentElement.classList.contains('pa-nav-open'))return;
+   const items=focusables();if(!items.length)return;
+   const first=items[0],last=items[items.length-1];
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+ });
  syncStatus();
 }
 
-function openDrawer(){document.documentElement.classList.add('pa-nav-open');$('#paSidebarToggle')?.setAttribute('aria-expanded','true')}
-function closeDrawer(){document.documentElement.classList.remove('pa-nav-open');$('#paSidebarToggle')?.setAttribute('aria-expanded','false')}
+function setBackgroundInert(on){
+  for(const el of [document.querySelector('header'),document.querySelector('main')]){
+    if(!el)continue;
+    if(on)el.setAttribute('inert','');else el.removeAttribute('inert');
+  }
+}
+function focusDestination(id){
+  if(id==='chat'){($('#prompt')||$('#v3NewChat'))?.focus({preventScroll:true});return}
+  const view=$('#'+CSS.escape(id));
+  const target=view?.querySelector('h1,h2,[role="heading"]');
+  if(target){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});target.addEventListener('blur',()=>target.removeAttribute('tabindex'),{once:true})}
+}
+function openDrawer(opener=$('#paSidebarToggle')){
+  if(innerWidth>=768)return;
+  drawerOpener=opener instanceof HTMLElement?opener:$('#paSidebarToggle');
+  document.documentElement.classList.add('pa-nav-open');
+  $('#paSidebarToggle')?.setAttribute('aria-expanded','true');
+  $('#paDesktopSidebar')?.setAttribute('aria-modal','true');
+  setBackgroundInert(true);
+  requestAnimationFrame(()=>$('#paDesktopSidebar .pa-side-close')?.focus({preventScroll:true}));
+}
+function closeDrawer(restore=true){
+  const wasOpen=document.documentElement.classList.contains('pa-nav-open');
+  document.documentElement.classList.remove('pa-nav-open');
+  $('#paSidebarToggle')?.setAttribute('aria-expanded','false');
+  $('#paDesktopSidebar')?.removeAttribute('aria-modal');
+  setBackgroundInert(false);
+  if(restore&&wasOpen){
+    const back=drawerOpener?.isConnected?drawerOpener:$('#paSidebarToggle');
+    requestAnimationFrame(()=>back?.focus({preventScroll:true}));
+  }
+  drawerOpener=null;
+}
 
 function syncStatus(){
  const out=$('#paLocalState'),dot=$('.pa-status-dot');if(!out)return;
@@ -75,7 +121,7 @@ function syncActive(){
  });
  syncStatus();
 }
-function sync(){buildSidebar();syncActive();if(innerWidth>=768)closeDrawer()}
+function sync(){buildSidebar();syncActive();if(innerWidth>=768)closeDrawer(false)}
 addEventListener('resize',sync);
 document.addEventListener('click',e=>{if(e.target.closest?.('[data-go],#v3Study,#v3NewChat'))setTimeout(syncActive,30)},true);
 addEventListener('pocket-core-ready',sync);addEventListener('pocket-features-ready',sync);
