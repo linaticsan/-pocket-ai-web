@@ -1,6 +1,7 @@
 const q=id=>document.getElementById(id);
 const safeGet=(k,f='')=>{try{return localStorage.getItem(k)||f}catch{return f}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
+document.documentElement.classList.remove('pocket-v59','photo-ui-v100','reference-ui-active');
 const go=id=>{
   if(window.PocketV39?.show?.(id))return true;
   const btn=document.querySelector(`[data-go="${CSS.escape(id)}"]`);
@@ -22,28 +23,32 @@ function greeting(){
  const h=new Date().getHours(),word=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
  el.textContent=word+' ✨';
 }
-function setTheme(t){
-  if(window.PocketTheme?.apply){window.PocketTheme.apply(t);return}
-  const choice=t||'light';
-  const resolved=choice==='system'
-    ? (window.matchMedia?.('(prefers-color-scheme: dark)')?.matches?'dark':'light')
-    : choice;
+const THEME_CHOICES=new Set(['system','light','dark','sakura','green','oled']);
+const THEME_COLORS={light:'#f7f8ff',dark:'#212121',sakura:'#fff5fa',green:'#f0fff6',oled:'#000000'};
+const themeMedia=window.matchMedia?.('(prefers-color-scheme: dark)');
+function setTheme(t,{persist=true}={}){
+  const choice=THEME_CHOICES.has(t)?t:'light';
+  const resolved=choice==='system'?(themeMedia?.matches?'dark':'light'):choice;
   document.documentElement.dataset.theme=resolved;
   document.documentElement.dataset.themeChoice=choice;
-  safeSet('pocket-theme',choice);
+  document.documentElement.style.colorScheme=(resolved==='dark'||resolved==='oled')?'dark':'light';
+  if(persist)safeSet('pocket-theme',choice);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[resolved]||THEME_COLORS.light);
   document.querySelectorAll('[data-theme-choice]').forEach(b=>{
     const active=b.dataset.themeChoice===choice;
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',active?'true':'false');
   });
+  window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:resolved,choice}}));
 }
+themeMedia?.addEventListener?.('change',()=>{if(safeGet('pocket-theme','light')==='system')setTheme('system',{persist:false})});
 function setMotion(m){
  document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
 }
 
 const SOUND_KEY='pocket-sound-v1';
-const SOUND_DEFAULTS={enabled:false,volume:.35};
+const SOUND_DEFAULTS={enabled:true,volume:.35};
 let pocketAudioContext=null;
 let soundLastPlayed=Object.create(null);
 let activeSoundVoices=0;
@@ -62,7 +67,7 @@ const SOUND_SPECS={
 };
 function loadSoundSettings(){
  let raw=null;try{raw=JSON.parse(localStorage.getItem(SOUND_KEY)||'null')}catch{}
- const enabled=raw?.enabled===true;
+ const enabled=raw&&typeof raw.enabled==='boolean'?raw.enabled:SOUND_DEFAULTS.enabled;
  const n=Number(raw?.volume);
  const volume=Number.isFinite(n)?Math.min(1,Math.max(0,n)):SOUND_DEFAULTS.volume;
  return {enabled,volume};
@@ -92,16 +97,27 @@ function ensureAudioContext(){
   return pocketAudioContext;
  }catch{return null}
 }
-function playPocketSound(type){
+function primePocketAudio(){
+ const ctx=ensureAudioContext();if(!ctx)return null;
+ try{
+  const osc=ctx.createOscillator(),gain=ctx.createGain();
+  gain.gain.setValueAtTime(.0001,ctx.currentTime);
+  osc.connect(gain);gain.connect(ctx.destination);
+  osc.start();osc.stop(ctx.currentTime+.012);
+ }catch{}
+ return ctx;
+}
+async function playPocketSound(type){
  if(!soundSettings.enabled)return false;
  const spec=SOUND_SPECS[type];if(!spec)return false;
  const nowMs=Date.now(),gap=SOUND_MIN_GAP[type]||0;
- if(nowMs-(soundLastPlayed[type]||0)<gap)return false;
- if(activeSoundVoices>=MAX_SOUND_VOICES)return false;
+ if(nowMs-(soundLastPlayed[type]||0)<gap||activeSoundVoices>=MAX_SOUND_VOICES)return false;
  const ctx=ensureAudioContext();if(!ctx)return false;
- soundLastPlayed[type]=nowMs;
  try{
-  const start=ctx.currentTime+.005;
+  if(ctx.state==='suspended')await ctx.resume();
+  if(ctx.state!=='running')return false;
+  soundLastPlayed[type]=Date.now();
+  const start=ctx.currentTime+.008;
   spec.notes.forEach((freq,i)=>{
    const offset=spec.notes.length>1?i*(spec.duration/(spec.notes.length+1)):0;
    const noteDuration=Math.max(.055,spec.duration-(offset*.35));
@@ -114,14 +130,14 @@ function playPocketSound(type){
    osc.connect(gain);gain.connect(ctx.destination);
    activeSoundVoices++;
    osc.onended=()=>{activeSoundVoices=Math.max(0,activeSoundVoices-1);try{osc.disconnect();gain.disconnect()}catch{}};
-   osc.start(start+offset);osc.stop(start+offset+noteDuration+.02);
+   osc.start(start+offset);osc.stop(start+offset+noteDuration+.025);
   });
   return true;
  }catch{return false}
 }
 function setSoundEnabled(enabled){
  soundSettings.enabled=!!enabled;saveSoundSettings();syncSoundUI();
- if(soundSettings.enabled){ensureAudioContext();playPocketSound('tap')}
+ if(soundSettings.enabled){primePocketAudio();playPocketSound('tap')}
 }
 function setSoundVolume(value,preview=false){
  const n=Number(value);soundSettings.volume=Number.isFinite(n)?Math.min(1,Math.max(0,n)):SOUND_DEFAULTS.volume;
@@ -144,6 +160,8 @@ if(q('commandOpen'))q('commandOpen').onclick=()=>{const d=q('commandDialog');if(
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
 document.querySelectorAll('[data-sound]').forEach(b=>b.onclick=()=>setSoundEnabled(b.dataset.sound==='on'));
+document.addEventListener('pointerdown',()=>{if(soundSettings.enabled)primePocketAudio()},{capture:true,passive:true});
+document.addEventListener('keydown',e=>{if(soundSettings.enabled&&(e.key==='Enter'||e.key===' '))primePocketAudio()},{capture:true});
 if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>setSoundVolume(Number(e.target.value)/100,true));}
 document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.onclick=()=>setPrivacy(b.dataset.privacySetting||b.dataset.privacy));
 
