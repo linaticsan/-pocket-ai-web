@@ -1261,3 +1261,55 @@ dialog .close{
   #chat #messages.v3-messages{padding:18px 12px 22px!important}
   #chat #chatForm.v3-composer{padding:8px 12px max(10px,env(safe-area-inset-bottom))!important}
 }
+
+
+/* STEP 16 — interaction QA and accessibility */
+dialog{
+  max-height:min(90dvh,780px);
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+dialog .close,
+.pa-side-close,
+#chat #v3NewChat,
+#chat #v3HistoryClose,
+#chat #v3AttachBtn,
+#chat .v3-top-controls>button{
+  min-width:40px;
+  min-height:40px;
+}
+#chat .v3-side-actions{display:flex;align-items:center;gap:6px}
+#chat #v3HistoryClose{display:none}
+.pa-desktop-sidebar{overscroll-behavior:contain}
+html.pa-nav-open body{overflow:hidden}
+[aria-current="page"]{font-weight:600}
+
+@media(pointer:coarse){
+  button,
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  input[type="file"]::file-selector-button{
+    min-height:44px;
+  }
+  dialog .close,
+  .pa-side-close,
+  #settingsOpen.header-settings,
+  #chat #v3NewChat,
+  #chat #v3HistoryClose,
+  #chat #v3AttachBtn,
+  #chat .v3-top-controls>button{
+    min-width:44px;
+    min-height:44px;
+  }
+}
+
+@media(max-width:767px){
+  #chat #v3HistoryClose{display:grid;place-items:center}
+  #chat .v3-side-head{min-height:54px}
+  #chat .v3-sidebar{overscroll-behavior:contain}
+  dialog,.settings-dialog{
+    max-height:calc(100dvh - 20px);
+    margin-block:10px;
+  }
+}
