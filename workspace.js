@@ -41,6 +41,93 @@ function setMotion(m){
  document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
 }
+
+const SOUND_KEY='pocket-sound-v1';
+const SOUND_DEFAULTS={enabled:false,volume:.35};
+let pocketAudioContext=null;
+let soundLastPlayed=Object.create(null);
+let activeSoundVoices=0;
+const MAX_SOUND_VOICES=8;
+const SOUND_MIN_GAP={tap:70,pet:120,navigate:80,decorate:100,xp:180,levelup:300,star:45,finish:250,best:250};
+const SOUND_SPECS={
+ tap:{notes:[520],duration:.11,gain:.28,wave:'sine'},
+ pet:{notes:[440,620],duration:.22,gain:.36,wave:'sine'},
+ navigate:{notes:[360,520],duration:.14,gain:.24,wave:'triangle'},
+ decorate:{notes:[660,840],duration:.18,gain:.32,wave:'sine'},
+ xp:{notes:[720,960],duration:.18,gain:.28,wave:'sine'},
+ levelup:{notes:[520,700,920],duration:.55,gain:.48,wave:'sine'},
+ star:{notes:[900],duration:.08,gain:.18,wave:'sine'},
+ finish:{notes:[520,420],duration:.34,gain:.32,wave:'sine'},
+ best:{notes:[620,880],duration:.42,gain:.44,wave:'sine'}
+};
+function loadSoundSettings(){
+ let raw=null;try{raw=JSON.parse(localStorage.getItem(SOUND_KEY)||'null')}catch{}
+ const enabled=raw?.enabled===true;
+ const n=Number(raw?.volume);
+ const volume=Number.isFinite(n)?Math.min(1,Math.max(0,n)):SOUND_DEFAULTS.volume;
+ return {enabled,volume};
+}
+let soundSettings=loadSoundSettings();
+function saveSoundSettings(){
+ try{localStorage.setItem(SOUND_KEY,JSON.stringify({enabled:!!soundSettings.enabled,volume:Math.min(1,Math.max(0,Number(soundSettings.volume)||0))}))}catch{}
+}
+function audioSupported(){return !!(window.AudioContext||window.webkitAudioContext)}
+function syncSoundUI(){
+ document.querySelectorAll('[data-sound]').forEach(b=>{
+  const on=(b.dataset.sound==='on')===!!soundSettings.enabled;
+  b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false');
+ });
+ const slider=q('soundVolume'),value=q('soundVolumeValue'),support=q('soundSupport');
+ const pct=Math.round(soundSettings.volume*100);
+ if(slider&&document.activeElement!==slider)slider.value=String(pct);
+ if(value)value.textContent=pct+'%';
+ if(support)support.textContent=audioSupported()?(soundSettings.enabled?'Sound effects are on.':'Sound effects are off by default.'):'Sound effects are unavailable in this browser.';
+}
+function ensureAudioContext(){
+ if(!soundSettings.enabled)return null;
+ const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
+ try{
+  if(!pocketAudioContext)pocketAudioContext=new AC();
+  if(pocketAudioContext.state==='suspended')pocketAudioContext.resume().catch(()=>{});
+  return pocketAudioContext;
+ }catch{return null}
+}
+function playPocketSound(type){
+ if(!soundSettings.enabled)return false;
+ const spec=SOUND_SPECS[type];if(!spec)return false;
+ const nowMs=Date.now(),gap=SOUND_MIN_GAP[type]||0;
+ if(nowMs-(soundLastPlayed[type]||0)<gap)return false;
+ if(activeSoundVoices>=MAX_SOUND_VOICES)return false;
+ const ctx=ensureAudioContext();if(!ctx)return false;
+ soundLastPlayed[type]=nowMs;
+ try{
+  const start=ctx.currentTime+.005;
+  spec.notes.forEach((freq,i)=>{
+   const offset=spec.notes.length>1?i*(spec.duration/(spec.notes.length+1)):0;
+   const noteDuration=Math.max(.055,spec.duration-(offset*.35));
+   const osc=ctx.createOscillator(),gain=ctx.createGain();
+   osc.type=spec.wave||'sine';osc.frequency.setValueAtTime(freq,start+offset);
+   const peak=Math.max(.0001,soundSettings.volume*spec.gain);
+   gain.gain.setValueAtTime(.0001,start+offset);
+   gain.gain.linearRampToValueAtTime(peak,start+offset+.012);
+   gain.gain.exponentialRampToValueAtTime(.0001,start+offset+noteDuration);
+   osc.connect(gain);gain.connect(ctx.destination);
+   activeSoundVoices++;
+   osc.onended=()=>{activeSoundVoices=Math.max(0,activeSoundVoices-1);try{osc.disconnect();gain.disconnect()}catch{}};
+   osc.start(start+offset);osc.stop(start+offset+noteDuration+.02);
+  });
+  return true;
+ }catch{return false}
+}
+function setSoundEnabled(enabled){
+ soundSettings.enabled=!!enabled;saveSoundSettings();syncSoundUI();
+ if(soundSettings.enabled){ensureAudioContext();playPocketSound('tap')}
+}
+function setSoundVolume(value,preview=false){
+ const n=Number(value);soundSettings.volume=Number.isFinite(n)?Math.min(1,Math.max(0,n)):SOUND_DEFAULTS.volume;
+ saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
+}
+
 const modeText={balanced:'Uses Local AI first; web tools only when you open them.',private:'Local AI only for AI tasks. No account login required.',offline:'Cached app + Local AI + local files. Web tools need internet.'};
 function setPrivacy(m){
  safeSet('pocket-privacy',m);
@@ -51,11 +138,13 @@ function setPrivacy(m){
  const hint=q('modeHint');if(hint)hint.textContent=modeText[m]||modeText.balanced;
 }
 
-greeting();setTheme(safeGet('pocket-theme','light'));setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));
+greeting();setTheme(safeGet('pocket-theme','light'));setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));syncSoundUI();
 if(q('settingsOpen'))q('settingsOpen').onclick=()=>q('settingsDialog')?.showModal?.();
 if(q('commandOpen'))q('commandOpen').onclick=()=>{const d=q('commandDialog');if(d?.showModal&&!d.open)d.showModal();setTimeout(()=>q('commandSearch')?.focus(),50)};
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
+document.querySelectorAll('[data-sound]').forEach(b=>b.onclick=()=>setSoundEnabled(b.dataset.sound==='on'));
+if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>setSoundVolume(Number(e.target.value)/100,true));}
 document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.onclick=()=>setPrivacy(b.dataset.privacySetting||b.dataset.privacy));
 
 document.addEventListener('keydown',e=>{
@@ -205,12 +294,13 @@ function awardXP(amount,label=''){
  const after=displayLevel();
  showXPFeedback((label?label+' ':'')+'+'+add+' XP ✦');
  if(after>before){
+  playPocketSound('levelup');
   setMascotState('excited',2200);
   showPocketSpeech('Level up! ✦',2400);
   spawnPocketParticles('star',4);
   setTimeout(()=>showXPFeedback('Pocket reached Lv. '+displayLevel(),''),250);
   if(crossedRoomDecorThreshold(before,after))setTimeout(roomDecorUnlockedFeedback,650);
- }
+ }else playPocketSound('xp');
  return true;
 }
 function canRewardAction(category,cooldown){
@@ -318,8 +408,8 @@ function openRoomDecor(){
 q('roomDecorateOpen')?.addEventListener('click',openRoomDecor);
 document.querySelectorAll('#roomDecorDialog [data-cosmetic-slot]').forEach(button=>button.addEventListener('click',()=>{
  const slot=button.dataset.cosmeticSlot,id=button.dataset.cosmeticId,item=ROOM_COSMETICS[slot]?.[id];
- if(!item||item.level>displayLevel())return;
- roomCosmetics[slot]=id;applyRoomCosmetics(true);
+ if(!item||item.level>displayLevel()||roomCosmetics[slot]===id)return;
+ roomCosmetics[slot]=id;applyRoomCosmetics(true);playPocketSound('decorate');
 }));
 function crossedRoomDecorThreshold(before,after){
  return ROOM_DECOR_THRESHOLDS.some(level=>before<level&&after>=level);
@@ -386,7 +476,7 @@ function placeStarTarget(focusTarget=false){
  target.addEventListener('click',event=>{
   if(starGame.state!=='playing')return;
   const keyboard=event.detail===0;
-  starGame.score+=1;renderStarGameHud();placeStarTarget(keyboard);
+  playPocketSound('star');starGame.score+=1;renderStarGameHud();placeStarTarget(keyboard);
  });
  field.appendChild(target);starGameTarget=target;
  if(focusTarget)requestAnimationFrame(()=>target.focus());
@@ -397,6 +487,7 @@ function finishStarGame(){
  removeStarTarget();starGame.state='finished';starGame.timeLeft=0;
  const isBest=starGame.score>starGameBest;
  if(isBest){starGameBest=Math.min(999,starGame.score);saveStarGameBest()}
+ playPocketSound(isBest?'best':'finish');
  renderStarGameHud();
  if(q('starGameReady'))q('starGameReady').hidden=true;
  const result=q('starGameResult');if(result)result.hidden=false;
@@ -439,6 +530,7 @@ const ROOM_REACTIONS={
 document.querySelectorAll('#pocketRoom [data-room-action]').forEach(button=>{
  button.addEventListener('click',()=>{
   const action=button.dataset.roomAction,cfg=ROOM_REACTIONS[action];if(!cfg)return;
+  playPocketSound('navigate');
   button.classList.remove('room-object-react');void button.offsetWidth;button.classList.add('room-object-react');
   setTimeout(()=>button.classList.remove('room-object-react'),260);
   setMascotState(cfg.state==='curious'?'surprised':cfg.state,650);
@@ -566,7 +658,7 @@ function checkMascotSecret(){
  return false;
 }
 function pocketTap(){
- bumpPocketInteractions();
+ bumpPocketInteractions();playPocketSound('tap');
  if(checkMascotSecret())return;
  const state=tapStates[Math.floor(Math.random()*tapStates.length)];
  setMascotState(state,1700);
@@ -575,7 +667,7 @@ function pocketTap(){
  scheduleMascotIdle();
 }
 function pocketPet(){
- pressHandled=true;bumpPocketInteractions();setMascotState('petted',2100);showPocketSpeech(Math.random()<.5?'Hehe ✦':'That tickles!',2200);spawnPocketParticles('heart',4);scheduleMascotIdle();
+ pressHandled=true;bumpPocketInteractions();playPocketSound('pet');setMascotState('petted',2100);showPocketSpeech(Math.random()<.5?'Hehe ✦':'That tickles!',2200);spawnPocketParticles('heart',4);scheduleMascotIdle();
 }
 const homeMascot=q('homeMascot');
 if(homeMascot){
