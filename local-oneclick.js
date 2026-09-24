@@ -86,5 +86,4 @@ el('localConnect')?.addEventListener('click',()=>connectLocal(false));
 el('localDisconnect')?.addEventListener('click',disconnectLocal);
 el('localSend')?.addEventListener('click',sendLocal);
 el('localPrompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendLocal();}});
-document.querySelectorAll('[data-go="local"]').forEach(b=>b.addEventListener('click',()=>{setTimeout(()=>window.scrollTo({top:0,left:0,behavior:'auto'}),40);}));
 if(el('localDevice'))initLocal();
