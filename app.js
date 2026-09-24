@@ -1,6 +1,6 @@
 const $=id=>document.getElementById(id);
 let geminiKey='',geminiModel='gemini-2.5-flash',chatHistory=[];
-const notice=s=>$('notice').textContent=s||'';
+const notice=s=>{const el=$('notice');if(!el)return;el.removeAttribute('data-pwa-notice');el.textContent=s||''};
 function show(id){document.querySelectorAll('.view').forEach(v=>{v.hidden=v.id!==id;v.classList.toggle('active',v.id===id)});document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));notice('');scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
 $('theme')?.addEventListener('click',()=>{$('settingsDialog')?.showModal?.()});
@@ -75,12 +75,117 @@ async function surfaceSearch(){const q=$('surfaceQuery').value.trim(),mode=$('su
 $('surfaceForm').onsubmit=async e=>{e.preventDefault();$('surfaceSearch').disabled=true;try{await surfaceSearch()}finally{$('surfaceSearch').disabled=false}};
 $('deepResearch').onclick=async()=>{const q=$('surfaceQuery').value.trim();if(!q){$('surfaceStatus').textContent='Write a research question first.';return}const btn=$('deepResearch');btn.disabled=true;$('researchReport').hidden=false;renderResearchReport('Deep Research is gathering open sources…');$('surfaceStatus').textContent='Deep Research running…';try{const gathered=await collectSources(q,'research');$('surfaceResults').replaceChildren(...gathered.items.map(card));const sourceText=gathered.items.slice(0,20).map((x,i)=>`[${i+1}] ${x.title}\n${x.url}\n${x.text||''}`).join('\n\n');if(window.PocketLocalAI?.isConnected?.()&&sourceText){const prompt=`Research question: ${q}\n\nSynthesize ONLY the supplied sources. Produce: Summary, Key findings, Evidence/disagreements, Uncertainty, Sources. Keep the source URLs beside claims and never invent citations.\n\nSOURCES:\n${sourceText}`;const text=await window.PocketLocalAI.generate([{role:'system',content:'You are Surface Research. Use only supplied sources. Never invent citations.'},{role:'user',content:prompt}]);renderResearchReport(text||sourceText);$('surfaceStatus').textContent='Research sources synthesized locally • '+gathered.items.length+' results.';}else{renderResearchReport((sourceText||'No research sources were returned.')+'\n\nConnect Local AI if you want Pocket AI to summarize these sources on-device.');$('surfaceStatus').textContent='Research sources collected • Local AI is optional for synthesis.';}}catch(err){renderResearchReport('Research search failed: '+(err?.message||err));$('surfaceStatus').textContent='Research failed.'}finally{btn.disabled=false}};
 
-// Service worker registration is enabled for normal app-shell updates and offline support.
+// STEP 17 — install, update and offline reliability.
+const INSTALL_DISMISS_KEY='pocket-install-dismissed-v1';
+const INSTALL_DISMISS_MS=7*24*60*60*1000;
+let deferredInstallPrompt=null;
+let swRegistration=null;
+let lastSWUpdateCheck=0;
+let updateAnnounced=false;
 
-// Keep the PWA/offline shell installed. Registration is delayed until load so
-// Service worker updates are handled by the browser; persistent caches are not globally cleared.
+function isStandalone(){
+  return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true);
+}
+function pwaNotice(message){
+  const el=$('notice');if(!el)return;
+  el.dataset.pwaNotice='1';
+  el.textContent=message||'';
+}
+function clearPwaNotice(){
+  const el=$('notice');
+  if(el?.dataset?.pwaNotice==='1'){el.textContent='';delete el.dataset.pwaNotice}
+}
+function installDismissedRecently(){
+  try{
+    const when=Number(localStorage.getItem(INSTALL_DISMISS_KEY)||0);
+    return Number.isFinite(when)&&Date.now()-when<INSTALL_DISMISS_MS;
+  }catch{return false}
+}
+function hideInstallBanner(){
+  const banner=$('installBanner');if(banner)banner.hidden=true;
+}
+function showInstallBanner(){
+  const banner=$('installBanner');
+  if(!banner||isStandalone()||installDismissedRecently())return;
+  banner.hidden=false;
+}
+window.addEventListener('beforeinstallprompt',event=>{
+  event.preventDefault();
+  deferredInstallPrompt=event;
+  showInstallBanner();
+});
+$('installNow')?.addEventListener('click',async()=>{
+  if(!deferredInstallPrompt){hideInstallBanner();return}
+  const prompt=deferredInstallPrompt;deferredInstallPrompt=null;
+  try{
+    await prompt.prompt();
+    const choice=await prompt.userChoice;
+    if(choice?.outcome!=='accepted'){
+      try{localStorage.setItem(INSTALL_DISMISS_KEY,String(Date.now()))}catch{}
+    }
+  }catch{}
+  hideInstallBanner();
+});
+$('installDismiss')?.addEventListener('click',()=>{
+  try{localStorage.setItem(INSTALL_DISMISS_KEY,String(Date.now()))}catch{}
+  hideInstallBanner();
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;hideInstallBanner();
+  try{localStorage.removeItem(INSTALL_DISMISS_KEY)}catch{}
+  pwaNotice('Pocket AI is installed and ready.');
+});
+if(isStandalone())hideInstallBanner();
+
+function syncNetworkState(announce=true){
+  const online=navigator.onLine!==false;
+  document.body.dataset.network=online?'online':'offline';
+  if(!announce)return;
+  if(!online)pwaNotice('Offline — Local AI, saved files and cached Pocket AI tools still work.');
+  else if($('notice')?.dataset?.pwaNotice==='1'){
+    pwaNotice('Back online.');
+    setTimeout(clearPwaNotice,1800);
+  }
+}
+window.addEventListener('online',()=>syncNetworkState(true));
+window.addEventListener('offline',()=>syncNetworkState(true));
+syncNetworkState(navigator.onLine===false);
+
+function announceUpdate(){
+  if(updateAnnounced)return;
+  updateAnnounced=true;
+  pwaNotice('Pocket AI updated in the background. Reopen or refresh when convenient.');
+}
+function watchRegistration(registration){
+  if(registration.waiting&&navigator.serviceWorker.controller)announceUpdate();
+  registration.addEventListener('updatefound',()=>{
+    const worker=registration.installing;if(!worker)return;
+    worker.addEventListener('statechange',()=>{
+      if(worker.state==='installed'&&navigator.serviceWorker.controller)announceUpdate();
+    });
+  });
+}
+async function checkForSWUpdate(force=false){
+  if(!swRegistration||navigator.onLine===false)return;
+  const now=Date.now();
+  if(!force&&now-lastSWUpdateCheck<5*60*1000)return;
+  lastSWUpdateCheck=now;
+  try{await swRegistration.update()}catch{}
+}
 if('serviceWorker' in navigator){
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(navigator.serviceWorker.controller)announceUpdate();
+  });
   window.addEventListener('load',()=>{
-    setTimeout(()=>navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).catch(()=>{}),400);
+    setTimeout(async()=>{
+      try{
+        swRegistration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+        watchRegistration(swRegistration);
+        await checkForSWUpdate(true);
+      }catch{}
+    },400);
   },{once:true});
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')checkForSWUpdate(false);
+  });
 }
