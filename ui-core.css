@@ -716,3 +716,138 @@ html[data-motion="off"] .star-game-target{animation:none}
 #settingsDialog .sound-volume-control input[type="range"]{grid-column:1/-1;width:100%;margin:0;padding:0;border:0;outline:0;box-shadow:none;background:transparent;accent-color:var(--pa-accent)}
 #settingsDialog .sound-volume-control input[type="range"]:focus-visible{outline:2px solid var(--pa-accent);outline-offset:3px}
 
+
+
+/* STEP 10 — Mobile Home composition cleanup */
+@media(max-width:767px){
+  #home .home-hero{
+    gap:16px;
+    padding:18px 14px 20px;
+    overflow:visible;
+  }
+  #home .home-mascot-stage{
+    width:100%;
+    min-height:0;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:10px;
+  }
+  #home .pocket-room{
+    width:100%;
+    max-width:360px;
+    height:224px;
+    flex:0 0 224px;
+    align-self:center;
+    overflow:hidden;
+  }
+  #home .pocket-room-wall{bottom:57px}
+  #home .pocket-room-floor{height:58px}
+  #home .room-mascot-zone{
+    top:18px;
+    width:160px;
+    height:198px;
+    transform:translateX(-50%);
+  }
+  #home .room-mascot-zone .pocket-status{
+    bottom:58px;
+    max-width:156px;
+    padding:4px 7px;
+    font-size:10px;
+  }
+  #home .room-mascot-zone .pocket-status strong{font-size:10px}
+  #home .room-mascot-zone .pocket-xp{
+    bottom:4px;
+    width:150px;
+    gap:4px;
+  }
+  #home .pocket-xp-head{font-size:10px;gap:8px}
+  #home .pocket-xp-track{height:6px}
+  #home .pocket-xp>small{font-size:9.5px;line-height:1.2}
+  #home .room-mascot-zone .pocket-xp-toast{
+    bottom:62px;
+    z-index:16;
+    max-width:170px;
+    font-size:10px;
+  }
+
+  #home .room-books{left:10px;top:17px}
+  #home .room-files{left:10px;bottom:15px}
+  #home .room-desk{right:10px;bottom:15px}
+  #home .room-chat{
+    left:auto;
+    right:10px;
+    top:70px;
+    bottom:auto;
+    transform:none;
+  }
+  #home .room-object-react.room-chat{transform:scale(.94)}
+  #home .room-mini-controls{
+    position:relative;
+    z-index:8;
+    width:100%;
+    min-height:44px;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    pointer-events:none;
+  }
+  #home .room-decorate-button,
+  #home .room-play-button{
+    min-height:40px;
+    padding:7px 14px;
+    pointer-events:auto;
+  }
+
+  #home .home-composer{
+    min-height:58px;
+    grid-template-columns:42px minmax(0,1fr) 44px;
+    gap:6px;
+    padding:7px 8px;
+  }
+  #home .home-attach,
+  #home .home-send{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    min-height:42px;
+  }
+  #home .home-ai-status{margin-top:0}
+
+  #home .quick-grid{gap:10px}
+  #home .quick-grid>button{
+    min-height:106px;
+    padding:12px;
+    grid-template-columns:38px minmax(0,1fr);
+    grid-template-rows:auto;
+    gap:9px;
+    align-content:center;
+  }
+  #home .quick-icon{width:38px;height:38px}
+  #home .quick-copy strong{font-size:13px}
+  #home .quick-copy small{font-size:11px;line-height:1.35}
+}
+
+@media(max-width:360px){
+  #home .home-hero{padding-inline:12px}
+  #home .pocket-room{
+    height:214px;
+    flex-basis:214px;
+  }
+  #home .room-mascot-zone{
+    top:15px;
+    height:190px;
+    transform:translateX(-50%) scale(.94);
+    transform-origin:top center;
+  }
+  #home .room-chat{top:66px;right:7px}
+  #home .room-books{left:7px}
+  #home .room-files{left:7px}
+  #home .room-desk{right:7px}
+  #home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #home .quick-grid>button{min-height:100px;padding:10px}
+}
