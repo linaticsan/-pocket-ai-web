@@ -42,7 +42,7 @@ function bind(){
  document.documentElement.classList.add('pocket-v39');
  normalizeViews();
  document.documentElement.style.pointerEvents='auto';document.body.style.pointerEvents='auto';
- $('#pocketMore')?.remove();$('#v39More')?.remove();document.body.classList.remove('more-open','v39-more-open');
+ document.body.classList.remove('more-open','v39-more-open');
 
  document.addEventListener('click',e=>{
   const close=e.target.closest?.('dialog .close,#apiHubClose');
