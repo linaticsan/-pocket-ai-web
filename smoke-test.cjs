@@ -32,7 +32,7 @@ assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
 assert(icons.includes('requestAnimationFrame'),'Icon scheduler must yield to the browser');
 assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing');
-assert(index.includes('./icons-v132.js?v=20260924-step8c'),'STEP 8C icon cache-bust is missing');
+assert(index.includes('./icons-v132.js?v=20260925-step12'),'STEP 12 icon cache-bust is missing');
 assert(index.includes('data-sound="off"')&&index.includes('data-sound="on"'),'Sound settings controls are missing');
 const workspace=read('workspace.js');
 assert(workspace.includes("const SOUND_KEY='pocket-sound-v1'"),'Sound storage key is missing');
