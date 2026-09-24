@@ -38,8 +38,8 @@ function replaceGlyph(el,name,size='utility',state=''){
 }
 function run(){
  const map={home:'home',chat:'chat',coding:'code',files:'files',surface:'search',study:'study',projects:'projects',settings:'settings',local:'cpu'};
- document.querySelectorAll('#paDesktopSidebar [data-pa-side]').forEach(b=>{const n=map[b.dataset.paSide];if(n){const old=b.querySelector(':scope>i');if(old)old.classList.add('pa-legacy-icon');if(!b.querySelector('.pa-icon'))b.prepend(icon(n,'nav',b.classList.contains('active')?'active':''))}});
- const nc=document.querySelector('#paDesktopSidebar .pa-new-chat');if(nc){nc.querySelector(':scope>span')?.classList.add('pa-legacy-icon');if(!nc.querySelector('.pa-icon'))nc.prepend(icon('plus','utility','important'))}
+ document.querySelectorAll('#paDesktopSidebar [data-pa-side]').forEach(b=>{const n=map[b.dataset.paSide];if(n){b.dataset.paIconized='1';if(!b.querySelector(':scope>.pa-icon'))b.prepend(icon(n,'nav',b.classList.contains('active')?'active':''))}});
+ const nc=document.querySelector('#paDesktopSidebar .pa-new-chat');if(nc){nc.dataset.paIconized='1';if(!nc.querySelector(':scope>.pa-icon'))nc.prepend(icon('plus','utility','important'))}
  const quick={chat:'chat',coding:'code',files:'files',research:'search'};
  document.querySelectorAll('#home [data-quick]').forEach(b=>{const host=b.querySelector('.quick-icon')||b.querySelector(':scope>span');ensureIcon(host,quick[b.dataset.quick]||'file','action')});
  document.querySelectorAll('#home .recent-row').forEach(b=>{const host=b.querySelector('.recent-icon');const kind=b.querySelector('.recent-copy small')?.textContent;ensureIcon(host,kind==='Research'?'search':kind==='Chat'?'chat':'file','action')});
