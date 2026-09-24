@@ -65,7 +65,7 @@ if(coreStyle&&coreStyle!==document.head.lastElementChild)document.head.appendChi
 const FEATURE_BUNDLES={
   coding:{
     styles:['./coding-v1.css?v=20260918-1'],
-    modules:['./coding-v1.js?v=20260922-v88']
+    modules:['./coding-v1.js?v=20260925-step16']
   },
   files:{
     styles:['./files-v31.css?v=20260920-v52','./files-v80.css?v=20260922-v88'],
@@ -108,7 +108,7 @@ document.addEventListener('keydown',e=>{
  const started=performance.now();
  await Promise.all([
    loadPocketModule('./api-hub.js?v=20260922-v88'),
-   loadPocketModule('./v3.js?v=20260922-v88'),
+   loadPocketModule('./v3.js?v=20260925-step16'),
    loadPocketModule('./v3-guard.js?v=20260925-step12'),
    loadPocketModule('./library-v33.js?v=20260922-v94')
  ]);
