@@ -27,63 +27,100 @@ function networkState(){document.documentElement.dataset.network=navigator.onLin
 
 try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)){let kept=false;const clean=a.filter(c=>{const blank=(c?.title||'New chat')==='New chat'&&(!Array.isArray(c?.messages)||c.messages.length===0);if(!blank)return true;if(kept)return false;kept=true;return true});if(clean.length!==a.length)localStorage.setItem(k,JSON.stringify(clean));}}catch(err){console.warn('Pocket AI chat history cleanup skipped',err)}
 
-const addPocketStyle=href=>{
+const loadedStyles=new Map();
+const loadedModules=new Map();
+function addPocketStyle(href){
   const base=href.split('?')[0];
-  if(document.querySelector('link[href^="'+base+'"]'))return;
-  const link=document.createElement('link');link.rel='stylesheet';link.href=href;document.head.appendChild(link);
-};
-[
+  if(loadedStyles.has(base))return loadedStyles.get(base);
+  const existing=document.querySelector('link[href^="'+base+'"]');
+  if(existing){loadedStyles.set(base,Promise.resolve(existing));return loadedStyles.get(base)}
+  const promise=new Promise(resolve=>{
+    const link=document.createElement('link');
+    link.rel='stylesheet';link.href=href;
+    link.onload=()=>resolve(link);link.onerror=()=>resolve(link);
+    document.head.appendChild(link);
+  });
+  loadedStyles.set(base,promise);
+  return promise;
+}
+function loadPocketModule(path){
+  const base=path.split('?')[0];
+  if(!loadedModules.has(base)){
+    loadedModules.set(base,import(path).catch(err=>{console.error('Pocket AI optional module failed:',path,err);return null}));
+  }
+  return loadedModules.get(base);
+}
+const coreStyles=[
  './v3.css?v=20260921-v76',
  './v3-hotfix.css?v=20260921-v76',
- './coding-v1.css?v=20260918-1',
  './library-v33.css?v=20260920-v53',
- './library-online-v34.css?v=20260920-v52',
- './webnovel-v42.css?v=20260920-v52',
- './files-v31.css?v=20260920-v52',
  './motion-v32.css?v=20260921-v59',
  './chat-v77.css?v=20260922-v88',
- './files-v80.css?v=20260922-v88',
  './visibility-v82.css?v=20260922-v88'
-].forEach(addPocketStyle);
-const coreStyle=document.querySelector('link[href*="ui-core.css"]');if(coreStyle&&coreStyle!==document.head.lastElementChild)document.head.appendChild(coreStyle);
-// Emergency performance safe mode: keep the stable V3 core interactive and remove
-// additive workspaces that can leave expensive observers/DOM behind on mobile.
-try{
-  const filesPanel=document.getElementById('files');
-  document.getElementById('artifactShell')?.remove();
-  filesPanel?.classList.remove('artifact-v3');
-  filesPanel?.querySelectorAll('.artifact-old').forEach(el=>el.classList.remove('artifact-old'));
-  document.querySelectorAll('dialog[open]').forEach(d=>{try{d.close()}catch{}});
-  document.documentElement.classList.add('pocket-performance-safe');
-  const safeStyle=document.createElement('style');
-  safeStyle.id='pocketPerformanceSafe';
-  safeStyle.textContent='.pocket-performance-safe .sky{display:none!important}.pocket-performance-safe .mascot,.pocket-performance-safe [data-mascot]{animation:none!important}.pocket-performance-safe *{scroll-behavior:auto!important}';
-  document.head.appendChild(safeStyle);
-}catch(err){console.warn('Pocket AI safe-mode cleanup skipped',err)}
-(async()=>{
- const load=async(path)=>{try{return await import(path)}catch(err){console.error('Pocket AI optional module failed:',path,err);return null}};
- const started=performance.now();
+];
+coreStyles.forEach(addPocketStyle);
+const coreStyle=document.querySelector('link[href*="ui-core.css"]');
+if(coreStyle&&coreStyle!==document.head.lastElementChild)document.head.appendChild(coreStyle);
 
- // Core UI first: navigation/chat/settings should become tappable as quickly as possible.
+const FEATURE_BUNDLES={
+  coding:{
+    styles:['./coding-v1.css?v=20260918-1'],
+    modules:['./coding-v1.js?v=20260922-v88']
+  },
+  files:{
+    styles:['./files-v31.css?v=20260920-v52','./files-v80.css?v=20260922-v88'],
+    modules:['./files-v32.js?v=20260922-v88']
+  },
+  library:{
+    styles:['./library-online-v34.css?v=20260920-v52','./webnovel-v42.css?v=20260920-v52'],
+    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260922-v94']
+  }
+};
+function ensureFeatureBundle(name){
+  const bundle=FEATURE_BUNDLES[name];if(!bundle)return Promise.resolve([]);
+  if(bundle.promise)return bundle.promise;
+  bundle.promise=Promise.all([
+    ...bundle.styles.map(addPocketStyle),
+    ...bundle.modules.map(loadPocketModule)
+  ]);
+  return bundle.promise;
+}
+window.PocketFeatures={ensure:ensureFeatureBundle,ready:Promise.resolve()};
+
+function featureFromTrigger(el){
+  const key=el?.dataset?.go||el?.dataset?.paSide||el?.dataset?.roomAction||'';
+  if(key==='coding')return'coding';
+  if(key==='files')return'files';
+  if(key==='library')return'library';
+  return'';
+}
+document.addEventListener('pointerdown',e=>{
+  const name=featureFromTrigger(e.target.closest?.('[data-go],[data-pa-side],[data-room-action]'));
+  if(name)ensureFeatureBundle(name);
+},{capture:true,passive:true});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter'&&e.key!==' ')return;
+  const name=featureFromTrigger(e.target.closest?.('[data-go],[data-pa-side],[data-room-action]'));
+  if(name)ensureFeatureBundle(name);
+},{capture:true});
+
+(async()=>{
+ const started=performance.now();
  await Promise.all([
-   load('./api-hub.js?v=20260922-v88'),
-   load('./v3.js?v=20260922-v88'),
-   load('./v3-guard.js?v=20260925-step12'),
-   load('./library-v33.js?v=20260922-v94')
+   loadPocketModule('./api-hub.js?v=20260922-v88'),
+   loadPocketModule('./v3.js?v=20260922-v88'),
+   loadPocketModule('./v3-guard.js?v=20260925-step12'),
+   loadPocketModule('./library-v33.js?v=20260922-v94')
  ]);
  window.dispatchEvent(new CustomEvent('pocket-core-ready',{detail:{ms:Math.round(performance.now()-started)}}));
 
- // Heavier workspaces load in parallel after the core becomes interactive.
- const idle=cb=>window.requestIdleCallback?requestIdleCallback(cb,{timeout:700}):setTimeout(cb,220);
- const optional=new Promise(resolve=>idle(()=>Promise.allSettled([
-   load('./coding-v1.js?v=20260922-v88'),
-   load('./files-v32.js?v=20260922-v88'),
-   load('./library-online-v34.js?v=20260922-v94'),
-   load('./webnovel-v42.js?v=20260922-v94')
- ]).then(resolve)));
- window.PocketFeatures={ready:optional};
- optional.then(()=>window.dispatchEvent(new CustomEvent('pocket-features-ready')));
+ const idle=cb=>window.requestIdleCallback?requestIdleCallback(cb,{timeout:1800}):setTimeout(cb,900);
+ window.PocketFeatures.ready=new Promise(resolve=>idle(()=>{
+   Promise.allSettled([
+     ensureFeatureBundle('files'),
+     ensureFeatureBundle('coding'),
+     ensureFeatureBundle('library')
+   ]).then(resolve);
+ }));
+ window.PocketFeatures.ready.then(()=>window.dispatchEvent(new CustomEvent('pocket-features-ready')));
 })();
-
-
-import('./qa-v79.js?v=20260925-step12').catch(err=>console.warn('Pocket AI QA module failed',err));
