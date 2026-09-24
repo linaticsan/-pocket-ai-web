@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step12-nav-theme-cleanup'"),'STEP 12 build marker is missing');
+assert(index.includes("const BUILD='step13-app-consistency'"),'STEP 13 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v11'"),'STEP 12 app-shell cache must be v11');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v12'"),'STEP 13 app-shell cache must be v12');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -55,6 +55,11 @@ const dup=ids.filter((id,i)=>ids.indexOf(id)!==i);
 assert(dup.length===0,'Duplicate static IDs: '+[...new Set(dup)].join(', '));
 for(const id of ['home','chat','files','local','github','surface','settingsDialog','commandDialog','chatForm','prompt'])assert(ids.includes(id),'Missing core DOM id: '+id);
 assert(!ids.includes('bottomNav'),'Bottom navigation must be removed');
+const coreCss=read('ui-core.css');
+assert(coreCss.includes('STEP 13 — app-wide visual consistency'),'STEP 13 consistency layer is missing');
+assert(coreCss.includes('#coding.coding-studio'),'Coding Studio theme bridge is missing');
+assert(coreCss.includes('#files .document-studio-v50'),'Files theme bridge is missing');
+assert(coreCss.includes('#webNovelHub'),'Web Novel theme bridge is missing');
 assert(!index.includes('data-theme-choice="system"'),'Duplicate System theme option must be removed');
 const responsive=read('responsive-v92.js');
 assert(!/[>](?:💬|🎓|⌘|▱|⌕|▦|⌂)[<]/.test(responsive),'Drawer must not contain legacy duplicate glyph icons');
