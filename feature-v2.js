@@ -68,7 +68,7 @@ try{
  await Promise.all([
    load('./api-hub.js?v=20260922-v88'),
    load('./v3.js?v=20260922-v88'),
-   load('./v3-guard.js?v=20260922-v88'),
+   load('./v3-guard.js?v=20260925-step12'),
    load('./library-v33.js?v=20260922-v94')
  ]);
  window.dispatchEvent(new CustomEvent('pocket-core-ready',{detail:{ms:Math.round(performance.now()-started)}}));
