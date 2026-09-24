@@ -1,8 +1,8 @@
 /* Pocket AI V116 — navigation/sidebar only */
 (()=>{'use strict';
-const $=(s,r=document)=>r.querySelector(s), $=(s,r=document)=>[...r.querySelectorAll(s)];
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 let drawerOpener=null;
-const focusables=()=>$('#paDesktopSidebar button:not([disabled]),#paDesktopSidebar [href],#paDesktopSidebar input:not([disabled]),#paDesktopSidebar [tabindex]:not([tabindex="-1"])');
+const focusables=()=>$$('#paDesktopSidebar button:not([disabled]),#paDesktopSidebar [href],#paDesktopSidebar input:not([disabled]),#paDesktopSidebar [tabindex]:not([tabindex="-1"])');
 const go=id=>{if(window.PocketV39?.show?.(id))return true;const b=$('[data-go="'+id+'"]');if(b){b.click();return true}return false};
 
 function buildSidebar(){
