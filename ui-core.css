@@ -53,34 +53,34 @@ html[data-theme="light"]{
 color-scheme:light;
 }
 html[data-theme="dark"]{
-  --pa-bg:#080d24;
-  --pa-sidebar:#0f1635;
-  --pa-surface:rgba(15,22,53,.95);
-  --pa-card:#141d43;
-  --pa-border:#27305d;
-  --pa-text:#f7f7ff;
-  --pa-secondary:#aeb3d1;
-  --pa-muted:#858caf;
-  --pa-accent:#8858f3;
-  --pa-accent-hover:#9a6cf5;
-  --pa-success:#34c996;
-  --pa-error:#ff6b7f;
-  --pa-hover:#182244;
-  --pa-hover-border:#35406e;
-  --pa-accent-soft:rgba(136,88,243,.14);
-  --pa-shadow:0 10px 30px rgba(0,0,0,.22);
+  --pa-bg:#212121;
+  --pa-sidebar:#171717;
+  --pa-surface:#212121;
+  --pa-card:#2f2f2f;
+  --pa-border:#424242;
+  --pa-text:#ececec;
+  --pa-secondary:#b4b4b4;
+  --pa-muted:#8e8e8e;
+  --pa-accent:#10a37f;
+  --pa-accent-hover:#1ab394;
+  --pa-success:#10a37f;
+  --pa-error:#ff6b6b;
+  --pa-hover:#2a2a2a;
+  --pa-hover-border:#555555;
+  --pa-accent-soft:rgba(16,163,127,.14);
+  --pa-shadow:0 10px 30px rgba(0,0,0,.20);
   --pa-shadow-hover:0 16px 36px rgba(0,0,0,.28);
-  --pa-lilac-soft:rgba(136,88,243,.14);
-  --pa-mint-soft:rgba(52,201,150,.12);
-  --pa-sky-soft:rgba(41,153,233,.12);
-  --pa-peach-soft:rgba(233,166,64,.12);
-    --room-wall:#101735;
-  --room-floor:#0b112b;
-  --room-window:#27365e;
-  --room-object:#182148;
-  --room-object-border:#313c69;
-  --room-glow:rgba(136,88,243,.18);
-color-scheme:dark;
+  --pa-lilac-soft:#303030;
+  --pa-mint-soft:rgba(16,163,127,.14);
+  --pa-sky-soft:#30343a;
+  --pa-peach-soft:#3a302c;
+  --room-wall:#262626;
+  --room-floor:#1b1b1b;
+  --room-window:#343541;
+  --room-object:#2f2f2f;
+  --room-object-border:#4a4a4a;
+  --room-glow:rgba(16,163,127,.14);
+  color-scheme:dark;
 }
 html[data-theme="sakura"]{
   --pa-bg:#fff5fa;
@@ -193,6 +193,20 @@ color-scheme:dark;
   --blue:var(--pa-accent);
   --green:var(--pa-success);
   --muted:var(--pa-secondary);
+  --bg:var(--pa-bg);
+  --panel:var(--pa-card);
+  --panel2:var(--pa-surface);
+  --line:var(--pa-border);
+  --text:var(--pa-text);
+  --accent:var(--pa-accent);
+  --app-bg:var(--pa-bg);
+  --app-panel:var(--pa-card);
+  --app-panel-2:var(--pa-surface);
+  --app-text:var(--pa-text);
+  --app-muted:var(--pa-secondary);
+  --app-border:var(--pa-border);
+  --app-accent:var(--pa-accent);
+  --app-accent-2:var(--pa-accent-hover);
 }
 /* 2. Reset / Base */
 *{box-sizing:border-box}
@@ -227,7 +241,7 @@ main{min-width:0}
 /* 6. Header */
 .topbar{min-height:52px;height:52px;padding:7px 16px;border:0;border-bottom:1px solid var(--pa-border);box-shadow:none}
 .topbar .brand{display:flex;align-items:center;gap:8px;background:transparent;border:0;padding:0;color:var(--pa-text)}
-.topbar .brand strong{font-size:19px;font-weight:700}
+.topbar .brand strong{font-size:19px;font-weight:700;white-space:nowrap}
 .top-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
 .header-workspace{height:36px;min-height:36px;padding:3px 8px 3px 4px;display:flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--pa-text)}
 .header-workspace:hover,.header-workspace[aria-expanded="true"]{background:var(--pa-card);border-color:var(--pa-border)}
@@ -277,6 +291,21 @@ input:focus,textarea:focus,select:focus,.home-composer:focus-within,.lib-search:
 /* 12. Dialogs / Modals */
 dialog,#settingsDialog,#paMoreSheet .pa-more-panel,#v39More .v39-sheet{border:1px solid var(--pa-border);border-radius:var(--modal-radius);background:var(--pa-card);color:var(--pa-text);box-shadow:0 8px 24px rgba(0,0,0,.14);padding:24px}
 dialog::backdrop{background:rgba(0,0,0,.42)}
+
+/* Authoritative settings controls */
+.theme-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:8px 0 18px}
+.theme-grid button{min-width:0;min-height:58px;padding:10px 12px;display:grid;gap:2px;text-align:left;border:1px solid var(--pa-border);border-radius:12px;background:var(--pa-card);color:var(--pa-text);box-shadow:none}
+.theme-grid button:hover{background:var(--pa-hover);border-color:var(--pa-hover-border)}
+.theme-grid button.active{background:var(--pa-accent-soft);border-color:var(--pa-accent);box-shadow:inset 0 0 0 1px var(--pa-accent)}
+.theme-grid .theme-name{font-size:13px;font-weight:700}.theme-grid small{color:var(--pa-secondary)}
+.segmented{display:flex;gap:6px;padding:4px;margin:7px 0 16px;border:1px solid var(--pa-border);border-radius:12px;background:var(--pa-surface)}
+.segmented button{flex:1;min-height:36px;padding:7px 9px;border:0;border-radius:9px;background:transparent;color:var(--pa-secondary);box-shadow:none}
+.segmented button.active{background:var(--pa-card);color:var(--pa-text);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+html[data-theme="dark"] .segmented button.active{background:#3a3a3a}
+html[data-theme="dark"] .topbar,html[data-theme="dark"] .pa-desktop-sidebar{background:#171717}
+html[data-theme="dark"] #home .home-hero{background:#212121}
+html[data-theme="dark"] #home .home-composer{background:#2f2f2f}
+
 
 /* 13. Home */
 #home{position:relative;overflow:hidden}
@@ -850,4 +879,13 @@ html[data-motion="off"] .star-game-target{animation:none}
   #home .room-desk{right:7px}
   #home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   #home .quick-grid>button{min-height:100px;padding:10px}
+}
+
+
+/* STEP 11 — single-owner UI/theme cleanup */
+html:not(.pocket-v59) body{background:var(--pa-bg);color:var(--pa-text)}
+html:not(.pocket-v59) .topbar{background:var(--pa-surface);color:var(--pa-text)}
+@media(max-width:767px){
+  .theme-grid{grid-template-columns:1fr 1fr}
+  .topbar .brand strong{white-space:nowrap}
 }
