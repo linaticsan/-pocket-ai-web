@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step16-interaction-qa'"),'STEP 16 build marker is missing');
+assert(index.includes("const BUILD='step17-pwa-reliability'"),'STEP 17 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v15'"),'STEP 16 app-shell cache must be v15');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v16'"),'STEP 17 app-shell cache must be v16');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -81,6 +81,21 @@ assert(index.includes('aria-label="Close command palette"'),'Command dialog clos
 assert(v3.includes('id="v3HistoryClose"')&&v3.includes('aria-expanded="false"'),'Accessible Chat history drawer controls are missing');
 assert(coding.includes('aria-labelledby="codeProjectDialogTitle"'),'Code projects dialog label is missing');
 assert(coreCss.includes('STEP 16 — interaction QA and accessibility'),'STEP 16 touch/focus CSS is missing');
+const app=read('app.js');
+const manifest=JSON.parse(read('manifest.webmanifest'));
+assert(app.includes("window.addEventListener('beforeinstallprompt'"),'PWA install prompt handler is missing');
+assert(app.includes("window.addEventListener('appinstalled'"),'PWA installed handler is missing');
+assert(app.includes("registration.update()")||app.includes("swRegistration.update()"),'Service-worker update check is missing');
+assert(app.includes("document.addEventListener('visibilitychange'"),'Visible-app update check is missing');
+assert(sw.includes('const CORE_ASSETS=')&&sw.includes('const OPTIONAL_ASSETS='),'Core/optional PWA cache split is missing');
+assert(sw.includes('navigationPreload.enable()'),'Navigation preload is missing');
+assert(sw.includes("key.startsWith(APP_CACHE_PREFIX)"),'Pocket-owned cache filter is missing');
+assert(!/caches\.keys\(\)[\s\S]{0,400}map\([^)]*caches\.delete/.test(index),'Index must not globally delete caches');
+assert(manifest.theme_color==='#212121','Manifest theme color is stale');
+assert(manifest.background_color==='#f7f8ff','Manifest background color is stale');
+assert(Array.isArray(manifest.categories)&&manifest.categories.includes('productivity'),'Manifest categories are missing');
+assert(coreCss.includes('STEP 17 — non-overlay install/update shell'),'STEP 17 inline install styling is missing');
+assert(!coreCss.includes('#v39More .v39-sheet'),'Dead More sheet selector must not return');
 const removedLegacy=["buttons-v128.css","cards-v130.css","cards-v131.css","chat-v134.css","colors-v127.css","desktop-v97.css","desktop-workspace-v115.css","header-v119.css","home-step1-v117.css","home-v44.css","home-v45.css","layout-v56.css","mobile-ui-fix-v47.css","mobile-v133.css","mobile-v30.css","nav-fix-v61.css","panels-v2.css","personality-v135.css","photo-ui-v100.css","photo-ui-v100.js","polish-v84.css","polish-v84.js","polish.css","reference-ui-v57.css","reference-ui-v57.js","reference-ui-v58.css","reference-ui-v58.js","reference-ui-v89.css","reference-ui-v89.js","responsive-v92.css","simple-v87.css","soft-ui-v55.css","styles.css","surfaces-v129.css","typography-v126.css","ui-v55.js","ui-v59.css","ui-v59.js","ux-v36.css","ux-v36.js","ux-v37.css","ux-v37.js","ux-v38.css","ux-v38.js","ux-v39.css","ux-v41.css","ux-v43.css","home-v43.js","repair-v56.js"];
 for(const f of removedLegacy)assert(!fs.existsSync(path.join(__dirname,f)),'Removed legacy file returned: '+f);
 
