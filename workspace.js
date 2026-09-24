@@ -1,4 +1,11 @@
 const q=id=>document.getElementById(id);
+const openPocketDialog=(dialog,opener,focusSelector='')=>{
+ if(!dialog)return false;
+ if(window.PocketDialog?.open)return window.PocketDialog.open(dialog,opener||document.activeElement,focusSelector);
+ if(dialog.showModal&&!dialog.open)dialog.showModal();else if(!dialog.open)dialog.setAttribute('open','');
+ if(focusSelector)requestAnimationFrame(()=>dialog.querySelector(focusSelector)?.focus());
+ return true;
+};
 const safeGet=(k,f='')=>{try{return localStorage.getItem(k)||f}catch{return f}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
 document.documentElement.classList.remove('pocket-v59','photo-ui-v100','reference-ui-active');
@@ -165,8 +172,8 @@ function setPrivacy(m){
 }
 
 greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','light')),{persist:true});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));syncSoundUI();
-if(q('settingsOpen'))q('settingsOpen').onclick=()=>q('settingsDialog')?.showModal?.();
-if(q('commandOpen'))q('commandOpen').onclick=()=>{const d=q('commandDialog');if(d?.showModal&&!d.open)d.showModal();setTimeout(()=>q('commandSearch')?.focus(),50)};
+if(q('settingsOpen'))q('settingsOpen').onclick=e=>openPocketDialog(q('settingsDialog'),e.currentTarget);
+if(q('commandOpen'))q('commandOpen').onclick=e=>openPocketDialog(q('commandDialog'),e.currentTarget,'#commandSearch');
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
 document.querySelectorAll('[data-sound]').forEach(b=>b.onclick=()=>setSoundEnabled(b.dataset.sound==='on'));
@@ -177,20 +184,28 @@ document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.
 
 document.addEventListener('keydown',e=>{
  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){
-   const d=q('commandDialog');if(!d?.showModal)return;
-   e.preventDefault();if(!d.open)d.showModal();setTimeout(()=>q('commandSearch')?.focus(),50);
+   const d=q('commandDialog');if(!d)return;
+   e.preventDefault();openPocketDialog(d,document.activeElement,'#commandSearch');
  }
 });
 if(q('commandSearch'))q('commandSearch').oninput=e=>{const s=e.target.value.toLowerCase();q('commandList')?.querySelectorAll('button').forEach(b=>b.hidden=!b.textContent.toLowerCase().includes(s));};
+function focusCommandDestination(name){
+ const map={chat:'#prompt',local:'#localSetup',files:'#fileInput',github:'#ghQuery',research:'#surfaceQuery'};
+ const target=q('commandDialog')?.ownerDocument.querySelector(map[name]||'');
+ if(target)requestAnimationFrame(()=>target.focus({preventScroll:true}));
+}
 function command(name){
-  q('commandDialog').close();
-  if(name==='settings'){q('settingsDialog').showModal();return}
+  const commandDialog=q('commandDialog');
+  const rootOpener=commandDialog?.__pocketOpener||q('settingsOpen');
+  if(commandDialog){commandDialog.__pocketOpener=null;commandDialog.close()}
+  if(name==='settings'){openPocketDialog(q('settingsDialog'),rootOpener);return}
   if(name==='research'){
     go('surface');
     setTimeout(()=>{if(q('surfaceMode'))q('surfaceMode').value='research';q('surfaceQuery')?.focus()},100);
     return;
   }
-  if(!go(name))q('notice').textContent='That workspace is still loading. Try again in a moment.';
+  if(!go(name)){q('notice').textContent='That workspace is still loading. Try again in a moment.';return}
+  focusCommandDestination(name);
 }
 document.querySelectorAll('[data-command]').forEach(b=>b.onclick=()=>command(b.dataset.command));
 
@@ -430,8 +445,7 @@ function renderRoomCosmeticsPanel(){
 }
 function openRoomDecor(){
  renderRoomCosmeticsPanel();
- const dialog=q('roomDecorDialog');if(!dialog)return;
- if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+ openPocketDialog(q('roomDecorDialog'),q('roomDecorateOpen'),'.room-cosmetic-option:not([disabled])');
 }
 q('roomDecorateOpen')?.addEventListener('click',openRoomDecor);
 document.querySelectorAll('#roomDecorDialog [data-cosmetic-slot]').forEach(button=>button.addEventListener('click',()=>{
@@ -539,8 +553,7 @@ function startStarGame(){
 }
 function openStarGame(){
  stopStarGame(true);starGameBest=loadStarGameBest();renderStarGameHud();
- const dialog=q('starGameDialog');if(!dialog)return;
- if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
+ openPocketDialog(q('starGameDialog'),q('roomPlayOpen'),'#starGameStart');
 }
 q('roomPlayOpen')?.addEventListener('click',openStarGame);
 q('starGameStart')?.addEventListener('click',startStarGame);
