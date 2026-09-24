@@ -81,7 +81,6 @@ assert(index.includes('aria-label="Close command palette"'),'Command dialog clos
 assert(v3.includes('id="v3HistoryClose"')&&v3.includes('aria-expanded="false"'),'Accessible Chat history drawer controls are missing');
 assert(coding.includes('aria-labelledby="codeProjectDialogTitle"'),'Code projects dialog label is missing');
 assert(coreCss.includes('STEP 16 — interaction QA and accessibility'),'STEP 16 touch/focus CSS is missing');
-const app=read('app.js');
 const manifest=JSON.parse(read('manifest.webmanifest'));
 assert(app.includes("window.addEventListener('beforeinstallprompt'"),'PWA install prompt handler is missing');
 assert(app.includes("window.addEventListener('appinstalled'"),'PWA installed handler is missing');
