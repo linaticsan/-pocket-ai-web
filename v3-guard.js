@@ -13,9 +13,7 @@ function fitV3ChatViewport(){
  const top=Math.max(0,chat.getBoundingClientRect().top);
  const vh=window.visualViewport?.height||window.innerHeight;
  const mobile=innerWidth<=780;
- const nav=document.getElementById('bottomNav');
- const navH=mobile?(nav?.getBoundingClientRect().height||66):0;
- const bottomGap=mobile?Math.max(12,navH+18):14;
+ const bottomGap=mobile?Math.max(12,Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-bottom'))||12):14;
  const available=Math.floor(vh-top-bottomGap);
  if(available>280)chat.style.setProperty('--pocket-chat-height',available+'px');
 }
