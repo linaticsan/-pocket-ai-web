@@ -22,17 +22,22 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step8c-icon-loop-fix'"),'STEP 8C build marker is missing');
+assert(index.includes("const BUILD='step9-sound'"),'STEP 9 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v7'"),'STEP 8C app-shell cache must be v7');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v8'"),'STEP 9 app-shell cache must be v8');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
 assert(icons.includes('requestAnimationFrame'),'Icon scheduler must yield to the browser');
 assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing');
 assert(index.includes('./icons-v132.js?v=20260924-step8c'),'STEP 8C icon cache-bust is missing');
+assert(index.includes('data-sound="off"')&&index.includes('data-sound="on"'),'Sound settings controls are missing');
+const workspace=read('workspace.js');
+assert(workspace.includes("const SOUND_KEY='pocket-sound-v1'"),'Sound storage key is missing');
+assert(workspace.includes('function playPocketSound(type)'),'Central Pocket sound API is missing');
+assert(workspace.includes('window.AudioContext||window.webkitAudioContext'),'iOS-compatible Web Audio fallback is missing');
 const ids=[...index.matchAll(/\sid=["']([^"']+)["']/g)].map(m=>m[1]);
 const dup=ids.filter((id,i)=>ids.indexOf(id)!==i);
 assert(dup.length===0,'Duplicate static IDs: '+[...new Set(dup)].join(', '));
