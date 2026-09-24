@@ -20,6 +20,14 @@ const paths={
  cpu:'<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M1 9h3M1 15h3M20 9h3M20 15h3"/><rect x="10" y="10" width="4" height="4" rx=".5"/>'
 };
 function icon(name,size='utility',state=''){const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','0 0 24 24');s.setAttribute('aria-hidden','true');s.classList.add('pa-icon','pa-icon-'+size);if(state)s.classList.add('is-'+state);s.innerHTML=paths[name]||paths.file;return s}
+function ensureIcon(host,name,size='utility',state=''){
+ if(!host)return;
+ const existing=host.querySelector(':scope > .pa-icon');
+ if(existing&&host.dataset.paIconName===name&&host.dataset.paIconSize===size&&host.dataset.paIconState===state)return existing;
+ if(existing)existing.remove();
+ host.dataset.paIconName=name;host.dataset.paIconSize=size;host.dataset.paIconState=state;
+ const svg=icon(name,size,state);host.prepend(svg);return svg;
+}
 function replaceGlyph(el,name,size='utility',state=''){
  if(!el||el.querySelector(':scope > .pa-icon'))return;
  const svg=icon(name,size,state);
@@ -33,9 +41,9 @@ function run(){
  document.querySelectorAll('#paDesktopSidebar [data-pa-side]').forEach(b=>{const n=map[b.dataset.paSide];if(n){const old=b.querySelector(':scope>i');if(old)old.classList.add('pa-legacy-icon');if(!b.querySelector('.pa-icon'))b.prepend(icon(n,'nav',b.classList.contains('active')?'active':''))}});
  const nc=document.querySelector('#paDesktopSidebar .pa-new-chat');if(nc){nc.querySelector(':scope>span')?.classList.add('pa-legacy-icon');if(!nc.querySelector('.pa-icon'))nc.prepend(icon('plus','utility','important'))}
  const quick={chat:'chat',coding:'code',files:'files',research:'search'};
- document.querySelectorAll('#home [data-quick]').forEach(b=>{const host=b.querySelector('.quick-icon')||b.querySelector(':scope>span');if(host){host.textContent='';host.appendChild(icon(quick[b.dataset.quick]||'file','action'))}});
- document.querySelectorAll('#home .recent-row').forEach(b=>{const host=b.querySelector('.recent-icon');if(host){host.textContent='';host.appendChild(icon(b.querySelector('.recent-copy small')?.textContent==='Research'?'search':b.querySelector('.recent-copy small')?.textContent==='Chat'?'chat':'file','action'))}});
- document.querySelectorAll('#home .project-card').forEach(b=>{const host=b.querySelector(':scope>.emoji');if(host){host.textContent='';host.appendChild(icon('projects','action'))}});
+ document.querySelectorAll('#home [data-quick]').forEach(b=>{const host=b.querySelector('.quick-icon')||b.querySelector(':scope>span');ensureIcon(host,quick[b.dataset.quick]||'file','action')});
+ document.querySelectorAll('#home .recent-row').forEach(b=>{const host=b.querySelector('.recent-icon');const kind=b.querySelector('.recent-copy small')?.textContent;ensureIcon(host,kind==='Research'?'search':kind==='Chat'?'chat':'file','action')});
+ document.querySelectorAll('#home .project-card').forEach(b=>ensureIcon(b.querySelector(':scope>.emoji'),'projects','action'));
  replaceGlyph(document.querySelector('#settingsOpen'),'settings','utility');
  replaceGlyph(document.querySelector('#home .home-attach'),'attach','utility');
  replaceGlyph(document.querySelector('#homeComposer>.primary'),'send','utility','important');
@@ -44,6 +52,15 @@ function run(){
 }
 window.PocketIcon={icon,run};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
-document.addEventListener('click',()=>queueMicrotask(run),true);
-new MutationObserver(()=>queueMicrotask(run)).observe(document.body,{childList:true,subtree:true});
+let iconRunQueued=false;
+function scheduleIconRun(){
+ if(iconRunQueued)return;
+ iconRunQueued=true;
+ const schedule=typeof requestAnimationFrame==='function'?requestAnimationFrame:cb=>setTimeout(cb,0);
+ schedule(()=>{iconRunQueued=false;run()});
+}
+document.addEventListener('click',scheduleIconRun,true);
+new MutationObserver(records=>{
+ if(records.some(record=>record.addedNodes.length>0))scheduleIconRun();
+}).observe(document.body,{childList:true,subtree:true});
 })();
