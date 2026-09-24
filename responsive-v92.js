@@ -86,6 +86,7 @@ function openDrawer(opener=$('#paSidebarToggle')){
   drawerOpener=opener instanceof HTMLElement?opener:$('#paSidebarToggle');
   document.documentElement.classList.add('pa-nav-open');
   $('#paSidebarToggle')?.setAttribute('aria-expanded','true');
+  $('#paDesktopSidebar')?.setAttribute('role','dialog');
   $('#paDesktopSidebar')?.setAttribute('aria-modal','true');
   setBackgroundInert(true);
   requestAnimationFrame(()=>$('#paDesktopSidebar .pa-side-close')?.focus({preventScroll:true}));
@@ -95,6 +96,7 @@ function closeDrawer(restore=true){
   document.documentElement.classList.remove('pa-nav-open');
   $('#paSidebarToggle')?.setAttribute('aria-expanded','false');
   $('#paDesktopSidebar')?.removeAttribute('aria-modal');
+  $('#paDesktopSidebar')?.removeAttribute('role');
   setBackgroundInert(false);
   if(restore&&wasOpen){
     const back=drawerOpener?.isConnected?drawerOpener:$('#paSidebarToggle');
