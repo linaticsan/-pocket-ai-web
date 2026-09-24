@@ -706,3 +706,13 @@ html[data-motion="off"] .star-game-target{animation:none}
 /* STEP 8A — startup visibility fail-safe */
 #pocketStartupNotice{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));z-index:2147482999;transform:translateX(-50%);width:min(420px,calc(100vw - 28px));display:flex;gap:8px;align-items:center;justify-content:center;padding:10px 13px;border:1px solid var(--pa-border);border-radius:12px;background:var(--pa-card);color:var(--pa-text);box-shadow:var(--pa-shadow);font:12px/1.35 var(--font-ui)}
 #pocketStartupNotice span{color:var(--pa-secondary)}
+
+
+/* Step 9 — optional sound controls */
+#settingsDialog .sound-toggle{margin-bottom:8px}
+#settingsDialog .sound-volume-control{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 12px;margin:10px 0 2px;color:var(--pa-secondary);font-size:12px}
+#settingsDialog .sound-volume-control>span{font-weight:700;color:var(--pa-text)}
+#settingsDialog .sound-volume-control output{font-weight:700;color:var(--pa-secondary);font-variant-numeric:tabular-nums}
+#settingsDialog .sound-volume-control input[type="range"]{grid-column:1/-1;width:100%;margin:0;padding:0;border:0;outline:0;box-shadow:none;background:transparent;accent-color:var(--pa-accent)}
+#settingsDialog .sound-volume-control input[type="range"]:focus-visible{outline:2px solid var(--pa-accent);outline-offset:3px}
+
