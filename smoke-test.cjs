@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step14-legacy-cleanup'"),'STEP 14 build marker is missing');
+assert(index.includes("const BUILD='step15-performance'"),'STEP 15 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v13'"),'STEP 14 app-shell cache must be v13');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v14'"),'STEP 15 app-shell cache must be v14');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -60,6 +60,12 @@ assert(coreCss.includes('STEP 13 — app-wide visual consistency'),'STEP 13 cons
 assert(coreCss.includes('#coding.coding-studio'),'Coding Studio theme bridge is missing');
 assert(coreCss.includes('#files .document-studio-v50'),'Files theme bridge is missing');
 assert(coreCss.includes('#webNovelHub'),'Web Novel theme bridge is missing');
+assert(feature.includes('const FEATURE_BUNDLES='),'Lazy feature bundle map is missing');
+assert(feature.includes('function ensureFeatureBundle(name)'),'Lazy feature bundle loader is missing');
+assert(feature.includes('requestIdleCallback'),'Idle feature warmup is missing');
+assert(!feature.includes('pocket-performance-safe'),'Obsolete performance safe-mode must not return');
+assert(!feature.includes("import('./qa-v79.js"),'QA module must not run in production startup');
+assert(!sw.includes('./qa-v79.js'),'QA module must not be precached in production shell');
 const removedLegacy=["buttons-v128.css","cards-v130.css","cards-v131.css","chat-v134.css","colors-v127.css","desktop-v97.css","desktop-workspace-v115.css","header-v119.css","home-step1-v117.css","home-v44.css","home-v45.css","layout-v56.css","mobile-ui-fix-v47.css","mobile-v133.css","mobile-v30.css","nav-fix-v61.css","panels-v2.css","personality-v135.css","photo-ui-v100.css","photo-ui-v100.js","polish-v84.css","polish-v84.js","polish.css","reference-ui-v57.css","reference-ui-v57.js","reference-ui-v58.css","reference-ui-v58.js","reference-ui-v89.css","reference-ui-v89.js","responsive-v92.css","simple-v87.css","soft-ui-v55.css","styles.css","surfaces-v129.css","typography-v126.css","ui-v55.js","ui-v59.css","ui-v59.js","ux-v36.css","ux-v36.js","ux-v37.css","ux-v37.js","ux-v38.css","ux-v38.js","ux-v39.css","ux-v41.css","ux-v43.css","home-v43.js","repair-v56.js"];
 for(const f of removedLegacy)assert(!fs.existsSync(path.join(__dirname,f)),'Removed legacy file returned: '+f);
 
