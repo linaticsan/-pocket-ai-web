@@ -125,7 +125,8 @@ function syncActive(){
 }
 function sync(){buildSidebar();syncActive();if(innerWidth>=768)closeDrawer(false)}
 addEventListener('resize',sync);
-document.addEventListener('click',e=>{if(e.target.closest?.('[data-go],#v3Study,#v3NewChat'))setTimeout(syncActive,30)},true);
+window.addEventListener('pocket-view-change',()=>syncActive());
+document.addEventListener('click',e=>{if(e.target.closest?.('#v3Study,#v3NewChat'))setTimeout(syncActive,30)},true);
 addEventListener('pocket-core-ready',sync);addEventListener('pocket-features-ready',sync);
 if(document.readyState==='loading')addEventListener('DOMContentLoaded',sync,{once:true});else sync();
 setTimeout(sync,400);setTimeout(syncStatus,1400);
