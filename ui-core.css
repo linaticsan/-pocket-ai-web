@@ -271,7 +271,7 @@ button:hover{background:var(--pa-hover);border-color:var(--pa-hover-border)}
 button:disabled{cursor:not-allowed;opacity:.48}
 .primary,.pa-new-chat,#localSetup,#localConnect,#localSend,#localAdvancedSend,#saveFile,#surfaceSearch,#installNow,#useGemini,#saveYt,#home .project-create{background:var(--pa-accent);border-color:var(--pa-accent);color:#fff;font-weight:600}
 .primary:hover,.pa-new-chat:hover,#localSetup:hover,#localConnect:hover,#localSend:hover,#localAdvancedSend:hover,#saveFile:hover,#surfaceSearch:hover,#installNow:hover,#useGemini:hover,#saveYt:hover,#home .project-create:hover{background:var(--pa-accent-hover);border-color:var(--pa-accent-hover)}
-#settingsOpen.header-settings,.close,#installDismiss,[data-more],.home-attach,#homeComposer>.primary{display:grid;place-items:center;padding:0}
+#settingsOpen.header-settings,.close,.home-attach,#homeComposer>.primary{display:grid;place-items:center;padding:0}
 .danger-soft{border-color:var(--pa-error);color:var(--pa-error)}
 .danger-soft:hover{background:rgba(255,107,107,.08)}
 
@@ -286,7 +286,7 @@ input:focus,textarea:focus,select:focus,.home-composer:focus-within,.lib-search:
 .cards,.resultgrid,.project-grid.has-items,.photo-recent-grid,.lib-grid,.free-grid,.wn44-grid,.wn46-sources{gap:var(--card-gap)}
 
 /* 12. Dialogs / Modals */
-dialog,#settingsDialog,#paMoreSheet .pa-more-panel,#v39More .v39-sheet{border:1px solid var(--pa-border);border-radius:var(--modal-radius);background:var(--pa-card);color:var(--pa-text);box-shadow:0 8px 24px rgba(0,0,0,.14);padding:24px}
+dialog,#settingsDialog{border:1px solid var(--pa-border);border-radius:var(--modal-radius);background:var(--pa-card);color:var(--pa-text);box-shadow:0 8px 24px rgba(0,0,0,.14);padding:24px}
 dialog::backdrop{background:rgba(0,0,0,.42)}
 
 /* Authoritative settings controls */
@@ -1312,4 +1312,33 @@ html.pa-nav-open body{overflow:hidden}
     max-height:calc(100dvh - 20px);
     margin-block:10px;
   }
+}
+
+
+/* STEP 17 — non-overlay install/update shell */
+#installBanner{
+  position:static;
+  width:min(100%,var(--content-max-width));
+  margin:22px auto max(22px,env(safe-area-inset-bottom));
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  border:1px solid var(--pa-border);
+  border-radius:var(--card-radius);
+  background:var(--pa-card);
+  color:var(--pa-text);
+  box-shadow:none;
+}
+#installBanner[hidden]{display:none!important}
+#installBanner>div:first-child{display:grid;gap:2px;min-width:0}
+#installBanner small{color:var(--pa-secondary)}
+#installBanner .install-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+#installBanner #installDismiss{padding:0 14px}
+body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
+@media(max-width:767px){
+  #installBanner{align-items:flex-start;flex-direction:column;margin-top:16px}
+  #installBanner .install-actions{width:100%}
+  #installBanner .install-actions button{flex:1}
 }
