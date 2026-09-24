@@ -5,9 +5,12 @@ const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelect
 
 function show(id){
  const view=$('#'+CSS.escape(id));if(!view)return false;
- $$('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
- $$('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
- window.scrollTo({top:0,left:0,behavior:'auto'});return true;
+ $('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
+ $('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
+ const note=$('#notice');if(note&&!note.hasAttribute('data-pwa-notice'))note.textContent='';
+ window.scrollTo({top:0,left:0,behavior:'auto'});
+ window.dispatchEvent(new CustomEvent('pocket-view-change',{detail:{id}}));
+ return true;
 }
 
 function prepareDialog(dialog,opener=document.activeElement){
