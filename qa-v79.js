@@ -1,13 +1,14 @@
 // Pocket AI V79 — non-destructive boot QA
 (() => {
-  const requiredIds=['home','chat','library','files','local','github','surface','bottomNav','settingsDialog','commandDialog','chatForm','prompt'];
+  const requiredIds=['home','chat','library','files','local','github','surface','settingsDialog','commandDialog','chatForm','prompt','paDesktopSidebar','paSidebarToggle'];
   const requiredGlobals=['PocketV39','PocketTheme','PocketLocalAI'];
   function run(){
     const results=[];
     for(const id of requiredIds)results.push({name:'#'+id,ok:!!document.getElementById(id)});
     for(const name of requiredGlobals)results.push({name:'window.'+name,ok:!!window[name]});
-    const nav=[...document.querySelectorAll('#bottomNav [data-go]')].map(x=>x.dataset.go);
-    for(const id of ['home','chat','library','files'])results.push({name:'nav:'+id,ok:nav.includes(id)});
+    const nav=[...document.querySelectorAll('#paDesktopSidebar [data-pa-side]')].map(x=>x.dataset.paSide);
+    for(const id of ['home','chat','coding','files','surface','study','projects'])results.push({name:'nav:'+id,ok:nav.includes(id)});
+    results.push({name:'bottom nav removed',ok:!document.getElementById('bottomNav')});
     const ids=[...document.querySelectorAll('[id]')].map(x=>x.id),dup=ids.filter((x,i)=>ids.indexOf(x)!==i);
     results.push({name:'duplicate ids',ok:dup.length===0,detail:[...new Set(dup)]});
     const visible=[...document.querySelectorAll('.view.active:not([hidden])')];
