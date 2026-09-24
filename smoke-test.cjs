@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step17-pwa-reliability'"),'STEP 17 build marker is missing');
+assert(index.includes("const BUILD='step18-architecture-cleanup'"),'STEP 18 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v16'"),'STEP 17 app-shell cache must be v16');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v17'"),'STEP 18 app-shell cache must be v17');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -95,6 +95,21 @@ assert(manifest.background_color==='#f7f8ff','Manifest background color is stale
 assert(Array.isArray(manifest.categories)&&manifest.categories.includes('productivity'),'Manifest categories are missing');
 assert(coreCss.includes('STEP 17 — non-overlay install/update shell'),'STEP 17 inline install styling is missing');
 assert(!coreCss.includes('#v39More .v39-sheet'),'Dead More sheet selector must not return');
+assert(ux.includes('window.PocketNav={show}'),'Canonical PocketNav API is missing');
+assert(ux.includes("new CustomEvent('pocket-view-change'"),'Canonical view-change event is missing');
+assert(workspace.includes("window.PocketNav?.show?.(id)"),'Workspace must delegate navigation to PocketNav');
+assert(responsive.includes("window.PocketNav?.show?.(id)"),'Sidebar must delegate navigation to PocketNav');
+assert(responsive.includes("window.addEventListener('pocket-view-change'"),'Sidebar must sync from canonical view changes');
+assert(!app.includes('function show(id)'),'app.js must not own navigation anymore');
+assert(!app.includes("document.querySelectorAll('[data-go]').forEach"),'app.js must not bind duplicate navigation');
+assert(!app.includes("dataset.theme=savedTheme"),'app.js must not own runtime theme state');
+assert(!app.includes("$('aiSetup').onclick"),'app.js must not bypass focus-safe AI dialog handling');
+assert(!app.includes("$('sourceSetup').onclick"),'app.js must not bypass focus-safe source dialog handling');
+assert(!feature.includes("requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}))"),'Feature layer must not duplicate navigation scrolling');
+assert(!read('local-oneclick.js').includes('[data-go="local"]'),'Local AI must not duplicate navigation scrolling');
+assert(!index.includes('desktop-workspace-v115.js'),'Redundant desktop workspace sync must not load');
+assert(!sw.includes('./desktop-workspace-v115.js'),'Redundant desktop workspace sync must not be precached');
+assert(!fs.existsSync(path.join(__dirname,'desktop-workspace-v115.js')),'Redundant desktop workspace sync file must stay removed');
 const removedLegacy=["buttons-v128.css","cards-v130.css","cards-v131.css","chat-v134.css","colors-v127.css","desktop-v97.css","desktop-workspace-v115.css","header-v119.css","home-step1-v117.css","home-v44.css","home-v45.css","layout-v56.css","mobile-ui-fix-v47.css","mobile-v133.css","mobile-v30.css","nav-fix-v61.css","panels-v2.css","personality-v135.css","photo-ui-v100.css","photo-ui-v100.js","polish-v84.css","polish-v84.js","polish.css","reference-ui-v57.css","reference-ui-v57.js","reference-ui-v58.css","reference-ui-v58.js","reference-ui-v89.css","reference-ui-v89.js","responsive-v92.css","simple-v87.css","soft-ui-v55.css","styles.css","surfaces-v129.css","typography-v126.css","ui-v55.js","ui-v59.css","ui-v59.js","ux-v36.css","ux-v36.js","ux-v37.css","ux-v37.js","ux-v38.css","ux-v38.js","ux-v39.css","ux-v41.css","ux-v43.css","home-v43.js","repair-v56.js"];
 for(const f of removedLegacy)assert(!fs.existsSync(path.join(__dirname,f)),'Removed legacy file returned: '+f);
 
