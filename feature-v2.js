@@ -13,7 +13,6 @@ async function runDiagnostics(){const list=document.querySelector('.diag-list');
 addDiagnostics();
 
 f('prompt')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing&&innerWidth>650){e.preventDefault();f('chatForm').requestSubmit(f('chatSend'));}});
-document.addEventListener('click',e=>{const go=e.target.closest?.('[data-go]');if(!go)return;requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));},{capture:false});
 function syncWorkspaceStates(){
  const ghEmpty=!(f('ghResults')?.children.length);
  f('github')?.classList.toggle('is-empty',ghEmpty);
