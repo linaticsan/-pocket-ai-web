@@ -45,6 +45,7 @@ const addPocketStyle=href=>{
  './files-v80.css?v=20260922-v88',
  './visibility-v82.css?v=20260922-v88'
 ].forEach(addPocketStyle);
+const coreStyle=document.querySelector('link[href*="ui-core.css"]');if(coreStyle&&coreStyle!==document.head.lastElementChild)document.head.appendChild(coreStyle);
 // Emergency performance safe mode: keep the stable V3 core interactive and remove
 // additive workspaces that can leave expensive observers/DOM behind on mobile.
 try{
@@ -85,4 +86,4 @@ try{
 })();
 
 
-import('./qa-v79.js?v=20260921-v79').catch(err=>console.warn('Pocket AI QA module failed',err));
+import('./qa-v79.js?v=20260925-step12').catch(err=>console.warn('Pocket AI QA module failed',err));
