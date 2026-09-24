@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step11-clean-theme-audio'"),'STEP 11 build marker is missing');
+assert(index.includes("const BUILD='step12-nav-theme-cleanup'"),'STEP 12 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v10'"),'STEP 11 app-shell cache must be v10');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v11'"),'STEP 12 app-shell cache must be v11');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -38,7 +38,7 @@ const workspace=read('workspace.js');
 assert(workspace.includes("const SOUND_KEY='pocket-sound-v1'"),'Sound storage key is missing');
 assert(workspace.includes('function playPocketSound(type)'),'Central Pocket sound API is missing');
 assert(workspace.includes('window.AudioContext||window.webkitAudioContext'),'iOS-compatible Web Audio fallback is missing');
-assert(workspace.includes("const THEME_CHOICES=new Set(['system','light','dark','sakura','green','oled'])"),'Authoritative six-theme engine is missing');
+assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled'])"),'Authoritative five-theme engine is missing');
 assert(workspace.includes('function primePocketAudio()'),'iPhone audio priming hook is missing');
 assert(!feature.includes('ui-v59.css'),'Legacy light-only ui-v59.css must not load');
 assert(!feature.includes('polish-v84.css'),'Legacy polish-v84.css must not load');
@@ -53,5 +53,9 @@ assert(!sw.includes('./reference-ui-v89.js')&&!sw.includes('./photo-ui-v100.js')
 const ids=[...index.matchAll(/\sid=["']([^"']+)["']/g)].map(m=>m[1]);
 const dup=ids.filter((id,i)=>ids.indexOf(id)!==i);
 assert(dup.length===0,'Duplicate static IDs: '+[...new Set(dup)].join(', '));
-for(const id of ['home','chat','files','local','github','surface','bottomNav','settingsDialog','commandDialog','chatForm','prompt'])assert(ids.includes(id),'Missing core DOM id: '+id);
+for(const id of ['home','chat','files','local','github','surface','settingsDialog','commandDialog','chatForm','prompt'])assert(ids.includes(id),'Missing core DOM id: '+id);
+assert(!ids.includes('bottomNav'),'Bottom navigation must be removed');
+assert(!index.includes('data-theme-choice="system"'),'Duplicate System theme option must be removed');
+const responsive=read('responsive-v92.js');
+assert(!/[>](?:💬|🎓|⌘|▱|⌕|▦|⌂)[<]/.test(responsive),'Drawer must not contain legacy duplicate glyph icons');
 console.log('Pocket AI smoke checks passed:',refs.size,'current assets verified.');
