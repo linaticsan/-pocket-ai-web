@@ -23,25 +23,35 @@ function greeting(){
  const h=new Date().getHours(),word=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
  el.textContent=word+' ✨';
 }
-const THEME_CHOICES=new Set(['system','light','dark','sakura','green','oled']);
+const THEME_CHOICES=new Set(['light','dark','sakura','green','oled']);
 const THEME_COLORS={light:'#f7f8ff',dark:'#212121',sakura:'#fff5fa',green:'#f0fff6',oled:'#000000'};
-const themeMedia=window.matchMedia?.('(prefers-color-scheme: dark)');
+function normalizeSavedTheme(value){
+  if(value==='system'){
+    const resolved=window.matchMedia?.('(prefers-color-scheme: dark)')?.matches?'dark':'light';
+    safeSet('pocket-theme',resolved);
+    return resolved;
+  }
+  return THEME_CHOICES.has(value)?value:'light';
+}
 function setTheme(t,{persist=true}={}){
-  const choice=THEME_CHOICES.has(t)?t:'light';
-  const resolved=choice==='system'?(themeMedia?.matches?'dark':'light'):choice;
-  document.documentElement.dataset.theme=resolved;
+  const choice=normalizeSavedTheme(t);
+  document.documentElement.dataset.theme=choice;
   document.documentElement.dataset.themeChoice=choice;
-  document.documentElement.style.colorScheme=(resolved==='dark'||resolved==='oled')?'dark':'light';
+  document.documentElement.style.colorScheme=(choice==='dark'||choice==='oled')?'dark':'light';
   if(persist)safeSet('pocket-theme',choice);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[resolved]||THEME_COLORS.light);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[choice]||THEME_COLORS.light);
   document.querySelectorAll('[data-theme-choice]').forEach(b=>{
     const active=b.dataset.themeChoice===choice;
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',active?'true':'false');
   });
-  window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:resolved,choice}}));
+  window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:choice,choice}}));
 }
-themeMedia?.addEventListener?.('change',()=>{if(safeGet('pocket-theme','light')==='system')setTheme('system',{persist:false})});
+window.PocketTheme={
+  apply:setTheme,
+  get:()=>document.documentElement.dataset.theme||'light',
+  getChoice:()=>document.documentElement.dataset.themeChoice||'light'
+};
 function setMotion(m){
  document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
@@ -154,7 +164,7 @@ function setPrivacy(m){
  const hint=q('modeHint');if(hint)hint.textContent=modeText[m]||modeText.balanced;
 }
 
-greeting();setTheme(safeGet('pocket-theme','light'));setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));syncSoundUI();
+greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','light')),{persist:true});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));syncSoundUI();
 if(q('settingsOpen'))q('settingsOpen').onclick=()=>q('settingsDialog')?.showModal?.();
 if(q('commandOpen'))q('commandOpen').onclick=()=>{const d=q('commandDialog');if(d?.showModal&&!d.open)d.showModal();setTimeout(()=>q('commandSearch')?.focus(),50)};
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
