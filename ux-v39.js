@@ -39,7 +39,6 @@ function normalizeViews(){
 }
 
 function bind(){
- document.documentElement.classList.add('pocket-v39');
  normalizeViews();
  document.documentElement.style.pointerEvents='auto';document.body.style.pointerEvents='auto';
  document.body.classList.remove('more-open','v39-more-open');
@@ -106,5 +105,6 @@ function bind(){
  });
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
-window.PocketV39={show};
+window.PocketNav={show};
+window.PocketV39={show}; // compatibility alias for older feature modules
 })();
