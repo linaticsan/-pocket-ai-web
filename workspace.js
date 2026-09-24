@@ -8,22 +8,7 @@ const openPocketDialog=(dialog,opener,focusSelector='')=>{
 };
 const safeGet=(k,f='')=>{try{return localStorage.getItem(k)||f}catch{return f}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-document.documentElement.classList.remove('pocket-v59','photo-ui-v100','reference-ui-active');
-const go=id=>{
-  if(window.PocketV39?.show?.(id))return true;
-  const btn=document.querySelector(`[data-go="${CSS.escape(id)}"]`);
-  if(btn){btn.click();return true}
-  const view=document.getElementById(id);
-  if(!view)return false;
-  document.querySelectorAll('.view').forEach(v=>{
-    const on=v===view;
-    v.hidden=!on;
-    v.classList.toggle('active',on);
-  });
-  document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
-  window.scrollTo({top:0,left:0,behavior:'auto'});
-  return true;
-};
+const go=id=>window.PocketNav?.show?.(id)??window.PocketV39?.show?.(id)??false;
 
 function greeting(){
  const el=q('homeGreeting');if(!el)return;
