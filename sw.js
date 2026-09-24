@@ -1,5 +1,5 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v11';
+const CACHE=APP_CACHE_PREFIX+'v12';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const ASSETS=["./","./api-hub.js","./app.js","./boot-v83.css","./boot-v83.js","./chat-v77.css","./coding-v1.css","./coding-v1.js","./desktop-workspace-v115.js","./feature-v2.js","./files-v31.css","./files-v32.js","./files-v80.css","./icon.svg","./icons-v132.css","./icons-v132.js","./index.html","./library-online-v34.css","./library-online-v34.js","./library-v33.css","./library-v33.js","./local-oneclick.js","./manifest.webmanifest","./motion-v32.css","./qa-v79.js","./responsive-v92.js","./ui-core.css","./ux-v39.js","./v3-guard.js","./v3-hotfix.css","./v3.css","./v3.js","./visibility-v82.css","./webnovel-v42.css","./webnovel-v42.js","./workspace.js"];
