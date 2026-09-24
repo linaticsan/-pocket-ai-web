@@ -11,21 +11,21 @@ function buildSidebar(){
  aside.setAttribute('aria-label','Pocket AI navigation');
  aside.innerHTML=
  '<div class="pa-side-mobile-head"><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+
- '<button class="pa-new-chat" type="button" data-pa-action="new-chat"><span>＋</span><strong>New Chat</strong></button>'+
+ '<button class="pa-new-chat" type="button" data-pa-action="new-chat"><strong>New Chat</strong></button>'+
  '<nav>'+
-  '<div class="pa-nav-group"><small class="pa-nav-label">HOME</small><button type="button" data-pa-side="home"><i>⌂</i><span>Home</span></button></div>'+
+  '<div class="pa-nav-group"><small class="pa-nav-label">HOME</small><button type="button" data-pa-side="home"><span>Home</span></button></div>'+
   '<div class="pa-nav-group"><small class="pa-nav-label">WORK</small>'+
-   '<button type="button" data-pa-side="chat"><i>💬</i><span>Chat</span></button>'+
-   '<button type="button" data-pa-side="coding"><i>⌘</i><span>Code</span></button>'+
-   '<button type="button" data-pa-side="files"><i>▱</i><span>Files</span></button>'+
-   '<button type="button" data-pa-side="surface"><i>⌕</i><span>Research</span></button>'+
-   '<button type="button" data-pa-side="study"><i>🎓</i><span>Study</span></button>'+
-   '<button type="button" data-pa-side="projects"><i>▦</i><span>Projects</span></button>'+
+   '<button type="button" data-pa-side="chat"><span>Chat</span></button>'+
+   '<button type="button" data-pa-side="coding"><span>Code</span></button>'+
+   '<button type="button" data-pa-side="files"><span>Files</span></button>'+
+   '<button type="button" data-pa-side="surface"><span>Research</span></button>'+
+   '<button type="button" data-pa-side="study"><span>Study</span></button>'+
+   '<button type="button" data-pa-side="projects"><span>Projects</span></button>'+
   '</div>'+
  '</nav>'+
  '<div class="pa-side-bottom">'+
-  '<button type="button" data-pa-side="settings"><i>⚙</i><span>Settings</span></button>'+
-  '<button type="button" data-pa-side="local" class="pa-local-status"><i class="pa-status-dot"></i><span><strong>Local AI</strong><small id="paLocalState">Checking…</small></span></button>'+
+  '<button type="button" data-pa-side="settings"><span>Settings</span></button>'+
+  '<button type="button" data-pa-side="local" class="pa-local-status"><span class="pa-local-copy"><strong>Local AI</strong><small id="paLocalState">Checking…</small><i class="pa-status-dot" aria-hidden="true"></i></span></button>'+
  '</div>';
  document.body.appendChild(aside);
 
