@@ -172,7 +172,6 @@ html[data-theme="oled"]{
   --room-glow:rgba(166,124,255,.12);
 color-scheme:dark;
 }
-/* "system" is resolved by JS to light or dark. */
 /* Temporary legacy aliases — defined once, derived from semantic tokens. */
 :root{
   --p100-bg:var(--pa-bg);
@@ -225,7 +224,6 @@ p,li,label,input,textarea,select{font-size:14px;line-height:1.5}
 small,.muted{font-size:12px;line-height:1.45;color:var(--pa-secondary)}
 
 /* 4. Theme Colors */
-html.photo-ui-v100,html.photo-ui-v100 body{background:var(--pa-bg);color:var(--pa-text)}
 .glass,.topbar,.view{background:var(--pa-surface);border-color:var(--pa-border);color:var(--pa-text)}
 input,textarea,select{background:var(--pa-card);border-color:var(--pa-border);color:var(--pa-text)}
 input::placeholder,textarea::placeholder{color:var(--pa-muted)}
@@ -263,7 +261,6 @@ main{min-width:0}
 .pa-sidebar-backdrop{display:none;position:fixed;inset:0;z-index:145;border:0;background:rgba(0,0,0,.28)}
 
 /* 8. Navigation */
-#bottomNav{display:none}
 .pa-nav-label{display:block;padding:0 11px 5px;color:var(--pa-muted);font-size:12px;font-weight:600;letter-spacing:.13em}
 .pa-nav-group{display:grid;gap:4px}
 .pa-nav-group+.pa-nav-group{margin-top:18px}
@@ -897,46 +894,11 @@ html:not(.pocket-v59) .topbar{background:var(--pa-surface);color:var(--pa-text)}
 }
 
 
-/* STEP 12 — drawer-only navigation + distinct theme surfaces */
+/* STEP 12 — drawer-only navigation */
 .pa-local-status .pa-local-copy{min-width:0;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:8px;align-items:center}
 .pa-local-status .pa-local-copy strong{grid-column:1;grid-row:1}
 .pa-local-status .pa-local-copy small{grid-column:1;grid-row:2;color:var(--pa-muted)}
 .pa-local-status .pa-status-dot{grid-column:2;grid-row:1/3;align-self:center}
-
-html[data-theme] body{background:var(--pa-bg)!important;color:var(--pa-text)!important}
-html[data-theme] .topbar,
-html[data-theme] .pa-desktop-sidebar,
-html[data-theme] dialog{border-color:var(--pa-border);color:var(--pa-text)}
-html[data-theme] #files,
-html[data-theme] #surface,
-html[data-theme] #coding,
-html[data-theme] #local,
-html[data-theme] #github,
-html[data-theme] #library{background:var(--pa-surface)!important;color:var(--pa-text)!important;border-color:var(--pa-border)!important}
-html[data-theme] #library.library-books-only-v53{background:var(--pa-bg)!important;color:var(--pa-text)!important}
-html[data-theme] #library .lib53-hero{background:linear-gradient(135deg,var(--pa-card),var(--pa-accent-soft))!important;border:1px solid var(--pa-border)!important;color:var(--pa-text)!important;box-shadow:var(--pa-shadow)!important}
-html[data-theme] #library .lib53-copy>p:not(.eyebrow),
-html[data-theme] #library .lib53-continue small,
-html[data-theme] #library .book-card-copy>small,
-html[data-theme] #library .book-library-storage{color:var(--pa-secondary)!important}
-html[data-theme] #library .lib53-tabs{background:var(--pa-surface)!important;border-color:var(--pa-border)!important}
-html[data-theme] #library .lib53-tabs button{color:var(--pa-secondary)!important}
-html[data-theme] #library .lib53-tabs button.active{background:var(--pa-accent)!important;color:#fff!important;box-shadow:none!important}
-html[data-theme] #library .lib53-continue,
-html[data-theme] #library .library-books-only-v53 .book-card,
-html[data-theme] #library .lib53-tools .lib-search{background:var(--pa-card)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
-html[data-theme] #library .lib53-count{background:var(--pa-surface)!important;border-color:var(--pa-border)!important;color:var(--pa-secondary)!important}
-html[data-theme] #chat .v3-sidebar,
-html[data-theme] #chat .v3-chat-top,
-html[data-theme] #chat .v3-input-row,
-html[data-theme] #chat .v3-suggestions button{background:var(--pa-card)!important;border-color:var(--pa-border)!important;color:var(--pa-text)!important}
-html[data-theme] #chat .v3-chat-main,
-html[data-theme] #chat #chatForm.v3-composer{background:var(--pa-bg)!important}
-html[data-theme] #chat .v3-chat-item:hover,
-html[data-theme] #chat .v3-chat-item.active{background:var(--pa-accent-soft)!important}
-html[data-theme] #chat .v3-msg.user .v3-bubble{background:var(--pa-card)!important;border-color:var(--pa-border)!important}
-html[data-theme] #chat #prompt{color:var(--pa-text)!important}
-
 
 /* STEP 13 — app-wide visual consistency */
 :root{
