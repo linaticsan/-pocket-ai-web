@@ -20,6 +20,12 @@ assert(ux.includes("const views=$$('body > main > .view');"),'Navigation normali
 assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worker registration is missing');
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
+
+assert(index.includes("const BUILD='step8b-boot-recovery'"),'STEP 8B build marker is missing');
+assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
+assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
+assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v6'"),'STEP 8B app-shell cache must be v6');
 const ids=[...index.matchAll(/\sid=["']([^"']+)["']/g)].map(m=>m[1]);
 const dup=ids.filter((id,i)=>ids.indexOf(id)!==i);
 assert(dup.length===0,'Duplicate static IDs: '+[...new Set(dup)].join(', '));
