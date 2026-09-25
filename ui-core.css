@@ -1584,7 +1584,7 @@ body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
   #coding{
     width:min(100%,var(--workspace-desktop-max));
     max-width:var(--workspace-desktop-max);
-    margin-inline:auto;
+    margin:28px auto 40px;
   }
 
   #local,
