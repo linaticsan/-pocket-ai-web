@@ -3,10 +3,20 @@
 'use strict';
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
+const FEATURE_FOR_VIEW={coding:'coding',files:'files',library:'library'};
 function show(id){
- const view=$('#'+CSS.escape(id));if(!view)return false;
- $$('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
- $$('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
+ const view=$('#'+CSS.escape(id));
+ if(!view){
+   const feature=FEATURE_FOR_VIEW[id];
+   const ensure=feature&&window.PocketFeatures?.ensure;
+   if(ensure){
+     ensure(feature).then(()=>show(id)).catch(()=>{});
+     return true;
+   }
+   return false;
+ }
+ $('body > main > .view').forEach(v=>{const on=v===view;v.hidden=!on;v.classList.toggle('active',on)});
+ $('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
  const note=$('#notice');if(note&&!note.hasAttribute('data-pwa-notice'))note.textContent='';
  window.scrollTo({top:0,left:0,behavior:'auto'});
  window.dispatchEvent(new CustomEvent('pocket-view-change',{detail:{id}}));
