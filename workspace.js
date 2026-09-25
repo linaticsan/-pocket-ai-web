@@ -94,18 +94,30 @@ function ensureAudioContext(){
  if(!soundSettings.enabled)return null;
  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
  try{
-  if(!pocketAudioContext)pocketAudioContext=new AC();
-  if(pocketAudioContext.state==='suspended')pocketAudioContext.resume().catch(()=>{});
+  if(!pocketAudioContext)pocketAudioContext=new AC({latencyHint:'interactive'});
   return pocketAudioContext;
- }catch{return null}
+ }catch{
+  try{
+   if(!pocketAudioContext)pocketAudioContext=new AC();
+   return pocketAudioContext;
+  }catch{return null}
+ }
 }
-function primePocketAudio(){
+async function unlockPocketAudio(){
  const ctx=ensureAudioContext();if(!ctx)return null;
  try{
+  if(ctx.state==='suspended'||ctx.state==='interrupted')await ctx.resume();
+  return ctx.state==='running'?ctx:null;
+ }catch{return null}
+}
+async function primePocketAudio(){
+ const ctx=await unlockPocketAudio();if(!ctx)return null;
+ try{
+  // A near-silent one-shot keeps iOS Safari/PWA audio unlocked after a real user gesture.
   const osc=ctx.createOscillator(),gain=ctx.createGain();
-  gain.gain.setValueAtTime(.0001,ctx.currentTime);
+  gain.gain.setValueAtTime(.00001,ctx.currentTime);
   osc.connect(gain);gain.connect(ctx.destination);
-  osc.start();osc.stop(ctx.currentTime+.012);
+  osc.start(ctx.currentTime);osc.stop(ctx.currentTime+.015);
  }catch{}
  return ctx;
 }
@@ -114,10 +126,8 @@ async function playPocketSound(type){
  const spec=SOUND_SPECS[type];if(!spec)return false;
  const nowMs=Date.now(),gap=SOUND_MIN_GAP[type]||0;
  if(nowMs-(soundLastPlayed[type]||0)<gap||activeSoundVoices>=MAX_SOUND_VOICES)return false;
- const ctx=ensureAudioContext();if(!ctx)return false;
+ const ctx=await unlockPocketAudio();if(!ctx)return false;
  try{
-  if(ctx.state==='suspended')await ctx.resume();
-  if(ctx.state!=='running')return false;
   soundLastPlayed[type]=Date.now();
   const start=ctx.currentTime+.008;
   spec.notes.forEach((freq,i)=>{
@@ -162,8 +172,12 @@ if(q('commandOpen'))q('commandOpen').onclick=e=>openPocketDialog(q('commandDialo
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
 document.querySelectorAll('[data-sound]').forEach(b=>b.onclick=()=>setSoundEnabled(b.dataset.sound==='on'));
-document.addEventListener('pointerdown',()=>{if(soundSettings.enabled)primePocketAudio()},{capture:true,passive:true});
-document.addEventListener('keydown',e=>{if(soundSettings.enabled&&(e.key==='Enter'||e.key===' '))primePocketAudio()},{capture:true});
+const unlockAudioFromGesture=()=>{if(soundSettings.enabled)void primePocketAudio()};
+document.addEventListener('pointerdown',unlockAudioFromGesture,{capture:true,passive:true});
+document.addEventListener('touchend',unlockAudioFromGesture,{capture:true,passive:true});
+document.addEventListener('click',unlockAudioFromGesture,{capture:true,passive:true});
+document.addEventListener('keydown',e=>{if(soundSettings.enabled&&(e.key==='Enter'||e.key===' '))void primePocketAudio()},{capture:true});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&soundSettings.enabled&&pocketAudioContext&&(pocketAudioContext.state==='suspended'||pocketAudioContext.state==='interrupted'))pocketAudioContext.resume().catch(()=>{})});
 if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>setSoundVolume(Number(e.target.value)/100,true));}
 document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.onclick=()=>setPrivacy(b.dataset.privacySetting||b.dataset.privacy));
 
