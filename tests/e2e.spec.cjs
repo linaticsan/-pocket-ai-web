@@ -107,13 +107,13 @@ test.describe('mobile interactions', () => {
     await expect(page.locator('html')).toHaveClass(/pa-nav-open/);
     await expect(page.locator('#paSidebarToggle')).toHaveAttribute('aria-expanded', 'true');
     await expect(page.locator('#paDesktopSidebar')).toHaveAttribute('role', 'dialog');
-    await expect(page.locator('main')).toHaveAttribute('inert', '');
+    await expect(page.locator('body > main')).toHaveAttribute('inert', '');
     await expect(page.locator('#paDesktopSidebar .pa-side-close')).toBeFocused();
 
     await page.keyboard.press('Escape');
     await expect(page.locator('html')).not.toHaveClass(/pa-nav-open/);
     await expect(page.locator('#paSidebarToggle')).toHaveAttribute('aria-expanded', 'false');
-    await expect(page.locator('main')).not.toHaveAttribute('inert', '');
+    await expect(page.locator('body > main')).not.toHaveAttribute('inert', '');
     await expect(page.locator('#paSidebarToggle')).toBeFocused();
     await expectNoPageErrors(errors);
   });
