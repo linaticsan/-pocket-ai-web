@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step18-architecture-cleanup'"),'STEP 18 build marker is missing');
+assert(index.includes("const BUILD='step19-css-debt-cleanup'"),'STEP 19 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v17'"),'STEP 18 app-shell cache must be v17');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v19'"),'STEP 19 app-shell cache must be v19');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -110,6 +110,26 @@ assert(!read('local-oneclick.js').includes('[data-go="local"]'),'Local AI must n
 assert(!index.includes('desktop-workspace-v115.js'),'Redundant desktop workspace sync must not load');
 assert(!sw.includes('./desktop-workspace-v115.js'),'Redundant desktop workspace sync must not be precached');
 assert(!fs.existsSync(path.join(__dirname,'desktop-workspace-v115.js')),'Redundant desktop workspace sync file must stay removed');
+const chatCss=read('chat-v77.css');
+const v3Css=read('v3.css');
+const files31Css=read('files-v31.css');
+const files80Css=read('files-v80.css');
+const libraryCss=read('library-v33.css');
+const importantCount=s=>(s.match(/!important/g)||[]).length;
+assert(!fs.existsSync(path.join(__dirname,'v3-hotfix.css')),'Dead v3-hotfix.css must stay removed');
+assert(!fs.existsSync(path.join(__dirname,'visibility-v82.css')),'Dead visibility-v82.css must stay removed');
+assert(!feature.includes('v3-hotfix.css')&&!feature.includes('visibility-v82.css'),'Deleted compatibility CSS must not be loaded');
+assert(!sw.includes('v3-hotfix.css')&&!sw.includes('visibility-v82.css'),'Deleted compatibility CSS must not be precached');
+assert(!chatCss.includes('bottomNav')&&!chatCss.includes('pocket-v59'),'Chat CSS must not contain deleted navigation/theme compatibility selectors');
+assert(chatCss.includes('bottom:auto!important'),'Mobile Chat composer must not reserve deleted bottom-nav space');
+assert(!files80Css.includes('132px')&&!files80Css.includes('120px!important'),'Files must not reserve deleted bottom-nav clearance');
+assert(!libraryCss.includes('150px!important')&&!libraryCss.includes('98px!important'),'Library must not reserve deleted bottom-nav clearance');
+assert(coreCss.includes('Authoritative workspace visibility'),'Workspace visibility must live in ui-core.css');
+assert(importantCount(v3Css)<=13,'v3.css !important budget regressed');
+assert(importantCount(chatCss)<=181,'chat-v77.css !important budget regressed');
+assert(importantCount(files31Css)===0,'files-v31.css should not need !important');
+assert(importantCount(files80Css)<=139,'files-v80.css !important budget regressed');
+assert(importantCount(libraryCss)<=74,'library-v33.css !important budget regressed');
 const removedLegacy=["buttons-v128.css","cards-v130.css","cards-v131.css","chat-v134.css","colors-v127.css","desktop-v97.css","desktop-workspace-v115.css","header-v119.css","home-step1-v117.css","home-v44.css","home-v45.css","layout-v56.css","mobile-ui-fix-v47.css","mobile-v133.css","mobile-v30.css","nav-fix-v61.css","panels-v2.css","personality-v135.css","photo-ui-v100.css","photo-ui-v100.js","polish-v84.css","polish-v84.js","polish.css","reference-ui-v57.css","reference-ui-v57.js","reference-ui-v58.css","reference-ui-v58.js","reference-ui-v89.css","reference-ui-v89.js","responsive-v92.css","simple-v87.css","soft-ui-v55.css","styles.css","surfaces-v129.css","typography-v126.css","ui-v55.js","ui-v59.css","ui-v59.js","ux-v36.css","ux-v36.js","ux-v37.css","ux-v37.js","ux-v38.css","ux-v38.js","ux-v39.css","ux-v41.css","ux-v43.css","home-v43.js","repair-v56.js"];
 for(const f of removedLegacy)assert(!fs.existsSync(path.join(__dirname,f)),'Removed legacy file returned: '+f);
 
