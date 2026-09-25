@@ -289,6 +289,10 @@ test.describe('desktop feature workspace consistency', () => {
 
     for (const id of ids) {
       await openWorkspace(page, id);
+      if (id==='coding') await expect(page.locator('#coding .code-toolbar')).toBeVisible();
+      if (id==='library') await expect(page.locator('#library .lib53-tabs')).toBeVisible();
+      if (id==='chat') await expect(page.locator('#chat .v3-chat-shell')).toBeVisible();
+
       const frame = await page.locator('#'+id).evaluate(el => {
         const r = el.getBoundingClientRect();
         return {
@@ -321,9 +325,6 @@ test.describe('desktop feature workspace consistency', () => {
     expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(2);
     expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(2);
 
-    await expect(page.locator('#coding .code-toolbar')).toBeVisible();
-    await expect(page.locator('#library .lib53-tabs')).toBeVisible();
-    await expect(page.locator('#chat .v3-chat-shell')).toBeVisible();
     await expectNoPageErrors(errors);
   });
 });
