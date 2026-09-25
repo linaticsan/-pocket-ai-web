@@ -26,7 +26,7 @@ assert(index.includes("const BUILD='step20-browser-regression'"),'STEP 20 build 
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v22'"),'STEP 20 app-shell cache must be v22');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v23'"),'STEP 20 app-shell cache must be v23');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -130,7 +130,7 @@ assert(chatCss.includes('scroll-margin-top:64px'),'Mobile Chat controls need hea
 assert(!files80Css.includes('132px')&&!files80Css.includes('120px!important'),'Files must not reserve deleted bottom-nav clearance');
 assert(!libraryCss.includes('150px!important')&&!libraryCss.includes('98px!important'),'Library must not reserve deleted bottom-nav clearance');
 assert(coreCss.includes('Authoritative workspace visibility'),'Workspace visibility must live in ui-core.css');
-assert(/\.topbar\{position:relative;z-index:140;/.test(coreCss),'Header stacking fix is missing');
+assert(/\.topbar\{position:relative;z-index:140;[^}]*display:flex;[^}]*align-items:center;/.test(coreCss),'One-line header layout fix is missing');
 assert(ux.includes("const FEATURE_FOR_VIEW={coding:'coding',files:'files',library:'library'}"),'Lazy feature navigation map is missing');
 assert(ux.includes("ensure(feature).then(()=>show(id))"),'First-tap lazy navigation recovery is missing');
 assert(importantCount(v3Css)<=13,'v3.css !important budget regressed');
