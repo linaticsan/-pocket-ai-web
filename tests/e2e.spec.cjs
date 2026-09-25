@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step20-browser-regression', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step21-mobile-ui', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -165,4 +165,56 @@ test('service worker serves the Home shell after the browser goes offline', asyn
 
   await context.setOffline(false);
   await expectNoPageErrors(errors);
+});
+
+
+async function expectMobileHomeGeometry(page) {
+  const geometry = await page.evaluate(() => {
+    const rect = sel => document.querySelector(sel)?.getBoundingClientRect();
+    const room = rect('#pocketRoom');
+    const controls = rect('#home .room-mini-controls');
+    const xp = rect('#pocketXP');
+    const composer = rect('#homeComposer');
+    const roomObjects = [...document.querySelectorAll('#pocketRoom .room-object')].map(el => el.getBoundingClientRect());
+    const viewportWidth = innerWidth;
+    return {
+      viewportWidth,
+      docWidth: document.documentElement.scrollWidth,
+      room, controls, xp, composer,
+      roomObjects: roomObjects.map(r => ({left:r.left,right:r.right,top:r.top,bottom:r.bottom}))
+    };
+  });
+
+  expect(geometry.docWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.room.left).toBeGreaterThanOrEqual(-1);
+  expect(geometry.room.right).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.controls.top).toBeGreaterThanOrEqual(geometry.room.bottom - 1);
+  expect(geometry.composer.top).toBeGreaterThanOrEqual(geometry.controls.bottom - 1);
+  expect(geometry.xp.top).toBeGreaterThanOrEqual(geometry.room.top - 1);
+  expect(geometry.xp.bottom).toBeLessThanOrEqual(geometry.room.bottom + 1);
+  for (const object of geometry.roomObjects) {
+    expect(object.left).toBeGreaterThanOrEqual(geometry.room.left - 1);
+    expect(object.right).toBeLessThanOrEqual(geometry.room.right + 1);
+    expect(object.top).toBeGreaterThanOrEqual(geometry.room.top - 1);
+    expect(object.bottom).toBeLessThanOrEqual(geometry.room.bottom + 1);
+  }
+}
+
+test.describe('mobile Home layout', () => {
+  test('390px layout has no Pocket Room or page overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const errors = await openPocket(page);
+    await expectMobileHomeGeometry(page);
+    await expectNoPageErrors(errors);
+  });
+
+  test('320px layout remains compact without overlap', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 700 });
+    const errors = await openPocket(page);
+    await expectMobileHomeGeometry(page);
+    await expect(page.locator('#home .quick-grid')).toHaveCSS('grid-template-columns', /.+/);
+    const quickColumns = await page.locator('#home .quick-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
+    expect(quickColumns).toBe(1);
+    await expectNoPageErrors(errors);
+  });
 });
