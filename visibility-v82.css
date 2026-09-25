@@ -1,29 +1,5 @@
-/* Pocket AI V82 — authoritative single-view visibility
-   Prevent feature CSS from making hidden workspaces visible. */
-html.pocket-v59 body > main > .view[hidden],
-html.pocket-v39 body > main > .view[hidden],
+/* STEP 19 — authoritative single-view visibility.
+   Navigation always synchronizes the hidden attribute; one rule is sufficient. */
 body > main > .view[hidden]{
-  display:none!important;
-}
-
-html.pocket-v59 body > main > .view:not(.active),
-html.pocket-v39 body > main > .view:not(.active){
-  display:none!important;
-}
-
-html.pocket-v59 body > main > .view.active:not([hidden]),
-html.pocket-v39 body > main > .view.active:not([hidden]){
-  display:block!important;
-}
-
-/* Root workspaces must never leak into another tab. */
-html.pocket-v59 #chat[hidden],
-html.pocket-v59 #library[hidden],
-html.pocket-v59 #files[hidden],
-html.pocket-v59 #home[hidden],
-html.pocket-v59 #local[hidden],
-html.pocket-v59 #github[hidden],
-html.pocket-v59 #surface[hidden],
-html.pocket-v59 #coding[hidden]{
   display:none!important;
 }
