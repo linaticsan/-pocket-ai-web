@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step20-browser-regression'"),'STEP 20 build marker is missing');
+assert(index.includes("const BUILD='step21-mobile-ui'"),'STEP 21 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v23'"),'STEP 20 app-shell cache must be v23');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v24'"),'STEP 21 app-shell cache must be v24');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -130,6 +130,11 @@ assert(chatCss.includes('scroll-margin-top:64px'),'Mobile Chat controls need hea
 assert(!files80Css.includes('132px')&&!files80Css.includes('120px!important'),'Files must not reserve deleted bottom-nav clearance');
 assert(!libraryCss.includes('150px!important')&&!libraryCss.includes('98px!important'),'Library must not reserve deleted bottom-nav clearance');
 assert(coreCss.includes('Authoritative workspace visibility'),'Workspace visibility must live in ui-core.css');
+assert(coreCss.includes('STEP 21 — authoritative mobile Home layout'),'STEP 21 mobile Home block is missing');
+assert(!coreCss.includes('STEP 10 — Mobile Home composition cleanup'),'Obsolete STEP 10 mobile patch must stay removed');
+assert((coreCss.match(/STEP 21 — authoritative mobile Home layout/g)||[]).length===1,'STEP 21 mobile Home layout must have a single owner');
+assert(coreCss.includes('#home .pocket-room{')&&coreCss.includes('height:220px'),'STEP 21 Pocket Room sizing is missing');
+assert(coreCss.includes('@media(max-width:340px)')&&coreCss.includes('#home .quick-grid{grid-template-columns:1fr}'),'320px quick-action fallback is missing');
 assert(/\.topbar\{position:relative;z-index:140;[^}]*display:flex;[^}]*align-items:center;/.test(coreCss),'One-line header layout fix is missing');
 assert(ux.includes("const FEATURE_FOR_VIEW={coding:'coding',files:'files',library:'library'}"),'Lazy feature navigation map is missing');
 assert(ux.includes("ensure(feature).then(()=>show(id))"),'First-tap lazy navigation recovery is missing');
