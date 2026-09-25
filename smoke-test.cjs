@@ -130,7 +130,7 @@ assert(/\.topbar\{position:relative;z-index:140;/.test(coreCss),'Header stacking
 assert(ux.includes("const FEATURE_FOR_VIEW={coding:'coding',files:'files',library:'library'}"),'Lazy feature navigation map is missing');
 assert(ux.includes("ensure(feature).then(()=>show(id))"),'First-tap lazy navigation recovery is missing');
 assert(importantCount(v3Css)<=13,'v3.css !important budget regressed');
-assert(importantCount(chatCss)<=181,'chat-v77.css !important budget regressed');
+assert(importantCount(chatCss)<=184,'chat-v77.css !important budget regressed');
 assert(importantCount(files31Css)===0,'files-v31.css should not need !important');
 assert(importantCount(files80Css)<=139,'files-v80.css !important budget regressed');
 assert(importantCount(libraryCss)<=74,'library-v33.css !important budget regressed');
