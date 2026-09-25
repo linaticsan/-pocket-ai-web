@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f8f6ff"><script>(function(){try{let c=localStorage.getItem("pocket-theme")||"light";if(c==="system"){c=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";localStorage.setItem("pocket-theme",c)}const m={light:"#f8f6ff",dark:"#212121",sakura:"#fff5fa",green:"#f0fff6",oled:"#000000"};document.documentElement.dataset.theme=c;document.documentElement.dataset.themeChoice=c;document.querySelector('meta[name="theme-color"]')?.setAttribute("content",m[c]||m.light)}catch{}})()</script><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Pocket AI"><meta name="description" content="Pocket AI — a private, cute AI workspace for chat, local AI, files, GitHub and deep research."><title>Pocket AI</title><script>
 (function(){
-  const BUILD='step22-desktop-polish';
+  const BUILD='step23-feature-workspaces';
   try{sessionStorage.setItem('pocket-build',BUILD)}catch(e){}
 })();
 window.__pocketStartupUsable=false;
@@ -27,7 +27,7 @@ window.addEventListener('pocket-core-ready',()=>{window.__pocketStartupUsable=tr
   window.addEventListener('unhandledrejection',reveal);
 })();
 </script><link rel="manifest" href="./manifest.webmanifest?v=20260925-step17"><link rel="icon" href="./icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./boot-v83.css?v=20260922-v88">
-<link rel="stylesheet" href="./icons-v132.css?v=20260922-v132"><link rel="stylesheet" href="./ui-core.css?v=20260925-step22-desktop-polish"></head><body><script>window.__pocketBootStarted=performance.now()</script><div id="pocketBoot" role="status" aria-live="polite"><div class="pocket-boot-card"><div class="pocket-boot-mascot"><span class="pocket-boot-eyes">◕◕</span></div><div class="pocket-boot-stars">✦ ✧ ✦</div><strong>Pocket AI</strong><span id="pocketBootText">Getting the essentials ready…</span><div class="pocket-boot-skeleton" aria-hidden="true"><i></i><i></i><i></i></div><div class="pocket-boot-dots"><i></i><i></i><i></i></div></div></div><script>
+<link rel="stylesheet" href="./icons-v132.css?v=20260922-v132"><link rel="stylesheet" href="./ui-core.css?v=20260925-step23-feature-workspaces"></head><body><script>window.__pocketBootStarted=performance.now()</script><div id="pocketBoot" role="status" aria-live="polite"><div class="pocket-boot-card"><div class="pocket-boot-mascot"><span class="pocket-boot-eyes">◕◕</span></div><div class="pocket-boot-stars">✦ ✧ ✦</div><strong>Pocket AI</strong><span id="pocketBootText">Getting the essentials ready…</span><div class="pocket-boot-skeleton" aria-hidden="true"><i></i><i></i><i></i></div><div class="pocket-boot-dots"><i></i><i></i><i></i></div></div></div><script>
 (() => {
   const removeBoot=()=>{
     const boot=document.getElementById('pocketBoot');
