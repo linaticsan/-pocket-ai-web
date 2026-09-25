@@ -51,11 +51,9 @@ function loadPocketModule(path){
 }
 const coreStyles=[
  './v3.css?v=20260921-v76',
- './v3-hotfix.css?v=20260921-v76',
- './library-v33.css?v=20260920-v53',
+ './library-v33.css?v=20260925-step19-css-debt',
  './motion-v32.css?v=20260921-v59',
- './chat-v77.css?v=20260922-v88',
- './visibility-v82.css?v=20260922-v88'
+ './chat-v77.css?v=20260925-step19-css-debt'
 ];
 coreStyles.forEach(addPocketStyle);
 const coreStyle=document.querySelector('link[href*="ui-core.css"]');
