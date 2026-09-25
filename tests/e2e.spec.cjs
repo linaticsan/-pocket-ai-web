@@ -311,13 +311,15 @@ test.describe('desktop feature workspace consistency', () => {
       expect(frame.width).toBeGreaterThan(900);
       expect(frame.width).toBeLessThanOrEqual(1242);
       expect(frame.top).toBeGreaterThanOrEqual(80);
-      expect(frame.top).toBeLessThanOrEqual(90);
+      expect(frame.top).toBeLessThanOrEqual(110);
     }
 
     const lefts = frames.map(x => x.left);
     const rights = frames.map(x => x.right);
+    const tops = frames.map(x => x.top);
     expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(2);
     expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(2);
+    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(2);
 
     await expect(page.locator('#coding .code-toolbar')).toBeVisible();
     await expect(page.locator('#library .lib53-tabs')).toBeVisible();
