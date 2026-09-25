@@ -240,7 +240,7 @@ main{min-width:0}
 #home .home-step-section{width:100%;margin-bottom:40px}
 
 /* 6. Header */
-.topbar{position:relative;z-index:140;min-height:52px;height:52px;padding:7px 16px;border:0;border-bottom:1px solid var(--pa-border);box-shadow:none}
+.topbar{position:relative;z-index:140;min-height:52px;height:52px;padding:7px 16px;display:flex;align-items:center;gap:10px;border:0;border-bottom:1px solid var(--pa-border);box-shadow:none}
 .topbar .brand{display:flex;align-items:center;gap:8px;background:transparent;border:0;padding:0;color:var(--pa-text)}
 .topbar .brand strong{font-size:19px;font-weight:700;white-space:nowrap}
 .top-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
