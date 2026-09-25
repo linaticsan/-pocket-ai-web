@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step22-desktop-polish', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step23-feature-workspaces', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -265,6 +265,63 @@ test.describe('desktop Home layout', () => {
     const errors = await openPocket(page);
     await expectDesktopGeometry(page, 4);
     await expect(page.locator('#home .home-hero')).toHaveCSS('display', 'grid');
+    await expectNoPageErrors(errors);
+  });
+});
+
+
+async function openWorkspace(page, id) {
+  await page.evaluate(async target => {
+    const result = window.PocketNav?.show?.(target);
+    if (result && typeof result.then === 'function') await result;
+  }, id);
+  await expect(page.locator('#'+id)).toBeVisible({ timeout: 10000 });
+  await page.waitForTimeout(80);
+}
+
+test.describe('desktop feature workspace consistency', () => {
+  test('major tools share one desktop frame at 1440px', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = await openPocket(page);
+
+    const ids = ['local','files','surface','library','coding','chat'];
+    const frames = [];
+
+    for (const id of ids) {
+      await openWorkspace(page, id);
+      const frame = await page.locator('#'+id).evaluate(el => {
+        const r = el.getBoundingClientRect();
+        return {
+          id: el.id,
+          left:r.left,
+          right:r.right,
+          top:r.top,
+          width:r.width,
+          viewport:innerWidth,
+          docWidth:document.documentElement.scrollWidth
+        };
+      });
+      frames.push(frame);
+    }
+
+    for (const frame of frames) {
+      expect(frame.docWidth).toBeLessThanOrEqual(frame.viewport + 1);
+      expect(frame.left).toBeGreaterThanOrEqual(240);
+      expect(frame.right).toBeLessThanOrEqual(frame.viewport + 1);
+      expect(frame.width).toBeGreaterThan(900);
+      expect(frame.width).toBeLessThanOrEqual(1242);
+      expect(frame.top).toBeGreaterThanOrEqual(80);
+      expect(frame.top).toBeLessThanOrEqual(90);
+    }
+
+    const lefts = frames.map(x => x.left);
+    const rights = frames.map(x => x.right);
+    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(2);
+    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(2);
+
+    await expect(page.locator('#coding .code-toolbar')).toBeVisible();
+    await expect(page.locator('#library .lib53-tabs')).toBeVisible();
+    await expect(page.locator('#chat .v3-chat-shell')).toBeVisible();
     await expectNoPageErrors(errors);
   });
 });
