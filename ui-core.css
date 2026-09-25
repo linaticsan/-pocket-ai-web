@@ -1563,3 +1563,238 @@ body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
   }
   #home .quick-grid>button{min-height:136px}
 }
+
+
+/* STEP 23 — desktop feature workspace consistency */
+@media(min-width:1024px){
+  :root{
+    --workspace-desktop-max:1240px;
+    --workspace-desktop-pad:30px;
+    --workspace-desktop-gap:18px;
+    --workspace-desktop-radius:20px;
+  }
+
+  /* One centered desktop frame for every major tool. */
+  #chat,
+  #local,
+  #files,
+  #surface,
+  #github,
+  #library,
+  #coding{
+    width:min(100%,var(--workspace-desktop-max));
+    max-width:var(--workspace-desktop-max);
+    margin-inline:auto;
+  }
+
+  #local,
+  #files,
+  #surface,
+  #github,
+  #library,
+  #coding{
+    min-height:calc(100dvh - 56px - 72px);
+    border-radius:var(--workspace-desktop-radius)!important;
+  }
+
+  #local,
+  #files,
+  #surface,
+  #github{
+    padding:var(--workspace-desktop-pad)!important;
+  }
+
+  /* Shared page-title rhythm. */
+  #local>.hero,
+  #surface>.hero,
+  #github>.hero{
+    min-height:84px;
+    gap:18px!important;
+    margin-bottom:24px!important;
+    padding-bottom:22px!important;
+    border-bottom:1px solid var(--pa-border)!important;
+  }
+  #local>.hero h1,
+  #surface>.hero h1,
+  #github>.hero h1,
+  #files>h1,
+  #coding .code-head h1,
+  #library .lib53-hero h1{
+    margin-top:3px;
+    margin-bottom:7px;
+    font-size:clamp(28px,2vw,34px)!important;
+    line-height:1.14;
+    letter-spacing:-.02em;
+  }
+  #local>.hero p.muted,
+  #surface>.hero p.muted,
+  #github>.hero p.muted,
+  #files>p.muted,
+  #coding .code-head p,
+  #library .lib53-hero p{
+    max-width:760px;
+    line-height:1.55;
+  }
+
+  /* Files has a text header instead of a .hero: give it the same footprint. */
+  #files>.eyebrow{margin-top:0}
+  #files>h1{margin-top:6px}
+  #files>p.muted{
+    margin-top:0;
+    margin-bottom:22px;
+    padding-bottom:22px;
+    border-bottom:1px solid var(--pa-border);
+  }
+
+  /* Reusable cards/tool surfaces. */
+  #local .device-card,
+  #local .local-status,
+  #local .local-chat,
+  #local details.advanced,
+  #surface .searchbox,
+  #surface .research-report,
+  #surface .result-card,
+  #github .searchline,
+  #github .card,
+  #github .result-card,
+  #files .picker,
+  #files .document-studio-v50,
+  #coding .code-panel,
+  #coding .code-ai,
+  #library .lib53-hero,
+  #library .lib53-tabs,
+  #library .lib53-continue,
+  #library .lib-search,
+  #library .book-card,
+  #webNovelHub{
+    border-radius:16px!important;
+  }
+
+  /* Toolbars use the same vertical rhythm. */
+  #local .local-actions,
+  #surface .searchbox>.row,
+  #github .searchline,
+  #coding .code-toolbar,
+  #coding .code-head-actions,
+  #library .lib53-tools,
+  #library .lib53-hero-actions{
+    gap:10px!important;
+  }
+
+  #local .local-actions,
+  #surface .searchbox>.row,
+  #coding .code-toolbar,
+  #library .lib53-tools{
+    margin-top:14px;
+  }
+
+  #local button,
+  #surface button,
+  #github button,
+  #files button,
+  #coding button,
+  #library button{
+    min-height:40px;
+  }
+
+  /* Local AI becomes a deliberate two-column desktop workspace. */
+  #local .device-card,
+  #local .local-status{
+    margin-bottom:12px!important;
+  }
+  #local .local-chat{
+    margin-top:18px!important;
+  }
+  #local details.advanced{
+    margin-top:18px!important;
+  }
+
+  /* Research keeps the search card visually separated from results. */
+  #surface .searchbox{margin-bottom:16px}
+  #surface .research-steps{margin:14px 0}
+  #surface .resultgrid{gap:14px}
+
+  /* Files gets stable editor width and less stretched controls. */
+  #files .file-type-strip{
+    margin:16px 0;
+    gap:10px;
+  }
+  #files .picker{margin-top:14px}
+  #files #fileText{min-height:360px}
+  #files .file-tools{margin-block:12px}
+
+  /* Coding: stronger desktop hierarchy without changing editor behavior. */
+  #coding.coding-studio{padding:var(--workspace-desktop-pad)!important}
+  #coding .code-head{
+    align-items:flex-start;
+    gap:24px!important;
+    margin-bottom:18px;
+  }
+  #coding .code-neon-line{margin-bottom:16px}
+  #coding .code-toolbar{
+    min-height:54px;
+    padding:10px 12px;
+    margin-bottom:14px;
+    border:1px solid var(--pa-border);
+    border-radius:14px;
+    background:var(--pa-card);
+  }
+  #coding .code-grid{gap:16px}
+  #coding .code-panel{overflow:hidden}
+  #coding .code-ai{margin-top:18px}
+
+  /* Library: use the same workspace density as Code/Research. */
+  #library.library-books-only-v53{
+    padding:var(--workspace-desktop-pad)!important;
+  }
+  #library .lib53-hero{
+    min-height:190px;
+    padding:28px 30px!important;
+    margin-bottom:16px;
+  }
+  #library .lib53-tabs{
+    padding:6px!important;
+    margin-bottom:18px;
+  }
+  #library .lib53-mine,
+  #library .lib-tab-state{
+    padding-inline:2px;
+  }
+  #library .lib53-section-head{margin-bottom:12px}
+  #library .lib-grid{gap:16px!important}
+  #webNovelHub{margin-top:22px}
+
+  /* Chat aligns with the same desktop frame while keeping its own app-like shell. */
+  #chat{
+    border:1px solid var(--pa-border);
+    border-radius:var(--workspace-desktop-radius);
+    overflow:hidden;
+    background:var(--pa-bg);
+  }
+  #chat .v3-chat-shell{
+    height:calc(100dvh - 56px - 64px);
+    min-height:620px;
+    grid-template-columns:224px minmax(0,1fr);
+  }
+  #chat .v3-sidebar{
+    padding:16px 14px;
+  }
+  #chat .v3-chat-top{
+    min-height:64px;
+    padding:12px 20px;
+  }
+  #chat #messages.v3-messages{
+    padding-top:32px;
+    padding-bottom:34px;
+  }
+  #chat #chatForm.v3-composer{
+    padding-top:12px;
+    padding-bottom:14px;
+  }
+}
+
+@media(min-width:1280px){
+  #chat .v3-chat-shell{grid-template-columns:236px minmax(0,1fr)}
+  #coding .code-grid{gap:18px}
+  #library .lib53-hero{padding-inline:34px!important}
+}
