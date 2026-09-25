@@ -886,8 +886,6 @@ html[data-motion="off"] .star-game-target{animation:none}
 
 
 /* STEP 11 — single-owner UI/theme cleanup */
-html:not(.pocket-v59) body{background:var(--pa-bg);color:var(--pa-text)}
-html:not(.pocket-v59) .topbar{background:var(--pa-surface);color:var(--pa-text)}
 @media(max-width:767px){
   .theme-grid{grid-template-columns:1fr 1fr}
   .topbar .brand strong{white-space:nowrap}
