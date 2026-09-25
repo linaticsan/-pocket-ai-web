@@ -26,7 +26,7 @@ assert(index.includes("const BUILD='step20-browser-regression'"),'STEP 20 build 
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v20'"),'STEP 20 app-shell cache must be v20');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v21'"),'STEP 20 app-shell cache must be v21');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -122,6 +122,7 @@ assert(!feature.includes('v3-hotfix.css')&&!feature.includes('visibility-v82.css
 assert(!sw.includes('v3-hotfix.css')&&!sw.includes('visibility-v82.css'),'Deleted compatibility CSS must not be precached');
 assert(!chatCss.includes('bottomNav')&&!chatCss.includes('pocket-v59'),'Chat CSS must not contain deleted navigation/theme compatibility selectors');
 assert(chatCss.includes('bottom:auto!important'),'Mobile Chat composer must not reserve deleted bottom-nav space');
+assert(chatCss.includes('position:relative!important')&&chatCss.includes('top:auto!important'),'Mobile Chat controls must not stick under the global header');
 assert(!files80Css.includes('132px')&&!files80Css.includes('120px!important'),'Files must not reserve deleted bottom-nav clearance');
 assert(!libraryCss.includes('150px!important')&&!libraryCss.includes('98px!important'),'Library must not reserve deleted bottom-nav clearance');
 assert(coreCss.includes('Authoritative workspace visibility'),'Workspace visibility must live in ui-core.css');
