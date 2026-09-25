@@ -1414,3 +1414,152 @@ body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
   #home .home-quests .home-section-head{display:block}
   #home .home-quests .home-section-head>small{display:block;max-width:none;margin-top:4px;text-align:left}
 }
+
+
+/* STEP 22 — authoritative desktop workspace polish */
+@media(min-width:1024px){
+  :root{
+    --desktop-content-max:1200px;
+    --content-max-width:var(--desktop-content-max);
+  }
+
+  .pa-desktop-sidebar{
+    left:0;
+    top:0;
+    bottom:0;
+    width:var(--sidebar-width);
+    padding:20px 15px;
+  }
+  .pa-desktop-sidebar nav{gap:5px}
+  .pa-desktop-sidebar nav button,
+  .pa-side-bottom button{
+    min-height:44px;
+    padding:10px 12px;
+    border-radius:12px;
+  }
+  .pa-new-chat{
+    min-height:46px;
+    margin:0 2px 26px;
+    border-radius:12px;
+  }
+  .pa-nav-group+.pa-nav-group{margin-top:20px}
+
+  .topbar{
+    margin-left:var(--sidebar-width);
+    width:calc(100% - var(--sidebar-width));
+    min-height:56px;
+    height:56px;
+    padding:8px 24px;
+  }
+
+  main{
+    margin-left:var(--sidebar-width);
+    padding:0 28px 48px;
+  }
+
+  #home .home-step1{
+    max-width:var(--desktop-content-max);
+    padding:36px 0 48px;
+  }
+  #home .home-step1::before{
+    right:2%;
+    top:22px;
+    width:300px;
+    height:300px;
+    opacity:.82;
+  }
+  #home .home-hero{
+    min-height:340px;
+    grid-template-columns:minmax(0,1.28fr) minmax(300px,.72fr);
+    gap:40px;
+    padding:34px 38px;
+    border-radius:24px;
+  }
+  #home .home-hero-copy{
+    max-width:720px;
+    align-self:center;
+  }
+  #home .home-welcome h1{
+    max-width:720px;
+    font-size:clamp(34px,3vw,42px);
+  }
+  #home .home-welcome p{
+    max-width:620px;
+    font-size:15px;
+  }
+  #home .home-composer{
+    max-width:720px;
+    min-height:64px;
+    margin-top:20px;
+  }
+  #home .home-ai-status{margin-top:10px}
+
+  #home .home-mascot-stage{
+    min-height:300px;
+    align-self:center;
+    gap:10px;
+  }
+  #home .pocket-room{
+    width:min(100%,344px);
+    height:262px;
+  }
+  #home .room-mini-controls{margin-top:2px}
+
+  #home .home-step-section{
+    margin-top:32px;
+    margin-bottom:34px;
+  }
+  #home .home-section-head{margin-bottom:12px}
+  #home .home-section-head h2{font-size:20px}
+
+  #home .quick-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:16px;
+  }
+  #home .quick-grid>button{
+    min-height:132px;
+    padding:18px 18px;
+    border-radius:16px;
+  }
+
+  #home .pocket-quest-grid{gap:14px}
+  #home .pocket-quest{padding:17px 18px}
+
+  #home .recent-row{
+    grid-template-columns:36px minmax(0,1fr) 92px 92px 18px;
+    padding:13px 16px;
+  }
+
+  #home .project-grid.has-items{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:16px;
+  }
+
+  #local,#files,#surface,#github,#library,#coding{
+    max-width:var(--desktop-content-max);
+  }
+}
+
+@media(min-width:1280px){
+  :root{
+    --sidebar-width:240px;
+    --desktop-content-max:1240px;
+  }
+
+  .pa-desktop-sidebar{padding:22px 16px}
+  .topbar{padding-inline:28px}
+  main{padding-inline:32px}
+
+  #home .home-step1{padding-top:40px}
+  #home .home-hero{
+    min-height:360px;
+    grid-template-columns:minmax(0,1.3fr) minmax(330px,.7fr);
+    gap:48px;
+    padding:38px 42px;
+  }
+  #home .pocket-room{
+    width:352px;
+    height:266px;
+  }
+  #home .quick-grid>button{min-height:136px}
+}
