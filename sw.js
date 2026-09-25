@@ -1,5 +1,5 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v17';
+const CACHE=APP_CACHE_PREFIX+'v18';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
@@ -7,9 +7,9 @@ const CORE_ASSETS=[
   './boot-v83.css','./boot-v83.js','./icons-v132.css','./icons-v132.js',
   './ui-core.css','./app.js','./workspace.js','./feature-v2.js',
   './ux-v39.js','./responsive-v92.js',
-  './api-hub.js','./local-oneclick.js','./v3.css','./v3-hotfix.css',
+  './api-hub.js','./local-oneclick.js','./v3.css',
   './v3.js','./v3-guard.js','./chat-v77.css','./library-v33.css',
-  './library-v33.js','./motion-v32.css','./visibility-v82.css'
+  './library-v33.js','./motion-v32.css'
 ];
 
 const OPTIONAL_ASSETS=[
