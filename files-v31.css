@@ -1,16 +1,7 @@
-/* Pocket AI V31 — compact documents + mobile chat repair */
-.file-type-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}.file-type-strip span{display:flex;align-items:center;justify-content:center;min-height:48px;padding:8px;border:1px solid var(--line);border-radius:15px;background:var(--glass2);font-size:12px;font-weight:800;text-align:center}
+/* STEP 19 — compact file-type strip */
+.file-type-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}
+.file-type-strip span{display:flex;align-items:center;justify-content:center;min-height:48px;padding:8px;border:1px solid var(--line);border-radius:15px;background:var(--glass2);font-size:12px;font-weight:800;text-align:center}
 @media(max-width:650px){
- .pocket-v3 #files{padding:14px 12px 100px!important}.pocket-v3 #files>h1{font-size:27px!important;line-height:1.08!important;margin:5px 0 8px!important}.pocket-v3 #files>.eyebrow{margin:0!important}.pocket-v3 #files>.muted{font-size:14px!important;line-height:1.45!important;margin:0 0 12px!important}
- .file-type-strip{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}.file-type-strip span{min-height:40px;padding:6px 3px;font-size:10px}
- .pocket-v3 #files .picker{min-height:112px!important;padding:14px!important;margin:8px 0 12px!important}.pocket-v3 #files .picker:before{content:'📂';display:block;font-size:26px;margin-bottom:4px}.pocket-v3 #files .picker input{width:100%!important;max-width:100%!important;font-size:13px!important}
- .pocket-v3 #files>label:not(.picker){margin-top:10px!important}.pocket-v3 #files #fileName{height:46px!important}.pocket-v3 #files #fileText{min-height:230px!important;height:34dvh!important;max-height:390px!important}
- .pocket-v3 #v3DocTools{margin:12px 0!important;padding:14px!important}.pocket-v3 #v3DocTools .row{grid-template-columns:1fr 1fr!important}.pocket-v3 #v3DocTools button{min-height:44px!important;padding:8px!important;font-size:13px!important}
- .pocket-v3 #chat{height:calc(100dvh - 158px - env(safe-area-inset-bottom))!important;min-height:0!important;padding:0!important}
- .pocket-v3 .v3-chat-top{min-height:52px!important;height:52px!important;overflow:visible!important}.pocket-v3 .v3-chat-top>div:first-child{display:none!important}
- .pocket-v3 .v3-top-controls{width:100%!important;grid-template-columns:minmax(0,1fr) 42px 42px 42px!important}
- .pocket-v3 #messages.v3-messages{padding:12px 10px!important}.pocket-v3 #messages .v3-msg{min-height:0!important}.pocket-v3 #messages .v3-bubble{padding:12px!important;border-radius:18px!important}
- .pocket-v3 #messages .v3-bubble header{position:relative!important;inset:auto!important;transform:none!important;margin:0 0 8px!important;height:auto!important;min-height:20px!important}
- .pocket-v3 #messages .v3-text{position:relative!important;inset:auto!important;transform:none!important;margin:0!important;padding:0!important;float:none!important;clear:both!important}
- .pocket-v3 .v3-composer{padding:7px 8px!important}.pocket-v3 .v3-compose-row{align-items:center!important}.pocket-v3 #v3RouteBadge{display:none!important}
+  .file-type-strip{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
+  .file-type-strip span{min-height:40px;padding:6px 3px;font-size:10px}
 }
