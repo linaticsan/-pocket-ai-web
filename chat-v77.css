@@ -40,6 +40,9 @@
 
   /* keep controls compact instead of turning them into another card */
   #v3ChatShell .v3-chat-top{
+    position:relative!important;
+    top:auto!important;
+    z-index:5!important;
     min-height:42px!important;
     height:42px!important;
     margin:0 2px!important;
