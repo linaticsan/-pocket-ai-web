@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step22-desktop-polish'"),'STEP 22 build marker is missing');
+assert(index.includes("const BUILD='step23-feature-workspaces'"),'STEP 23 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v25'"),'STEP 22 app-shell cache must be v25');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v26'"),'STEP 23 app-shell cache must be v26');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -132,6 +132,12 @@ assert(!libraryCss.includes('150px!important')&&!libraryCss.includes('98px!impor
 assert(coreCss.includes('Authoritative workspace visibility'),'Workspace visibility must live in ui-core.css');
 assert(coreCss.includes('STEP 21 — authoritative mobile Home layout'),'STEP 21 mobile Home block is missing');
 assert(coreCss.includes('STEP 22 — authoritative desktop workspace polish'),'STEP 22 desktop block is missing');
+assert(coreCss.includes('STEP 23 — desktop feature workspace consistency'),'STEP 23 feature workspace block is missing');
+assert((coreCss.match(/STEP 23 — desktop feature workspace consistency/g)||[]).length===1,'STEP 23 feature workspace layout must have a single owner');
+assert(coreCss.includes('--workspace-desktop-max:1240px'),'Desktop feature workspace width token is missing');
+assert(coreCss.includes("grid-template-columns:224px minmax(0,1fr)"),'Desktop Chat workspace column sizing is missing');
+assert(coreCss.includes("#library.library-books-only-v53"),'Desktop Library workspace normalization is missing');
+assert(coreCss.includes("#coding.coding-studio"),'Desktop Code workspace normalization is missing');
 assert((coreCss.match(/STEP 22 — authoritative desktop workspace polish/g)||[]).length===1,'STEP 22 desktop layout must have a single owner');
 assert(coreCss.includes('--desktop-content-max:1200px'),'Desktop content width token is missing');
 assert(coreCss.includes('@media(min-width:1280px)')&&coreCss.includes('--sidebar-width:240px'),'Large-desktop sidebar scaling is missing');
