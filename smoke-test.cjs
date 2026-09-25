@@ -22,11 +22,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step23a-ios-audio-fix'"),'STEP 23A build marker is missing');
+assert(index.includes("const BUILD='step23b-audio-fallback'"),'STEP 23B build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v27'"),'STEP 23A app-shell cache must be v27');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v28'"),'STEP 23B app-shell cache must be v28');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -43,7 +43,10 @@ assert(workspace.includes('function primePocketAudio()'),'iPhone audio priming h
 assert(workspace.includes('async function unlockPocketAudio()'),'iPhone audio unlock helper is missing');
 assert(workspace.includes("ctx.state==='interrupted'"),'iOS interrupted AudioContext recovery is missing');
 assert(workspace.includes("document.addEventListener('touchend',unlockAudioFromGesture"),'iOS touch audio unlock hook is missing');
-assert(index.includes('./workspace.js?v=20260926-step23a-ios-audio-fix'),'STEP 23A workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260926-step23b-audio-fallback'),'STEP 23B workspace cache-bust is missing');
+assert(index.includes('id="soundTest"'),'Sound test control is missing');
+assert(workspace.includes('function playPocketMediaTone'),'HTML audio fallback is missing');
+assert(workspace.includes("closest('button,a[href],[role=\"button\"]')"),'Global tap sound delegation is missing');
 assert(!feature.includes('ui-v59.css'),'Legacy light-only ui-v59.css must not load');
 assert(!feature.includes('polish-v84.css'),'Legacy polish-v84.css must not load');
 assert(!feature.includes('simple-v87.css'),'Legacy simple-v87.css must not load');
