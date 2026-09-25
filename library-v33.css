@@ -1,7 +1,7 @@
 /* Pocket AI V33 Library */
 .library-v33{padding:24px!important}.lib-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.lib-head h1{margin-bottom:8px}.lib-actions{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 8px}.lib-upload{display:inline-flex!important;align-items:center;margin:0!important;min-height:44px;padding:10px 15px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;font-weight:750;cursor:pointer}.lib-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;margin-top:16px}.lib-search{display:flex;align-items:center;gap:10px;margin-bottom:12px}.lib-search input{flex:1}.lib-search span{font-size:12px;color:var(--muted);white-space:nowrap}.lib-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lib-card{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr);gap:4px 10px;padding:15px;border:1px solid var(--line);border-radius:18px;background:var(--glass2);min-width:0;transition:.18s}.lib-card.selected{border-color:color-mix(in srgb,var(--purple) 60%,var(--line));box-shadow:0 0 0 2px color-mix(in srgb,var(--purple) 12%,transparent)}.lib-pick{position:absolute;right:8px;top:8px;width:32px;height:32px;min-height:0;padding:0;border-radius:50%;font-size:16px}.lib-icon{grid-row:1/4;font-size:30px;align-self:center}.lib-card>strong{padding-right:28px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lib-card>small{color:var(--muted);font-size:11px}.lib-card-actions{display:flex;gap:6px;margin-top:7px}.lib-card-actions button{min-height:34px;padding:5px 9px;font-size:11px}.lib-empty{grid-column:1/-1;padding:35px;text-align:center;border:1px dashed var(--line);border-radius:18px}.lib-ai{border:1px solid var(--line);border-radius:20px;background:color-mix(in srgb,var(--glass2) 94%,var(--purple) 3%);padding:17px;align-self:start;position:sticky;top:150px}.lib-ai h2{margin-top:0}.lib-ai textarea{resize:vertical}.lib-chips,.lib-export{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}.lib-chips button,.lib-export button{min-height:36px;padding:7px 9px;font-size:11px}.lib-ai>.primary{width:100%;margin:4px 0 8px}.lib-starter{margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:12px}.lib-starter summary{cursor:pointer;font-weight:800}.starter-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 3px;border-bottom:1px solid var(--line);font-size:12px}.starter-row:last-child{border-bottom:0}.starter-row span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.starter-row strong{white-space:nowrap;font-size:10px}.starter-row .ready{color:#22c55e}.starter-row .need{color:#f59e0b}
 @media(max-width:900px){.lib-layout{grid-template-columns:1fr}.lib-ai{position:static}.lib-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:650px){.library-v33{padding:16px 12px 98px!important}.lib-head{display:block}.lib-head .privacy-pill{display:inline-block;margin-top:8px}.lib-actions{display:grid;grid-template-columns:1fr 1fr}.lib-upload{justify-content:center}.lib-grid{grid-template-columns:1fr}.lib-ai{padding:14px}}
+@media(max-width:650px){.library-v33{padding:16px 12px 24px!important}.lib-head{display:block}.lib-head .privacy-pill{display:inline-block;margin-top:8px}.lib-actions{display:grid;grid-template-columns:1fr 1fr}.lib-upload{justify-content:center}.lib-grid{grid-template-columns:1fr}.lib-ai{padding:14px}}
 @media(max-width:390px){.lib-actions{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.lib-card{transition:none!important}}
 
@@ -52,7 +52,7 @@
 .book-empty>span{display:block;font-size:44px;margin-bottom:8px}
 
 @media(max-width:650px){
- .library-books-only{padding:12px 10px 150px!important}
+ .library-books-only{padding:12px 10px calc(24px + env(safe-area-inset-bottom))!important}
  .book-only-head{padding:18px 16px!important;margin-bottom:13px}
  .book-only-head h1{font-size:31px!important;line-height:1.05!important}
  .book-only-head p.muted{font-size:14px!important;line-height:1.5!important}
@@ -62,16 +62,6 @@
  .book-card{grid-template-columns:52px minmax(0,1fr)!important;padding:13px!important}
  .book-spine{width:50px;height:66px}
 }
-
-
-/* V51 final books-only cleanup */
-.library-books-only-v51 .lib-actions,
-.library-books-only-v51 .lib-layout,
-.library-books-only-v51 .lib-ai,
-.library-books-only-v51 .lib-pick{display:none!important}
-.library-books-only-v51 .book-card{contain:layout paint!important}
-.library-books-only-v51 .book-card-copy{min-width:0!important}
-.library-books-only-v51 .book-card-copy>*{max-width:100%!important}
 
 
 /* V53 — Web-novel-inspired Library, original Pocket AI design */
@@ -97,7 +87,7 @@
 .library-books-only-v53 .book-library-storage{margin-top:12px!important;font-size:10px!important;color:#777a94!important}
 
 @media(max-width:650px){
- .library-books-only-v53{padding:12px 10px 150px!important}
+ .library-books-only-v53{padding:12px 10px calc(24px + env(safe-area-inset-bottom))!important}
  .lib53-hero{grid-template-columns:minmax(0,1fr) 86px;padding:18px 16px;border-radius:24px}.lib53-copy h1{font-size:31px}.lib53-copy>p:not(.eyebrow){font-size:13px}.lib53-art{min-height:100px}.lib53-art>span{font-size:58px}.lib53-hero-actions button{font-size:10px!important;padding:8px 10px!important}
  .lib53-tabs{top:78px;margin:10px 0 13px}
  .lib53-continue{grid-template-columns:52px minmax(0,1fr);padding:12px}.lib53-continue-cover{width:50px;height:64px}.lib53-continue>button{grid-column:2;width:max-content;padding:7px 11px!important}
