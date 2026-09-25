@@ -1,56 +1,6 @@
-/* Pocket AI V77 — authoritative mobile Chat layout */
+/* Pocket AI mobile Chat layout — structure only; theme lives in ui-core.css */
 @media (max-width:650px){
-  :root{
-    --chat-bg:#f7f6fb;
-    --chat-card:#ffffff;
-    --chat-soft:#f6f1ff;
-    --chat-soft-2:#fff3fa;
-    --chat-text:#17152f;
-    --chat-muted:#77728a;
-    --chat-line:#e9e4f2;
-    --chat-purple:#9957ee;
-    --chat-pink:#ee65b7;
-  }
-
-  html[data-theme="dark"]{
-    --chat-bg:#111018;
-    --chat-card:#1a1822;
-    --chat-soft:#24212e;
-    --chat-soft-2:#2a2030;
-    --chat-text:#f7f3ff;
-    --chat-muted:#b9b1c6;
-    --chat-line:#373241;
-  }
-  html[data-theme="sakura"]{
-    --chat-bg:#fff6fa;
-    --chat-card:#fffdfd;
-    --chat-soft:#fceff5;
-    --chat-soft-2:#fff5f9;
-    --chat-text:#3a2232;
-    --chat-muted:#8a6a7a;
-    --chat-line:#f0d9e4;
-  }
-  html[data-theme="green"]{
-    --chat-bg:#f3fbf7;
-    --chat-card:#fff;
-    --chat-soft:#ecf7f1;
-    --chat-soft-2:#f5fcf8;
-    --chat-text:#17352c;
-    --chat-muted:#6b7f77;
-    --chat-line:#d9ebe2;
-  }
-  html[data-theme="oled"]{
-    --chat-bg:#000;
-    --chat-card:#050505;
-    --chat-soft:#0b0b0b;
-    --chat-soft-2:#111;
-    --chat-text:#fff;
-    --chat-muted:#aaa;
-    --chat-line:#242424;
-  }
-
-  body{background:var(--chat-bg)!important}
-  main{padding:10px 10px calc(96px + env(safe-area-inset-bottom))!important}
+  /* Theme tokens are provided centrally by ui-core.css. */
 
   #chat{
     width:100%!important;
@@ -200,9 +150,9 @@
   #messages .v3-suggestions button:nth-child(4)::before{content:'⌨️'}
 
   #chatForm.v3-composer{
-    position:sticky!important;
+    position:relative!important;
     left:auto!important;right:auto!important;
-    bottom:calc(82px + env(safe-area-inset-bottom))!important;
+    bottom:auto!important;
     width:100%!important;
     margin:0!important;
     padding:10px!important;
