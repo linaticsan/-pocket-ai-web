@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step21-mobile-ui', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step22-desktop-polish', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -215,6 +215,56 @@ test.describe('mobile Home layout', () => {
     await expect(page.locator('#home .quick-grid')).toHaveCSS('grid-template-columns', /.+/);
     const quickColumns = await page.locator('#home .quick-grid').evaluate(el => getComputedStyle(el).gridTemplateColumns.split(' ').length);
     expect(quickColumns).toBe(1);
+    await expectNoPageErrors(errors);
+  });
+});
+
+
+async function expectDesktopGeometry(page, expectedColumns=4) {
+  const geometry = await page.evaluate(() => {
+    const rect = sel => document.querySelector(sel)?.getBoundingClientRect();
+    const sidebar = rect('#paDesktopSidebar');
+    const header = rect('.topbar');
+    const main = rect('body > main');
+    const step1 = rect('#home .home-step1');
+    const hero = rect('#home .home-hero');
+    const copy = rect('#home .home-hero-copy');
+    const room = rect('#pocketRoom');
+    const quick = document.querySelector('#home .quick-grid');
+    return {
+      viewportWidth: innerWidth,
+      docWidth: document.documentElement.scrollWidth,
+      sidebar, header, main, step1, hero, copy, room,
+      quickColumns: quick ? getComputedStyle(quick).gridTemplateColumns.split(' ').length : 0
+    };
+  });
+
+  expect(geometry.docWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.sidebar.right).toBeLessThanOrEqual(geometry.main.left + 1);
+  expect(Math.abs(geometry.header.left - geometry.sidebar.right)).toBeLessThanOrEqual(1);
+  expect(geometry.step1.left).toBeGreaterThanOrEqual(geometry.main.left - 1);
+  expect(geometry.step1.right).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.step1.width).toBeLessThanOrEqual(1242);
+  expect(geometry.copy.right).toBeLessThanOrEqual(geometry.room.left + 6);
+  expect(geometry.room.right).toBeLessThanOrEqual(geometry.hero.right + 1);
+  expect(geometry.quickColumns).toBe(expectedColumns);
+}
+
+test.describe('desktop Home layout', () => {
+  test('1440px desktop uses a centered workspace and true two-column hero', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const errors = await openPocket(page);
+    await expectDesktopGeometry(page, 4);
+    await expect(page.locator('#paDesktopSidebar')).toBeVisible();
+    await expect(page.locator('#paSidebarToggle')).toBeHidden();
+    await expectNoPageErrors(errors);
+  });
+
+  test('1024px desktop remains desktop-like without collapsing into phone proportions', async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 768 });
+    const errors = await openPocket(page);
+    await expectDesktopGeometry(page, 4);
+    await expect(page.locator('#home .home-hero')).toHaveCSS('display', 'grid');
     await expectNoPageErrors(errors);
   });
 });
