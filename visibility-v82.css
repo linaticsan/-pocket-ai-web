@@ -1,5 +1,0 @@
-/* STEP 19 — authoritative single-view visibility.
-   Navigation always synchronizes the hidden attribute; one rule is sufficient. */
-body > main > .view[hidden]{
-  display:none!important;
-}
