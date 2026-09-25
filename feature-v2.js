@@ -50,7 +50,7 @@ function loadPocketModule(path){
   return loadedModules.get(base);
 }
 const coreStyles=[
- './v3.css?v=20260921-v76',
+ './v3.css?v=20260925-step19-css-debt',
  './library-v33.css?v=20260925-step19-css-debt',
  './motion-v32.css?v=20260921-v59',
  './chat-v77.css?v=20260925-step19-css-debt'
@@ -65,7 +65,7 @@ const FEATURE_BUNDLES={
     modules:['./coding-v1.js?v=20260925-step16']
   },
   files:{
-    styles:['./files-v31.css?v=20260920-v52','./files-v80.css?v=20260922-v88'],
+    styles:['./files-v31.css?v=20260925-step19-css-debt','./files-v80.css?v=20260925-step19-css-debt'],
     modules:['./files-v32.js?v=20260922-v88']
   },
   library:{
