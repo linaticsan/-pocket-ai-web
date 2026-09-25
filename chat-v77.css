@@ -66,6 +66,7 @@
     border:1px solid var(--chat-line)!important;
     background:var(--chat-card)!important;color:var(--chat-text)!important;
     box-shadow:0 5px 14px rgba(69,51,111,.06)!important;
+    scroll-margin-top:64px;
   }
 
   #messages.v3-messages{display:block!important}
