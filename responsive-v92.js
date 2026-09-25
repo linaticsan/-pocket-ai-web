@@ -76,10 +76,15 @@ function setBackgroundInert(on){
   }
 }
 function focusDestination(id){
-  if(id==='chat'){($('#prompt')||$('#v3NewChat'))?.focus({preventScroll:true});return}
   const view=$('#'+CSS.escape(id));
-  const target=view?.querySelector('h1,h2,[role="heading"]');
-  if(target){target.setAttribute('tabindex','-1');target.focus({preventScroll:true});target.addEventListener('blur',()=>target.removeAttribute('tabindex'),{once:true})}
+  const target=id==='chat'
+    ? ($('#v3ChatTitle')||view?.querySelector('h1,h2,[role="heading"]'))
+    : view?.querySelector('h1,h2,[role="heading"]');
+  if(target){
+    target.setAttribute('tabindex','-1');
+    target.focus({preventScroll:true});
+    target.addEventListener('blur',()=>target.removeAttribute('tabindex'),{once:true});
+  }
 }
 function openDrawer(opener=$('#paSidebarToggle')){
   if(innerWidth>=768)return;
