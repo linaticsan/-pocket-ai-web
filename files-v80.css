@@ -158,15 +158,9 @@
   color:#fff!important;
 }
 
-/* Give fixed bottom navigation real clearance in Files. */
-#files{
-  scroll-padding-bottom:120px!important;
-  padding-bottom:calc(132px + env(safe-area-inset-bottom))!important;
-}
-
 @media(max-width:650px){
   #files .document-studio-v50{
-    margin:14px 0 88px!important;
+    margin:14px 0 18px!important;
     padding:14px!important;
     border-radius:22px!important;
   }
