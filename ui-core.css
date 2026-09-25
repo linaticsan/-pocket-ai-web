@@ -548,9 +548,6 @@ html[data-motion="off"] #home .pocket-mascot{transition:none}
 /* 20. Accessibility */
 button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--pa-accent);outline-offset:2px}
 
-@media(max-width:340px){#home .quick-grid{grid-template-columns:1fr}#home .quick-grid>button{min-height:96px;grid-template-columns:42px minmax(0,1fr) 16px;grid-template-rows:auto}#home .quick-arrow{display:block}}
-
-
 /* STEP 5 — Pocket progression */
 #home .pocket-xp{width:min(190px,100%);display:grid;gap:6px;margin-top:2px;color:var(--pa-secondary)}
 #home .pocket-xp-head{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:12px;font-weight:600;color:var(--pa-text)}
@@ -637,24 +634,6 @@ html[data-motion="off"] #home .pocket-room-window i,html[data-motion="off"] #hom
 html[data-motion="off"] #home .room-object,html[data-motion="off"] #home .room-tooltip{transition:none}
 @media(prefers-reduced-motion:reduce){#home .pocket-room-window i,#home .pocket-room-plant i{animation:none}#home .room-object,#home .room-tooltip{transition:none}}
 @media(min-width:768px) and (max-width:1023px){#home .pocket-room{width:min(100%,270px);height:232px}#home .room-mascot-zone{top:34px;transform:translateX(-50%) scale(.9)}#home .room-books{left:12px}.room-files{left:12px}.room-desk{right:12px}}
-@media(max-width:767px){
- #home .home-mascot-stage{min-height:188px}
- #home .pocket-room{width:min(100%,360px);height:178px;border-radius:20px}
- #home .pocket-room-wall{bottom:43px;border-radius:19px 19px 0 0}.pocket-room-floor{height:49px;border-radius:0 0 19px 19px}
- #home .pocket-room-window{right:17px;top:14px;width:48px;height:39px;border-width:4px}
- #home .pocket-room-plant{display:none}
- #home .room-mascot-zone{top:17px;width:150px;height:158px}
- #home .room-mascot-zone .pocket-status{bottom:19px}
- #home .room-mascot-zone .pocket-xp{bottom:-30px;width:145px}
- #home .room-mascot-zone .pocket-xp-toast{bottom:-52px}
- #home .room-object{width:44px;height:44px;border-radius:12px}
- #home .room-books{left:11px;top:18px}.room-files{left:12px;bottom:18px}.room-desk{right:12px;bottom:17px}.room-chat{bottom:9px}
- #home .room-tooltip{display:none}
- #home .room-books .room-object-art i:nth-child(1){left:11px}.room-books .room-object-art i:nth-child(2){left:19px}.room-books .room-object-art i:nth-child(3){left:27px}
-}
-@media(max-width:340px){#home .pocket-room{height:166px}#home .room-mascot-zone{transform:translateX(-50%) scale(.88);transform-origin:top center}#home .room-object{width:40px;height:40px}#home .room-books{left:7px}.room-files{left:7px}.room-desk{right:7px}}
-
-
 /* STEP 7 — Room cosmetics */
 #home .home-mascot-stage{position:relative;min-height:304px;flex-direction:column;gap:9px}
 #home .room-decorate-button{min-height:32px;padding:5px 11px;pointer-events:auto;border:1px solid var(--pa-border);border-radius:999px;background:var(--pa-card);color:var(--pa-secondary);font-size:11px;font-weight:600;box-shadow:none}
@@ -704,8 +683,8 @@ html[data-motion="gentle"] #home .room-star-lamp i,html[data-motion="off"] #home
 .preview-floor-stars i{position:absolute;width:7px;height:7px;border:1px solid var(--pa-accent);transform:rotate(45deg);top:14px}.preview-floor-stars i:first-child{left:8px}.preview-floor-stars i:last-child{right:8px;width:5px;height:5px}
 .preview-desk-lamp i{position:absolute;left:14px;top:8px;width:10px;height:9px;border-radius:6px;background:var(--pa-accent-soft);border:1px solid var(--pa-accent)}.preview-desk-lamp b{position:absolute;left:17px;top:17px;width:2px;height:12px;background:var(--pa-secondary)}
 .preview-desk-bot i{position:absolute;left:9px;top:9px;width:18px;height:17px;border:1px solid var(--pa-accent);border-radius:5px}.preview-desk-bot i::before,.preview-desk-bot i::after{content:"";position:absolute;top:5px;width:3px;height:3px;border-radius:50%;background:var(--pa-accent)}.preview-desk-bot i::before{left:3px}.preview-desk-bot i::after{right:3px}.preview-desk-bot b{position:absolute;left:17px;top:5px;width:2px;height:5px;background:var(--pa-secondary)}
-@media(max-width:767px){#home .home-mascot-stage{min-height:220px;gap:7px}.room-decor-dialog{width:min(430px,calc(100vw - 20px));max-height:82vh;padding:18px 14px}.room-cosmetic-groups{grid-template-columns:1fr;gap:16px}.room-cosmetic-group{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.room-cosmetic-group h3{grid-column:1/-1}.room-cosmetic-option{min-height:64px}.room-star-lamp,.room-mini-bot{right:60px;bottom:44px}}
-@media(max-width:340px){.room-cosmetic-group{grid-template-columns:1fr}#home .home-mascot-stage{min-height:208px}}
+@media(max-width:767px){.room-decor-dialog{width:min(430px,calc(100vw - 20px));max-height:82vh;padding:18px 14px}.room-cosmetic-groups{grid-template-columns:1fr;gap:16px}.room-cosmetic-group{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.room-cosmetic-group h3{grid-column:1/-1}.room-cosmetic-option{min-height:64px}}
+@media(max-width:340px){.room-cosmetic-group{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){#home .room-star-lamp i,.room-cosmetic-option{animation:none;transition:none}}
 html[data-motion="off"] .room-cosmetic-option{transition:none}
 
@@ -751,141 +730,6 @@ html[data-motion="off"] .star-game-target{animation:none}
 #settingsDialog .sound-volume-control input[type="range"]{grid-column:1/-1;width:100%;margin:0;padding:0;border:0;outline:0;box-shadow:none;background:transparent;accent-color:var(--pa-accent)}
 #settingsDialog .sound-volume-control input[type="range"]:focus-visible{outline:2px solid var(--pa-accent);outline-offset:3px}
 
-
-
-/* STEP 10 — Mobile Home composition cleanup */
-@media(max-width:767px){
-  #home .home-hero{
-    gap:16px;
-    padding:18px 14px 20px;
-    overflow:visible;
-  }
-  #home .home-mascot-stage{
-    width:100%;
-    min-height:0;
-    height:auto;
-    display:flex;
-    flex-direction:column;
-    align-items:stretch;
-    justify-content:flex-start;
-    gap:10px;
-  }
-  #home .pocket-room{
-    width:100%;
-    max-width:360px;
-    height:224px;
-    flex:0 0 224px;
-    align-self:center;
-    overflow:hidden;
-  }
-  #home .pocket-room-wall{bottom:57px}
-  #home .pocket-room-floor{height:58px}
-  #home .room-mascot-zone{
-    top:18px;
-    width:160px;
-    height:198px;
-    transform:translateX(-50%);
-  }
-  #home .room-mascot-zone .pocket-status{
-    bottom:58px;
-    max-width:156px;
-    padding:4px 7px;
-    font-size:10px;
-  }
-  #home .room-mascot-zone .pocket-status strong{font-size:10px}
-  #home .room-mascot-zone .pocket-xp{
-    bottom:4px;
-    width:150px;
-    gap:4px;
-  }
-  #home .pocket-xp-head{font-size:10px;gap:8px}
-  #home .pocket-xp-track{height:6px}
-  #home .pocket-xp>small{font-size:9.5px;line-height:1.2}
-  #home .room-mascot-zone .pocket-xp-toast{
-    bottom:62px;
-    z-index:16;
-    max-width:170px;
-    font-size:10px;
-  }
-
-  #home .room-books{left:10px;top:17px}
-  #home .room-files{left:10px;bottom:15px}
-  #home .room-desk{right:10px;bottom:15px}
-  #home .room-chat{
-    left:auto;
-    right:10px;
-    top:70px;
-    bottom:auto;
-    transform:none;
-  }
-  #home .room-object-react.room-chat{transform:scale(.94)}
-  #home .room-mini-controls{
-    position:relative;
-    z-index:8;
-    width:100%;
-    min-height:44px;
-    margin:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-    pointer-events:none;
-  }
-  #home .room-decorate-button,
-  #home .room-play-button{
-    min-height:40px;
-    padding:7px 14px;
-    pointer-events:auto;
-  }
-
-  #home .home-composer{
-    min-height:58px;
-    grid-template-columns:42px minmax(0,1fr) 44px;
-    gap:6px;
-    padding:7px 8px;
-  }
-  #home .home-attach,
-  #home .home-send{
-    width:42px;
-    height:42px;
-    min-width:42px;
-    min-height:42px;
-  }
-  #home .home-ai-status{margin-top:0}
-
-  #home .quick-grid{gap:10px}
-  #home .quick-grid>button{
-    min-height:106px;
-    padding:12px;
-    grid-template-columns:38px minmax(0,1fr);
-    grid-template-rows:auto;
-    gap:9px;
-    align-content:center;
-  }
-  #home .quick-icon{width:38px;height:38px}
-  #home .quick-copy strong{font-size:13px}
-  #home .quick-copy small{font-size:11px;line-height:1.35}
-}
-
-@media(max-width:360px){
-  #home .home-hero{padding-inline:12px}
-  #home .pocket-room{
-    height:214px;
-    flex-basis:214px;
-  }
-  #home .room-mascot-zone{
-    top:15px;
-    height:190px;
-    transform:translateX(-50%) scale(.94);
-    transform-origin:top center;
-  }
-  #home .room-chat{top:66px;right:7px}
-  #home .room-books{left:7px}
-  #home .room-files{left:7px}
-  #home .room-desk{right:7px}
-  #home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  #home .quick-grid>button{min-height:100px;padding:10px}
-}
 
 
 /* STEP 11 — single-owner UI/theme cleanup */
@@ -1342,4 +1186,231 @@ body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
   #installBanner{align-items:flex-start;flex-direction:column;margin-top:16px}
   #installBanner .install-actions{width:100%}
   #installBanner .install-actions button{flex:1}
+}
+
+
+/* STEP 21 — authoritative mobile Home layout */
+@media(max-width:767px){
+  main{
+    padding-left:14px;
+    padding-right:14px;
+    padding-bottom:max(20px,env(safe-area-inset-bottom))!important;
+  }
+
+  #home .home-step1{padding:16px 0 24px}
+  #home .home-hero{
+    grid-template-columns:1fr;
+    gap:14px;
+    min-height:0;
+    padding:16px 14px 18px;
+    overflow:visible;
+    border-radius:18px;
+  }
+  #home .home-hero-copy{display:contents}
+  #home .home-mood{order:1;margin:0}
+  #home .home-welcome{order:2;margin:0}
+  #home .home-welcome h1{font-size:clamp(27px,7.6vw,32px);line-height:1.12}
+  #home .home-welcome p{margin-top:6px;font-size:14px;line-height:1.45}
+
+  #home .home-mascot-stage{
+    order:3;
+    width:100%;
+    min-height:0;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:10px;
+  }
+  #home .pocket-room{
+    width:min(100%,360px);
+    max-width:360px;
+    height:220px;
+    flex:0 0 220px;
+    align-self:center;
+    overflow:hidden;
+    border-radius:20px;
+  }
+  #home .pocket-room-wall{bottom:56px;border-radius:19px 19px 0 0}
+  #home .pocket-room-floor{height:58px;border-radius:0 0 19px 19px}
+  #home .pocket-room-window{right:16px;top:14px;width:48px;height:39px;border-width:4px}
+  #home .pocket-room-plant{display:none}
+
+  #home .room-mascot-zone{
+    top:16px;
+    width:156px;
+    height:196px;
+    transform:translateX(-50%);
+  }
+  #home .room-mascot-zone .pocket-status{
+    bottom:58px;
+    max-width:154px;
+    padding:4px 7px;
+    font-size:10px;
+  }
+  #home .room-mascot-zone .pocket-status strong{font-size:10px}
+  #home .room-mascot-zone .pocket-xp{
+    bottom:5px;
+    width:148px;
+    gap:4px;
+  }
+  #home .pocket-xp-head{font-size:10px;gap:8px}
+  #home .pocket-xp-track{height:6px}
+  #home .pocket-xp>small{font-size:9.5px;line-height:1.2}
+  #home .room-mascot-zone .pocket-xp-toast{
+    bottom:63px;
+    z-index:16;
+    max-width:170px;
+    font-size:10px;
+  }
+
+  #home .room-object{
+    width:44px;
+    height:44px;
+    min-width:44px;
+    min-height:44px;
+    border-radius:12px;
+  }
+  #home .room-books{left:10px;top:16px}
+  #home .room-files{left:10px;bottom:14px}
+  #home .room-desk{right:10px;bottom:14px}
+  #home .room-chat{
+    left:auto;
+    right:10px;
+    top:68px;
+    bottom:auto;
+    transform:none;
+  }
+  #home .room-object-react.room-chat{transform:scale(.94)}
+  #home .room-tooltip{display:none}
+  #home .room-star-lamp,#home .room-mini-bot{right:58px;bottom:45px}
+
+  #home .room-mini-controls{
+    position:relative;
+    z-index:8;
+    width:100%;
+    min-height:44px;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    pointer-events:none;
+  }
+  #home .room-decorate-button,
+  #home .room-play-button{
+    min-height:44px;
+    padding:8px 15px;
+    pointer-events:auto;
+  }
+
+  #home .home-composer{
+    order:4;
+    width:100%;
+    min-height:58px;
+    margin:0;
+    grid-template-columns:42px minmax(0,1fr) 44px;
+    gap:6px;
+    padding:7px 8px;
+  }
+  #home .home-attach,
+  #home .home-send{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    min-height:42px;
+  }
+  #home .home-ai-status{order:5;margin:0}
+
+  #home .home-step-section{
+    margin-top:26px;
+    margin-bottom:28px;
+  }
+  #home .home-section-head{
+    align-items:flex-start;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  #home .home-section-head h2{font-size:18px;line-height:1.25}
+  #home .home-quests .home-section-head>small{
+    max-width:190px;
+    line-height:1.35;
+    text-align:right;
+  }
+
+  #home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #home .quick-grid>button{
+    min-height:104px;
+    padding:12px;
+    grid-template-columns:38px minmax(0,1fr);
+    grid-template-rows:auto;
+    gap:9px;
+    align-content:center;
+  }
+  #home .quick-icon{width:38px;height:38px}
+  #home .quick-copy strong{font-size:13px}
+  #home .quick-copy small{font-size:11px;line-height:1.35}
+  #home .quick-arrow{display:none}
+
+  #home .pocket-quest-grid{grid-template-columns:1fr;gap:8px}
+  #home .pocket-quest{min-height:72px;padding:12px 14px}
+
+  #home .recent-row{
+    grid-template-columns:30px minmax(0,1fr) 66px 18px;
+    gap:8px;
+    padding:11px 12px;
+  }
+  #home .recent-row time{display:none}
+  #home .project-grid.has-items{grid-template-columns:1fr}
+  #home .project-empty{min-height:128px;padding:18px}
+}
+
+@media(max-width:360px){
+  main{padding-left:12px;padding-right:12px}
+  .topbar{padding-right:10px}
+  .topbar .brand strong{font-size:17px}
+
+  #home .home-step1{padding-top:14px}
+  #home .home-hero{padding:14px 12px 16px}
+  #home .home-welcome h1{font-size:27px}
+
+  #home .pocket-room{
+    height:208px;
+    flex-basis:208px;
+  }
+  #home .room-mascot-zone{
+    top:13px;
+    height:188px;
+    transform:translateX(-50%) scale(.94);
+    transform-origin:top center;
+  }
+  #home .room-chat{top:64px;right:7px}
+  #home .room-books{left:7px}
+  #home .room-files{left:7px}
+  #home .room-desk{right:7px}
+  #home .room-star-lamp,#home .room-mini-bot{right:53px;bottom:43px}
+
+  #home .room-mini-controls{gap:6px}
+  #home .room-decorate-button,
+  #home .room-play-button{
+    flex:1 1 0;
+    max-width:132px;
+    padding-inline:10px;
+  }
+
+  #home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #home .quick-grid>button{min-height:100px;padding:10px}
+  #home .quick-copy small{font-size:10.5px}
+}
+
+@media(max-width:340px){
+  #home .quick-grid{grid-template-columns:1fr}
+  #home .quick-grid>button{
+    min-height:88px;
+    grid-template-columns:38px minmax(0,1fr) 16px;
+  }
+  #home .quick-arrow{display:block}
+  #home .home-quests .home-section-head{display:block}
+  #home .home-quests .home-section-head>small{display:block;max-width:none;margin-top:4px;text-align:left}
 }
