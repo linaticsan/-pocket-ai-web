@@ -53,7 +53,7 @@ const coreStyles=[
  './v3.css?v=20260925-step19-css-debt',
  './library-v33.css?v=20260925-step19-css-debt',
  './motion-v32.css?v=20260921-v59',
- './chat-v77.css?v=20260925-step20b-chat-hit-target'
+ './chat-v77.css?v=20260925-step20c-chat-focus'
 ];
 coreStyles.forEach(addPocketStyle);
 const coreStyle=document.querySelector('link[href*="ui-core.css"]');
