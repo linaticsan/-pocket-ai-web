@@ -1858,3 +1858,16 @@ pre,.answer,.research-report{max-width:100%;overflow-wrap:anywhere;white-space:p
   #home .home-quests>summary{padding:13px 14px}
   #home .home-quests>summary small{display:none}
 }
+
+
+/* STEP 38 — copy deduplication and compact content rhythm */
+#home .home-welcome{margin-bottom:10px}
+#home .quick-copy{gap:0}
+#home .quick-copy small:empty{display:none}
+#chat .hero,#local .hero,#surface .hero{margin-bottom:16px}
+#files>h1,#github>h1{margin-bottom:18px}
+#surface .research-steps{display:none!important}
+.engine-row{align-items:center}
+@media(max-width:640px){
+  #chat .hero,#local .hero,#surface .hero{margin-bottom:12px}
+}
