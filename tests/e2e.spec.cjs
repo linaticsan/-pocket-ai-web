@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step33-stable-mascot-hit-target', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step34-ui-code-audit', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -65,8 +65,10 @@ test('Pocket mascot click runs a silent game animation from its room position', 
   const errors = await openPocket(page);
   const mascot = page.locator('#homeMascot');
   await expect(mascot).toBeVisible();
-  await mascot.hover();
-  await page.waitForTimeout(120);
+  const before = await mascot.boundingBox();
+  await page.waitForTimeout(700);
+  const after = await mascot.boundingBox();
+  expect(before && after && Math.abs(before.x-after.x)<0.5 && Math.abs(before.y-after.y)<0.5).toBeTruthy();
   await mascot.click();
   await expect(mascot).toHaveClass(/is-game-running/);
   await expect(mascot).not.toHaveClass(/is-game-running/, { timeout: 2500 });
