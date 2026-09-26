@@ -12,3 +12,19 @@
 .pocket-v3 #files.is-reading .picker{position:relative;overflow:hidden}.pocket-v3 #files.is-reading .picker:after{content:"";position:absolute;left:10%;right:10%;bottom:8px;height:3px;border-radius:99px;background:linear-gradient(90deg,#8b5cf6,#ec4899,#22d3ee);transform-origin:left;animation:pocketRead 1.05s ease-in-out infinite}
 .pocket-v3 button[data-code-ai="animate"]{position:relative;overflow:hidden}.pocket-v3 button[data-code-ai="animate"]:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.25) 48%,transparent 75%);transform:translateX(-120%);animation:pocketScan 4.2s ease-in-out infinite;pointer-events:none}
 @media (prefers-reduced-motion:reduce){.pocket-v3 *,.pocket-v3 *:before,.pocket-v3 *:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+
+
+/* STEP 39 — app motion setting is authoritative */
+html[data-motion="off"] .pocket-v3 *,
+html[data-motion="off"] .pocket-v3 *::before,
+html[data-motion="off"] .pocket-v3 *::after{
+  animation:none!important;
+  transition:none!important;
+  scroll-behavior:auto!important;
+}
+html[data-motion="gentle"] .pocket-v3 *,
+html[data-motion="gentle"] .pocket-v3 *::before,
+html[data-motion="gentle"] .pocket-v3 *::after{
+  animation-duration:calc(var(--motion-base-duration,1s) * 1.35);
+  transition-duration:.28s;
+}
