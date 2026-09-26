@@ -121,11 +121,11 @@ function ensureAudioContext(){
  if(!soundSettings.enabled)return null;
  const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
  try{
-  if(!pocketAudioContext)pocketAudioContext=new AC({latencyHint:'interactive'});
+  if(!pocketAudioContext){pocketAudioContext=new AC({latencyHint:'interactive'});pocketAudioContext.addEventListener?.('statechange',renderDiagnostics)}
   return pocketAudioContext;
  }catch{
   try{
-   if(!pocketAudioContext)pocketAudioContext=new AC();
+   if(!pocketAudioContext){pocketAudioContext=new AC();pocketAudioContext.addEventListener?.('statechange',renderDiagnostics)}
    return pocketAudioContext;
   }catch{return null}
  }
@@ -183,6 +183,68 @@ function setSoundVolume(value,preview=false){
  saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
 }
 
+const POCKET_BUILD='step24-stability';
+function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
+function audioStateLabel(){
+ if(!audioSupported())return 'Unsupported';
+ if(pocketAudioContext)return pocketAudioContext.state[0].toUpperCase()+pocketAudioContext.state.slice(1);
+ return 'Ready (tap to unlock)';
+}
+async function getDiagnostics(){
+ let sw='Unavailable';
+ if('serviceWorker' in navigator){
+  try{
+   const reg=await navigator.serviceWorker.getRegistration();
+   sw=reg?.installing?'Updating':reg?.waiting?'Update ready':navigator.serviceWorker.controller?'Active':reg?.active?'Active (not controlling)':'Not active';
+  }catch{sw='Unavailable'}
+ }
+ return {
+  'Build':POCKET_BUILD,
+  'Service Worker':sw,
+  'Audio':audioStateLabel(),
+  'Sound':soundSettings.enabled?'On · '+Math.round(soundSettings.volume*100)+'%':'Off',
+  'Network':navigator.onLine===false?'Offline':'Online',
+  'Mode':standaloneMode()?'Installed PWA':'Browser',
+  'Device':/iPhone|iPad|iPod/i.test(navigator.userAgent)?'iPhone/iPad':/Android/i.test(navigator.userAgent)?'Android':'Desktop / other'
+ };
+}
+async function renderDiagnostics(){
+ const box=q('diagnosticsList');if(!box)return;
+ const data=await getDiagnostics();
+ box.replaceChildren(...Object.entries(data).map(([key,value])=>{
+  const row=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');
+  dt.textContent=key;dd.textContent=value;row.append(dt,dd);return row;
+ }));
+}
+async function copyDiagnostics(){
+ const data=await getDiagnostics(),text=Object.entries(data).map(([k,v])=>k+': '+v).join('\n');
+ try{await navigator.clipboard.writeText(text);if(q('diagnosticsStatus'))q('diagnosticsStatus').textContent='Diagnostics copied.'}
+ catch{
+  const ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');if(q('diagnosticsStatus'))q('diagnosticsStatus').textContent='Diagnostics copied.'}catch{if(q('diagnosticsStatus'))q('diagnosticsStatus').textContent='Copy failed.'}
+  ta.remove();
+ }
+}
+async function refreshPocketAppFiles(){
+ const btn=q('refreshAppFiles'),status=q('diagnosticsStatus');
+ if(btn)btn.disabled=true;
+ if(status)status.textContent='Refreshing Pocket AI app files…';
+ try{
+  if('caches' in window){
+   const keys=await caches.keys();
+   await Promise.all(keys.filter(key=>key.startsWith('pocket-ai-web-shell-')||key==='pocket-ai-web-step1-css').map(key=>caches.delete(key)));
+  }
+  if('serviceWorker' in navigator){
+   const reg=await navigator.serviceWorker.getRegistration();
+   try{await reg?.update()}catch{}
+  }
+  const url=new URL(location.href);url.searchParams.set('v','step24-refresh-'+Date.now());location.replace(url.toString());
+ }catch{
+  if(status)status.textContent='Could not refresh app files. Check your connection and try again.';
+  if(btn)btn.disabled=false;
+ }
+}
+
 const modeText={balanced:'Uses Local AI first; web tools only when you open them.',private:'Local AI only for AI tasks. No account login required.',offline:'Cached app + Local AI + local files. Web tools need internet.'};
 function setPrivacy(m){
  safeSet('pocket-privacy',m);
@@ -208,6 +270,7 @@ document.addEventListener('click',e=>{
  if(!soundSettings.enabled)return;
  const target=e.target instanceof Element?e.target.closest('button,a[href],[role="button"]'):null;
  if(!target||target.id==='soundTest'||target.matches('[data-sound]'))return;
+ if(target.matches('[data-go],[data-quick],[data-room-action],#homeMascot,.room-cosmetic-option,.star-game-target'))return;
  playPocketMediaTone('tap');
 },{capture:false});
 const unlockAudioFromGesture=()=>{if(soundSettings.enabled)void primePocketAudio()};
@@ -216,7 +279,13 @@ document.addEventListener('touchend',unlockAudioFromGesture,{capture:true,passiv
 document.addEventListener('click',unlockAudioFromGesture,{capture:true,passive:true});
 document.addEventListener('keydown',e=>{if(soundSettings.enabled&&(e.key==='Enter'||e.key===' '))void primePocketAudio()},{capture:true});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&soundSettings.enabled&&pocketAudioContext&&(pocketAudioContext.state==='suspended'||pocketAudioContext.state==='interrupted'))pocketAudioContext.resume().catch(()=>{})});
-if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>setSoundVolume(Number(e.target.value)/100,true));}
+if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>{setSoundVolume(Number(e.target.value)/100,true);playPocketMediaTone('decorate');renderDiagnostics()});}
+q('copyDiagnostics')?.addEventListener('click',copyDiagnostics);
+q('refreshAppFiles')?.addEventListener('click',refreshPocketAppFiles);
+q('settingsOpen')?.addEventListener('click',()=>setTimeout(renderDiagnostics,0));
+window.addEventListener('online',renderDiagnostics);window.addEventListener('offline',renderDiagnostics);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDiagnostics()});
+renderDiagnostics();
 document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.onclick=()=>setPrivacy(b.dataset.privacySetting||b.dataset.privacy));
 
 document.addEventListener('keydown',e=>{
