@@ -1808,3 +1808,16 @@ body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
 .settings-dialog .diagnostics-actions{flex-wrap:wrap}
 .settings-dialog #refreshAppFiles{font-weight:700}
 @media(max-width:520px){.settings-dialog .diagnostics-list>div{align-items:flex-start}.settings-dialog .diagnostics-actions>*{flex:1 1 160px}}
+
+
+/* STEP 25 — touch and interaction reliability */
+button,a[href],[role="button"],input[type="button"],input[type="submit"],input[type="range"]{
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+dialog[open]{overscroll-behavior:contain}
+@media(max-width:767px){
+  button,a[href],[role="button"]{min-height:44px}
+  .star-game-target{min-width:48px;min-height:48px}
+  .pa-side-close,.close{min-width:44px;min-height:44px}
+}
