@@ -23,11 +23,11 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step25-interaction-reliability'"),'STEP 25 build marker is missing');
+assert(index.includes("const BUILD='step26-true-lazy-performance'"),'STEP 26 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
 assert(index.indexOf('setTimeout(removeBoot,6500)')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v30'"),'STEP 25 app-shell cache must be v30');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v31'"),'STEP 26 app-shell cache must be v31');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -44,17 +44,21 @@ assert(workspace.includes('function primePocketAudio()'),'iPhone audio priming h
 assert(workspace.includes('async function unlockPocketAudio()'),'iPhone audio unlock helper is missing');
 assert(workspace.includes("ctx.state==='interrupted'"),'iOS interrupted AudioContext recovery is missing');
 assert(workspace.includes("document.addEventListener('touchend',unlockAudioFromGesture"),'iOS touch audio unlock hook is missing');
-assert(index.includes('./workspace.js?v=20260926-step25-interaction-reliability'),'STEP 25 workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260926-step26-true-lazy-performance'),'STEP 26 workspace cache-bust is missing');
 assert(index.includes('id="soundTest"'),'Sound test control is missing');
 assert(workspace.includes('function playPocketMediaTone'),'HTML audio fallback is missing');
 assert(workspace.includes("closest('button,a[href],[role=\"button\"]')"),'Global tap sound delegation is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
-assert(workspace.includes("const POCKET_BUILD='step25-interaction-reliability'"),'STEP 25 diagnostics build marker is missing');
+assert(workspace.includes("const POCKET_BUILD='step26-true-lazy-performance'"),'STEP 26 diagnostics build marker is missing');
 assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective Pocket cache refresh is missing');
 assert(workspace.includes("target.matches('[data-go],[data-quick],[data-room-action],#homeMascot,.room-cosmetic-option,.star-game-target')"),'Duplicate rich-sound suppression is missing');
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
 assert(coreCss.includes('STEP 25 — touch and interaction reliability'),'STEP 25 interaction CSS is missing');
 assert(index.includes('./ux-v39.js?v=20260926-step25-interaction-reliability'),'STEP 25 navigation cache-bust is missing');
+assert(index.includes('./feature-v2.js?v=20260926-step26-true-lazy-performance'),'STEP 26 feature cache-bust is missing');
+assert(feature.includes('Keep optional workspaces genuinely lazy'),'STEP 26 true-lazy marker is missing');
+assert(workspace.includes('const pocketToneCache=new Map()'),'STEP 26 audio tone cache is missing');
+assert(index.includes('<dd>STEP 26</dd>'),'Visible diagnostics build label is stale');
 assert(ux.includes('function duplicateActivation(target)'),'Navigation duplicate-activation guard is missing');
 assert(!workspace.includes("document.querySelectorAll('[data-quick]').forEach(b=>b.onclick"),'Workspace must not duplicate Quick Action navigation ownership');
 assert(!workspace.includes("q('settingsOpen').onclick")&&!workspace.includes("q('commandOpen').onclick"),'Workspace must not duplicate canonical dialog ownership');
@@ -80,7 +84,7 @@ assert(coreCss.includes('#files .document-studio-v50'),'Files theme bridge is mi
 assert(coreCss.includes('#webNovelHub'),'Web Novel theme bridge is missing');
 assert(feature.includes('const FEATURE_BUNDLES='),'Lazy feature bundle map is missing');
 assert(feature.includes('function ensureFeatureBundle(name)'),'Lazy feature bundle loader is missing');
-assert(feature.includes('requestIdleCallback'),'Idle feature warmup is missing');
+assert(!feature.includes("ensureFeatureBundle('files'),\n     ensureFeatureBundle('coding'),\n     ensureFeatureBundle('library')"),'Optional workspaces must not all preload in the background');
 assert(!feature.includes('pocket-performance-safe'),'Obsolete performance safe-mode must not return');
 assert(!feature.includes("import('./qa-v79.js"),'QA module must not run in production startup');
 assert(!sw.includes('./qa-v79.js'),'QA module must not be precached in production shell');
