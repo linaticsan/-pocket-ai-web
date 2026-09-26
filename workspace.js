@@ -49,7 +49,7 @@ function setMotion(m){
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
 }
 
-const POCKET_BUILD='step35-runtime-ui-cleanup';
+const POCKET_BUILD='step38-copy-dedup-cleanup';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
