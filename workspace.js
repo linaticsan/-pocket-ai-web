@@ -189,7 +189,7 @@ function setSoundVolume(value,preview=false){
  saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
 }
 
-const POCKET_BUILD='step26-true-lazy-performance';
+const POCKET_BUILD='step27-runtime-cleanup';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 function audioStateLabel(){
  if(!audioSupported())return 'Unsupported';
@@ -847,14 +847,14 @@ q('deepResearch')?.addEventListener('click',()=>mascot('thinking',3000));
 q('localSend')?.addEventListener('click',()=>mascot('local'));
 scheduleMascotIdle();
 
-window.addEventListener('online',()=>{
-  document.body.dataset.network='online';
-  const mode=safeGet('pocket-privacy','balanced');
-  setPrivacy(mode);
-});
-window.addEventListener('offline',()=>{
-  document.body.dataset.network='offline';
-  // Network loss is temporary: do not overwrite the user's saved privacy preference.
-  const hint=q('modeHint');
-  if(hint)hint.textContent='Offline right now. Local AI and local files still work; web tools will resume when internet returns.';
+window.addEventListener('pocket-network-change',event=>{
+  if(event.detail?.online){
+    const mode=safeGet('pocket-privacy','balanced');
+    setPrivacy(mode);
+  }else{
+    // Network loss is temporary: do not overwrite the user's saved privacy preference.
+    const hint=q('modeHint');
+    if(hint)hint.textContent='Offline right now. Local AI and local files still work; web tools will resume when internet returns.';
+  }
+  renderDiagnostics();
 });
