@@ -69,7 +69,7 @@ const FEATURE_BUNDLES={
   },
   library:{
     styles:['./library-online-v34.css?v=20260920-v52','./webnovel-v42.css?v=20260920-v52'],
-    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260922-v94']
+    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260926-step30-canonical-nav']
   }
 };
 function ensureFeatureBundle(name){
@@ -106,7 +106,7 @@ document.addEventListener('keydown',e=>{
    loadPocketModule('./api-hub.js?v=20260922-v88'),
    loadPocketModule('./v3.js?v=20260925-step16'),
    loadPocketModule('./v3-guard.js?v=20260925-step12'),
-   loadPocketModule('./library-v33.js?v=20260922-v94')
+   loadPocketModule('./library-v33.js?v=20260926-step30-canonical-nav')
  ]);
  window.dispatchEvent(new CustomEvent('pocket-core-ready',{detail:{ms:Math.round(performance.now()-started)}}));
 
