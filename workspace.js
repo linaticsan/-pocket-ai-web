@@ -189,7 +189,7 @@ function setSoundVolume(value,preview=false){
  saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
 }
 
-const POCKET_BUILD='step27-runtime-cleanup';
+const POCKET_BUILD='step28-single-owner-boot';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 function audioStateLabel(){
  if(!audioSupported())return 'Unsupported';
