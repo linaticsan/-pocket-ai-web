@@ -131,5 +131,4 @@ function bind(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 window.PocketNav={show};
-window.PocketV39={show}; // compatibility alias for older feature modules
 })();
