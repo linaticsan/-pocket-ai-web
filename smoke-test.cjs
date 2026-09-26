@@ -24,12 +24,12 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step28-single-owner-boot'"),'STEP 28 build marker is missing');
+assert(index.includes("const BUILD='step29-cache-coherence'"),'STEP 29 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
-assert(index.includes('setTimeout(removeBoot,6500)'),'Independent 6.5s inline boot watchdog is missing');
+assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v33'"),'STEP 28 app-shell cache must be v33');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v34'"),'STEP 29 app-shell cache must be v34');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -46,12 +46,12 @@ assert(workspace.includes('function primePocketAudio()'),'iPhone audio priming h
 assert(workspace.includes('async function unlockPocketAudio()'),'iPhone audio unlock helper is missing');
 assert(workspace.includes("ctx.state==='interrupted'"),'iOS interrupted AudioContext recovery is missing');
 assert(workspace.includes("document.addEventListener('touchend',unlockAudioFromGesture"),'iOS touch audio unlock hook is missing');
-assert(index.includes('./workspace.js?v=20260926-step28-single-owner-boot'),'STEP 28 workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260926-step29-cache-coherence'),'STEP 29 workspace cache-bust is missing');
 assert(index.includes('id="soundTest"'),'Sound test control is missing');
 assert(workspace.includes('function playPocketMediaTone'),'HTML audio fallback is missing');
 assert(workspace.includes("closest('button,a[href],[role=\"button\"]')"),'Global tap sound delegation is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
-assert(workspace.includes("const POCKET_BUILD='step28-single-owner-boot'"),'STEP 28 diagnostics build marker is missing');
+assert(workspace.includes("const POCKET_BUILD='step29-cache-coherence'"),'STEP 29 diagnostics build marker is missing');
 assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective Pocket cache refresh is missing');
 assert(workspace.includes("target.matches('[data-go],[data-quick],[data-room-action],#homeMascot,.room-cosmetic-option,.star-game-target')"),'Duplicate rich-sound suppression is missing');
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
@@ -68,7 +68,7 @@ assert(!feature.includes("addEventListener('online',networkState)")&&!feature.in
 assert(workspace.includes("addEventListener('pocket-network-change'"),'Workspace must consume the central network event');
 assert(!icons.includes("document.addEventListener('click',scheduleIconRun,true)"),'Icons must not rerun after every click');
 assert(responsive.includes('function scheduleSync()')&&responsive.includes("addEventListener('resize',scheduleSync"),'Resize sync must be animation-frame throttled');
-assert(index.includes('<dd>STEP 28</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dd>STEP 29</dd>'),'Visible diagnostics build label is stale');
 assert(ux.includes('function duplicateActivation(target)'),'Navigation duplicate-activation guard is missing');
 assert(!workspace.includes("document.querySelectorAll('[data-quick]').forEach(b=>b.onclick"),'Workspace must not duplicate Quick Action navigation ownership');
 assert(!workspace.includes("q('settingsOpen').onclick")&&!workspace.includes("q('commandOpen').onclick"),'Workspace must not duplicate canonical dialog ownership');
@@ -121,6 +121,12 @@ assert(app.includes("document.addEventListener('visibilitychange'"),'Visible-app
 assert(sw.includes('const CORE_ASSETS=')&&sw.includes('const OPTIONAL_ASSETS='),'Core/optional PWA cache split is missing');
 assert(!sw.includes('await cacheOptional(cache)'),'Optional feature assets must not preload during service-worker install');
 assert(!sw.includes('async function cacheOptional'),'Obsolete eager optional-cache helper must stay removed');
+assert(index.includes('window.__POCKET_BUILD=BUILD'),'Page build identifier must be globally available');
+assert(sw.includes("const BUILD='step29-cache-coherence'"),'Service-worker build identifier is missing');
+assert(sw.includes("type:'POCKET_SW_VERSION'")&&sw.includes("type==='POCKET_GET_VERSION'"),'Service-worker version handshake is missing');
+assert(app.includes('function handleSWVersion(message)')&&app.includes('function requestSWVersion()'),'App service-worker version handshake is missing');
+assert(workspace.includes("if(navigator.onLine===false)"),'Refresh app files must refuse destructive cache refresh while offline');
+assert(index.includes('./app.js?v=20260926-step29-cache-coherence'),'STEP 29 app cache-bust is missing');
 assert(!boot.includes("window.addEventListener('load',()=>setTimeout(hide,900)"),'Boot script must not have a competing window.load closer');
 assert(!boot.includes('setTimeout(hide,5500)'),'Boot script must not have a second emergency timer');
 assert(index.includes('./boot-v83.js?v=20260926-step28-single-owner-boot'),'STEP 28 boot cache-bust is missing');
