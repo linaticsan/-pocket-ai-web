@@ -1888,7 +1888,7 @@ html.theme-switching .project-card,
 html.theme-switching .pocket-quest{
   transition:background-color .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease;
 }
-html[data-motion="off"].theme-switching *,
+html[data-motion="off"].theme-switching *{transition:none!important}
 @media (prefers-reduced-motion:reduce){
   html.theme-switching *{transition:none!important}
 }
