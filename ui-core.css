@@ -1824,3 +1824,24 @@ dialog[open]{overscroll-behavior:contain}
 /* STEP 34 — stable mascot hitbox + isolated visual motion */
 #home .pocket-mascot:hover .pocket-mascot-visual,#home .pocket-mascot:focus-visible .pocket-mascot-visual,#home .pocket-mascot:active .pocket-mascot-visual{animation-play-state:paused}
 #home .pocket-mascot.is-game-running .pocket-mascot-visual{animation:none!important}
+
+
+/* STEP 36 — production UI/a11y hardening */
+:where(button,[role="button"],a[href],input,textarea,select,summary):focus-visible{
+  outline:3px solid color-mix(in srgb,var(--pa-accent) 72%,white);
+  outline-offset:3px;
+}
+:where(button,input,textarea,select){max-width:100%}
+:where(textarea,input){min-width:0}
+.row,.searchline,.searchbox,.command-list,.quick-grid,.project-grid{min-width:0}
+.view,.glass,.card,.dialog-card,dialog{max-width:100%}
+pre,.answer,.research-report{max-width:100%;overflow-wrap:anywhere;white-space:pre-wrap}
+@media(max-width:640px){
+  .row,.searchline{flex-wrap:wrap}
+  .row>*,.searchline>*{min-width:0}
+  .searchline input,.searchbox textarea{flex:1 1 100%}
+  dialog{max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}
+}
+@media(pointer:coarse){
+  button,[role="button"],a[href],input,select,summary{min-height:44px}
+}
