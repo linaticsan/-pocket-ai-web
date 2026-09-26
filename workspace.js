@@ -49,7 +49,7 @@ function setMotion(m){
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
 }
 
-const POCKET_BUILD='step33-stable-mascot-hit-target';
+const POCKET_BUILD='step34-ui-code-audit';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
