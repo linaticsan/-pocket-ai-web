@@ -51,6 +51,14 @@ function normalizeViews(){
  views.forEach(v=>{const on=v===active;v.hidden=!on;v.classList.toggle('active',on)});
 }
 
+let lastActivationTarget=null,lastActivationAt=0;
+function duplicateActivation(target){
+ const now=performance.now();
+ const duplicate=target===lastActivationTarget&&now-lastActivationAt<280;
+ lastActivationTarget=target;lastActivationAt=now;
+ return duplicate;
+}
+
 function bind(){
  normalizeViews();
  document.documentElement.style.pointerEvents='auto';document.body.style.pointerEvents='auto';
@@ -87,6 +95,7 @@ function bind(){
   }
   const quick=e.target.closest?.('[data-quick]');
   if(quick){
+    if(duplicateActivation(quick)){e.preventDefault();e.stopImmediatePropagation();return}
     const kind=quick.dataset.quick;
     const map={research:'surface',study:'chat',code:'coding'};
     const id=map[kind]||kind;
@@ -104,7 +113,10 @@ function bind(){
     }
   }
   const go=e.target.closest?.('[data-go]');
-  if(go&&show(go.dataset.go)){e.preventDefault();e.stopImmediatePropagation()}
+  if(go){
+    if(duplicateActivation(go)){e.preventDefault();e.stopImmediatePropagation();return}
+    if(show(go.dataset.go)){e.preventDefault();e.stopImmediatePropagation()}
+  }
  },true);
 
  document.addEventListener('pointerdown',e=>{
