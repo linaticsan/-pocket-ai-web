@@ -219,3 +219,12 @@
   #files .document-studio-v50{padding:20px!important}
   #files .doc-studio-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
+
+
+/* STEP 35 — consolidated compact file-type strip */
+.file-type-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:14px 0}
+.file-type-strip span{display:flex;align-items:center;justify-content:center;min-height:48px;padding:8px;border:1px solid var(--line);border-radius:15px;background:var(--glass2);font-size:12px;font-weight:800;text-align:center}
+@media(max-width:650px){
+  .file-type-strip{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:10px 0}
+  .file-type-strip span{min-height:40px;padding:6px 3px;font-size:10px}
+}
