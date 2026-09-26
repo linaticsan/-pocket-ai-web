@@ -59,7 +59,6 @@ function scheduleIconRun(){
  const schedule=typeof requestAnimationFrame==='function'?requestAnimationFrame:cb=>setTimeout(cb,0);
  schedule(()=>{iconRunQueued=false;run()});
 }
-document.addEventListener('click',scheduleIconRun,true);
 new MutationObserver(records=>{
  if(records.some(record=>record.addedNodes.length>0))scheduleIconRun();
 }).observe(document.body,{childList:true,subtree:true});
