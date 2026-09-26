@@ -1,6 +1,6 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v43';
-const BUILD='step38-copy-dedup-cleanup';
+const CACHE=APP_CACHE_PREFIX+'v44';
+const BUILD='step39-theme-motion-fix';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
@@ -15,7 +15,7 @@ const CORE_ASSETS=[
 
 const OPTIONAL_ASSETS=[
   './coding-v1.css','./coding-v1.js',
-  './files-v31.css','./files-v32.js','./files-v80.css',
+  './files-v32.js','./files-v80.css',
   './library-online-v34.css','./library-online-v34.js',
   './webnovel-v42.css','./webnovel-v42.js'
 ];
