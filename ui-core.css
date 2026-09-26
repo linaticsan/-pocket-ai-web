@@ -1819,3 +1819,7 @@ dialog[open]{overscroll-behavior:contain}
 @media(prefers-reduced-motion:reduce){
  #home .pocket-mascot.is-game-running,.pocket-logo-runner{animation:none!important;transition:none!important}
 }
+
+/* STEP 33 — stable mascot hit target */
+#home .pocket-mascot:hover,#home .pocket-mascot:focus-visible,#home .pocket-mascot:active{animation-play-state:paused}
+#home .pocket-mascot.is-game-running{animation-play-state:paused!important}
