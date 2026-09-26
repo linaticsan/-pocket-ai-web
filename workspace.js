@@ -183,7 +183,7 @@ function setSoundVolume(value,preview=false){
  saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
 }
 
-const POCKET_BUILD='step24-stability';
+const POCKET_BUILD='step25-interaction-reliability';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 function audioStateLabel(){
  if(!audioSupported())return 'Unsupported';
@@ -256,8 +256,6 @@ function setPrivacy(m){
 }
 
 greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','light')),{persist:true});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));syncSoundUI();
-if(q('settingsOpen'))q('settingsOpen').onclick=e=>openPocketDialog(q('settingsDialog'),e.currentTarget);
-if(q('commandOpen'))q('commandOpen').onclick=e=>openPocketDialog(q('commandDialog'),e.currentTarget,'#commandSearch');
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
 document.querySelectorAll('[data-sound]').forEach(b=>b.onclick=()=>setSoundEnabled(b.dataset.sound==='on'));
@@ -282,10 +280,21 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&soundSett
 if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>{setSoundVolume(Number(e.target.value)/100,true);playPocketMediaTone('decorate');renderDiagnostics()});}
 q('copyDiagnostics')?.addEventListener('click',copyDiagnostics);
 q('refreshAppFiles')?.addEventListener('click',refreshPocketAppFiles);
-q('settingsOpen')?.addEventListener('click',()=>setTimeout(renderDiagnostics,0));
+const settingsDialog=q('settingsDialog');
+if(settingsDialog){
+ const settingsOpenObserver=new MutationObserver(()=>{if(settingsDialog.open)renderDiagnostics()});
+ settingsOpenObserver.observe(settingsDialog,{attributes:true,attributeFilter:['open']});
+}
 window.addEventListener('online',renderDiagnostics);window.addEventListener('offline',renderDiagnostics);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDiagnostics()});
 renderDiagnostics();
+let lastSoundView='';
+window.addEventListener('pocket-view-change',event=>{
+ const id=event.detail?.id||'';
+ if(!id||id===lastSoundView)return;
+ lastSoundView=id;
+ if(soundSettings.enabled)void playPocketSound('navigate');
+});
 document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.onclick=()=>setPrivacy(b.dataset.privacySetting||b.dataset.privacy));
 
 document.addEventListener('keydown',e=>{
@@ -320,7 +329,6 @@ if(q('homeComposer'))q('homeComposer').onsubmit=e=>{
  go('chat');if(q('prompt'))q('prompt').value=text;if(hp)hp.value='';
  setTimeout(()=>q('chatForm')?.requestSubmit?.(q('chatSend')),80);addRecent('💬',text,'chat');
 };
-document.querySelectorAll('[data-quick]').forEach(b=>b.onclick=()=>{const x=b.dataset.quick;if(x==='research'){go('surface');q('surfaceMode').value='research';setTimeout(()=>q('surfaceQuery').focus(),80)}else if(x==='study'){go('chat');q('prompt').value='Study mode: Help me learn this topic step by step. Explain simply first, then quiz me: ';q('prompt').focus()}else go(x)});
 
 const REC='pocket-recent-v2';
 function recent(){try{const a=JSON.parse(localStorage.getItem(REC)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
