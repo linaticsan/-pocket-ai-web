@@ -1871,3 +1871,42 @@ pre,.answer,.research-report{max-width:100%;overflow-wrap:anywhere;white-space:p
 @media(max-width:640px){
   #chat .hero,#local .hero,#surface .hero{margin-bottom:12px}
 }
+
+
+/* STEP 39 — authoritative theme bridge + theme transitions */
+html.theme-switching body,
+html.theme-switching .topbar,
+html.theme-switching .pa-desktop-sidebar,
+html.theme-switching .view,
+html.theme-switching dialog,
+html.theme-switching button,
+html.theme-switching input,
+html.theme-switching textarea,
+html.theme-switching select,
+html.theme-switching .card,
+html.theme-switching .project-card,
+html.theme-switching .pocket-quest{
+  transition:background-color .22s ease,color .22s ease,border-color .22s ease,box-shadow .22s ease;
+}
+html[data-motion="off"].theme-switching *,
+@media (prefers-reduced-motion:reduce){
+  html.theme-switching *{transition:none!important}
+}
+#chat,#local,#files,#github,#surface,#coding,#library,#webNovelHub{
+  background:var(--pa-surface);
+  color:var(--pa-text);
+  border-color:var(--pa-border);
+}
+#chat input,#chat textarea,#local input,#local textarea,#files input,#files textarea,
+#github input,#surface input,#surface textarea,#surface select,
+#coding input,#coding textarea,#library input,#library textarea,#webNovelHub input{
+  background:var(--pa-card);
+  color:var(--pa-text);
+  border-color:var(--pa-border);
+}
+#coding .code-card,#coding .code-panel,#library .library-card,#library .book-card,
+#files .document-studio-v50,#webNovelHub .webnovel-card{
+  background:var(--pa-card);
+  color:var(--pa-text);
+  border-color:var(--pa-border);
+}
