@@ -1,5 +1,5 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v32';
+const CACHE=APP_CACHE_PREFIX+'v33';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
@@ -19,19 +19,10 @@ const OPTIONAL_ASSETS=[
   './webnovel-v42.css','./webnovel-v42.js'
 ];
 
-async function cacheOptional(cache){
-  await Promise.allSettled(OPTIONAL_ASSETS.map(async path=>{
-    const request=new Request(path,{cache:'reload'});
-    const response=await fetch(request);
-    if(response.ok)await cache.put(request,response);
-  }));
-}
-
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
     await cache.addAll(CORE_ASSETS);
-    await cacheOptional(cache);
     await self.skipWaiting();
   })());
 });
