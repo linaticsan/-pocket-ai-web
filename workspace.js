@@ -78,8 +78,11 @@ let soundSettings=loadSoundSettings();
 function saveSoundSettings(){
  try{localStorage.setItem(SOUND_KEY,JSON.stringify({enabled:!!soundSettings.enabled,volume:Math.min(1,Math.max(0,Number(soundSettings.volume)||0))}))}catch{}
 }
+const pocketToneCache=new Map();
 function audioSupported(){return !!(window.AudioContext||window.webkitAudioContext)}
 function makePocketToneDataUrl(freq=620,duration=.12,volume=.5){
+ const key=[Math.round(freq),duration.toFixed(3),Math.round(volume*20)].join(':');
+ if(pocketToneCache.has(key))return pocketToneCache.get(key);
  try{
   const rate=8000,samples=Math.max(1,Math.floor(rate*duration)),buffer=new ArrayBuffer(44+samples*2),view=new DataView(buffer);
   const write=(offset,text)=>{for(let i=0;i<text.length;i++)view.setUint8(offset+i,text.charCodeAt(i))};
@@ -92,7 +95,10 @@ function makePocketToneDataUrl(freq=620,duration=.12,volume=.5){
   }
   let binary='',bytes=new Uint8Array(buffer);
   for(let i=0;i<bytes.length;i+=4096)binary+=String.fromCharCode(...bytes.subarray(i,i+4096));
-  return 'data:audio/wav;base64,'+btoa(binary);
+  const url='data:audio/wav;base64,'+btoa(binary);
+  if(pocketToneCache.size>=24)pocketToneCache.delete(pocketToneCache.keys().next().value);
+  pocketToneCache.set(key,url);
+  return url;
  }catch{return ''}
 }
 function playPocketMediaTone(type='tap'){
@@ -183,7 +189,7 @@ function setSoundVolume(value,preview=false){
  saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
 }
 
-const POCKET_BUILD='step25-interaction-reliability';
+const POCKET_BUILD='step26-true-lazy-performance';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 function audioStateLabel(){
  if(!audioSupported())return 'Unsupported';
