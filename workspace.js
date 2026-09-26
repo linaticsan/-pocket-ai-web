@@ -8,7 +8,7 @@ const openPocketDialog=(dialog,opener,focusSelector='')=>{
 };
 const safeGet=(k,f='')=>{try{return localStorage.getItem(k)||f}catch{return f}};
 const safeSet=(k,v)=>{try{localStorage.setItem(k,v)}catch{}};
-const go=id=>window.PocketNav?.show?.(id)??window.PocketV39?.show?.(id)??false;
+const go=id=>window.PocketNav?.show?.(id)??false;
 
 function greeting(){
  const el=q('homeGreeting');if(!el)return;
@@ -49,153 +49,8 @@ function setMotion(m){
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
 }
 
-const SOUND_KEY='pocket-sound-v1';
-const SOUND_DEFAULTS={enabled:true,volume:.35};
-let pocketAudioContext=null;
-let soundLastPlayed=Object.create(null);
-let activeSoundVoices=0;
-const MAX_SOUND_VOICES=8;
-const SOUND_MIN_GAP={tap:70,pet:120,navigate:80,decorate:100,xp:180,levelup:300,star:45,finish:250,best:250};
-const SOUND_SPECS={
- tap:{notes:[520],duration:.11,gain:.28,wave:'sine'},
- pet:{notes:[440,620],duration:.22,gain:.36,wave:'sine'},
- navigate:{notes:[360,520],duration:.14,gain:.24,wave:'triangle'},
- decorate:{notes:[660,840],duration:.18,gain:.32,wave:'sine'},
- xp:{notes:[720,960],duration:.18,gain:.28,wave:'sine'},
- levelup:{notes:[520,700,920],duration:.55,gain:.48,wave:'sine'},
- star:{notes:[900],duration:.08,gain:.18,wave:'sine'},
- finish:{notes:[520,420],duration:.34,gain:.32,wave:'sine'},
- best:{notes:[620,880],duration:.42,gain:.44,wave:'sine'}
-};
-function loadSoundSettings(){
- let raw=null;try{raw=JSON.parse(localStorage.getItem(SOUND_KEY)||'null')}catch{}
- const enabled=raw&&typeof raw.enabled==='boolean'?raw.enabled:SOUND_DEFAULTS.enabled;
- const n=Number(raw?.volume);
- const volume=Number.isFinite(n)?Math.min(1,Math.max(0,n)):SOUND_DEFAULTS.volume;
- return {enabled,volume};
-}
-let soundSettings=loadSoundSettings();
-function saveSoundSettings(){
- try{localStorage.setItem(SOUND_KEY,JSON.stringify({enabled:!!soundSettings.enabled,volume:Math.min(1,Math.max(0,Number(soundSettings.volume)||0))}))}catch{}
-}
-const pocketToneCache=new Map();
-function audioSupported(){return !!(window.AudioContext||window.webkitAudioContext)}
-function makePocketToneDataUrl(freq=620,duration=.12,volume=.5){
- const key=[Math.round(freq),duration.toFixed(3),Math.round(volume*20)].join(':');
- if(pocketToneCache.has(key))return pocketToneCache.get(key);
- try{
-  const rate=8000,samples=Math.max(1,Math.floor(rate*duration)),buffer=new ArrayBuffer(44+samples*2),view=new DataView(buffer);
-  const write=(offset,text)=>{for(let i=0;i<text.length;i++)view.setUint8(offset+i,text.charCodeAt(i))};
-  write(0,'RIFF');view.setUint32(4,36+samples*2,true);write(8,'WAVE');write(12,'fmt ');
-  view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,rate,true);
-  view.setUint32(28,rate*2,true);view.setUint16(32,2,true);view.setUint16(34,16,true);write(36,'data');view.setUint32(40,samples*2,true);
-  for(let i=0;i<samples;i++){
-   const t=i/rate,fade=Math.min(1,i/40,(samples-i)/80),sample=Math.sin(2*Math.PI*freq*t)*32767*Math.min(.9,Math.max(.05,volume))*fade;
-   view.setInt16(44+i*2,sample,true);
-  }
-  let binary='',bytes=new Uint8Array(buffer);
-  for(let i=0;i<bytes.length;i+=4096)binary+=String.fromCharCode(...bytes.subarray(i,i+4096));
-  const url='data:audio/wav;base64,'+btoa(binary);
-  if(pocketToneCache.size>=24)pocketToneCache.delete(pocketToneCache.keys().next().value);
-  pocketToneCache.set(key,url);
-  return url;
- }catch{return ''}
-}
-function playPocketMediaTone(type='tap'){
- if(!soundSettings.enabled)return false;
- const spec=SOUND_SPECS[type]||SOUND_SPECS.tap,url=makePocketToneDataUrl(spec.notes[0],Math.min(.22,spec.duration),Math.max(.35,soundSettings.volume));
- if(!url)return false;
- try{
-  const audio=new Audio(url);audio.preload='auto';audio.volume=Math.min(1,Math.max(.2,soundSettings.volume));
-  const played=audio.play();
-  if(played&&typeof played.catch==='function')played.catch(()=>{});
-  return true;
- }catch{return false}
-}
-function syncSoundUI(){
- document.querySelectorAll('[data-sound]').forEach(b=>{
-  const on=(b.dataset.sound==='on')===!!soundSettings.enabled;
-  b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false');
- });
- const slider=q('soundVolume'),value=q('soundVolumeValue'),support=q('soundSupport');
- const pct=Math.round(soundSettings.volume*100);
- if(slider&&document.activeElement!==slider)slider.value=String(pct);
- if(value)value.textContent=pct+'%';
- if(support)support.textContent=audioSupported()?(soundSettings.enabled?'Sound effects are on.':'Sound effects are off by default.'):'Sound effects are unavailable in this browser.';
-}
-function ensureAudioContext(){
- if(!soundSettings.enabled)return null;
- const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;
- try{
-  if(!pocketAudioContext){pocketAudioContext=new AC({latencyHint:'interactive'});pocketAudioContext.addEventListener?.('statechange',renderDiagnostics)}
-  return pocketAudioContext;
- }catch{
-  try{
-   if(!pocketAudioContext){pocketAudioContext=new AC();pocketAudioContext.addEventListener?.('statechange',renderDiagnostics)}
-   return pocketAudioContext;
-  }catch{return null}
- }
-}
-async function unlockPocketAudio(){
- const ctx=ensureAudioContext();if(!ctx)return null;
- try{
-  if(ctx.state==='suspended'||ctx.state==='interrupted')await ctx.resume();
-  return ctx.state==='running'?ctx:null;
- }catch{return null}
-}
-async function primePocketAudio(){
- const ctx=await unlockPocketAudio();if(!ctx)return null;
- try{
-  // A near-silent one-shot keeps iOS Safari/PWA audio unlocked after a real user gesture.
-  const osc=ctx.createOscillator(),gain=ctx.createGain();
-  gain.gain.setValueAtTime(.00001,ctx.currentTime);
-  osc.connect(gain);gain.connect(ctx.destination);
-  osc.start(ctx.currentTime);osc.stop(ctx.currentTime+.015);
- }catch{}
- return ctx;
-}
-async function playPocketSound(type){
- if(!soundSettings.enabled)return false;
- const spec=SOUND_SPECS[type];if(!spec)return false;
- const nowMs=Date.now(),gap=SOUND_MIN_GAP[type]||0;
- if(nowMs-(soundLastPlayed[type]||0)<gap||activeSoundVoices>=MAX_SOUND_VOICES)return false;
- const ctx=await unlockPocketAudio();if(!ctx)return false;
- try{
-  soundLastPlayed[type]=Date.now();
-  const start=ctx.currentTime+.008;
-  spec.notes.forEach((freq,i)=>{
-   const offset=spec.notes.length>1?i*(spec.duration/(spec.notes.length+1)):0;
-   const noteDuration=Math.max(.055,spec.duration-(offset*.35));
-   const osc=ctx.createOscillator(),gain=ctx.createGain();
-   osc.type=spec.wave||'sine';osc.frequency.setValueAtTime(freq,start+offset);
-   const peak=Math.max(.0001,soundSettings.volume*spec.gain);
-   gain.gain.setValueAtTime(.0001,start+offset);
-   gain.gain.linearRampToValueAtTime(peak,start+offset+.012);
-   gain.gain.exponentialRampToValueAtTime(.0001,start+offset+noteDuration);
-   osc.connect(gain);gain.connect(ctx.destination);
-   activeSoundVoices++;
-   osc.onended=()=>{activeSoundVoices=Math.max(0,activeSoundVoices-1);try{osc.disconnect();gain.disconnect()}catch{}};
-   osc.start(start+offset);osc.stop(start+offset+noteDuration+.025);
-  });
-  return true;
- }catch{return false}
-}
-function setSoundEnabled(enabled){
- soundSettings.enabled=!!enabled;saveSoundSettings();syncSoundUI();
- if(soundSettings.enabled){playPocketMediaTone('tap');void primePocketAudio();void playPocketSound('tap')}
-}
-function setSoundVolume(value,preview=false){
- const n=Number(value);soundSettings.volume=Number.isFinite(n)?Math.min(1,Math.max(0,n)):SOUND_DEFAULTS.volume;
- saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
-}
-
-const POCKET_BUILD='step30-canonical-nav-cleanup';
+const POCKET_BUILD='step31-silent-game-cleanup';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
-function audioStateLabel(){
- if(!audioSupported())return 'Unsupported';
- if(pocketAudioContext)return pocketAudioContext.state[0].toUpperCase()+pocketAudioContext.state.slice(1);
- return 'Ready (tap to unlock)';
-}
 async function getDiagnostics(){
  let sw='Unavailable';
  if('serviceWorker' in navigator){
@@ -207,8 +62,6 @@ async function getDiagnostics(){
  return {
   'Build':POCKET_BUILD,
   'Service Worker':sw,
-  'Audio':audioStateLabel(),
-  'Sound':soundSettings.enabled?'On · '+Math.round(soundSettings.volume*100)+'%':'Off',
   'Network':navigator.onLine===false?'Offline':'Online',
   'Mode':standaloneMode()?'Installed PWA':'Browser',
   'Device':/iPhone|iPad|iPod/i.test(navigator.userAgent)?'iPhone/iPad':/Android/i.test(navigator.userAgent)?'Android':'Desktop / other'
@@ -265,29 +118,9 @@ function setPrivacy(m){
  const hint=q('modeHint');if(hint)hint.textContent=modeText[m]||modeText.balanced;
 }
 
-greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','light')),{persist:true});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));syncSoundUI();
+greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','light')),{persist:true});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
-document.querySelectorAll('[data-sound]').forEach(b=>b.onclick=()=>setSoundEnabled(b.dataset.sound==='on'));
-if(q('soundTest'))q('soundTest').onclick=()=>{
- if(!soundSettings.enabled){soundSettings.enabled=true;saveSoundSettings();syncSoundUI()}
- const mediaOk=playPocketMediaTone('levelup');void primePocketAudio();void playPocketSound('levelup');
- const support=q('soundSupport');if(support)support.textContent=mediaOk?'Test sound sent to your device.':'Audio could not start on this device.';
-};
-document.addEventListener('click',e=>{
- if(!soundSettings.enabled)return;
- const target=e.target instanceof Element?e.target.closest('button,a[href],[role="button"]'):null;
- if(!target||target.id==='soundTest'||target.matches('[data-sound]'))return;
- if(target.matches('[data-go],[data-quick],[data-room-action],#homeMascot,.room-cosmetic-option,.star-game-target'))return;
- playPocketMediaTone('tap');
-},{capture:false});
-const unlockAudioFromGesture=()=>{if(soundSettings.enabled)void primePocketAudio()};
-document.addEventListener('pointerdown',unlockAudioFromGesture,{capture:true,passive:true});
-document.addEventListener('touchend',unlockAudioFromGesture,{capture:true,passive:true});
-document.addEventListener('click',unlockAudioFromGesture,{capture:true,passive:true});
-document.addEventListener('keydown',e=>{if(soundSettings.enabled&&(e.key==='Enter'||e.key===' '))void primePocketAudio()},{capture:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&soundSettings.enabled&&pocketAudioContext&&(pocketAudioContext.state==='suspended'||pocketAudioContext.state==='interrupted'))pocketAudioContext.resume().catch(()=>{})});
-if(q('soundVolume')){q('soundVolume').addEventListener('input',e=>setSoundVolume(Number(e.target.value)/100,false));q('soundVolume').addEventListener('change',e=>{setSoundVolume(Number(e.target.value)/100,true);playPocketMediaTone('decorate');renderDiagnostics()});}
 q('copyDiagnostics')?.addEventListener('click',copyDiagnostics);
 q('refreshAppFiles')?.addEventListener('click',refreshPocketAppFiles);
 const settingsDialog=q('settingsDialog');
@@ -298,13 +131,6 @@ if(settingsDialog){
 window.addEventListener('online',renderDiagnostics);window.addEventListener('offline',renderDiagnostics);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderDiagnostics()});
 renderDiagnostics();
-let lastSoundView='';
-window.addEventListener('pocket-view-change',event=>{
- const id=event.detail?.id||'';
- if(!id||id===lastSoundView)return;
- lastSoundView=id;
- if(soundSettings.enabled)void playPocketSound('navigate');
-});
 document.querySelectorAll('[data-privacy-setting],[data-privacy]').forEach(b=>b.onclick=()=>setPrivacy(b.dataset.privacySetting||b.dataset.privacy));
 
 document.addEventListener('keydown',e=>{
@@ -461,13 +287,13 @@ function awardXP(amount,label=''){
  const after=displayLevel();
  showXPFeedback((label?label+' ':'')+'+'+add+' XP ✦');
  if(after>before){
-  playPocketSound('levelup');
+  
   setMascotState('excited',2200);
   showPocketSpeech('Level up! ✦',2400);
   spawnPocketParticles('star',4);
   setTimeout(()=>showXPFeedback('Pocket reached Lv. '+displayLevel(),''),250);
   if(crossedRoomDecorThreshold(before,after))setTimeout(roomDecorUnlockedFeedback,650);
- }else playPocketSound('xp');
+ }else 
  return true;
 }
 function canRewardAction(category,cooldown){
@@ -575,7 +401,7 @@ q('roomDecorateOpen')?.addEventListener('click',openRoomDecor);
 document.querySelectorAll('#roomDecorDialog [data-cosmetic-slot]').forEach(button=>button.addEventListener('click',()=>{
  const slot=button.dataset.cosmeticSlot,id=button.dataset.cosmeticId,item=ROOM_COSMETICS[slot]?.[id];
  if(!item||item.level>displayLevel()||roomCosmetics[slot]===id)return;
- roomCosmetics[slot]=id;applyRoomCosmetics(true);playPocketSound('decorate');
+ roomCosmetics[slot]=id;applyRoomCosmetics(true);
 }));
 function crossedRoomDecorThreshold(before,after){
  return ROOM_DECOR_THRESHOLDS.some(level=>before<level&&after>=level);
@@ -642,7 +468,7 @@ function placeStarTarget(focusTarget=false){
  target.addEventListener('click',event=>{
   if(starGame.state!=='playing')return;
   const keyboard=event.detail===0;
-  playPocketSound('star');starGame.score+=1;renderStarGameHud();placeStarTarget(keyboard);
+  starGame.score+=1;renderStarGameHud();placeStarTarget(keyboard);
  });
  field.appendChild(target);starGameTarget=target;
  if(focusTarget)requestAnimationFrame(()=>target.focus());
@@ -653,7 +479,7 @@ function finishStarGame(){
  removeStarTarget();starGame.state='finished';starGame.timeLeft=0;
  const isBest=starGame.score>starGameBest;
  if(isBest){starGameBest=Math.min(999,starGame.score);saveStarGameBest()}
- playPocketSound(isBest?'best':'finish');
+ 
  renderStarGameHud();
  if(q('starGameReady'))q('starGameReady').hidden=true;
  const result=q('starGameResult');if(result)result.hidden=false;
@@ -695,7 +521,7 @@ const ROOM_REACTIONS={
 document.querySelectorAll('#pocketRoom [data-room-action]').forEach(button=>{
  button.addEventListener('click',()=>{
   const action=button.dataset.roomAction,cfg=ROOM_REACTIONS[action];if(!cfg)return;
-  playPocketSound('navigate');
+  
   button.classList.remove('room-object-react');void button.offsetWidth;button.classList.add('room-object-react');
   setTimeout(()=>button.classList.remove('room-object-react'),260);
   setMascotState(cfg.state==='curious'?'surprised':cfg.state,650);
@@ -771,7 +597,6 @@ if(progressionLocalStatus){
  localProgressObserver.observe(progressionLocalStatus,{childList:true,subtree:true,characterData:true});
 }
 
-const mascots=document.querySelectorAll('[data-mascot]');
 const COMPANION_KEY='pocket-companion-interactions-v1';
 const mascotMoods={normal:'Ready',happy:'Happy',excited:'Excited',surprised:'Curious',sleepy:'Sleepy',thinking:'Thinking',wave:'Curious',petted:'Happy',sending:'Excited',local:'Happy',concerned:'Curious',secret:'Excited'};
 const tapStates=['happy','excited','surprised','sleepy','thinking','wave'];
@@ -822,8 +647,54 @@ function checkMascotSecret(){
  }
  return false;
 }
+let mascotRunAnimation=null,mascotRunLocked=false;
+function runPocketMascot(){
+ const source=q('homeMascot'),room=q('pocketRoom');
+ if(!source||!room||mascotRunLocked||motionMode()==='off'||matchMedia('(prefers-reduced-motion: reduce)').matches)return false;
+ const sourceRect=source.getBoundingClientRect(),roomRect=room.getBoundingClientRect();
+ const maxX=Math.max(0,roomRect.width-sourceRect.width-20),maxY=Math.max(0,roomRect.height-sourceRect.height-28);
+ const startX=sourceRect.left-roomRect.left,startY=sourceRect.top-roomRect.top;
+ const points=[0,1,2].map((_,i)=>{
+   const x=10+Math.random()*maxX,y=10+Math.random()*maxY;
+   const dx=x-startX,dy=y-startY,flip=i%2===0?1:-1;
+   return {transform:`translate(${dx}px,${dy}px) scaleX(${flip}) translateY(${i===1?-7:0}px)`};
+ });
+ mascotRunLocked=true;source.classList.add('is-game-running');
+ mascotRunAnimation=source.animate([
+  {transform:'translate(0,0) scaleX(1)',offset:0},
+  {...points[0],offset:.3},
+  {...points[1],offset:.62},
+  {...points[2],offset:.86},
+  {transform:'translate(0,0) scaleX(1)',offset:1}
+ ],{duration:motionMode()==='gentle'?1050:1450,easing:'cubic-bezier(.2,.75,.25,1)'});
+ mascotRunAnimation.finished.catch(()=>{}).finally(()=>{source.classList.remove('is-game-running');mascotRunLocked=false;mascotRunAnimation=null});
+ spawnPocketParticles('star',3);
+ return true;
+}
+function runCuteLogo(source){
+ if(!source||source.id==='homeMascot')return runPocketMascot();
+ if(motionMode()==='off'||matchMedia('(prefers-reduced-motion: reduce)').matches)return false;
+ const rect=source.getBoundingClientRect(),ghost=source.cloneNode(true);
+ ghost.removeAttribute('id');ghost.removeAttribute('data-mascot');ghost.classList.add('pocket-logo-runner');
+ Object.assign(ghost.style,{position:'fixed',left:rect.left+'px',top:rect.top+'px',width:rect.width+'px',height:rect.height+'px',margin:'0',zIndex:'9999',pointerEvents:'none'});
+ document.body.appendChild(ghost);
+ const distance=Math.max(90,Math.min(innerWidth*.55,360)),dir=rect.left<innerWidth/2?1:-1;
+ const animation=ghost.animate([
+  {transform:'translate(0,0) rotate(0deg) scale(1)',opacity:1},
+  {transform:`translate(${dir*distance*.28}px,-12px) rotate(${dir*8}deg) scale(1.06)`,offset:.3},
+  {transform:`translate(${dir*distance*.62}px,3px) rotate(${dir*-5}deg) scale(.98)`,offset:.62},
+  {transform:`translate(${dir*distance}px,-8px) rotate(${dir*5}deg) scale(1.03)`,opacity:.9}
+ ],{duration:850,easing:'cubic-bezier(.22,.72,.24,1)'});
+ animation.finished.catch(()=>{}).finally(()=>ghost.remove());
+ return true;
+}
+document.addEventListener('click',e=>{
+ const cute=e.target instanceof Element?e.target.closest('[data-mascot]'):null;
+ if(cute&&cute.id!=='homeMascot')runCuteLogo(cute);
+},{passive:true});
+
 function pocketTap(){
- bumpPocketInteractions();playPocketSound('tap');
+ runPocketMascot();bumpPocketInteractions();
  if(checkMascotSecret())return;
  const state=tapStates[Math.floor(Math.random()*tapStates.length)];
  setMascotState(state,1700);
@@ -832,7 +703,7 @@ function pocketTap(){
  scheduleMascotIdle();
 }
 function pocketPet(){
- pressHandled=true;bumpPocketInteractions();playPocketSound('pet');setMascotState('petted',2100);showPocketSpeech(Math.random()<.5?'Hehe ✦':'That tickles!',2200);spawnPocketParticles('heart',4);scheduleMascotIdle();
+ pressHandled=true;bumpPocketInteractions();setMascotState('petted',2100);showPocketSpeech(Math.random()<.5?'Hehe ✦':'That tickles!',2200);spawnPocketParticles('heart',4);scheduleMascotIdle();
 }
 const homeMascot=q('homeMascot');
 if(homeMascot){
