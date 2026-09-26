@@ -189,7 +189,7 @@ function setSoundVolume(value,preview=false){
  saveSoundSettings();syncSoundUI();if(preview&&soundSettings.enabled)playPocketSound('decorate');
 }
 
-const POCKET_BUILD='step28-single-owner-boot';
+const POCKET_BUILD='step29-cache-coherence';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 function audioStateLabel(){
  if(!audioSupported())return 'Unsupported';
@@ -233,6 +233,10 @@ async function copyDiagnostics(){
 }
 async function refreshPocketAppFiles(){
  const btn=q('refreshAppFiles'),status=q('diagnosticsStatus');
+ if(navigator.onLine===false){
+  if(status)status.textContent='You are offline. Reconnect before refreshing app files.';
+  return;
+ }
  if(btn)btn.disabled=true;
  if(status)status.textContent='Refreshing Pocket AI app files…';
  try{
@@ -244,7 +248,7 @@ async function refreshPocketAppFiles(){
    const reg=await navigator.serviceWorker.getRegistration();
    try{await reg?.update()}catch{}
   }
-  const url=new URL(location.href);url.searchParams.set('v','step24-refresh-'+Date.now());location.replace(url.toString());
+  const url=new URL(location.href);url.searchParams.set('v','step29-refresh-'+Date.now());location.replace(url.toString());
  }catch{
   if(status)status.textContent='Could not refresh app files. Check your connection and try again.';
   if(btn)btn.disabled=false;
