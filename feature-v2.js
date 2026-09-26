@@ -22,7 +22,6 @@ function syncWorkspaceStates(){
  f('surface')?.classList.toggle('is-empty',!hasResults&&!hasReport);
 }
 f('ghForm')?.addEventListener('submit',()=>f('github')?.classList.remove('is-empty'),{capture:true});f('surfaceForm')?.addEventListener('submit',()=>f('surface')?.classList.remove('is-empty'),{capture:true});f('deepResearch')?.addEventListener('click',()=>f('surface')?.classList.remove('is-empty'),{capture:true});syncWorkspaceStates();
-function networkState(){document.documentElement.dataset.network=navigator.onLine?'online':'offline';}addEventListener('online',networkState);addEventListener('offline',networkState);networkState();
 
 try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)){let kept=false;const clean=a.filter(c=>{const blank=(c?.title||'New chat')==='New chat'&&(!Array.isArray(c?.messages)||c.messages.length===0);if(!blank)return true;if(kept)return false;kept=true;return true});if(clean.length!==a.length)localStorage.setItem(k,JSON.stringify(clean));}}catch(err){console.warn('Pocket AI chat history cleanup skipped',err)}
 
