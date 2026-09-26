@@ -722,16 +722,6 @@ html[data-motion="off"] .star-game-target{animation:none}
 #pocketStartupNotice span{color:var(--pa-secondary)}
 
 
-/* Step 9 — optional sound controls */
-#settingsDialog .sound-toggle{margin-bottom:8px}
-#settingsDialog .sound-volume-control{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px 12px;margin:10px 0 2px;color:var(--pa-secondary);font-size:12px}
-#settingsDialog .sound-volume-control>span{font-weight:700;color:var(--pa-text)}
-#settingsDialog .sound-volume-control output{font-weight:700;color:var(--pa-secondary);font-variant-numeric:tabular-nums}
-#settingsDialog .sound-volume-control input[type="range"]{grid-column:1/-1;width:100%;margin:0;padding:0;border:0;outline:0;box-shadow:none;background:transparent;accent-color:var(--pa-accent)}
-#settingsDialog .sound-volume-control input[type="range"]:focus-visible{outline:2px solid var(--pa-accent);outline-offset:3px}
-
-
-
 /* STEP 11 — single-owner UI/theme cleanup */
 @media(max-width:767px){
   .theme-grid{grid-template-columns:1fr 1fr}
@@ -1820,4 +1810,12 @@ dialog[open]{overscroll-behavior:contain}
   button,a[href],[role="button"]{min-height:44px}
   .star-game-target{min-width:48px;min-height:48px}
   .pa-side-close,.close{min-width:44px;min-height:44px}
+}
+
+
+/* STEP 31 — silent game-like mascot interactions */
+#home .pocket-mascot.is-game-running{z-index:20;will-change:transform;animation:none!important}
+.pocket-logo-runner{will-change:transform;filter:drop-shadow(0 8px 12px rgba(0,0,0,.14))}
+@media(prefers-reduced-motion:reduce){
+ #home .pocket-mascot.is-game-running,.pocket-logo-runner{animation:none!important;transition:none!important}
 }
