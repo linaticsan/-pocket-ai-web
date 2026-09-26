@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step23-feature-workspaces', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step32-game-cleanup-stable', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -61,18 +61,15 @@ test('theme selection is distinct and persists across reload', async ({ page }) 
   await expectNoPageErrors(errors);
 });
 
-test('sound preference is saved without requiring external audio files', async ({ page }) => {
+test('Pocket mascot click runs a silent game animation from its room position', async ({ page }) => {
   const errors = await openPocket(page);
-  await page.locator('#settingsOpen').click();
-  await page.locator('[data-sound="off"]').click();
-  const stored = await page.evaluate(() => JSON.parse(localStorage.getItem('pocket-sound-v1') || '{}'));
-  expect(stored.enabled).toBe(false);
-  await expect(page.locator('[data-sound="off"]')).toHaveAttribute('aria-pressed', 'true');
-
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.waitForFunction(() => !!window.PocketTheme?.apply);
-  await page.locator('#settingsOpen').click();
-  await expect(page.locator('[data-sound="off"]')).toHaveAttribute('aria-pressed', 'true');
+  const mascot = page.locator('#homeMascot');
+  await expect(mascot).toBeVisible();
+  await mascot.click();
+  await expect(mascot).toHaveClass(/is-game-running/);
+  await expect(mascot).not.toHaveClass(/is-game-running/, { timeout: 2500 });
+  await expect(page.locator('[data-sound],#soundVolume,#soundTest')).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('pocket-sound-v1'))).toBeNull();
   await expectNoPageErrors(errors);
 });
 
