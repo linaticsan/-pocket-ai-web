@@ -3,7 +3,7 @@
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 let drawerOpener=null;
 const focusables=()=>$$('#paDesktopSidebar button:not([disabled]),#paDesktopSidebar [href],#paDesktopSidebar input:not([disabled]),#paDesktopSidebar [tabindex]:not([tabindex="-1"])');
-const go=id=>window.PocketNav?.show?.(id)??window.PocketV39?.show?.(id)??false;
+const go=id=>window.PocketNav?.show?.(id)??false;
 
 function buildSidebar(){
  if($('#paDesktopSidebar'))return;
