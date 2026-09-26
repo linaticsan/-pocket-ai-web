@@ -25,12 +25,12 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step32-game-cleanup-stable'"),'STEP 32 build marker is missing');
+assert(index.includes("const BUILD='step33-stable-mascot-hit-target'"),'STEP 33 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v37'"),'STEP 32 app-shell cache must be v37');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v38'"),'STEP 33 app-shell cache must be v38');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -39,9 +39,9 @@ assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing
 assert(/\.\/icons-v132\.js\?v=20260926-step\d+[a-z0-9-]*/.test(index),'Current icon cache-bust is missing');
 const workspace=read('workspace.js');
 assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled'])"),'Authoritative five-theme engine is missing');
-assert(index.includes('./workspace.js?v=20260926-step32-game-cleanup-stable'),'STEP 32 workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260926-step33-stable-mascot-hit-target'),'STEP 33 workspace cache-bust is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
-assert(workspace.includes("const POCKET_BUILD='step32-game-cleanup-stable'"),'STEP 32 diagnostics build marker is missing');
+assert(workspace.includes("const POCKET_BUILD='step33-stable-mascot-hit-target'"),'STEP 33 diagnostics build marker is missing');
 assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective Pocket cache refresh is missing');
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
 assert(coreCss.includes('STEP 25 — touch and interaction reliability'),'STEP 25 interaction CSS is missing');
@@ -52,7 +52,7 @@ assert(!feature.includes("addEventListener('online',networkState)")&&!feature.in
 assert(workspace.includes("addEventListener('pocket-network-change'"),'Workspace must consume the central network event');
 assert(!icons.includes("document.addEventListener('click',scheduleIconRun,true)"),'Icons must not rerun after every click');
 assert(responsive.includes('function scheduleSync()')&&responsive.includes("addEventListener('resize',scheduleSync"),'Resize sync must be animation-frame throttled');
-assert(index.includes('<dd>STEP 32</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dd>STEP 33</dd>'),'Visible diagnostics build label is stale');
 assert(!index.includes('data-sound=')&&!index.includes('soundVolume')&&!index.includes('soundTest'),'All audio settings UI must stay removed');
 assert(!workspace.includes('AudioContext')&&!workspace.includes('new Audio(')&&!workspace.includes('playPocketSound')&&!workspace.includes('playPocketMediaTone')&&!workspace.includes('pocket-sound-v1'),'All runtime audio code must stay removed');
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
@@ -60,7 +60,8 @@ assert(!workspace.includes("const mascots=document.querySelectorAll('[data-masco
 assert(workspace.includes('function runPocketMascot()')&&workspace.includes('function runCuteLogo(source)'),'Game-like mascot/logo runner is missing');
 assert(workspace.includes("closest('[data-mascot]')"),'Cute-logo game interaction delegation is missing');
 assert(coreCss.includes('STEP 31 — silent game-like mascot interactions'),'STEP 31 mascot movement CSS is missing');
-assert(index.includes('./ui-core.css?v=20260926-step31-silent-game-cleanup'),'STEP 31 CSS cache-bust is missing');
+assert(coreCss.includes('STEP 33 — stable mascot hit target')&&coreCss.includes('animation-play-state:paused'),'Mascot hit target must pause idle motion during interaction');
+assert(index.includes('./ui-core.css?v=20260926-step33-stable-mascot-hit-target'),'STEP 33 CSS cache-bust is missing');
 assert(ux.includes('function duplicateActivation(target)'),'Navigation duplicate-activation guard is missing');
 assert(!workspace.includes("document.querySelectorAll('[data-quick]').forEach(b=>b.onclick"),'Workspace must not duplicate Quick Action navigation ownership');
 assert(!workspace.includes("q('settingsOpen').onclick")&&!workspace.includes("q('commandOpen').onclick"),'Workspace must not duplicate canonical dialog ownership');
@@ -113,7 +114,7 @@ assert(sw.includes('const CORE_ASSETS=')&&sw.includes('const OPTIONAL_ASSETS='),
 assert(!sw.includes('await cacheOptional(cache)'),'Optional feature assets must not preload during service-worker install');
 assert(!sw.includes('async function cacheOptional'),'Obsolete eager optional-cache helper must stay removed');
 assert(index.includes('window.__POCKET_BUILD=BUILD'),'Page build identifier must be globally available');
-assert(sw.includes("const BUILD='step30-canonical-nav-cleanup'"),'Service-worker build identifier is missing');
+assert(sw.includes("const BUILD='step33-stable-mascot-hit-target'"),'Service-worker build identifier is missing');
 assert(sw.includes("type:'POCKET_SW_VERSION'")&&sw.includes("type==='POCKET_GET_VERSION'"),'Service-worker version handshake is missing');
 assert(app.includes('function handleSWVersion(message)')&&app.includes('function requestSWVersion()'),'App service-worker version handshake is missing');
 assert(workspace.includes("if(navigator.onLine===false)"),'Refresh app files must refuse destructive cache refresh while offline');
