@@ -244,11 +244,8 @@ main{min-width:0}
 .topbar .brand{display:flex;align-items:center;gap:8px;background:transparent;border:0;padding:0;color:var(--pa-text)}
 .topbar .brand strong{font-size:19px;font-weight:700;white-space:nowrap}
 .top-actions{display:flex;align-items:center;gap:7px;margin-left:auto}
-.header-workspace{height:36px;min-height:36px;padding:3px 8px 3px 4px;display:flex;align-items:center;gap:7px;border:1px solid transparent;border-radius:10px;background:transparent;color:var(--pa-text)}
-.header-workspace:hover,.header-workspace[aria-expanded="true"]{background:var(--pa-card);border-color:var(--pa-border)}
 .header-avatar{width:28px;height:28px;display:grid;place-items:center;border-radius:8px;background:rgba(91,140,255,.12);color:var(--pa-accent)}
 #settingsOpen.header-settings{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;display:grid;place-items:center;border:1px solid var(--pa-border);border-radius:10px;background:var(--pa-card);color:var(--pa-text)}
-.header-workspace-menu{position:fixed;z-index:500;width:240px;padding:16px;border:1px solid var(--pa-border);border-radius:var(--modal-radius);background:var(--pa-card);color:var(--pa-text);box-shadow:0 8px 24px rgba(0,0,0,.14)}
 
 /* 7. Sidebar */
 .pa-desktop-sidebar{display:flex;flex-direction:column;position:fixed;z-index:150;color:var(--pa-text);background:var(--pa-sidebar);border-right:1px solid var(--pa-border)}
@@ -274,7 +271,7 @@ button:hover{background:var(--pa-hover);border-color:var(--pa-hover-border)}
 button:disabled{cursor:not-allowed;opacity:.48}
 .primary,.pa-new-chat,#localSetup,#localConnect,#localSend,#localAdvancedSend,#saveFile,#surfaceSearch,#installNow,#useGemini,#saveYt,#home .project-create{background:var(--pa-accent);border-color:var(--pa-accent);color:#fff;font-weight:600}
 .primary:hover,.pa-new-chat:hover,#localSetup:hover,#localConnect:hover,#localSend:hover,#localAdvancedSend:hover,#saveFile:hover,#surfaceSearch:hover,#installNow:hover,#useGemini:hover,#saveYt:hover,#home .project-create:hover{background:var(--pa-accent-hover);border-color:var(--pa-accent-hover)}
-#settingsOpen.header-settings,.close,.home-attach,#homeComposer>.primary{display:grid;place-items:center;padding:0}
+#settingsOpen.header-settings,.close,#homeComposer>.primary{display:grid;place-items:center;padding:0}
 .danger-soft{border-color:var(--pa-error);color:var(--pa-error)}
 .danger-soft:hover{background:rgba(255,107,107,.08)}
 
@@ -328,10 +325,7 @@ html[data-theme="dark"] #home .home-composer{background:#2f2f2f}
 #home .home-composer{min-height:62px;display:grid;grid-template-columns:44px minmax(0,1fr) 46px;align-items:center;gap:8px;padding:8px 9px;border:1px solid var(--pa-border);border-radius:20px;background:var(--pa-card);box-shadow:var(--pa-shadow);transition:border-color .18s ease,box-shadow .18s ease}
 #home .home-composer:focus-within{border-color:var(--pa-accent);box-shadow:0 0 0 3px var(--pa-accent-soft),var(--pa-shadow)}
 #home .home-composer textarea{width:100%;min-width:0;min-height:44px;max-height:120px;padding:11px 4px;border:0;outline:0;background:transparent;resize:none;box-shadow:none}
-#home .home-attach,#home .home-send{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:50%;display:grid;place-items:center}
-#home .home-attach{background:transparent;border-color:transparent;color:var(--pa-secondary)}
-#home .home-attach::before{content:"";width:18px;height:18px;display:block;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m8.5 12.5 6.8-6.8a3.2 3.2 0 0 1 4.5 4.5l-8.6 8.6a5 5 0 0 1-7.1-7.1l8.2-8.2' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
-#home .home-attach:disabled{opacity:.55;cursor:not-allowed;background:var(--pa-hover);border-color:var(--pa-border)}
+#home .home-send{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:50%;display:grid;place-items:center}
 #home .home-send{background:var(--pa-accent);border-color:var(--pa-accent);color:#fff}
 #home .home-ai-status{width:max-content;max-width:100%;min-height:34px;margin-top:10px;padding:0 11px;display:inline-flex;align-items:center;gap:8px;border:1px solid var(--pa-border);border-radius:999px;background:var(--pa-card);color:var(--pa-secondary);font-size:12px}
 #home .home-ai-status:hover{background:var(--pa-hover);border-color:var(--pa-hover-border)}
@@ -495,8 +489,7 @@ html[data-motion="off"] #home .pocket-mascot{transition:none}
   html.pa-nav-open .pa-desktop-sidebar{transform:translateX(0)}
   html.pa-nav-open .pa-sidebar-backdrop{display:block}
   .topbar{height:56px;min-height:56px;padding:7px 16px 7px 62px}
-  .header-workspace strong,.header-workspace>span:last-child{display:none}
-  .header-workspace,#settingsOpen.header-settings{width:44px;height:44px;min-width:44px;min-height:44px}
+    #settingsOpen.header-settings{width:44px;height:44px;min-width:44px;min-height:44px}
   #home .home-step1{padding:24px 0 30px}
   #home .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   #home .project-grid.has-items{grid-template-columns:1fr}
@@ -509,8 +502,7 @@ html[data-motion="off"] #home .pocket-mascot{transition:none}
   #chat #chatForm.v3-composer{padding:8px 16px max(8px,env(safe-area-inset-bottom))}
   #chat .v3-msg.user .v3-bubble{max-width:86%}
   dialog,.settings-dialog{max-width:calc(100vw - 32px)}
-  .header-workspace-menu{width:min(240px,calc(100vw - 32px));max-width:calc(100vw - 32px)}
-  button,[role="button"],input[type="button"],input[type="submit"]{min-height:44px}
+    button,[role="button"],input[type="button"],input[type="submit"]{min-height:44px}
   #home .home-step1{padding-top:18px}
   #home .home-hero{grid-template-columns:1fr;gap:14px;min-height:0;padding:20px 16px 18px}
   #home .home-hero-copy{display:contents}
@@ -1844,4 +1836,25 @@ pre,.answer,.research-report{max-width:100%;overflow-wrap:anywhere;white-space:p
 }
 @media(pointer:coarse){
   button,[role="button"],a[href],input,select,summary{min-height:44px}
+}
+
+
+/* STEP 37 — cleaner information hierarchy */
+.top-actions{gap:6px}
+#home .home-composer{grid-template-columns:minmax(0,1fr) auto}
+#home .home-quests{padding:0;overflow:hidden}
+#home .home-quests>summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px 16px;cursor:pointer;font-weight:700;color:var(--pa-text)
+}
+#home .home-quests>summary::-webkit-details-marker{display:none}
+#home .home-quests>summary::after{content:"›";font-size:20px;transform:rotate(90deg);transition:transform .18s ease}
+#home .home-quests[open]>summary::after{transform:rotate(-90deg)}
+#home .home-quests>summary small{font-weight:500;color:var(--pa-muted)}
+#home .home-quests .pocket-quest-grid{padding:0 14px 14px}
+.settings-diagnostics{margin-top:14px;border-top:1px solid var(--pa-border);padding-top:12px}
+.settings-diagnostics>summary{cursor:pointer;font-weight:650;color:var(--pa-secondary)}
+@media(max-width:640px){
+  #home .home-quests>summary{padding:13px 14px}
+  #home .home-quests>summary small{display:none}
 }
