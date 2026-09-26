@@ -68,6 +68,7 @@ let deferredInstallPrompt=null;
 let swRegistration=null;
 let lastSWUpdateCheck=0;
 let updateAnnounced=false;
+let activeSWBuild='';
 
 function isStandalone(){
   return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true);
@@ -139,6 +140,21 @@ window.addEventListener('online',()=>syncNetworkState(true));
 window.addEventListener('offline',()=>syncNetworkState(true));
 syncNetworkState(navigator.onLine===false);
 
+function handleSWVersion(message){
+  const build=message?.build||'';
+  if(!build)return;
+  activeSWBuild=build;
+  document.documentElement.dataset.swBuild=build;
+  const pageBuild=window.__POCKET_BUILD||'';
+  if(pageBuild&&build!==pageBuild)pwaNotice('Pocket AI update detected. Refresh app files to finish updating.');
+}
+function requestSWVersion(){
+  navigator.serviceWorker?.controller?.postMessage?.({type:'POCKET_GET_VERSION'});
+}
+navigator.serviceWorker?.addEventListener?.('message',event=>{
+  if(event.data?.type==='POCKET_SW_VERSION')handleSWVersion(event.data);
+});
+
 function announceUpdate(){
   if(updateAnnounced)return;
   updateAnnounced=true;
@@ -162,13 +178,17 @@ async function checkForSWUpdate(force=false){
 }
 if('serviceWorker' in navigator){
   navigator.serviceWorker.addEventListener('controllerchange',()=>{
-    if(navigator.serviceWorker.controller)announceUpdate();
+    if(navigator.serviceWorker.controller){
+      announceUpdate();
+      requestSWVersion();
+    }
   });
   window.addEventListener('load',()=>{
     setTimeout(async()=>{
       try{
         swRegistration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
         watchRegistration(swRegistration);
+        requestSWVersion();
         await checkForSWUpdate(true);
       }catch{}
     },400);
