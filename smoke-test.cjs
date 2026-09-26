@@ -25,12 +25,12 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step34-ui-code-audit'"),'STEP 34 build marker is missing');
+assert(index.includes("const BUILD='step35-runtime-ui-cleanup'"),'STEP 35 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v39'"),'STEP 34 app-shell cache must be v39');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v40'"),'STEP 35 app-shell cache must be v40');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -39,9 +39,9 @@ assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing
 assert(/\.\/icons-v132\.js\?v=20260926-step\d+[a-z0-9-]*/.test(index),'Current icon cache-bust is missing');
 const workspace=read('workspace.js');
 assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled'])"),'Authoritative five-theme engine is missing');
-assert(index.includes('./workspace.js?v=20260926-step34-ui-code-audit'),'STEP 34 workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260926-step35-runtime-ui-cleanup'),'STEP 35 workspace cache-bust is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
-assert(workspace.includes("const POCKET_BUILD='step34-ui-code-audit'"),'STEP 34 diagnostics build marker is missing');
+assert(workspace.includes("const POCKET_BUILD='step35-runtime-ui-cleanup'"),'STEP 35 diagnostics build marker is missing');
 assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective Pocket cache refresh is missing');
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
 assert(coreCss.includes('STEP 25 — touch and interaction reliability'),'STEP 25 interaction CSS is missing');
@@ -52,7 +52,7 @@ assert(!feature.includes("addEventListener('online',networkState)")&&!feature.in
 assert(workspace.includes("addEventListener('pocket-network-change'"),'Workspace must consume the central network event');
 assert(!icons.includes("document.addEventListener('click',scheduleIconRun,true)"),'Icons must not rerun after every click');
 assert(responsive.includes('function scheduleSync()')&&responsive.includes("addEventListener('resize',scheduleSync"),'Resize sync must be animation-frame throttled');
-assert(index.includes('<dd>STEP 34</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dd>STEP 35</dd>'),'Visible diagnostics build label is stale');
 assert(!index.includes('data-sound=')&&!index.includes('soundVolume')&&!index.includes('soundTest'),'All audio settings UI must stay removed');
 assert(!workspace.includes('AudioContext')&&!workspace.includes('new Audio(')&&!workspace.includes('playPocketSound')&&!workspace.includes('playPocketMediaTone')&&!workspace.includes('pocket-sound-v1'),'All runtime audio code must stay removed');
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
@@ -116,7 +116,7 @@ assert(sw.includes('const CORE_ASSETS=')&&sw.includes('const OPTIONAL_ASSETS='),
 assert(!sw.includes('await cacheOptional(cache)'),'Optional feature assets must not preload during service-worker install');
 assert(!sw.includes('async function cacheOptional'),'Obsolete eager optional-cache helper must stay removed');
 assert(index.includes('window.__POCKET_BUILD=BUILD'),'Page build identifier must be globally available');
-assert(sw.includes("const BUILD='step34-ui-code-audit'"),'Service-worker build identifier is missing');
+assert(sw.includes("const BUILD='step35-runtime-ui-cleanup'"),'Service-worker build identifier is missing');
 assert(sw.includes("type:'POCKET_SW_VERSION'")&&sw.includes("type==='POCKET_GET_VERSION'"),'Service-worker version handshake is missing');
 assert(app.includes('function handleSWVersion(message)')&&app.includes('function requestSWVersion()'),'App service-worker version handshake is missing');
 assert(workspace.includes("if(navigator.onLine===false)"),'Refresh app files must refuse destructive cache refresh while offline');
@@ -139,6 +139,10 @@ assert(index.includes('./ux-v39.js?v=20260926-step30-canonical-nav-cleanup'),'ST
 assert(index.includes('./responsive-v92.js?v=20260926-step30-canonical-nav-cleanup'),'STEP 30 sidebar cache-bust is missing');
 assert(index.includes('./feature-v2.js?v=20260926-step30-canonical-nav-cleanup'),'STEP 30 feature cache-bust is missing');
 assert(feature.includes("library-v33.js?v=20260926-step30-canonical-nav")&&feature.includes("webnovel-v42.js?v=20260926-step30-canonical-nav"),'STEP 30 lazy-module cache-bust is missing');
+assert(!feature.includes('files-v31.css'),'Legacy Files CSS request must stay removed');
+assert(feature.includes("files-v80.css?v=20260926-step35-files-consolidated"),'Consolidated Files stylesheet cache-bust is missing');
+assert(files80Css.includes('STEP 35 — consolidated compact file-type strip'),'Compact file-type strip must live in authoritative Files CSS');
+assert(!sw.includes("'./files-v31.css'"),'Removed Files stylesheet must not remain in service-worker assets');
 assert(ux.includes("new CustomEvent('pocket-view-change'"),'Canonical view-change event is missing');
 assert(workspace.includes("window.PocketNav?.show?.(id)"),'Workspace must delegate navigation to PocketNav');
 assert(responsive.includes("window.PocketNav?.show?.(id)"),'Sidebar must delegate navigation to PocketNav');
@@ -155,7 +159,6 @@ assert(!sw.includes('./desktop-workspace-v115.js'),'Redundant desktop workspace 
 assert(!fs.existsSync(path.join(__dirname,'desktop-workspace-v115.js')),'Redundant desktop workspace sync file must stay removed');
 const chatCss=read('chat-v77.css');
 const v3Css=read('v3.css');
-const files31Css=read('files-v31.css');
 const files80Css=read('files-v80.css');
 const libraryCss=read('library-v33.css');
 const importantCount=s=>(s.match(/!important/g)||[]).length;
@@ -194,7 +197,6 @@ assert(ux.includes("const FEATURE_FOR_VIEW={coding:'coding',files:'files',librar
 assert(ux.includes("ensure(feature).then(()=>show(id))"),'First-tap lazy navigation recovery is missing');
 assert(importantCount(v3Css)<=13,'v3.css !important budget regressed');
 assert(importantCount(chatCss)<=184,'chat-v77.css !important budget regressed');
-assert(importantCount(files31Css)===0,'files-v31.css should not need !important');
 assert(importantCount(files80Css)<=139,'files-v80.css !important budget regressed');
 assert(importantCount(libraryCss)<=74,'library-v33.css !important budget regressed');
 const removedLegacy=["buttons-v128.css","cards-v130.css","cards-v131.css","chat-v134.css","colors-v127.css","desktop-v97.css","desktop-workspace-v115.css","header-v119.css","home-step1-v117.css","home-v44.css","home-v45.css","layout-v56.css","mobile-ui-fix-v47.css","mobile-v133.css","mobile-v30.css","nav-fix-v61.css","panels-v2.css","personality-v135.css","photo-ui-v100.css","photo-ui-v100.js","polish-v84.css","polish-v84.js","polish.css","reference-ui-v57.css","reference-ui-v57.js","reference-ui-v58.css","reference-ui-v58.js","reference-ui-v89.css","reference-ui-v89.js","responsive-v92.css","simple-v87.css","soft-ui-v55.css","styles.css","surfaces-v129.css","typography-v126.css","ui-v55.js","ui-v59.css","ui-v59.js","ux-v36.css","ux-v36.js","ux-v37.css","ux-v37.js","ux-v38.css","ux-v38.js","ux-v39.css","ux-v41.css","ux-v43.css","home-v43.js","repair-v56.js"];
