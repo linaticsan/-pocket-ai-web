@@ -1,5 +1,6 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v33';
+const CACHE=APP_CACHE_PREFIX+'v34';
+const BUILD='step29-cache-coherence';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
@@ -42,6 +43,8 @@ self.addEventListener('activate',event=>{
       try{await self.registration.navigationPreload.enable()}catch{}
     }
     await self.clients.claim();
+    const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    clients.forEach(client=>client.postMessage({type:'POCKET_SW_VERSION',build:BUILD,cache:CACHE}));
   })());
 });
 
@@ -59,6 +62,12 @@ async function networkNavigation(event,cache){
     return (await cache.match('./index.html'))||(await cache.match('./'))||Response.error();
   }
 }
+
+self.addEventListener('message',event=>{
+  if(event.data?.type==='POCKET_GET_VERSION'){
+    event.source?.postMessage?.({type:'POCKET_SW_VERSION',build:BUILD,cache:CACHE});
+  }
+});
 
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
