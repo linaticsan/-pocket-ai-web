@@ -22,6 +22,4 @@
    },wait);
  };
  window.addEventListener('pocket-core-ready',hide,{once:true});
- window.addEventListener('load',()=>setTimeout(hide,900),{once:true});
- setTimeout(hide,5500);
 })();
