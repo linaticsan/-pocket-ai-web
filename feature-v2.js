@@ -111,13 +111,8 @@ document.addEventListener('keydown',e=>{
  ]);
  window.dispatchEvent(new CustomEvent('pocket-core-ready',{detail:{ms:Math.round(performance.now()-started)}}));
 
- const idle=cb=>window.requestIdleCallback?requestIdleCallback(cb,{timeout:1800}):setTimeout(cb,900);
- window.PocketFeatures.ready=new Promise(resolve=>idle(()=>{
-   Promise.allSettled([
-     ensureFeatureBundle('files'),
-     ensureFeatureBundle('coding'),
-     ensureFeatureBundle('library')
-   ]).then(resolve);
- }));
- window.PocketFeatures.ready.then(()=>window.dispatchEvent(new CustomEvent('pocket-features-ready')));
+ // Keep optional workspaces genuinely lazy. They load only when the user points,
+ // taps, or keyboard-activates their navigation target.
+ window.PocketFeatures.ready=Promise.resolve();
+ window.dispatchEvent(new CustomEvent('pocket-features-ready'));
 })();
