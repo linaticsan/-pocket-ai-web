@@ -126,6 +126,8 @@ if(isStandalone())hideInstallBanner();
 function syncNetworkState(announce=true){
   const online=navigator.onLine!==false;
   document.body.dataset.network=online?'online':'offline';
+  document.documentElement.dataset.network=online?'online':'offline';
+  window.dispatchEvent(new CustomEvent('pocket-network-change',{detail:{online}}));
   if(!announce)return;
   if(!online)pwaNotice('Offline — Local AI, saved files and cached Pocket AI tools still work.');
   else if($('notice')?.dataset?.pwaNotice==='1'){
