@@ -1798,3 +1798,13 @@ body[data-network="offline"] .home-mood-dot{background:var(--pa-muted)}
   #coding .code-grid{gap:18px}
   #library .lib53-hero{padding-inline:34px!important}
 }
+
+
+/* STEP 24 — diagnostics and interaction reliability */
+.settings-dialog .diagnostics-list{display:grid;gap:8px;margin:8px 0 12px}
+.settings-dialog .diagnostics-list>div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 12px;border:1px solid var(--line,rgba(120,120,140,.22));border-radius:12px;background:color-mix(in srgb,var(--surface,#fff) 88%,transparent)}
+.settings-dialog .diagnostics-list dt{font-weight:700}
+.settings-dialog .diagnostics-list dd{margin:0;text-align:right;opacity:.78;overflow-wrap:anywhere}
+.settings-dialog .diagnostics-actions{flex-wrap:wrap}
+.settings-dialog #refreshAppFiles{font-weight:700}
+@media(max-width:520px){.settings-dialog .diagnostics-list>div{align-items:flex-start}.settings-dialog .diagnostics-actions>*{flex:1 1 160px}}
