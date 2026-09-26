@@ -64,7 +64,7 @@ const FEATURE_BUNDLES={
     modules:['./coding-v1.js?v=20260925-step16']
   },
   files:{
-    styles:['./files-v31.css?v=20260925-step19-css-debt','./files-v80.css?v=20260925-step19-css-debt'],
+    styles:['./files-v80.css?v=20260926-step35-files-consolidated'],
     modules:['./files-v32.js?v=20260922-v88']
   },
   library:{
