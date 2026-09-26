@@ -129,7 +129,13 @@ function syncActive(){
  syncStatus();
 }
 function sync(){buildSidebar();syncActive();if(innerWidth>=768)closeDrawer(false)}
-addEventListener('resize',sync);
+let resizeQueued=false;
+function scheduleSync(){
+ if(resizeQueued)return;
+ resizeQueued=true;
+ requestAnimationFrame(()=>{resizeQueued=false;sync()});
+}
+addEventListener('resize',scheduleSync,{passive:true});
 window.addEventListener('pocket-view-change',()=>syncActive());
 document.addEventListener('click',e=>{if(e.target.closest?.('#v3Study,#v3NewChat'))setTimeout(syncActive,30)},true);
 addEventListener('pocket-core-ready',sync);addEventListener('pocket-features-ready',sync);
