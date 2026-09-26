@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step38-copy-dedup-cleanup', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step39-theme-motion-fix', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -58,6 +58,23 @@ test('theme selection is distinct and persists across reload', async ({ page }) 
   await page.locator('[data-theme-choice="sakura"]').click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'sakura');
   await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#fff5fa');
+  await expectNoPageErrors(errors);
+});
+
+test('all five themes and motion modes stay canonical', async ({ page }) => {
+  const errors = await openPocket(page);
+  await page.locator('#settingsOpen').click();
+  for (const theme of ['light','dark','sakura','green','oled']) {
+    await page.locator('[data-theme-choice="'+theme+'"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+    await expect(page.locator('[data-theme-choice="'+theme+'"]')).toHaveAttribute('aria-pressed','true');
+  }
+  for (const motion of ['full','gentle','off']) {
+    await page.locator('[data-motion="'+motion+'"]').click();
+    await expect(page.locator('html')).toHaveAttribute('data-motion', motion);
+    await expect(page.locator('[data-motion="'+motion+'"]')).toHaveAttribute('aria-pressed','true');
+  }
+  expect(await page.evaluate(() => localStorage.getItem('pocket-motion'))).toBe('off');
   await expectNoPageErrors(errors);
 });
 
