@@ -40,7 +40,7 @@ function ensureWebReader(){
  document.body.appendChild(d);
  by('webReader46Back').onclick=()=>d.close();by('webReader46More').onclick=()=>by('webReader46Sheet').hidden=false;by('webReader46SheetClose').onclick=()=>by('webReader46Sheet').hidden=true;
  by('webReader46Reload').onclick=()=>{const f=d.querySelector('iframe');if(f)f.src=f.src};
- by('webReader46Home').onclick=()=>{d.close();window.PocketV39?.show?.('library');setTimeout(()=>by('webNovelHub')?.scrollIntoView({block:'start'}),80)};
+ by('webReader46Home').onclick=()=>{d.close();window.PocketNav?.show?.('library');setTimeout(()=>by('webNovelHub')?.scrollIntoView({block:'start'}),80)};
  by('webReader46Save').onclick=()=>saveCurrent();
  d.addEventListener('close',()=>{by('webReader46Sheet').hidden=true;const f=d.querySelector('iframe');if(f)f.remove()});
 }
