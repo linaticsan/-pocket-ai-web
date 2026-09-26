@@ -10,6 +10,7 @@ const app=read('app.js');
 const icons=read('icons-v132.js');
 const boot=read('boot-v83.js');
 const coreCss=read('ui-core.css');
+const responsive=read('responsive-v92.js');
 const refs=new Set();
 for(const m of index.matchAll(/(?:src|href)=["']\.\/([^"'?]+\.(?:js|css|webmanifest|svg))(?:\?[^"']*)?["']/g))refs.add(m[1]);
 for(const m of feature.matchAll(/["']\.\/([^"']+\.(?:js|css))(?:\?[^"']*)?["']/g))refs.add(m[1]);
@@ -24,12 +25,12 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step31-silent-game-cleanup'"),'STEP 31 build marker is missing');
+assert(index.includes("const BUILD='step32-game-cleanup-stable'"),'STEP 32 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v36'"),'STEP 31 app-shell cache must be v36');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v37'"),'STEP 32 app-shell cache must be v37');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -38,9 +39,9 @@ assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing
 assert(/\.\/icons-v132\.js\?v=20260926-step\d+[a-z0-9-]*/.test(index),'Current icon cache-bust is missing');
 const workspace=read('workspace.js');
 assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled'])"),'Authoritative five-theme engine is missing');
-assert(index.includes('./workspace.js?v=20260926-step31-silent-game-cleanup'),'STEP 31 workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260926-step32-game-cleanup-stable'),'STEP 32 workspace cache-bust is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
-assert(workspace.includes("const POCKET_BUILD='step31-silent-game-cleanup'"),'STEP 31 diagnostics build marker is missing');
+assert(workspace.includes("const POCKET_BUILD='step32-game-cleanup-stable'"),'STEP 32 diagnostics build marker is missing');
 assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective Pocket cache refresh is missing');
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
 assert(coreCss.includes('STEP 25 — touch and interaction reliability'),'STEP 25 interaction CSS is missing');
@@ -51,7 +52,7 @@ assert(!feature.includes("addEventListener('online',networkState)")&&!feature.in
 assert(workspace.includes("addEventListener('pocket-network-change'"),'Workspace must consume the central network event');
 assert(!icons.includes("document.addEventListener('click',scheduleIconRun,true)"),'Icons must not rerun after every click');
 assert(responsive.includes('function scheduleSync()')&&responsive.includes("addEventListener('resize',scheduleSync"),'Resize sync must be animation-frame throttled');
-assert(index.includes('<dd>STEP 31</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dd>STEP 32</dd>'),'Visible diagnostics build label is stale');
 assert(!index.includes('data-sound=')&&!index.includes('soundVolume')&&!index.includes('soundTest'),'All audio settings UI must stay removed');
 assert(!workspace.includes('AudioContext')&&!workspace.includes('new Audio(')&&!workspace.includes('playPocketSound')&&!workspace.includes('playPocketMediaTone')&&!workspace.includes('pocket-sound-v1'),'All runtime audio code must stay removed');
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
@@ -89,7 +90,6 @@ assert(!feature.includes("ensureFeatureBundle('files'),\n     ensureFeatureBundl
 assert(!feature.includes('pocket-performance-safe'),'Obsolete performance safe-mode must not return');
 assert(!feature.includes("import('./qa-v79.js"),'QA module must not run in production startup');
 assert(!sw.includes('./qa-v79.js'),'QA module must not be precached in production shell');
-const responsive=read('responsive-v92.js');
 const v3=read('v3.js');
 const coding=read('coding-v1.js');
 assert(!ux.includes('v39More')&&!ux.includes('makeMore()'),'Dead More tools sheet must not return');
