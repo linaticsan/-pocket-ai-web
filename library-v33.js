@@ -82,7 +82,7 @@ async function importFiles(files){
 
 async function openBook(id){
  const b=(await allBooks()).find(x=>x.id===id);if(!b)return;
- window.PocketV39?.show?.('files')||document.querySelector('[data-go="files"]')?.click();
+ window.PocketNav?.show?.('files')||document.querySelector('[data-go="files"]')?.click();
  const text=by('fileText'),name=by('fileName'),status=by('fileStatus');
  if(text){text.value=b.text||'';text.dispatchEvent(new Event('input'))}
  if(name)name.value=b.name.replace(/\.(pdf|docx)$/i,'.txt');
