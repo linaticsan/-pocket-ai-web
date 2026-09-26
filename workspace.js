@@ -16,7 +16,9 @@ function greeting(){
  el.textContent=word+' ✨';
 }
 const THEME_CHOICES=new Set(['light','dark','sakura','green','oled']);
+const MOTION_CHOICES=new Set(['full','gentle','off']);
 const THEME_COLORS={light:'#f7f8ff',dark:'#212121',sakura:'#fff5fa',green:'#f0fff6',oled:'#000000'};
+let themeTransitionTimer=0;
 function normalizeSavedTheme(value){
   if(value==='system'){
     const resolved=window.matchMedia?.('(prefers-color-scheme: dark)')?.matches?'dark':'light';
@@ -27,9 +29,16 @@ function normalizeSavedTheme(value){
 }
 function setTheme(t,{persist=true}={}){
   const choice=normalizeSavedTheme(t);
-  document.documentElement.dataset.theme=choice;
-  document.documentElement.dataset.themeChoice=choice;
-  document.documentElement.style.colorScheme=(choice==='dark'||choice==='oled')?'dark':'light';
+  const root=document.documentElement;
+  const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+  if(root.dataset.theme&&root.dataset.theme!==choice&&root.dataset.motion!=='off'&&!reduced){
+    clearTimeout(themeTransitionTimer);
+    root.classList.add('theme-switching');
+    themeTransitionTimer=setTimeout(()=>root.classList.remove('theme-switching'),260);
+  }
+  root.dataset.theme=choice;
+  root.dataset.themeChoice=choice;
+  root.style.colorScheme=(choice==='dark'||choice==='oled')?'dark':'light';
   if(persist)safeSet('pocket-theme',choice);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[choice]||THEME_COLORS.light);
   document.querySelectorAll('[data-theme-choice]').forEach(b=>{
@@ -45,11 +54,16 @@ window.PocketTheme={
   getChoice:()=>document.documentElement.dataset.themeChoice||'light'
 };
 function setMotion(m){
- document.documentElement.dataset.motion=m;safeSet('pocket-motion',m);
- document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===m;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
+ const choice=MOTION_CHOICES.has(m)?m:'full';
+ const root=document.documentElement;
+ root.dataset.motion=choice;
+ root.classList.toggle('motion-off',choice==='off');
+ safeSet('pocket-motion',choice);
+ document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===choice;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
+ window.dispatchEvent(new CustomEvent('pocket-motion-change',{detail:{motion:choice}}));
 }
 
-const POCKET_BUILD='step38-copy-dedup-cleanup';
+const POCKET_BUILD='step39-theme-motion-fix';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -101,7 +115,7 @@ async function refreshPocketAppFiles(){
    const reg=await navigator.serviceWorker.getRegistration();
    try{await reg?.update()}catch{}
   }
-  const url=new URL(location.href);url.searchParams.set('v','step29-refresh-'+Date.now());location.replace(url.toString());
+  const url=new URL(location.href);url.searchParams.set('v','step39-refresh-'+Date.now());location.replace(url.toString());
  }catch{
   if(status)status.textContent='Could not refresh app files. Check your connection and try again.';
   if(btn)btn.disabled=false;
