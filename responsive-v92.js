@@ -113,6 +113,8 @@ function closeDrawer(restore=true){
 }
 
 function syncStatus(){
+ const level=$('#paPocketLevel'),currentLevel=window.PocketProgression?.getLevel?.();
+ if(level&&currentLevel)level.textContent='Lv. '+currentLevel;
  const out=$('#paLocalState'),dot=$('.pa-status-dot');if(!out)return;
  const source=$('#localStatus');
  const text=(source?.textContent||'').trim();
