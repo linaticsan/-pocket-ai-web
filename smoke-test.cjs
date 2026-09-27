@@ -73,7 +73,7 @@ assert(!coreCss.includes('grid-template-columns:44px minmax(0,1fr) 46px'),'Obsol
 assert(index.includes('class="primary home-send" aria-label="Send to chat"><span aria-hidden="true">↑</span>'),'Home send fallback arrow is missing');
 assert(coreCss.includes('h1,h2,h3,h4,button,input,textarea,select{font-family:inherit}'),'Explicit font inheritance reset is missing');
 assert(!coreCss.includes('/* STEP 40 — Home hierarchy'),'Obsolete STEP 40 Home override must stay removed');
-assert(coreCss.includes('/* STEP 45 — authoritative Home composition and shell spacing */'),'STEP 45 Home layout owner is missing');
+assert(coreCss.includes('/* STEP 44 — authoritative Home composition and shell spacing */'),'STEP 44 Home layout owner is missing');
 assert(coreCss.includes('min-height:318px')&&coreCss.includes('max-width:720px'),'STEP 45 compact desktop hero/composer sizing is missing');
 assert(coreCss.includes('#home .quick-grid>button{min-height:106px'),'Compact Home tool-card sizing is missing');
 assert(pocketCss.includes('.pocket-character__ear')&&pocketCss.includes('.pocket-character__eye::before'),'Improved Pocket silhouette/eyelids are missing');
@@ -226,7 +226,7 @@ assert(index.includes('id="pocketCompanion"'),'Secondary Pocket companion panel 
 assert(!index.includes('data-room-action="chat"')&&!index.includes('data-room-action="research"')&&!index.includes('data-room-action="files"')&&!index.includes('data-room-action="coding"'),'Pocket Room must not duplicate primary tool entry points');
 assert(!index.includes('data-quick="chat"'),'Home Chat card must not duplicate the primary composer');
 assert(index.includes('Send a chat message')&&index.includes('Run Deep Research'),'Quest copy must state exact XP actions');
-assert(coreCss.includes('STEP 45 — authoritative Home composition and shell spacing'),'STEP 45 authoritative Home CSS is missing');
+assert(coreCss.includes('STEP 44 — authoritative Home composition and shell spacing'),'STEP 44 authoritative Home CSS is missing');
 assert(coreCss.includes('--pa-accent-ink'),'Theme contrast ink token is missing');
 assert(read('motion-v32.css').includes('STEP 39 — app motion setting is authoritative'),'Global motion setting bridge is missing');
 assert(!read('motion-v32.css').includes('@keyframes pocketFloat'),'Legacy motion CSS must not redefine the Pocket mascot idle keyframe');
