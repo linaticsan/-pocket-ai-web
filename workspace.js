@@ -102,7 +102,7 @@ q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
 window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
 
-const POCKET_BUILD='step42-pocket-mascot-system';
+const POCKET_BUILD='step43-pocket-visual-identity';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -611,7 +611,7 @@ function renderProjects(limit=3){
  const arr=projects();
  if(!arr.length){
   grid.className='project-grid is-empty';
-  grid.innerHTML='<div class="project-empty"><span class="friendly-empty-icon" aria-hidden="true">◇</span><strong>No projects yet</strong><p>Create your first project to group chats, files, code, and research.</p><button type="button" class="project-create">＋ New project</button></div>';
+  grid.innerHTML='<div class="project-empty"><div data-pocket-slot data-pocket-context="projects" data-pocket-size="medium" data-pocket-label="Pocket with a project folder"></div><strong>No projects yet</strong><p>Create your first project to group chats, files, code, and research.</p><button type="button" class="project-create">＋ New project</button></div>';window.PocketMascotViews?.hydrate?.(grid);
   grid.querySelector('.project-create').onclick=createProject;
   head.querySelector('.project-view-all').hidden=true;
   if(create)create.hidden=true;
@@ -650,9 +650,9 @@ if(progressionLocalStatus){
 }
 
 const COMPANION_KEY='pocket-companion-interactions-v1';
-const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline']);
+const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline','research','study','coding','files']);
 const MASCOT_SLEEP_MS=180000;
-const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline'};
+const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline',research:'Researching',study:'Studying',coding:'Coding',files:'Files'};
 const tapMessages=['Hi! ✦','Ready!','What are we making?','Let\'s learn something.','Need help?','Let\'s build!','Good to see you.'];
 const mascotBusyReasons=new Set();
 let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0,mascotBlinkTimer=0,mascotLookTimer=0,mascotTapLocked=false,mascotPointerFrame=0,mascotPointerEvent=null;
@@ -670,7 +670,7 @@ function setMascotState(state='idle',ms=0){
  const home=mascotElement(),label=q('pocketMoodLabel');if(!home)return false;
  const next=MASCOT_STATES.has(state)?state:'idle';
  clearTimeout(mascotStateTimer);
- mascotState=next;home.dataset.mascotState=next;resetMascotEyes();
+ mascotState=next;home.dataset.mascotState=next;home.dataset.pocketState=next;resetMascotEyes();window.dispatchEvent(new CustomEvent('pocket-mascot-state',{detail:{state:next}}));
  if(label)label.textContent=mascotMoods[next]||'Ready';
  if(ms>0)mascotStateTimer=setTimeout(()=>{
    if(mascotBusyReasons.size)return;
