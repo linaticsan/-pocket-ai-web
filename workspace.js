@@ -15,42 +15,40 @@ function greeting(){
  const h=new Date().getHours(),word=h<12?'Good morning':h<18?'Good afternoon':'Good evening';
  el.textContent=word+' ✨';
 }
-const THEME_CHOICES=new Set(['light','dark','sakura','green','oled']);
+const THEME_CHOICES=new Set(['light','dark','sakura','green','oled','system']);
 const MOTION_CHOICES=new Set(['full','gentle','off']);
 const THEME_COLORS={light:'#f7f8ff',dark:'#212121',sakura:'#fff5fa',green:'#f0fff6',oled:'#000000'};
+const systemThemeQuery=window.matchMedia?.('(prefers-color-scheme: dark)');
 let themeTransitionTimer=0;
-function normalizeSavedTheme(value){
-  if(value==='system'){
-    const resolved=window.matchMedia?.('(prefers-color-scheme: dark)')?.matches?'dark':'light';
-    safeSet('pocket-theme',resolved);
-    return resolved;
-  }
-  return THEME_CHOICES.has(value)?value:'light';
-}
+function normalizeSavedTheme(value){return THEME_CHOICES.has(value)?value:'system'}
+function resolveTheme(choice){return choice==='system'?(systemThemeQuery?.matches?'dark':'light'):choice}
 function setTheme(t,{persist=true}={}){
   const choice=normalizeSavedTheme(t);
+  const resolved=resolveTheme(choice);
   const root=document.documentElement;
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-  if(root.dataset.theme&&root.dataset.theme!==choice&&root.dataset.motion!=='off'&&!reduced){
+  if(root.dataset.theme&&root.dataset.theme!==resolved&&root.dataset.motion!=='off'&&!reduced){
     clearTimeout(themeTransitionTimer);
     root.classList.add('theme-switching');
     themeTransitionTimer=setTimeout(()=>root.classList.remove('theme-switching'),260);
   }
-  root.dataset.theme=choice;
-  root.style.colorScheme=(choice==='dark'||choice==='oled')?'dark':'light';
+  root.dataset.theme=resolved;
+  root.dataset.themeChoice=choice;
+  root.style.colorScheme=(resolved==='dark'||resolved==='oled')?'dark':'light';
   if(persist)safeSet('pocket-theme',choice);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[choice]||THEME_COLORS.light);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[resolved]||THEME_COLORS.light);
   document.querySelectorAll('[data-theme-choice]').forEach(b=>{
     const active=b.dataset.themeChoice===choice;
     b.classList.toggle('active',active);
     b.setAttribute('aria-pressed',active?'true':'false');
   });
-  window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:choice,choice}}));
+  window.dispatchEvent(new CustomEvent('pocket-theme-change',{detail:{theme:resolved,choice}}));
 }
+systemThemeQuery?.addEventListener?.('change',()=>{if(safeGet('pocket-theme','system')==='system')setTheme('system',{persist:false})});
 window.PocketTheme={
   apply:setTheme,
   get:()=>document.documentElement.dataset.theme||'light',
-  getChoice:()=>document.documentElement.dataset.theme||'light'
+  getChoice:()=>document.documentElement.dataset.themeChoice||safeGet('pocket-theme','system')
 };
 function setMotion(m){
  const choice=MOTION_CHOICES.has(m)?m:'full';
@@ -62,7 +60,49 @@ function setMotion(m){
  window.dispatchEvent(new CustomEvent('pocket-motion-change',{detail:{motion:choice}}));
 }
 
-const POCKET_BUILD='step40-home-hierarchy';
+
+/* STEP 41 — user-gesture audio. No autoplay retries or background audio. */
+const SOUND_KEY='pocket-sound-v1';
+let pocketAudioContext=null;
+function soundEnabled(){return safeGet(SOUND_KEY,'off')==='on'}
+function renderSoundSetting(){
+ document.querySelectorAll('[data-sound]').forEach(b=>{const on=b.dataset.sound===(soundEnabled()?'on':'off');b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
+ const status=q('soundStatus');if(status)status.textContent=soundEnabled()?'Sound is on. Pocket sounds play after your interaction.':'Sound is off. No Pocket sounds will play.';
+}
+function getPocketAudioContext(){
+ const Ctx=window.AudioContext||window.webkitAudioContext;
+ if(!Ctx)return null;
+ if(!pocketAudioContext)pocketAudioContext=new Ctx();
+ return pocketAudioContext;
+}
+async function playPocketSound(kind='tap'){
+ if(!soundEnabled())return false;
+ const ctx=getPocketAudioContext();if(!ctx)return false;
+ try{
+  if(ctx.state==='suspended')await ctx.resume();
+  const now=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
+  const tones={tap:[520,620,.055],happy:[660,880,.09],success:[740,1040,.12],error:[260,210,.12]};
+  const [start,end,duration]=tones[kind]||tones.tap;
+  osc.type='sine';osc.frequency.setValueAtTime(start,now);osc.frequency.exponentialRampToValueAtTime(Math.max(40,end),now+duration);
+  gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.035,now+.01);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  osc.connect(gain);gain.connect(ctx.destination);osc.start(now);osc.stop(now+duration+.02);
+  return true;
+ }catch{return false}
+}
+document.querySelectorAll('[data-sound]').forEach(b=>b.addEventListener('click',async()=>{
+ safeSet(SOUND_KEY,b.dataset.sound==='on'?'on':'off');renderSoundSetting();
+ if(b.dataset.sound==='on'){const ok=await playPocketSound('happy');if(!ok&&q('soundStatus'))q('soundStatus').textContent='Sound is enabled, but this browser needs another tap before audio can start.'}
+}));
+q('soundTest')?.addEventListener('click',async()=>{
+ if(!soundEnabled()){safeSet(SOUND_KEY,'on');renderSoundSetting()}
+ const ok=await playPocketSound('success');
+ if(q('soundStatus'))q('soundStatus').textContent=ok?'Sound is working.':'Audio could not start. Tap Test sound again or check Silent Mode / browser audio settings.';
+});
+q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
+renderSoundSetting();
+window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
+
+const POCKET_BUILD='step41-theme-audio-reliability';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -131,7 +171,7 @@ function setPrivacy(m){
  const hint=q('modeHint');if(hint)hint.textContent=modeText[m]||modeText.balanced;
 }
 
-greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','light')),{persist:true});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));
+greeting();setTheme(normalizeSavedTheme(safeGet('pocket-theme','system')),{persist:false});setMotion(safeGet('pocket-motion','full'));setPrivacy(safeGet('pocket-privacy','balanced'));
 document.querySelectorAll('[data-theme-choice]').forEach(b=>b.onclick=()=>setTheme(b.dataset.themeChoice));
 document.querySelectorAll('[data-motion]').forEach(b=>b.onclick=()=>setMotion(b.dataset.motion));
 q('copyDiagnostics')?.addEventListener('click',copyDiagnostics);
