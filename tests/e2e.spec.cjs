@@ -112,6 +112,7 @@ test('Pocket game dialog restores focus and catching a star awards zero XP', asy
   const errors = await openPocket(page);
   const before = await page.evaluate(() => localStorage.getItem('pocket-progression-v1'));
 
+  await page.locator('#pocketCompanion > summary').click();
   await page.locator('#roomPlayOpen').click();
   await expect(page.locator('#starGameDialog')).toBeVisible();
   await expect(page.locator('#starGameStart')).toBeFocused();
