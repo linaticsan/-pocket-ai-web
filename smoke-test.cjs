@@ -15,6 +15,8 @@ const files80Css=read('files-v80.css');
 const pocketCss=read('pocket-mascot.css');
 const pocketJs=read('pocket-mascot.js');
 const files32=read('files-v32.js');
+const v3=read('v3.js');
+const coding=read('coding-v1.js');
 const refs=new Set();
 for(const m of index.matchAll(/(?:src|href)=["']\.\/([^"'?]+\.(?:js|css|webmanifest|svg))(?:\?[^"']*)?["']/g))refs.add(m[1]);
 for(const m of feature.matchAll(/["']\.\/([^"']+\.(?:js|css))(?:\?[^"']*)?["']/g))refs.add(m[1]);
@@ -114,8 +116,6 @@ assert(!feature.includes("ensureFeatureBundle('files'),\n     ensureFeatureBundl
 assert(!feature.includes('pocket-performance-safe'),'Obsolete performance safe-mode must not return');
 assert(!feature.includes("import('./qa-v79.js"),'QA module must not run in production startup');
 assert(!sw.includes('./qa-v79.js'),'QA module must not be precached in production shell');
-const v3=read('v3.js');
-const coding=read('coding-v1.js');
 assert(!ux.includes('v39More')&&!ux.includes('makeMore()'),'Dead More tools sheet must not return');
 assert(ux.includes('window.PocketDialog={open:openDialog,prepare:prepareDialog}'),'Focus-safe dialog helper is missing');
 assert(responsive.includes('function setBackgroundInert(on)'),'Mobile drawer background inert handling is missing');
