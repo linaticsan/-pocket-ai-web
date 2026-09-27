@@ -38,11 +38,11 @@ function appConfig(lib){return{...lib.prebuiltAppConfig,cacheBackend:'cache'};}
 async function cacheState(lib){try{return await lib.hasModelInCache(LOCAL_MODEL,appConfig(lib))}catch{return false}}
 function startWatchdog(){clearInterval(progressTimer);lastProgressAt=Date.now();progressTimer=setInterval(()=>{if(!localBusy){clearInterval(progressTimer);return}const wait=Math.round((Date.now()-lastProgressAt)/1000);if(wait>=25){setStatus('Local AI is still loading. If this stays here for more than a minute, refresh once and press Connect again.','working');const t=el('localProgressText');if(t)t.textContent='Waiting for the saved model/cache • '+wait+'s';}},5000);}
 function stopWatchdog(){clearInterval(progressTimer);progressTimer=null;}
-async function connectLocal(firstSetup=false){if(localBusy||localEngine)return;busyUI(true);startWatchdog();try{if(!(await webgpuReady()))throw Error('WebGPU is not available in this browser. Update Chrome/Edge/Safari and try again.');const lib=await loadLibrary();const cfg=appConfig(lib);const cached=await cacheState(lib);if(saved(LOCAL_INSTALLED)==='1'&&!cached){store(LOCAL_INSTALLED,'0');store(LOCAL_ENABLED,'0');firstSetup=true;controls(false);}setStatus(cached?'Loading your saved Local AI model…':'Downloading the Local AI model for this device…','working');setProgress(0,cached?'Checking saved model files…':'Starting first-time download…');localEngine=await lib.CreateMLCEngine(LOCAL_MODEL,{appConfig:cfg,initProgressCallback:r=>{const txt=r?.text||'Preparing Local AI…';setProgress(r?.progress,txt==='Start to fetch params'?(cached?'Opening saved model files…':'Fetching model files…'):txt);},logLevel:'WARN'},{context_window_size:2048});store(LOCAL_INSTALLED,'1');store(LOCAL_ENABLED,'1');if(el('localProgress'))el('localProgress').value=1;
+async function connectLocal(firstSetup=false){if(localBusy||localEngine)return;busyUI(true);window.PocketMascot?.setBusy?.('local-connect',true,'thinking');startWatchdog();try{if(!(await webgpuReady()))throw Error('WebGPU is not available in this browser. Update Chrome/Edge/Safari and try again.');const lib=await loadLibrary();const cfg=appConfig(lib);const cached=await cacheState(lib);if(saved(LOCAL_INSTALLED)==='1'&&!cached){store(LOCAL_INSTALLED,'0');store(LOCAL_ENABLED,'0');firstSetup=true;controls(false);}setStatus(cached?'Loading your saved Local AI model…':'Downloading the Local AI model for this device…','working');setProgress(0,cached?'Checking saved model files…':'Starting first-time download…');localEngine=await lib.CreateMLCEngine(LOCAL_MODEL,{appConfig:cfg,initProgressCallback:r=>{const txt=r?.text||'Preparing Local AI…';setProgress(r?.progress,txt==='Start to fetch params'?(cached?'Opening saved model files…':'Fetching model files…'):txt);},logLevel:'WARN'},{context_window_size:2048});store(LOCAL_INSTALLED,'1');store(LOCAL_ENABLED,'1');if(el('localProgress'))el('localProgress').value=1;
 if(el('localProgressText'))el('localProgressText').textContent='Ready — model is saved in this browser.';
-setStatus('Connected • Private • On-device • '+deviceName(),'connected');controls(true);
+setStatus('Connected • Private • On-device • '+deviceName(),'connected');controls(true);window.PocketMascot?.setBusy?.('local-connect',false);window.PocketMascot?.react?.('success');
 if(el('localAnswer'))el('localAnswer').textContent='Local AI is ready. Type a message below — the box will clear automatically after every send.';
-el('localPrompt')?.focus();}catch(err){localEngine=null;const msg=err?.message||String(err);setStatus('Local AI could not connect: '+msg,'error');if(el('localProgressText'))el('localProgressText').textContent='Connection stopped. Press Connect to retry.';controls(false);}finally{stopWatchdog();busyUI(false);}}
+el('localPrompt')?.focus();}catch(err){localEngine=null;window.PocketMascot?.setBusy?.('local-connect',false);window.PocketMascot?.react?.('error');const msg=err?.message||String(err);setStatus('Local AI could not connect: '+msg,'error');if(el('localProgressText'))el('localProgressText').textContent='Connection stopped. Press Connect to retry.';controls(false);}finally{window.PocketMascot?.setBusy?.('local-connect',false);stopWatchdog();busyUI(false);}}
 async function disconnectLocal(){if(localBusy)return;busyUI(true);try{if(localEngine)await localEngine.unload();}catch{}finally{localEngine=null;store(LOCAL_ENABLED,'0');setStatus('Disconnected. The downloaded model stays saved for fast reconnection.','idle');if(el('localProgress'))el('localProgress').hidden=true;if(el('localProgressText'))el('localProgressText').textContent='';controls(false);busyUI(false);}}
 async function generateLocal(messages){if(!localEngine)throw Error('Local AI is not connected.');const safe=messages.slice(-12).map(m=>({role:m.role,content:String(m.content||'').slice(0,7000)}));const r=await localEngine.chat.completions.create({messages:safe,temperature:.7,max_tokens:700});return r?.choices?.[0]?.message?.content||'Local AI returned no text.';}
 async function sendLocal(){
@@ -51,14 +51,14 @@ async function sendLocal(){
  const prompt=box.value.trim();if(!prompt)return;
  if(!localEngine){await connectLocal(false);if(!localEngine)return}
  localChatHistory.push({role:'user',content:prompt});box.value='';box.focus();
- if(send)send.disabled=true;if(answer)answer.textContent='Thinking privately on this device…';
+ if(send)send.disabled=true;window.PocketMascot?.setBusy?.('local-chat',true,'thinking');if(answer)answer.textContent='Thinking privately on this device…';
  try{
    const recent=[localChatHistory[0],...localChatHistory.slice(1).slice(-10)];
    const result=await generateLocal(recent);localChatHistory.push({role:'assistant',content:result});
-   if(answer)answer.textContent=result;
+   if(answer)answer.textContent=result;window.PocketMascot?.setBusy?.('local-chat',false);window.PocketMascot?.react?.('success');
  }catch(err){
-   localChatHistory.pop();if(answer)answer.textContent='Local AI error: '+(err?.message||err);box.value=prompt;
- }finally{if(send)send.disabled=false;box.focus()}
+   localChatHistory.pop();window.PocketMascot?.setBusy?.('local-chat',false);window.PocketMascot?.react?.('error');if(answer)answer.textContent='Local AI error: '+(err?.message||err);box.value=prompt;
+ }finally{window.PocketMascot?.setBusy?.('local-chat',false);if(send)send.disabled=false;box.focus()}
 }
 function clearLocalHistory(){localChatHistory=[localChatHistory[0]];if(el('localAnswer'))el('localAnswer').textContent='Local conversation cleared. Your downloaded model is unchanged.';}
 window.PocketLocalAI={isConnected:()=>!!localEngine,generate:generateLocal,connect:()=>connectLocal(false),disconnect:disconnectLocal,clearHistory:clearLocalHistory,model:LOCAL_MODEL};
