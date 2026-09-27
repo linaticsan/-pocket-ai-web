@@ -1911,18 +1911,6 @@ dialog[open]{overscroll-behavior:contain}
 }
 
 
-/* STEP 31 — silent game-like mascot interactions */
-#home .pocket-mascot.is-game-running{z-index:20;will-change:transform;animation:none!important}
-.pocket-logo-runner{will-change:transform;filter:drop-shadow(0 8px 12px rgba(0,0,0,.14))}
-@media(prefers-reduced-motion:reduce){
- #home .pocket-mascot.is-game-running,.pocket-logo-runner{animation:none!important;transition:none!important}
-}
-
-/* STEP 34 — stable mascot hitbox + isolated visual motion */
-#home .pocket-mascot:hover .pocket-mascot-visual,#home .pocket-mascot:focus-visible .pocket-mascot-visual,#home .pocket-mascot:active .pocket-mascot-visual{animation-play-state:paused}
-#home .pocket-mascot.is-game-running .pocket-mascot-visual{animation:none!important}
-
-
 /* STEP 36 — production UI/a11y hardening */
 :where(button,[role="button"],a[href],input,textarea,select,summary):focus-visible{
   outline:3px solid color-mix(in srgb,var(--pa-accent) 72%,white);
