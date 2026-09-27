@@ -163,7 +163,7 @@ assert(coreCss.includes('STEP 38 — copy deduplication and compact content rhyt
 assert(workspace.includes("const MOTION_CHOICES=new Set(['full','gentle','off'])"),'Motion choices must be validated');
 assert(workspace.includes("pocket-motion-change"),'Motion changes must emit a canonical event');
 assert(coreCss.includes('STEP 39 — authoritative theme bridge + theme transitions'),'Theme bridge is missing');
-assert(!workspace.includes('root.dataset.themeChoice=choice'),'Root must not duplicate theme-button data-theme-choice state');
+assert(workspace.includes('root.dataset.themeChoice=choice'),'Root must track the persisted theme choice separately from the resolved theme');
 assert(index.includes('id="pocketCompanion"'),'Secondary Pocket companion panel is missing');
 assert(!index.includes('data-room-action="chat"')&&!index.includes('data-room-action="research"')&&!index.includes('data-room-action="files"')&&!index.includes('data-room-action="coding"'),'Pocket Room must not duplicate primary tool entry points');
 assert(!index.includes('data-quick="chat"'),'Home Chat card must not duplicate the primary composer');
