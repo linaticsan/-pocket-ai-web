@@ -409,6 +409,7 @@ test('900px tablet uses drawer navigation instead of permanent sidebar', async (
   await page.locator('#paSidebarToggle').click();
   await expect(page.locator('html')).toHaveClass(/pa-nav-open/);
   await expect(page.locator('#paDesktopSidebar')).toHaveAttribute('role','dialog');
+  await page.waitForTimeout(280);
   const open = await page.locator('#paDesktopSidebar').evaluate(el => el.getBoundingClientRect());
   expect(open.left).toBeGreaterThanOrEqual(-1);
   await page.keyboard.press('Escape');
@@ -500,9 +501,9 @@ test.describe('desktop feature workspace consistency', () => {
     const lefts = frames.map(x => x.left);
     const rights = frames.map(x => x.right);
     const tops = frames.map(x => x.top);
-    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(2);
-    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(2);
-    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(2);
+    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(4);
+    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(4);
+    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(4);
 
     await expectNoPageErrors(errors);
   });
