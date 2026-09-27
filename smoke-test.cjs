@@ -114,7 +114,7 @@ assert(coreCss.includes('STEP 43 — non-mascot UI motion; mascot motion lives o
 assert(index.includes('pocket-character__body pocket-mascot-visual'),'Room mascot must use the shared visual body with compatibility alias');
 assert(!/#home \.pocket-mascot\{[^}]*animation:/.test(coreCss),'Clickable mascot hitbox must not own continuous animation');
 assert(index.includes('./ui-core.css?v=20260927-step44-shell'),'STEP 45 CSS cache-bust is missing');
-assert(index.includes('./pocket-mascot.css?v=20260927-step45-living-world')&&index.includes('./pocket-mascot.js?v=20260927-step43-identity'),'STEP 45 shared mascot assets are missing');
+assert(index.includes('./pocket-mascot.css?v=20260927-step45-living-world')&&index.includes('./pocket-mascot.js?v=20260927-step45-living-world'),'STEP 45 shared mascot assets are missing');
 assert(sw.includes("'./pocket-mascot.css'")&&sw.includes("'./pocket-mascot.js'"),'Service worker must precache shared mascot assets');
 assert(index.includes('class="home-hero-pocket"')&&index.includes('data-pocket-context="home"'),'Home hero Pocket identity is missing');
 assert(index.includes('data-pocket-context="research"')&&index.includes('data-pocket-context="files"'),'Research/Files Pocket identity is missing');
