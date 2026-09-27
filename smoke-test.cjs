@@ -145,7 +145,7 @@ assert(files80Css.includes('STEP 35 — consolidated compact file-type strip'),'
 assert(!sw.includes("'./files-v31.css'"),'Removed Files stylesheet must not remain in service-worker assets');
 assert(!/<button\b(?![^>]*\btype=)/i.test(index),'Every static button must declare an explicit type');
 for(const id of ['homePrompt','prompt','ghQuery','surfaceQuery','surfaceMode','commandSearch']){
-  const tag=(index.match(new RegExp('<(?:input|textarea|select)\\b[^>]*\\bid="'+id+'"\\b[^>]*>','i'))||[])[0]||'';
+  const tag=(index.match(new RegExp('<(?:input|textarea|select)\\b[^>]*\\bid="'+id+'"(?=\\s|>)[^>]*>','i'))||[])[0]||'';
   assert(/\baria-label=/.test(tag),'Standalone control '+id+' needs an accessible name');
 }
 assert(coreCss.includes('STEP 36 — production UI/a11y hardening'),'Production a11y/responsive hardening CSS is missing');
