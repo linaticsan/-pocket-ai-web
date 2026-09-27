@@ -37,7 +37,6 @@ function setTheme(t,{persist=true}={}){
     themeTransitionTimer=setTimeout(()=>root.classList.remove('theme-switching'),260);
   }
   root.dataset.theme=choice;
-  root.dataset.themeChoice=choice;
   root.style.colorScheme=(choice==='dark'||choice==='oled')?'dark':'light';
   if(persist)safeSet('pocket-theme',choice);
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content',THEME_COLORS[choice]||THEME_COLORS.light);
@@ -51,7 +50,7 @@ function setTheme(t,{persist=true}={}){
 window.PocketTheme={
   apply:setTheme,
   get:()=>document.documentElement.dataset.theme||'light',
-  getChoice:()=>document.documentElement.dataset.themeChoice||'light'
+  getChoice:()=>document.documentElement.dataset.theme||'light'
 };
 function setMotion(m){
  const choice=MOTION_CHOICES.has(m)?m:'full';
@@ -63,7 +62,7 @@ function setMotion(m){
  window.dispatchEvent(new CustomEvent('pocket-motion-change',{detail:{motion:choice}}));
 }
 
-const POCKET_BUILD='step39-theme-motion-fix';
+const POCKET_BUILD='step40-home-hierarchy';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -198,7 +197,7 @@ function renderRecent(limit=5){
  const head=q('home')?.querySelector('.home-recent .recent-view-all');
  if(!arr.length){
    box.className='recent-list is-empty';
-   box.innerHTML='<div class="recent-empty"><strong>No adventures yet.</strong><span>Start a chat, research something, or open a file.</span><button type="button" class="recent-start">Start chatting</button></div>';
+   box.innerHTML='<div class="recent-empty"><span class="friendly-empty-icon" aria-hidden="true">↗</span><strong>No recent activity yet</strong><span>Start with a chat and your recent work will appear here.</span><button type="button" class="recent-start">Start a chat</button></div>';
    box.querySelector('.recent-start').onclick=()=>go('chat');
    if(head)head.hidden=true;
    return;
@@ -573,7 +572,7 @@ function renderProjects(limit=3){
  const arr=projects();
  if(!arr.length){
   grid.className='project-grid is-empty';
-  grid.innerHTML='<div class="project-empty"><span class="friendly-empty-icon" aria-hidden="true">◇</span><strong>Nothing here yet</strong><p>Create your first project and keep everything together.</p><button type="button" class="project-create">Create project</button></div>';
+  grid.innerHTML='<div class="project-empty"><span class="friendly-empty-icon" aria-hidden="true">◇</span><strong>No projects yet</strong><p>Create your first project to group chats, files, code, and research.</p><button type="button" class="project-create">＋ New project</button></div>';
   grid.querySelector('.project-create').onclick=createProject;
   head.querySelector('.project-view-all').hidden=true;
   if(create)create.hidden=true;
