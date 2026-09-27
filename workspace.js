@@ -103,7 +103,7 @@ q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
 window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
 
-const POCKET_BUILD='step44-desktop-shell-home-layout';
+const POCKET_BUILD='step45-pocket-living-world';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -824,13 +824,24 @@ document.addEventListener('visibilitychange',()=>{
 });
 window.addEventListener('pocket-motion-change',()=>{clearBlink();resetMascotEyes();scheduleBlink();scheduleIdleLook();scheduleMascotSleep()});
 
+function setMascotWind(value=0){
+ const v=Math.max(-1,Math.min(1,Number(value)||0));
+ document.documentElement.style.setProperty('--pocket-wind-angle',(v*7).toFixed(2)+'deg');
+ if(Math.abs(v)>.16&&mascotState==='idle'){
+   const home=mascotElement();if(home){home.style.setProperty('--pocket-eye-x',(v>0?1.2:-1.2)+'px');setTimeout(resetMascotEyes,900)}
+ }
+ return v;
+}
 window.PocketMascot={
  setState:setMascotState,
  react:reactMascot,
  setBusy:setMascotBusy,
- sleep:()=>{if(canSleep())setMascotState('sleep',0)},
+ sleep:()=>{if(canSleep()){setMascotState('sleep',0);window.PocketMascotViews?.goHomeAll?.(true)}},
  wake:wakeMascot,
  lookAt:lookMascotToward,
+ setWind:setMascotWind,
+ moveRandom:()=>window.PocketMascotViews?.moveRandom?.(),
+ goHome:()=>window.PocketMascotViews?.goHomeAll?.(true),
  getState:()=>mascotState,
  isBusy:()=>mascotBusyReasons.size>0
 };

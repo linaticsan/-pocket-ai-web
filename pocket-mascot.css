@@ -122,7 +122,7 @@
 
 @keyframes pocket-shared-breathe{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-3px) rotate(.4deg)}}
 @keyframes pocket-shared-think{0%,100%{transform:translateY(0) rotate(-.6deg)}50%{transform:translateY(-3px) rotate(.7deg)}}
-@keyframes pocket-shared-antenna{0%,100%{transform:rotate(-1deg) translateY(0)}50%{transform:rotate(1.5deg) translateY(-2px)}}
+@keyframes pocket-shared-antenna{0%,100%{transform:rotate(calc(-1deg + var(--pocket-wind-angle,0deg))) translateY(0)}50%{transform:rotate(calc(1.5deg + var(--pocket-wind-angle,0deg))) translateY(-2px)}}
 @keyframes pocket-shared-blink{0%,100%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(1)}45%,60%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.08)}}
 @keyframes pocket-shared-double-blink{0%,100%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(1)}18%,32%,60%,74%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.08)}}
 @keyframes pocket-shared-tap{0%{transform:translateY(0) scale(1)}28%{transform:translateY(2px) scale(1.045,.94)}60%{transform:translateY(-6px) scale(.98,1.035)}100%{transform:translateY(0) scale(1)}}
@@ -254,3 +254,7 @@ html[data-motion="gentle"] #home .pocket-room-plant{animation:none}
 html[data-motion="off"] #home .pocket-particle{display:none}
 html[data-motion="off"] #home .pocket-speech{transition:none}
 @media(prefers-reduced-motion:reduce){#home .pocket-particle,#home .pocket-room-window i,#home .pocket-room-plant{animation:none!important}}
+
+/* STEP 45 — wind-aware antenna fallback when antenna animation is reduced */
+html[data-motion="gentle"] .pocket-character__antenna{transform:rotate(var(--pocket-wind-angle,0deg))}
+html[data-motion="off"] .pocket-character__antenna{transform:none!important}

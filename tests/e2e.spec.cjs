@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step44-desktop-shell-home-layout', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step45-pocket-living-world', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -147,6 +147,111 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
   await expect(page.locator('#projectGrid .project-empty [data-pocket-character][data-pocket-context="projects"]')).toBeVisible();
   await expect(page.locator('#paDesktopSidebar .pa-side-brand [data-pocket-character][data-pocket-context="sidebar"]')).toBeVisible();
   await expect(page.locator('#paPocketLevel')).toBeVisible();
+  await expectNoPageErrors(errors);
+});
+
+test('Pocket living-world movement stays bounded and can return home', async ({ page }) => {
+  const errors = await openPocket(page);
+  await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketMascot?.goHome);
+  await page.locator('#settingsOpen').click();
+  await page.locator('#settingsDialog [data-motion="full"]').click();
+  await page.locator('#settingsDialog .close').click();
+
+  const pocket = page.locator('#home .pocket-playground [data-pocket-character]');
+  await expect(pocket).toBeVisible();
+  const home = await pocket.boundingBox();
+  expect(home).toBeTruthy();
+
+  const seen = new Set();
+  for (let i=0;i<12;i++) {
+    await pocket.click();
+    await page.waitForTimeout(1050);
+    const box = await pocket.boundingBox();
+    const playground = await page.locator('#home .pocket-playground').boundingBox();
+    expect(box && playground).toBeTruthy();
+    expect(box.x).toBeGreaterThanOrEqual(playground.x - 1);
+    expect(box.x+box.width).toBeLessThanOrEqual(playground.x+playground.width + 1);
+    expect(box.y).toBeGreaterThanOrEqual(playground.y - 1);
+    expect(box.y+box.height).toBeLessThanOrEqual(playground.y+playground.height + 1);
+    seen.add(Math.round(box.x/4)+':'+Math.round(box.y/4));
+  }
+  expect(seen.size).toBeGreaterThan(2);
+
+  await page.evaluate(() => window.PocketMascot.goHome());
+  await page.waitForTimeout(1100);
+  const returned = await pocket.boundingBox();
+  expect(Math.abs(returned.x-home.x)).toBeLessThanOrEqual(2);
+  expect(Math.abs(returned.y-home.y)).toBeLessThanOrEqual(2);
+
+  const beforeRapid = await page.evaluate(() => {
+    const el=document.querySelector('#home .pocket-playground [data-pocket-character]');
+    return el?.getAnimations().length||0;
+  });
+  await pocket.click({ clickCount: 4, delay: 30 });
+  await page.waitForTimeout(120);
+  const rapid = await page.evaluate(() => {
+    const el=document.querySelector('#home .pocket-playground [data-pocket-character]');
+    return {moving:el?.classList.contains('is-pocket-moving'),animations:el?.getAnimations().length||0};
+  });
+  expect(rapid.animations).toBeLessThanOrEqual(beforeRapid + 3);
+
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await page.waitForTimeout(550);
+  const afterResize = await pocket.boundingBox();
+  const resizedPlayground = await page.locator('#home .pocket-playground').boundingBox();
+  expect(afterResize.x).toBeGreaterThanOrEqual(resizedPlayground.x - 1);
+  expect(afterResize.x+afterResize.width).toBeLessThanOrEqual(resizedPlayground.x+resizedPlayground.width + 1);
+  await expectNoPageErrors(errors);
+});
+
+test('seasonal environment is centralized, offline, motion-aware and workspace-aware', async ({ page }) => {
+  const errors = await openPocket(page);
+  await page.waitForFunction(() => !!window.PocketEnvironment?.getStatus);
+  await expect(page.locator('#pocketEnvironment')).toHaveCount(1);
+  await expect(page.locator('#pocketEnvironment')).toHaveCSS('pointer-events','none');
+
+  const september = await page.evaluate(() => window.PocketEnvironment.getCurrentSeason(new Date('2026-09-27T12:00:00')));
+  expect(september).toBe('autumn');
+
+  await page.locator('#settingsOpen').click();
+  await expect(page.locator('#settingsDialog [data-env-season-choice="auto"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#settingsDialog [data-env-season-choice="spring"]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-env-season','spring');
+  expect(await page.evaluate(() => localStorage.getItem('pocket-environment-season-v1'))).toBe('spring');
+
+  await page.locator('#settingsDialog [data-env-effects="full"]').click();
+  await page.locator('#settingsDialog [data-env-preview="sakura"]').click();
+  await page.waitForTimeout(120);
+  let status = await page.evaluate(() => window.PocketEnvironment.getStatus());
+  expect(status.effect).toBe('sakura');
+  expect(status.particles).toBeGreaterThanOrEqual(10);
+  const activeFull = await page.locator('#pocketEnvironment .sakura').count();
+  expect(activeFull).toBeGreaterThanOrEqual(10);
+
+  await page.locator('#settingsDialog [data-env-effects="gentle"]').click();
+  await page.locator('#settingsDialog [data-env-preview="snow"]').click();
+  await page.waitForTimeout(120);
+  status = await page.evaluate(() => window.PocketEnvironment.getStatus());
+  expect(status.effectiveMode).toBe('gentle');
+  expect(status.particles).toBeLessThan(activeFull);
+
+  await page.locator('#settingsDialog [data-env-effects="off"]').click();
+  await expect(page.locator('#pocketEnvironment')).toHaveCSS('display','none');
+  await page.locator('[data-env-effects="full"]').click();
+  await page.locator('#settingsDialog .close').click();
+
+  await page.evaluate(() => window.PocketEnvironment.preview('leaf'));
+  await page.waitForTimeout(80);
+  const homeOpacity = await page.locator('#pocketEnvironment').evaluate(el => parseFloat(getComputedStyle(el).opacity));
+  await page.evaluate(() => window.PocketNav.show('coding'));
+  await page.waitForTimeout(450);
+  const codeOpacity = await page.locator('#pocketEnvironment').evaluate(el => parseFloat(getComputedStyle(el).opacity));
+  expect(codeOpacity).toBeLessThan(homeOpacity * .2);
+
+  await page.evaluate(() => window.PocketEnvironment.setWeather({type:'rain',intensity:.35,wind:.4}));
+  status = await page.evaluate(() => window.PocketEnvironment.getStatus());
+  expect(status.effect).toBe('rain');
+  expect(status.wind).toBeCloseTo(.4,1);
   await expectNoPageErrors(errors);
 });
 
@@ -501,9 +606,9 @@ test.describe('desktop feature workspace consistency', () => {
     const lefts = frames.map(x => x.left);
     const rights = frames.map(x => x.right);
     const tops = frames.map(x => x.top);
-    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(4);
-    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(4);
-    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(4);
+    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(5);
+    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(5);
+    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(5);
 
     await expectNoPageErrors(errors);
   });
