@@ -53,9 +53,10 @@ assert(!feature.includes("addEventListener('online',networkState)")&&!feature.in
 assert(workspace.includes("addEventListener('pocket-network-change'"),'Workspace must consume the central network event');
 assert(!icons.includes("document.addEventListener('click',scheduleIconRun,true)"),'Icons must not rerun after every click');
 assert(responsive.includes('function scheduleSync()')&&responsive.includes("addEventListener('resize',scheduleSync"),'Resize sync must be animation-frame throttled');
-assert(index.includes('<dd>STEP 40</dd>'),'Visible diagnostics build label is stale');
-assert(!index.includes('data-sound=')&&!index.includes('soundVolume')&&!index.includes('soundTest'),'All audio settings UI must stay removed');
-assert(!workspace.includes('AudioContext')&&!workspace.includes('new Audio(')&&!workspace.includes('playPocketSound')&&!workspace.includes('playPocketMediaTone')&&!workspace.includes('pocket-sound-v1'),'All runtime audio code must stay removed');
+assert(index.includes('<dd>STEP 41</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('data-sound="on"')&&index.includes('data-sound="off"')&&index.includes('id="soundTest"'),'Gesture-gated sound settings are missing');
+assert(workspace.includes('window.AudioContext||window.webkitAudioContext')&&workspace.includes("const SOUND_KEY='pocket-sound-v1'")&&workspace.includes('async function playPocketSound'),'Gesture-gated Web Audio runtime is missing');
+assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includes('autoplay'),'Sound must never retry or autoplay in the background');
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
 assert(!workspace.includes("const mascots=document.querySelectorAll('[data-mascot]')"),'Unused mascot collection must stay removed');
 assert(workspace.includes('function runPocketMascot()')&&workspace.includes('function runCuteLogo(source)'),'Game-like mascot/logo runner is missing');
@@ -64,7 +65,7 @@ assert(coreCss.includes('STEP 31 — silent game-like mascot interactions'),'STE
 assert(coreCss.includes('STEP 34 — stable mascot hitbox + isolated visual motion'),'Mascot visual motion must be isolated from its hitbox');
 assert(index.includes('class="pocket-mascot-visual"'),'Mascot needs a dedicated visual animation layer');
 assert(!/#home \.pocket-mascot\{[^}]*animation:pocketFloat/.test(coreCss),'Clickable mascot hitbox must never run the idle transform animation');
-assert(index.includes('./ui-core.css?v=20260927-step40-home-hierarchy'),'STEP 40 CSS cache-bust is missing');
+assert(index.includes('./ui-core.css?v=20260927-step41-theme-audio'),'STEP 41 CSS cache-bust is missing');
 assert(ux.includes('function duplicateActivation(target)'),'Navigation duplicate-activation guard is missing');
 assert(!workspace.includes("document.querySelectorAll('[data-quick]').forEach(b=>b.onclick"),'Workspace must not duplicate Quick Action navigation ownership');
 assert(!workspace.includes("q('settingsOpen').onclick")&&!workspace.includes("q('commandOpen').onclick"),'Workspace must not duplicate canonical dialog ownership');
@@ -229,6 +230,8 @@ assert(importantCount(libraryCss)<=74,'library-v33.css !important budget regress
 const removedLegacy=["buttons-v128.css","cards-v130.css","cards-v131.css","chat-v134.css","colors-v127.css","desktop-v97.css","desktop-workspace-v115.css","header-v119.css","home-step1-v117.css","home-v44.css","home-v45.css","layout-v56.css","mobile-ui-fix-v47.css","mobile-v133.css","mobile-v30.css","nav-fix-v61.css","panels-v2.css","personality-v135.css","photo-ui-v100.css","photo-ui-v100.js","polish-v84.css","polish-v84.js","polish.css","reference-ui-v57.css","reference-ui-v57.js","reference-ui-v58.css","reference-ui-v58.js","reference-ui-v89.css","reference-ui-v89.js","responsive-v92.css","simple-v87.css","soft-ui-v55.css","styles.css","surfaces-v129.css","typography-v126.css","ui-v55.js","ui-v59.css","ui-v59.js","ux-v36.css","ux-v36.js","ux-v37.css","ux-v37.js","ux-v38.css","ux-v38.js","ux-v39.css","ux-v41.css","ux-v43.css","home-v43.js","repair-v56.js"];
 for(const f of removedLegacy)assert(!fs.existsSync(path.join(__dirname,f)),'Removed legacy file returned: '+f);
 
-assert(!index.includes('data-theme-choice="system"'),'Duplicate System theme option must be removed');
+assert(index.includes('data-theme-choice="system"'),'System theme choice is missing');
+assert(workspace.includes("new Set(['light','dark','sakura','green','oled','system'])"),'System theme is not part of the authoritative theme choices');
+assert(workspace.includes("root.dataset.themeChoice=choice")&&workspace.includes("if(safeGet('pocket-theme','system')==='system')"),'System theme must persist as System and respond to OS changes');
 assert(!/[>](?:💬|🎓|⌘|▱|⌕|▦|⌂)[<]/.test(responsive),'Drawer must not contain legacy duplicate glyph icons');
 console.log('Pocket AI smoke checks passed:',refs.size,'current assets verified.');
