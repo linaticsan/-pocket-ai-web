@@ -90,7 +90,7 @@ assert(pocketCss.includes('Pocket mascot visual identity — shared component'),
 assert(pocketJs.includes('window.PocketMascotViews={'),'Shared mascot renderer is missing');
 assert(pocketCss.includes('@keyframes pocket-shared-breathe')&&pocketCss.includes('@keyframes pocket-shared-blink'),'Shared mascot animation owner is incomplete');
 assert(!coreCss.includes('@keyframes pocket-shared-')&&!coreCss.includes('STEP 42 — authoritative Pocket mascot animation system'),'ui-core.css must not own mascot animations');
-assert(coreCss.includes('STEP 44 — non-mascot UI motion; mascot motion lives only in pocket-mascot.css'),'STEP 44 UI motion ownership marker is missing');
+assert(coreCss.includes('STEP 43 — non-mascot UI motion; mascot motion lives only in pocket-mascot.css'),'Shared non-mascot UI motion ownership marker is missing');
 assert(index.includes('pocket-character__body pocket-mascot-visual'),'Room mascot must use the shared visual body with compatibility alias');
 assert(!/#home \.pocket-mascot\{[^}]*animation:/.test(coreCss),'Clickable mascot hitbox must not own continuous animation');
 assert(index.includes('./ui-core.css?v=20260927-step44-shell'),'STEP 44 CSS cache-bust is missing');
