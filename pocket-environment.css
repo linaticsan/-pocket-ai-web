@@ -1,7 +1,7 @@
 /* STEP 45 — one lightweight seasonal environment layer */
 #pocketEnvironment{
   position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;contain:strict;
-  opacity:var(--env-workspace-opacity,1);transition:opacity .35s ease;
+  opacity:calc(var(--env-workspace-opacity,1) * var(--env-effect-intensity,.72));transition:opacity .35s ease;
 }
 dialog{z-index:1000}
 .pocket-env-particle{
@@ -50,7 +50,7 @@ html[data-env-paused="true"] #pocketEnvironment .pocket-env-particle{animation-p
 html[data-motion="off"] #pocketEnvironment,
 html[data-env-effects="off"] #pocketEnvironment{display:none}
 html[data-motion="gentle"] #pocketEnvironment,
-html[data-env-effects="gentle"] #pocketEnvironment{opacity:calc(var(--env-workspace-opacity,1) * .58)}
+html[data-env-effects="gentle"] #pocketEnvironment{opacity:calc(var(--env-workspace-opacity,1) * var(--env-effect-intensity,.72) * .58)}
 @media(prefers-reduced-motion:reduce){#pocketEnvironment{display:none!important}}
 .environment-settings{display:grid;gap:12px}
 .environment-setting-row{display:grid;gap:7px}
