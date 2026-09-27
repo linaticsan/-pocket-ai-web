@@ -176,7 +176,7 @@ assert(!responsive.includes('PocketV39'),'Sidebar must use only canonical Pocket
 assert(!read('library-v33.js').includes('PocketV39'),'Library must use only canonical PocketNav');
 assert(!read('webnovel-v42.js').includes('PocketV39'),'Web Novel reader must use only canonical PocketNav');
 assert(index.includes('./ux-v39.js?v=20260926-step30-canonical-nav-cleanup'),'STEP 30 navigation cache-bust is missing');
-assert(index.includes('./responsive-v92.js?v=20260926-step30-canonical-nav-cleanup'),'STEP 30 sidebar cache-bust is missing');
+assert(index.includes('./responsive-v92.js?v=20260927-step44-shell'),'STEP 44 sidebar cache-bust is missing');
 assert(feature.includes("library-v33.js?v=20260926-step30-canonical-nav")&&feature.includes("webnovel-v42.js?v=20260926-step30-canonical-nav"),'STEP 30 lazy-module cache-bust is missing');
 assert(!feature.includes('files-v31.css'),'Legacy Files CSS request must stay removed');
 assert(feature.includes("files-v80.css?v=20260926-step35-files-consolidated"),'Consolidated Files stylesheet cache-bust is missing');
