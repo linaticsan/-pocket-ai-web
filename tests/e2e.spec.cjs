@@ -214,13 +214,13 @@ test('seasonal environment is centralized, offline, motion-aware and workspace-a
   expect(september).toBe('autumn');
 
   await page.locator('#settingsOpen').click();
-  await expect(page.locator('[data-env-season-choice="auto"]')).toHaveAttribute('aria-pressed','true');
-  await page.locator('[data-env-season-choice="spring"]').click();
+  await expect(page.locator('#settingsDialog [data-env-season-choice="auto"]')).toHaveAttribute('aria-pressed','true');
+  await page.locator('#settingsDialog [data-env-season-choice="spring"]').click();
   await expect(page.locator('html')).toHaveAttribute('data-env-season','spring');
   expect(await page.evaluate(() => localStorage.getItem('pocket-environment-season-v1'))).toBe('spring');
 
-  await page.locator('[data-env-effects="full"]').click();
-  await page.locator('[data-env-preview="sakura"]').click();
+  await page.locator('#settingsDialog [data-env-effects="full"]').click();
+  await page.locator('#settingsDialog [data-env-preview="sakura"]').click();
   await page.waitForTimeout(120);
   let status = await page.evaluate(() => window.PocketEnvironment.getStatus());
   expect(status.effect).toBe('sakura');
@@ -228,14 +228,14 @@ test('seasonal environment is centralized, offline, motion-aware and workspace-a
   const activeFull = await page.locator('#pocketEnvironment .sakura').count();
   expect(activeFull).toBeGreaterThanOrEqual(10);
 
-  await page.locator('[data-env-effects="gentle"]').click();
-  await page.locator('[data-env-preview="snow"]').click();
+  await page.locator('#settingsDialog [data-env-effects="gentle"]').click();
+  await page.locator('#settingsDialog [data-env-preview="snow"]').click();
   await page.waitForTimeout(120);
   status = await page.evaluate(() => window.PocketEnvironment.getStatus());
   expect(status.effectiveMode).toBe('gentle');
   expect(status.particles).toBeLessThan(activeFull);
 
-  await page.locator('[data-env-effects="off"]').click();
+  await page.locator('#settingsDialog [data-env-effects="off"]').click();
   await expect(page.locator('#pocketEnvironment')).toHaveCSS('display','none');
   await page.locator('[data-env-effects="full"]').click();
   await page.locator('#settingsDialog .close').click();
