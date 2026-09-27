@@ -57,6 +57,7 @@ function setMotion(m){
  root.classList.toggle('motion-off',choice==='off');
  safeSet('pocket-motion',choice);
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===choice;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
+ const preview=q('motionPreviewText');if(preview)preview.textContent=choice==='full'?'Full: breathing, blinking, pointer-follow and small reactions.':choice==='gentle'?'Gentle: slow breathing and blinking only.':'Off: Pocket stays completely still.';
  window.dispatchEvent(new CustomEvent('pocket-motion-change',{detail:{motion:choice}}));
 }
 
@@ -597,6 +598,7 @@ function createProject(){
  a.unshift(project);
  saveProjects(a);
  recordProgressionAction('project',project.id);
+ window.PocketMascot?.react?.('success');
 }
 function openProject(x){
  const a=projects(),i=a.findIndex(p=>(p.id&&p.id===x.id)||p.name===x.name);
