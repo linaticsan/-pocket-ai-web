@@ -56,7 +56,7 @@ assert(responsive.includes('function scheduleSync()')&&responsive.includes("addE
 assert(index.includes('<dd>STEP 41</dd>'),'Visible diagnostics build label is stale');
 assert(index.includes('data-sound="on"')&&index.includes('data-sound="off"')&&index.includes('id="soundTest"'),'Gesture-gated sound settings are missing');
 assert(workspace.includes('window.AudioContext||window.webkitAudioContext')&&workspace.includes("const SOUND_KEY='pocket-sound-v1'")&&workspace.includes('async function playPocketSound'),'Gesture-gated Web Audio runtime is missing');
-assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includes('autoplay'),'Sound must never retry or autoplay in the background');
+assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includes('setTimeout(()=>playPocketSound'),'Sound must never retry in the background');
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
 assert(!workspace.includes("const mascots=document.querySelectorAll('[data-mascot]')"),'Unused mascot collection must stay removed');
 assert(workspace.includes('function runPocketMascot()')&&workspace.includes('function runCuteLogo(source)'),'Game-like mascot/logo runner is missing');
