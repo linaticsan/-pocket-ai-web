@@ -93,6 +93,7 @@ test('Home prioritizes AI workspaces and keeps gamification secondary', async ({
 
 test('Pocket mascot click runs a silent game animation from its room position', async ({ page }) => {
   const errors = await openPocket(page);
+  await page.locator('#pocketCompanion > summary').click();
   const mascot = page.locator('#homeMascot');
   await expect(mascot).toBeVisible();
   const before = await mascot.boundingBox();
