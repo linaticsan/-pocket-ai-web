@@ -106,7 +106,7 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
   await expect(page.locator('#home .home-hero-pocket [data-pocket-character]')).toBeVisible();
 
   await page.locator('#settingsOpen').click();
-  const preview = page.locator('#settingsDialog [data-pocket-context="settings"]');
+  const preview = page.locator('#settingsDialog [data-pocket-character][data-pocket-context="settings"]');
   await expect(preview).toBeVisible();
 
   await page.locator('#settingsDialog [data-motion="full"]').click();
@@ -127,25 +127,25 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
 
   await page.locator('#paDesktopSidebar [data-pa-side="chat"]').click();
   await page.waitForSelector('#v3ChatShell');
-  await expect(page.locator('#messages .v3-welcome [data-pocket-context="chat"]')).toBeVisible();
+  await expect(page.locator('#messages .v3-welcome [data-pocket-character][data-pocket-context="chat"]')).toBeVisible();
 
   await page.locator('#v3Study').click();
   await expect(page.locator('#messages .v3-welcome [data-pocket-character]')).toHaveAttribute('data-pocket-state','study');
 
   await page.locator('#paDesktopSidebar [data-pa-side="surface"]').click();
-  await expect(page.locator('#surface [data-pocket-context="research"]')).toBeVisible();
+  await expect(page.locator('#surface [data-pocket-character][data-pocket-context="research"]')).toBeVisible();
 
   await page.locator('#paDesktopSidebar [data-pa-side="files"]').click();
   await page.waitForFunction(() => !!window.PocketFiles);
-  await expect(page.locator('#files .pocket-page-empty [data-pocket-context="files"]')).toBeVisible();
+  await expect(page.locator('#files .pocket-page-empty [data-pocket-character][data-pocket-context="files"]')).toBeVisible();
 
   await page.locator('#paDesktopSidebar [data-pa-side="coding"]').click();
   await page.waitForSelector('#coding');
-  await expect(page.locator('#coding [data-pocket-context="coding"]')).toBeVisible();
+  await expect(page.locator('#coding [data-pocket-character][data-pocket-context="coding"]')).toBeVisible();
 
   await page.locator('#paDesktopSidebar [data-pa-side="home"]').click();
-  await expect(page.locator('#projectGrid .project-empty [data-pocket-context="projects"]')).toBeVisible();
-  await expect(page.locator('#paDesktopSidebar .pa-pocket-status [data-pocket-context="sidebar"]')).toBeVisible();
+  await expect(page.locator('#projectGrid .project-empty [data-pocket-character][data-pocket-context="projects"]')).toBeVisible();
+  await expect(page.locator('#paDesktopSidebar .pa-pocket-status [data-pocket-character][data-pocket-context="sidebar"]')).toBeVisible();
   await expectNoPageErrors(errors);
 });
 
