@@ -65,8 +65,10 @@ window.addEventListener('pocket-core-ready',()=>{window.__pocketStartupUsable=tr
       </form>
       <button type="button" class="home-ai-status" data-go="local"><span class="home-ai-dot" aria-hidden="true"></span><span id="homeAiStatus">Local AI</span></button>
     </div>
-    <div class="home-hero-pocket pocket-playground" aria-label="Pocket companion">
-      <div data-pocket-slot data-pocket-context="home" data-pocket-size="large" data-pocket-label="Pocket waiting to help"></div>
+    <div class="home-hero-pocket" aria-label="Pocket companion">
+      <div class="pocket-playground">
+        <div data-pocket-slot data-pocket-context="home" data-pocket-size="large" data-pocket-label="Pocket waiting to help"></div>
+      </div>
       <p class="home-pocket-speech" data-pocket-exclusion>What can I help with?</p>
     </div>
   </section>
