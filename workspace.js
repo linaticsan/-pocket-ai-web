@@ -103,7 +103,7 @@ q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
 window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
 
-const POCKET_BUILD='step43-pocket-visual-identity';
+const POCKET_BUILD='step44-desktop-shell-home-layout';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -319,8 +319,9 @@ function showXPFeedback(text){
 function renderProgression(){
  resetDailyQuestsIfNeeded();
  const level=displayLevel(),isMax=progression.xp>=DISPLAY_LEVEL_CAP*XP_PER_LEVEL,within=isMax?XP_PER_LEVEL:currentLevelXP();
- const inline=q('pocketLevelInline'),levelEl=q('pocketLevel'),xpText=q('pocketXPText'),fill=q('pocketXPFill'),name=q('pocketLevelName');
+ const inline=q('pocketLevelInline'),sidebarLevel=q('paPocketLevel'),levelEl=q('pocketLevel'),xpText=q('pocketXPText'),fill=q('pocketXPFill'),name=q('pocketLevelName');
  if(inline)inline.textContent='• Lv. '+level;
+ if(sidebarLevel)sidebarLevel.textContent='Lv. '+level;
  if(levelEl)levelEl.textContent='Lv. '+level;
  if(xpText)xpText.textContent=isMax?'MAX':within+' / 100 XP';
  if(fill)fill.style.width=within+'%';
@@ -394,7 +395,7 @@ function recordProgressionAction(kind,detail=''){
 }
 resetDailyQuestsIfNeeded();
 renderProgression();
-window.PocketProgression={recordAction:recordProgressionAction};
+window.PocketProgression={recordAction:recordProgressionAction,render:renderProgression,getLevel:displayLevel};
 
 const ROOM_COSMETICS_KEY='pocket-room-cosmetics-v1';
 const ROOM_COSMETICS={
