@@ -78,9 +78,9 @@ test('all themes and motion modes stay canonical', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' });
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   for (const motion of ['full','gentle','off']) {
-    await page.locator('[data-motion="'+motion+'"]').click();
+    await page.locator('#settingsDialog [data-motion="'+motion+'"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-motion', motion);
-    await expect(page.locator('[data-motion="'+motion+'"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('#settingsDialog [data-motion="'+motion+'"]')).toHaveAttribute('aria-pressed','true');
   }
   expect(await page.evaluate(() => localStorage.getItem('pocket-motion'))).toBe('off');
   await expectNoPageErrors(errors);
@@ -211,35 +211,39 @@ test('service worker serves the Home shell after the browser goes offline', asyn
 
 
 async function expectMobileHomeGeometry(page) {
-  const geometry = await page.evaluate(() => {
+  await expect(page.locator('#homeComposer')).toBeVisible();
+  await expect(page.locator('#pocketCompanion')).not.toHaveAttribute('open', '');
+  const closed = await page.evaluate(() => {
+    const rect = sel => document.querySelector(sel)?.getBoundingClientRect();
+    return {
+      viewportWidth: innerWidth,
+      docWidth: document.documentElement.scrollWidth,
+      composer: rect('#homeComposer'),
+      tools: rect('#home .home-tools'),
+      companion: rect('#pocketCompanion')
+    };
+  });
+  expect(closed.docWidth).toBeLessThanOrEqual(closed.viewportWidth + 1);
+  expect(closed.composer.left).toBeGreaterThanOrEqual(-1);
+  expect(closed.composer.right).toBeLessThanOrEqual(closed.viewportWidth + 1);
+  expect(closed.tools.top).toBeGreaterThanOrEqual(closed.composer.bottom - 1);
+  expect(closed.companion.top).toBeGreaterThanOrEqual(closed.tools.bottom - 1);
+
+  await page.locator('#pocketCompanion > summary').click();
+  const open = await page.evaluate(() => {
     const rect = sel => document.querySelector(sel)?.getBoundingClientRect();
     const room = rect('#pocketRoom');
     const controls = rect('#home .room-mini-controls');
     const xp = rect('#pocketXP');
-    const composer = rect('#homeComposer');
-    const roomObjects = [...document.querySelectorAll('#pocketRoom .room-object')].map(el => el.getBoundingClientRect());
-    const viewportWidth = innerWidth;
-    return {
-      viewportWidth,
-      docWidth: document.documentElement.scrollWidth,
-      room, controls, xp, composer,
-      roomObjects: roomObjects.map(r => ({left:r.left,right:r.right,top:r.top,bottom:r.bottom}))
-    };
+    const companion = rect('#pocketCompanion');
+    return {viewportWidth:innerWidth,docWidth:document.documentElement.scrollWidth,room,controls,xp,companion};
   });
-
-  expect(geometry.docWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
-  expect(geometry.room.left).toBeGreaterThanOrEqual(-1);
-  expect(geometry.room.right).toBeLessThanOrEqual(geometry.viewportWidth + 1);
-  expect(geometry.controls.top).toBeGreaterThanOrEqual(geometry.room.bottom - 1);
-  expect(geometry.composer.top).toBeGreaterThanOrEqual(geometry.controls.bottom - 1);
-  expect(geometry.xp.top).toBeGreaterThanOrEqual(geometry.room.top - 1);
-  expect(geometry.xp.bottom).toBeLessThanOrEqual(geometry.room.bottom + 1);
-  for (const object of geometry.roomObjects) {
-    expect(object.left).toBeGreaterThanOrEqual(geometry.room.left - 1);
-    expect(object.right).toBeLessThanOrEqual(geometry.room.right + 1);
-    expect(object.top).toBeGreaterThanOrEqual(geometry.room.top - 1);
-    expect(object.bottom).toBeLessThanOrEqual(geometry.room.bottom + 1);
-  }
+  expect(open.docWidth).toBeLessThanOrEqual(open.viewportWidth + 1);
+  expect(open.room.left).toBeGreaterThanOrEqual(open.companion.left - 1);
+  expect(open.room.right).toBeLessThanOrEqual(open.companion.right + 1);
+  expect(open.controls.top).toBeGreaterThanOrEqual(open.room.bottom - 1);
+  expect(open.xp.top).toBeGreaterThanOrEqual(open.room.top - 1);
+  expect(open.xp.bottom).toBeLessThanOrEqual(open.room.bottom + 1);
 }
 
 test.describe('mobile Home layout', () => {
@@ -262,7 +266,7 @@ test.describe('mobile Home layout', () => {
 });
 
 
-async function expectDesktopGeometry(page, expectedColumns=4) {
+async function expectDesktopGeometry(page, expectedColumns=3) {
   const geometry = await page.evaluate(() => {
     const rect = sel => document.querySelector(sel)?.getBoundingClientRect();
     const sidebar = rect('#paDesktopSidebar');
@@ -270,13 +274,14 @@ async function expectDesktopGeometry(page, expectedColumns=4) {
     const main = rect('body > main');
     const step1 = rect('#home .home-step1');
     const hero = rect('#home .home-hero');
-    const copy = rect('#home .home-hero-copy');
-    const room = rect('#pocketRoom');
+    const composer = rect('#homeComposer');
+    const tools = rect('#home .home-tools');
+    const companion = rect('#pocketCompanion');
     const quick = document.querySelector('#home .quick-grid');
     return {
       viewportWidth: innerWidth,
       docWidth: document.documentElement.scrollWidth,
-      sidebar, header, main, step1, hero, copy, room,
+      sidebar, header, main, step1, hero, composer, tools, companion,
       quickColumns: quick ? getComputedStyle(quick).gridTemplateColumns.split(' ').length : 0
     };
   });
@@ -287,16 +292,18 @@ async function expectDesktopGeometry(page, expectedColumns=4) {
   expect(geometry.step1.left).toBeGreaterThanOrEqual(geometry.main.left - 1);
   expect(geometry.step1.right).toBeLessThanOrEqual(geometry.viewportWidth + 1);
   expect(geometry.step1.width).toBeLessThanOrEqual(1242);
-  expect(geometry.copy.right).toBeLessThanOrEqual(geometry.room.left + 6);
-  expect(geometry.room.right).toBeLessThanOrEqual(geometry.hero.right + 1);
+  expect(geometry.composer.left).toBeGreaterThanOrEqual(geometry.hero.left - 1);
+  expect(geometry.composer.right).toBeLessThanOrEqual(geometry.hero.right + 1);
+  expect(geometry.tools.top).toBeGreaterThanOrEqual(geometry.hero.bottom - 1);
+  expect(geometry.companion.top).toBeGreaterThanOrEqual(geometry.tools.bottom - 1);
   expect(geometry.quickColumns).toBe(expectedColumns);
 }
 
 test.describe('desktop Home layout', () => {
-  test('1440px desktop uses a centered workspace and true two-column hero', async ({ page }) => {
+  test('1440px desktop uses a centered AI-first workspace', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const errors = await openPocket(page);
-    await expectDesktopGeometry(page, 4);
+    await expectDesktopGeometry(page, 3);
     await expect(page.locator('#paDesktopSidebar')).toBeVisible();
     await expect(page.locator('#paSidebarToggle')).toBeHidden();
     await expectNoPageErrors(errors);
@@ -305,7 +312,7 @@ test.describe('desktop Home layout', () => {
   test('1024px desktop remains desktop-like without collapsing into phone proportions', async ({ page }) => {
     await page.setViewportSize({ width: 1024, height: 768 });
     const errors = await openPocket(page);
-    await expectDesktopGeometry(page, 4);
+    await expectDesktopGeometry(page, 3);
     await expect(page.locator('#home .home-hero')).toHaveCSS('display', 'grid');
     await expectNoPageErrors(errors);
   });
