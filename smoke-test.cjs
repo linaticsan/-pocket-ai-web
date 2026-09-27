@@ -39,7 +39,7 @@ assert(icons.includes('requestAnimationFrame'),'Icon scheduler must yield to the
 assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing');
 assert(/\.\/icons-v132\.js\?v=20260926-step\d+[a-z0-9-]*/.test(index),'Current icon cache-bust is missing');
 const workspace=read('workspace.js');
-assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled'])"),'Authoritative five-theme engine is missing');
+assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled','system'])"),'Authoritative six-theme engine is missing');
 assert(index.includes('./workspace.js?v=20260927-step41-theme-audio'),'STEP 41 workspace cache-bust is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
 assert(workspace.includes("const POCKET_BUILD='step41-theme-audio-reliability'"),'STEP 41 diagnostics build marker is missing');
