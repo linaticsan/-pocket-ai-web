@@ -169,10 +169,10 @@ test('Pocket living-world movement stays bounded and can return home', async ({ 
     const box = await pocket.boundingBox();
     const playground = await page.locator('#home .pocket-playground').boundingBox();
     expect(box && playground).toBeTruthy();
-    expect(box.left).toBeGreaterThanOrEqual(playground.left - 1);
-    expect(box.right).toBeLessThanOrEqual(playground.right + 1);
-    expect(box.top).toBeGreaterThanOrEqual(playground.top - 1);
-    expect(box.bottom).toBeLessThanOrEqual(playground.bottom + 1);
+    expect(box.x).toBeGreaterThanOrEqual(playground.x - 1);
+    expect(box.x+box.width).toBeLessThanOrEqual(playground.x+playground.width + 1);
+    expect(box.y).toBeGreaterThanOrEqual(playground.y - 1);
+    expect(box.y+box.height).toBeLessThanOrEqual(playground.y+playground.height + 1);
     seen.add(Math.round(box.x/4)+':'+Math.round(box.y/4));
   }
   expect(seen.size).toBeGreaterThan(2);
@@ -199,8 +199,8 @@ test('Pocket living-world movement stays bounded and can return home', async ({ 
   await page.waitForTimeout(550);
   const afterResize = await pocket.boundingBox();
   const resizedPlayground = await page.locator('#home .pocket-playground').boundingBox();
-  expect(afterResize.left).toBeGreaterThanOrEqual(resizedPlayground.left - 1);
-  expect(afterResize.right).toBeLessThanOrEqual(resizedPlayground.right + 1);
+  expect(afterResize.x).toBeGreaterThanOrEqual(resizedPlayground.x - 1);
+  expect(afterResize.x+afterResize.width).toBeLessThanOrEqual(resizedPlayground.x+resizedPlayground.width + 1);
   await expectNoPageErrors(errors);
 });
 
