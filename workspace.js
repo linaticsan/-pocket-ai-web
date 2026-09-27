@@ -666,7 +666,7 @@ function mascotMotionAllowed(){return motionMode()!=='off'&&!reducedMotion()}
 function mascotElement(){return q('homeMascot')}
 function resetMascotEyes(){
  const home=mascotElement();if(!home)return;
- home.style.setProperty('--eye-x','0px');home.style.setProperty('--eye-y','0px');
+ home.style.setProperty('--pocket-eye-x','0px');home.style.setProperty('--pocket-eye-y','0px');
 }
 function setMascotState(state='idle',ms=0){
  const home=mascotElement(),label=q('pocketMoodLabel');if(!home)return false;
@@ -724,8 +724,8 @@ function scheduleIdleLook(){
      const home=mascotElement();
      if(home){
        const dir=Math.random()<.5?-1:1;
-       home.style.setProperty('--eye-x',(dir*(1.2+Math.random()*1.3)).toFixed(1)+'px');
-       home.style.setProperty('--eye-y',(Math.random()*.8-.4).toFixed(1)+'px');
+       home.style.setProperty('--pocket-eye-x',(dir*(1.2+Math.random()*1.3)).toFixed(1)+'px');
+       home.style.setProperty('--pocket-eye-y',(Math.random()*.8-.4).toFixed(1)+'px');
        setTimeout(resetMascotEyes,650+Math.random()*450);
      }
    }
@@ -783,8 +783,8 @@ function lookMascotToward(clientX,clientY,temporary=false){
  const home=mascotElement();if(!home||motionMode()!=='full'||reducedMotion()||mascotState==='sleep')return;
  const rect=home.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height*.46;
  const dx=clientX-cx,dy=clientY-cy,len=Math.max(1,Math.hypot(dx,dy)),max=2.5;
- home.style.setProperty('--eye-x',(dx/len*max).toFixed(2)+'px');
- home.style.setProperty('--eye-y',(dy/len*Math.min(max,1.8)).toFixed(2)+'px');
+ home.style.setProperty('--pocket-eye-x',(dx/len*max).toFixed(2)+'px');
+ home.style.setProperty('--pocket-eye-y',(dy/len*Math.min(max,1.8)).toFixed(2)+'px');
  if(temporary)setTimeout(resetMascotEyes,520);
 }
 function checkMascotSecret(){
