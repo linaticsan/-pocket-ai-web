@@ -138,7 +138,7 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
  if(Date.now()-d.lastMove<480)return false;
  const firstTap=d.taps===0;d.taps++;
  if(d.taps>=d.returnAt&&!firstTap)return void goHome(el,true);
- const roll=firstTap&&!autonomous?.5:Math.random();
+ const roll=(firstTap&&!autonomous) ? 0.5 : Math.random();
  if(!firstTap&&roll<.05)return void goHome(el,true);
  if(!firstTap&&roll<.25){window.PocketMascot?.react?.('tap');blinkOne(el);return false}
  if(!firstTap&&roll<.35){el.classList.add('is-pocket-play-jump');setTimeout(()=>el.classList.remove('is-pocket-play-jump'),620);return false}
