@@ -8,7 +8,7 @@ let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFr
 
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
-function canWander(el){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&!reduced()&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&!ACTIVE_STATES.has(globalState)}
+function canWander(el,{autonomous=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&!ACTIVE_STATES.has(globalState)}
 function html(context='home',size='medium',label='Pocket'){
  return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+
   '<span class="pocket-character__body" aria-hidden="true">'+
@@ -113,10 +113,11 @@ async function animateMove(el,x,y,{home=false,quick=false}={}){
  const dx=x-d.x,dy=y-d.y,dist=Math.hypot(dx,dy);
  if(dist<2){d.x=x;d.y=y;return true}
  d.moving=true;d.lastMove=Date.now();faceDirection(el,dx);el.classList.add('is-pocket-moving');
- const duration=Math.max(520,Math.min(980,(quick?420:520)+dist*2.15)),hops=dist>95?3:dist>42?2:1;
+ const lowMotion=reduced()||motion()==='gentle',duration=lowMotion?240:Math.max(520,Math.min(980,(quick?420:520)+dist*2.15)),hops=lowMotion?1:dist>95?3:dist>42?2:1;
  const frames=[{transform:`translate3d(${d.x}px,${d.y}px,0) scale(1)`}];
  for(let i=1;i<hops;i++){const p=i/hops,arc=7+Math.min(8,dist*.035);frames.push({offset:p,transform:`translate3d(${d.x+dx*p}px,${d.y+dy*p-arc}px,0) scale(1.015,.985)`})}
- frames.push({offset:.9,transform:`translate3d(${x}px,${y-5}px,0) scale(.985,1.02)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
+ if(lowMotion)frames.push({transform:`translate3d(${x}px,${y}px,0) scale(1)`});
+ else frames.push({offset:.9,transform:`translate3d(${x}px,${y-5}px,0) scale(.985,1.02)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
  try{d.animation=el.animate(frames,{duration,easing:'cubic-bezier(.22,.74,.2,1)',fill:'forwards'});await d.animation.finished}catch{}
  d.animation=null;d.x=x;d.y=y;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else{delete el.dataset.pocketHome}
@@ -132,21 +133,24 @@ function goHome(el=q('.pocket-playground [data-pocket-character]'),animate=true)
 }
 function goHomeAll(animate=true){qa('.pocket-playground [data-pocket-character]').forEach(el=>void goHome(el,animate))}
 function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomous=false}={}){
- if(!el||!canWander(el))return false;const d=initWander(el);
+ if(!el||!canWander(el,{autonomous}))return false;const d=initWander(el);
  if(d.moving){d.queued=!autonomous;return false}
  if(Date.now()-d.lastMove<480)return false;
- d.taps++;
- if(d.taps>=d.returnAt)return void goHome(el,true);
- const roll=Math.random();
- if(roll<.05)return void goHome(el,true);
- if(roll<.25){window.PocketMascot?.react?.('tap');blinkOne(el);return false}
- if(roll<.35){el.classList.add('is-pocket-play-jump');setTimeout(()=>el.classList.remove('is-pocket-play-jump'),620);return false}
+ const firstTap=d.taps===0;d.taps++;
+ if(d.taps>=d.returnAt&&!firstTap)return void goHome(el,true);
+ const roll=firstTap&&!autonomous?.5:Math.random();
+ if(!firstTap&&roll<.05)return void goHome(el,true);
+ if(!firstTap&&roll<.25){window.PocketMascot?.react?.('tap');blinkOne(el);return false}
+ if(!firstTap&&roll<.35){el.classList.add('is-pocket-play-jump');setTimeout(()=>el.classList.remove('is-pocket-play-jump'),620);return false}
  const dest=randomDestination(el);if(!dest)return void goHome(el,true);
- if(dest.home)return void goHome(el,true);
- const scale=motion()==='gentle' ? 0.46 : 1;
- const x=d.x+(dest.x-d.x)*scale,y=d.y+(dest.y-d.y)*scale;
- void animateMove(el,x,y,{quick:roll>.91});return true;
+ if(dest.home&&firstTap){const b=boundsFor(el);if(!b)return false;dest.x=Math.max(b.minX,Math.min(b.maxX,(b.maxX>=24?24:b.maxX)));dest.y=0;delete dest.home}
+ else if(dest.home)return void goHome(el,true);
+ const scale=reduced()?0.24:motion()==='gentle'?0.46:1;
+ let x=d.x+(dest.x-d.x)*scale,y=d.y+(dest.y-d.y)*scale;
+ if(firstTap&&Math.hypot(x-d.x,y-d.y)<18){const b=boundsFor(el);x=Math.max(b.minX,Math.min(b.maxX,d.x+(b.maxX-d.x>=18?22:-22)));y=Math.max(b.minY,Math.min(b.maxY,d.y))}
+ void animateMove(el,x,y,{quick:lowMotionMove()||roll>.91});return true;
 }
+function lowMotionMove(){return reduced()||motion()==='gentle'}
 function tap(el){
  if(!el||el.dataset.pocketTapLock==='1')return;
  el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
