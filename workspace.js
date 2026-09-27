@@ -395,7 +395,7 @@ function recordProgressionAction(kind,detail=''){
 }
 resetDailyQuestsIfNeeded();
 renderProgression();
-window.PocketProgression={recordAction:recordProgressionAction};
+window.PocketProgression={recordAction:recordProgressionAction,render:renderProgression,getLevel:displayLevel};
 
 const ROOM_COSMETICS_KEY='pocket-room-cosmetics-v1';
 const ROOM_COSMETICS={
