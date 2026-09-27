@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step40-home-hierarchy', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step42-pocket-mascot-system', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -109,13 +109,31 @@ test('Pocket mascot click keeps its room position and sound stays opt-in', async
   const after = await mascot.boundingBox();
   expect(before && after && Math.abs(before.x-after.x)<0.5 && Math.abs(before.y-after.y)<0.5).toBeTruthy();
   await mascot.click();
-  await expect(mascot).toHaveClass(/is-game-running/);
-  await expect(mascot).not.toHaveClass(/is-game-running/, { timeout: 2500 });
+  await expect(mascot).toHaveClass(/is-tap-reacting/);
+  await expect(mascot).toHaveAttribute('data-mascot-state','happy');
+  await expect(mascot).not.toHaveClass(/is-tap-reacting/, { timeout: 1500 });
   await expect(page.locator('[data-sound]')).toHaveCount(2);
   await expect(page.locator('#soundTest')).toHaveCount(1);
   expect(await page.evaluate(() => localStorage.getItem('pocket-sound-v1'))).toBeNull();
   await expectNoPageErrors(errors);
 });
+
+test('PocketMascot exposes canonical states and respects motion off', async ({ page }) => {
+  const errors = await openPocket(page);
+  await page.locator('#pocketCompanion > summary').click();
+  await page.waitForFunction(() => !!window.PocketMascot?.setState);
+  await page.evaluate(() => window.PocketMascot.setState('thinking',0));
+  await expect(page.locator('#homeMascot')).toHaveAttribute('data-mascot-state','thinking');
+  await page.evaluate(() => window.PocketMascot.react('success'));
+  await expect(page.locator('#homeMascot')).toHaveAttribute('data-mascot-state','success');
+  await page.locator('#settingsOpen').click();
+  await page.locator('#settingsDialog [data-motion="off"]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-motion','off');
+  const animation = await page.locator('#homeMascot .pocket-mascot-visual').evaluate(el => getComputedStyle(el).animationName);
+  expect(animation).toBe('none');
+  await expectNoPageErrors(errors);
+});
+
 
 test('Pocket game dialog restores focus and catching a star awards zero XP', async ({ page }) => {
   const errors = await openPocket(page);
