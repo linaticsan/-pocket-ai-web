@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step45-pocket-living-world', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step46-pocket-tap-movement-reliability', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -147,6 +147,30 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
   await expect(page.locator('#projectGrid .project-empty [data-pocket-character][data-pocket-context="projects"]')).toBeVisible();
   await expect(page.locator('#paDesktopSidebar .pa-side-brand [data-pocket-character][data-pocket-context="sidebar"]')).toBeVisible();
   await expect(page.locator('#paPocketLevel')).toBeVisible();
+  await expectNoPageErrors(errors);
+});
+
+test('iPhone Reduce Motion still allows a small user-triggered Pocket relocation', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const errors = await openPocket(page);
+  await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom);
+  await page.locator('#settingsOpen').click();
+  await page.locator('#settingsDialog [data-motion="full"]').click();
+  await page.locator('#settingsDialog .close').click();
+
+  const pocket = page.locator('#home .pocket-playground [data-pocket-character]');
+  const before = await pocket.boundingBox();
+  await pocket.click();
+  await page.waitForTimeout(420);
+  const after = await pocket.boundingBox();
+  const moved = Math.hypot(after.x-before.x, after.y-before.y);
+  expect(moved).toBeGreaterThanOrEqual(16);
+  expect(moved).toBeLessThanOrEqual(40);
+
+  const playground = await page.locator('#home .pocket-playground').boundingBox();
+  expect(after.x).toBeGreaterThanOrEqual(playground.x-1);
+  expect(after.x+after.width).toBeLessThanOrEqual(playground.x+playground.width+1);
   await expectNoPageErrors(errors);
 });
 
