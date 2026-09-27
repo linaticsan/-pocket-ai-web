@@ -1,0 +1,78 @@
+/* STEP 45 — one lightweight seasonal environment layer */
+#pocketEnvironment{
+  position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;contain:strict;
+  opacity:var(--env-workspace-opacity,1);transition:opacity .35s ease;
+}
+body>main,.topbar,.pa-desktop-sidebar,.pa-sidebar-toggle{position:relative;z-index:2}
+dialog{z-index:1000}
+.pocket-env-particle{
+  position:absolute;left:0;top:0;pointer-events:none;will-change:transform,opacity;
+  opacity:0;transform:translate3d(-100px,-100px,0);
+}
+.pocket-env-particle.sakura{
+  width:9px;height:6px;border-radius:70% 25% 65% 30%;
+  background:linear-gradient(145deg,rgba(255,217,232,.94),rgba(255,157,199,.78));
+  box-shadow:0 0 0 1px rgba(255,255,255,.12);
+}
+.pocket-env-particle.leaf{
+  width:10px;height:7px;border-radius:75% 20% 70% 25%;
+  background:var(--leaf-color,#d88b3c);
+}
+.pocket-env-particle.snow{
+  width:var(--flake,5px);height:var(--flake,5px);border-radius:50%;
+  background:rgba(255,255,255,.88);
+}
+.pocket-env-particle.rain{
+  width:1px;height:var(--drop,18px);border-radius:999px;
+  background:linear-gradient(to bottom,rgba(126,168,204,0),rgba(126,168,204,.58));
+}
+.pocket-env-particle.light{
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(255,230,137,.75);box-shadow:0 0 7px rgba(255,230,137,.35);
+}
+.pocket-env-particle.wind{
+  width:22px;height:1px;border-radius:999px;background:linear-gradient(90deg,transparent,rgba(180,190,210,.28),transparent);
+}
+html[data-theme="dark"] #pocketEnvironment .snow{background:rgba(255,255,255,.82)}
+html[data-theme="oled"] #pocketEnvironment .snow{background:rgba(255,255,255,.68)}
+html[data-theme="oled"] #pocketEnvironment .light{opacity:.42!important;box-shadow:none}
+html[data-theme="light"] #pocketEnvironment .rain{background:linear-gradient(to bottom,rgba(75,100,125,0),rgba(75,100,125,.42))}
+html[data-env-season="winter"] body::before,
+html[data-env-season="summer"] body::before,
+html[data-env-season="autumn"] body::before,
+html[data-env-season="spring"] body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.08;
+}
+html[data-env-season="winter"] body::before{background:linear-gradient(180deg,#b9d8f0,transparent 38%)}
+html[data-env-season="spring"] body::before{background:linear-gradient(180deg,#ffd6e8,transparent 34%)}
+html[data-env-season="autumn"] body::before{background:linear-gradient(180deg,#e5a25b,transparent 34%)}
+html[data-env-season="summer"] body::before{background:linear-gradient(180deg,#cde9d7,transparent 32%)}
+html[data-env-paused="true"] #pocketEnvironment .pocket-env-particle{animation-play-state:paused!important}
+html[data-motion="off"] #pocketEnvironment,
+html[data-env-effects="off"] #pocketEnvironment{display:none}
+html[data-motion="gentle"] #pocketEnvironment,
+html[data-env-effects="gentle"] #pocketEnvironment{opacity:calc(var(--env-workspace-opacity,1) * .58)}
+@media(prefers-reduced-motion:reduce){#pocketEnvironment{display:none!important}}
+.environment-settings{display:grid;gap:12px}
+.environment-setting-row{display:grid;gap:7px}
+.environment-setting-row>span{font-size:12px;font-weight:700;color:var(--pa-secondary)}
+.environment-preview{display:flex;flex-wrap:wrap;gap:7px}
+.environment-preview button{min-height:38px;padding:7px 10px}
+#environmentStatus{margin:0}
+.pocket-playground{position:relative;overflow:visible}
+.pocket-playground [data-pocket-character]{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0);transform-origin:50% 75%;z-index:2}
+.pocket-playground [data-pocket-character].is-pocket-moving{pointer-events:none}
+.pocket-playground [data-pocket-character][data-pocket-facing="left"] .pocket-character__antenna{transform:rotate(-4deg)}
+.pocket-playground [data-pocket-character][data-pocket-facing="right"] .pocket-character__antenna{transform:rotate(4deg)}
+@keyframes pocket-play-jump{0%,100%{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0)}45%{transform:translate3d(var(--wander-x,0),calc(var(--wander-y,0) - 13px),0) scale(.985,1.035)}}
+@keyframes pocket-settle{0%,100%{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0)}45%{transform:translate3d(var(--wander-x,0),calc(var(--wander-y,0) + 2px),0) scale(1.025,.97)}}
+@keyframes pocket-antenna-wiggle{0%,100%{transform:rotate(0)}30%{transform:rotate(-7deg)}65%{transform:rotate(6deg)}}
+html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-play-jump{animation:pocket-play-jump .58s cubic-bezier(.22,.8,.24,1)}
+html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-settle{animation:pocket-settle .42s ease}
+html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-antenna-wiggle .pocket-character__antenna{animation:pocket-antenna-wiggle .62s ease}
+html[data-motion="gentle"] .pocket-playground [data-pocket-character].is-pocket-play-jump{animation:pocket-play-jump .46s ease}
+html[data-motion="off"] .pocket-playground [data-pocket-character]{transform:none!important}
+@media(max-width:767px){
+  #pocketEnvironment{opacity:calc(var(--env-workspace-opacity,1) * .72)}
+  .pocket-playground{overflow:hidden}
+}
