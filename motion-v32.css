@@ -22,9 +22,15 @@ html[data-motion="off"] .pocket-v3 *::after{
   transition:none!important;
   scroll-behavior:auto!important;
 }
-html[data-motion="gentle"] .pocket-v3 *,
-html[data-motion="gentle"] .pocket-v3 *::before,
-html[data-motion="gentle"] .pocket-v3 *::after{
-  animation-duration:calc(var(--motion-base-duration,1s) * 1.35);
+html[data-motion="gentle"] .pocket-v3 .brand,
+html[data-motion="gentle"] .pocket-v3 .view.active>.card,
+html[data-motion="gentle"] .pocket-v3 .view.active>.glass,
+html[data-motion="gentle"] .pocket-v3 .v3-bubble{
+  animation-duration:.32s;
   transition-duration:.28s;
+}
+html[data-motion="gentle"] .pocket-v3 .tabs button.active,
+html[data-motion="gentle"] .pocket-v3 .code-neon-line::after,
+html[data-motion="gentle"] .pocket-v3 button[data-code-ai="animate"]::after{
+  animation:none!important;
 }
