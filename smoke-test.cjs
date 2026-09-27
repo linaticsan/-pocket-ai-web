@@ -47,7 +47,7 @@ assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective P
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
 assert(coreCss.includes('STEP 25 — touch and interaction reliability'),'STEP 25 interaction CSS is missing');
 assert(feature.includes('Keep optional workspaces genuinely lazy'),'STEP 26 true-lazy marker is missing');
-assert(/\.\/app\.js\?v=20260926-step\d+[a-z0-9-]*/.test(index),'Current app cache-bust is missing');
+assert(/\.\/app\.js\?v=20260927-step\d+[a-z0-9-]*/.test(index),'Current app cache-bust is missing');
 assert(app.includes("window.dispatchEvent(new CustomEvent('pocket-network-change'"),'Central network event dispatcher is missing');
 assert(!feature.includes("addEventListener('online',networkState)")&&!feature.includes("addEventListener('offline',networkState)"),'Feature layer must not duplicate network listeners');
 assert(workspace.includes("addEventListener('pocket-network-change'"),'Workspace must consume the central network event');
