@@ -651,6 +651,7 @@ if(progressionLocalStatus){
 
 const COMPANION_KEY='pocket-companion-interactions-v1';
 const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline']);
+const MASCOT_SLEEP_MS=180000;
 const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline'};
 const tapMessages=['Hi! ✦','Ready!','What are we making?','Let\'s learn something.','Need help?','Let\'s build!','Good to see you.'];
 const mascotBusyReasons=new Set();
@@ -735,7 +736,7 @@ function canSleep(){
 function scheduleMascotSleep(){
  clearTimeout(mascotSleepTimer);
  if(motionMode()==='off')return;
- mascotSleepTimer=setTimeout(()=>{if(canSleep())setMascotState('sleep',0);else scheduleMascotSleep()},180000);
+ mascotSleepTimer=setTimeout(()=>{if(canSleep())setMascotState('sleep',0);else scheduleMascotSleep()},MASCOT_SLEEP_MS);
 }
 function wakeMascot(){
  if(mascotState==='sleep'){
