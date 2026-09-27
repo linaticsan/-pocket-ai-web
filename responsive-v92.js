@@ -26,10 +26,11 @@ function buildSidebar(){
   '</div>'+
  '</nav>'+
  '<div class="pa-side-bottom">'+
+  '<div class="pa-pocket-status"><div data-pocket-slot data-pocket-context="sidebar" data-pocket-size="small" data-pocket-label="Pocket status"></div><span class="pa-pocket-status-copy"><strong>Pocket</strong><small>Ready beside you</small></span></div>'+
   '<button type="button" data-pa-side="settings"><span>Settings</span></button>'+
   '<button type="button" data-pa-side="local" class="pa-local-status"><span class="pa-local-copy"><strong>Local AI</strong><small id="paLocalState">Checking…</small><i class="pa-status-dot" aria-hidden="true"></i></span></button>'+
  '</div>';
- document.body.appendChild(aside);
+ document.body.appendChild(aside);window.PocketMascotViews?.hydrate?.(aside);
 
  const backdrop=document.createElement('button');
  backdrop.id='paSidebarBackdrop';backdrop.className='pa-sidebar-backdrop';backdrop.type='button';backdrop.tabIndex=-1;backdrop.setAttribute('aria-label','Close menu');
