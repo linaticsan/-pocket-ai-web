@@ -9,6 +9,8 @@ function motion(){return document.documentElement.dataset.motion||'full'}
 function html(context='home',size='medium',label='Pocket'){
  return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+
   '<span class="pocket-character__body" aria-hidden="true">'+
+   '<span class="pocket-character__ear pocket-character__ear--left"></span>'+
+   '<span class="pocket-character__ear pocket-character__ear--right"></span>'+
    '<span class="pocket-character__antenna"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--left"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--right"></span>'+
