@@ -143,7 +143,7 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
  if(roll<.35){el.classList.add('is-pocket-play-jump');setTimeout(()=>el.classList.remove('is-pocket-play-jump'),620);return false}
  const dest=randomDestination(el);if(!dest)return void goHome(el,true);
  if(dest.home)return void goHome(el,true);
- const scale=motion()==='gentle'?.46:1;
+ const scale=motion()==='gentle' ? 0.46 : 1;
  const x=d.x+(dest.x-d.x)*scale,y=d.y+(dest.y-d.y)*scale;
  void animateMove(el,x,y,{quick:roll>.91});return true;
 }
