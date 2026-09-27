@@ -58,7 +58,7 @@ html[data-env-effects="gentle"] #pocketEnvironment{opacity:calc(var(--env-worksp
 .environment-preview{display:flex;flex-wrap:wrap;gap:7px}
 .environment-preview button{min-height:38px;padding:7px 10px}
 #environmentStatus{margin:0}
-.pocket-playground{position:relative;overflow:visible}
+.pocket-playground{position:relative;display:grid;place-items:center;width:100%;min-height:174px;overflow:visible}
 .pocket-playground [data-pocket-character]{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0);transform-origin:50% 75%;z-index:2}
 .pocket-playground [data-pocket-character].is-pocket-moving{pointer-events:none}
 .pocket-playground [data-pocket-character][data-pocket-facing="left"] .pocket-character__antenna{transform:rotate(-4deg)}
@@ -72,6 +72,7 @@ html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-an
 html[data-motion="gentle"] .pocket-playground [data-pocket-character].is-pocket-play-jump{animation:pocket-play-jump .46s ease}
 html[data-motion="off"] .pocket-playground [data-pocket-character]{transform:none!important}
 @media(max-width:767px){
+  .pocket-playground{min-height:100px}
   #pocketEnvironment{opacity:calc(var(--env-workspace-opacity,1) * .72)}
   .pocket-playground{overflow:hidden}
 }
