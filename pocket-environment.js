@@ -17,8 +17,8 @@ function quality(){if(effectiveMode()==='off')return'low';if(matchMedia('(max-wi
 function countFor(type){
  const base={low:8,medium:16,high:24}[quality()],mode=effectiveMode();
  if(mode==='off')return 0;
- const factor=mode==='gentle'?.55:1;
- const typeFactor=type==='rain'?1.15:type==='light'?.55:1;
+ const factor=mode==='gentle' ? 0.55 : 1;
+ const typeFactor=type==='rain'?1.15:type==='light' ? 0.55 : 1;
  return Math.max(3,Math.round(base*factor*typeFactor));
 }
 function ensureLayer(){
@@ -65,7 +65,7 @@ function seasonalDefault(){
 function scheduleAmbient(initial=false){
  clearTimeout(eventTimer);clearTimeout(eventStopTimer);if(document.hidden||effectiveMode()==='off')return;
  const delay=initial?rand(1600,4500):rand(45000,150000);
- eventTimer=setTimeout(()=>{if(document.hidden||effectiveMode()==='off')return scheduleAmbient();const type=seasonalDefault();if(!type)return scheduleAmbient();if(Math.random()<.34)setWind(rand(-.42,.42));else setWind(rand(-.12,.12));startEffect(type,{duration:rand(15000,48000),intensity:effectiveMode()==='gentle'?.45:.75})},delay);
+ eventTimer=setTimeout(()=>{if(document.hidden||effectiveMode()==='off')return scheduleAmbient();const type=seasonalDefault();if(!type)return scheduleAmbient();if(Math.random()<.34)setWind(rand(-.42,.42));else setWind(rand(-.12,.12));startEffect(type,{duration:rand(15000,48000),intensity:effectiveMode()==='gentle' ? 0.45 : 0.75})},delay);
 }
 function applySeason(choice=seasonChoice,{persist=true}={}){
  seasonChoice=seasons.has(choice)?choice:'auto';season=resolvedSeason();document.documentElement.dataset.envSeason=season;document.documentElement.dataset.envSeasonChoice=seasonChoice;if(persist)safeSet(SEASON_KEY,seasonChoice);
@@ -82,7 +82,7 @@ function setWeather(value={}){
  return startEffect(type,{intensity:clamp(value?.intensity??.5,0,1)});
 }
 function preview(type){
- clearTimeout(previewTimer);if(type==='wind'){setWind(wind===0?.45:-wind);reactPocket('wind');previewTimer=setTimeout(()=>setWind(0),5000);return true}
+ clearTimeout(previewTimer);if(type==='wind'){setWind(wind===0 ? 0.45 : -wind);reactPocket('wind');previewTimer=setTimeout(()=>setWind(0),5000);return true}
  stopEffect();const ok=startEffect(type,{preview:true,intensity:.7});previewTimer=setTimeout(()=>{stopEffect(type);scheduleAmbient()},6500);return ok;
 }
 function setWorkspace(id='home'){workspace=id;ensureLayer();const opacity=workspaceIntensity[id]??.16;layer.style.setProperty('--env-workspace-opacity',String(opacity));document.documentElement.dataset.envWorkspace=id}
