@@ -67,7 +67,7 @@ window.addEventListener('pocket-core-ready',()=>{window.__pocketStartupUsable=tr
     </div>
     <div class="home-hero-pocket" aria-label="Pocket companion">
       <div data-pocket-slot data-pocket-context="home" data-pocket-size="large" data-pocket-label="Pocket waiting to help"></div>
-      <p>What can I help with?</p>
+      <p class="home-pocket-speech">What can I help with?</p>
     </div>
   </section>
   <section class="home-step-section home-tools" aria-labelledby="homeToolsTitle">
@@ -97,6 +97,8 @@ window.addEventListener('pocket-core-ready',()=>{window.__pocketStartupUsable=tr
         <div class="pocket-speech" id="pocketSpeech" aria-hidden="true"></div>
         <button class="pocket-character pocket-mascot" id="homeMascot" type="button" data-pocket-character data-pocket-context="home" data-pocket-state="idle" data-pocket-size="large" data-mascot-state="idle" aria-label="Play with Pocket">
           <span class="pocket-character__body pocket-mascot-visual" aria-hidden="true">
+            <span class="pocket-character__ear pocket-character__ear--left"></span>
+            <span class="pocket-character__ear pocket-character__ear--right"></span>
             <span class="pocket-character__antenna pocket-antenna"></span>
             <span class="pocket-character__eye pocket-character__eye--left pocket-eye pocket-eye-left"></span>
             <span class="pocket-character__eye pocket-character__eye--right pocket-eye pocket-eye-right"></span>
