@@ -749,7 +749,7 @@ function wakeMascot(){
 function setMascotBusy(reason,on,state='thinking'){
  const key=String(reason||'task');
  if(on){mascotBusyReasons.add(key);setMascotState(state,0);wakeMascot()}
- else{mascotBusyReasons.delete(key);if(!mascotBusyReasons.size&&['thinking','listening'].includes(mascotState))setMascotState(navigator.onLine===false?'offline':'idle',0)}
+ else{mascotBusyReasons.delete(key);if(!mascotBusyReasons.size&&['thinking','listening','research','study','coding','files'].includes(mascotState))setMascotState(navigator.onLine===false?'offline':'idle',0)}
 }
 function reactMascot(kind='tap'){
  const home=mascotElement();if(!home)return false;
