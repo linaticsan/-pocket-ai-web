@@ -61,7 +61,7 @@ test('theme selection is distinct and persists across reload', async ({ page }) 
   await expectNoPageErrors(errors);
 });
 
-test('all five themes and motion modes stay canonical', async ({ page }) => {
+test('all themes and motion modes stay canonical', async ({ page }) => {
   const errors = await openPocket(page);
   await page.locator('#settingsOpen').click();
   for (const theme of ['light','dark','sakura','green','oled']) {
@@ -69,6 +69,14 @@ test('all five themes and motion modes stay canonical', async ({ page }) => {
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
     await expect(page.locator('button[data-theme-choice="'+theme+'"]')).toHaveAttribute('aria-pressed','true');
   }
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.locator('button[data-theme-choice="system"]').click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.locator('html')).toHaveAttribute('data-theme-choice', 'system');
+  await expect(page.locator('button[data-theme-choice="system"]')).toHaveAttribute('aria-pressed','true');
+  expect(await page.evaluate(() => localStorage.getItem('pocket-theme'))).toBe('system');
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
   for (const motion of ['full','gentle','off']) {
     await page.locator('[data-motion="'+motion+'"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-motion', motion);
@@ -91,7 +99,7 @@ test('Home prioritizes AI workspaces and keeps gamification secondary', async ({
   await expectNoPageErrors(errors);
 });
 
-test('Pocket mascot click runs a silent game animation from its room position', async ({ page }) => {
+test('Pocket mascot click keeps its room position and sound stays opt-in', async ({ page }) => {
   const errors = await openPocket(page);
   await page.locator('#pocketCompanion > summary').click();
   const mascot = page.locator('#homeMascot');
@@ -103,7 +111,8 @@ test('Pocket mascot click runs a silent game animation from its room position', 
   await mascot.click();
   await expect(mascot).toHaveClass(/is-game-running/);
   await expect(mascot).not.toHaveClass(/is-game-running/, { timeout: 2500 });
-  await expect(page.locator('[data-sound],#soundVolume,#soundTest')).toHaveCount(0);
+  await expect(page.locator('[data-sound]')).toHaveCount(2);
+  await expect(page.locator('#soundTest')).toHaveCount(1);
   expect(await page.evaluate(() => localStorage.getItem('pocket-sound-v1'))).toBeNull();
   await expectNoPageErrors(errors);
 });
