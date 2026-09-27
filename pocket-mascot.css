@@ -169,3 +169,35 @@ html[data-motion="off"] .pocket-character__body{transform:none!important}
   .pocket-character *, .pocket-character::after{animation:none!important;transition:none!important}
   .pocket-character__body{transform:none!important}
 }
+
+
+/* Compact identity placements */
+.topbar-pocket{width:36px;height:34px;display:grid;place-items:center;overflow:visible}
+.topbar-pocket .pocket-character{width:34px;height:32px}
+.topbar-pocket .pocket-character__antenna{height:10px;top:-4px}
+.topbar-pocket .pocket-character__antenna::after{width:5px;height:5px;top:-3px;margin-left:-2.5px;box-shadow:0 0 0 2px var(--pocket-glow)}
+#chat .v3-avatar:has(.pocket-character){background:transparent!important;border:0!important;overflow:visible!important;box-shadow:none!important}
+#chat .v3-avatar .pocket-character{width:36px;height:34px}
+#chat .v3-avatar .pocket-character__antenna{height:10px;top:-4px}
+#chat .v3-avatar .pocket-character__antenna::after{width:5px;height:5px;top:-3px;margin-left:-2.5px;box-shadow:0 0 0 2px var(--pocket-glow)}
+#chat .v3-welcome .pocket-identity-stack{margin-bottom:8px}
+#chat .v3-welcome .pocket-identity-stack h2{margin:0}
+.code-head-pocket{display:grid;grid-template-columns:auto auto;align-items:center;gap:7px;margin-left:auto;color:var(--code-muted,#9a9aa0);font-size:11px;white-space:nowrap}
+.code-head-pocket .pocket-character{width:50px;height:46px}
+#surface .hero{align-items:center}
+#surface .hero-pocket-wrap{min-width:0}
+.pa-pocket-status .pocket-character{width:42px;height:38px}
+html[data-motion="full"] .pa-status-dot.is-connected{animation:pocket-status-pulse 2.6s ease-in-out infinite}
+html[data-motion="full"] .pocket-character[data-pocket-state="research"] .pocket-character__prop{animation:pocket-research-focus 2.1s ease-in-out infinite}
+@keyframes pocket-status-pulse{0%,100%{opacity:.7;transform:scale(.9)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes pocket-research-focus{0%,100%{transform:translateX(0);opacity:.72}50%{transform:translateX(2px);opacity:1}}
+html[data-motion="gentle"] .pa-status-dot,
+html[data-motion="gentle"] .pocket-character[data-pocket-state="research"] .pocket-character__prop,
+html[data-motion="off"] .pa-status-dot,
+html[data-motion="off"] .pocket-character[data-pocket-state="research"] .pocket-character__prop{animation:none!important}
+
+@media(max-width:650px){
+  .code-head-pocket{margin-left:0}
+  .topbar-pocket{width:32px;height:30px}
+  .topbar-pocket .pocket-character{width:30px;height:28px}
+}
