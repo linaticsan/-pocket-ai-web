@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step43-pocket-visual-identity', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step44-desktop-shell-home-layout', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -145,7 +145,8 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
 
   await page.locator('#paDesktopSidebar [data-pa-side="home"]').click();
   await expect(page.locator('#projectGrid .project-empty [data-pocket-character][data-pocket-context="projects"]')).toBeVisible();
-  await expect(page.locator('#paDesktopSidebar .pa-pocket-status [data-pocket-character][data-pocket-context="sidebar"]')).toBeVisible();
+  await expect(page.locator('#paDesktopSidebar .pa-side-brand [data-pocket-character][data-pocket-context="sidebar"]')).toBeVisible();
+  await expect(page.locator('#paPocketLevel')).toBeVisible();
   await expectNoPageErrors(errors);
 });
 
@@ -334,7 +335,7 @@ test.describe('mobile Home layout', () => {
 });
 
 
-async function expectDesktopGeometry(page, expectedColumns=3) {
+async function expectDesktopGeometry(page, expectedColumns=3, wide=false) {
   const geometry = await page.evaluate(() => {
     const rect = sel => document.querySelector(sel)?.getBoundingClientRect();
     const sidebar = rect('#paDesktopSidebar');
@@ -343,35 +344,96 @@ async function expectDesktopGeometry(page, expectedColumns=3) {
     const step1 = rect('#home .home-step1');
     const hero = rect('#home .home-hero');
     const composer = rect('#homeComposer');
+    const prompt = rect('#homePrompt');
+    const send = rect('#home .home-send');
+    const pocket = rect('#home .home-hero-pocket [data-pocket-character]');
     const tools = rect('#home .home-tools');
     const companion = rect('#pocketCompanion');
+    const toolCards = [...document.querySelectorAll('#home .quick-grid>[data-quick]')].map(x=>x.getBoundingClientRect());
     const quick = document.querySelector('#home .quick-grid');
+    const heroStyle = getComputedStyle(document.querySelector('#home .home-hero'));
+    const h1Style = getComputedStyle(document.querySelector('#homeGreeting'));
+    const inputStyle = getComputedStyle(document.querySelector('#homePrompt'));
     return {
       viewportWidth: innerWidth,
       docWidth: document.documentElement.scrollWidth,
-      sidebar, header, main, step1, hero, composer, tools, companion,
-      quickColumns: quick ? getComputedStyle(quick).gridTemplateColumns.split(' ').length : 0
+      sidebar, header, main, step1, hero, composer, prompt, send, pocket, tools, companion, toolCards,
+      quickColumns: quick ? getComputedStyle(quick).gridTemplateColumns.split(' ').length : 0,
+      heroColumns: heroStyle.gridTemplateColumns.split(' ').length,
+      h1Font:h1Style.fontFamily,
+      inputFont:inputStyle.fontFamily
     };
   });
 
   expect(geometry.docWidth).toBeLessThanOrEqual(geometry.viewportWidth + 1);
+  expect(geometry.sidebar.width).toBeGreaterThanOrEqual(220);
   expect(geometry.sidebar.right).toBeLessThanOrEqual(geometry.main.left + 1);
   expect(Math.abs(geometry.header.left - geometry.sidebar.right)).toBeLessThanOrEqual(1);
   expect(geometry.step1.left).toBeGreaterThanOrEqual(geometry.main.left - 1);
   expect(geometry.step1.right).toBeLessThanOrEqual(geometry.viewportWidth + 1);
   expect(geometry.step1.width).toBeLessThanOrEqual(1242);
+  expect(geometry.heroColumns).toBe(2);
+  expect(geometry.hero.height).toBeGreaterThanOrEqual(300);
+  expect(geometry.hero.height).toBeLessThanOrEqual(360);
+  expect(geometry.pocket.left).toBeGreaterThan(geometry.composer.right - 1);
+  expect(geometry.pocket.width).toBeGreaterThanOrEqual(130);
+  expect(geometry.pocket.width).toBeLessThanOrEqual(170);
+  expect(Math.abs((geometry.pocket.top+geometry.pocket.height/2)-(geometry.hero.top+geometry.hero.height/2))).toBeLessThanOrEqual(45);
   expect(geometry.composer.left).toBeGreaterThanOrEqual(geometry.hero.left - 1);
-  expect(geometry.composer.right).toBeLessThanOrEqual(geometry.hero.right + 1);
-  expect(geometry.tools.top).toBeGreaterThanOrEqual(geometry.hero.bottom - 1);
+  expect(geometry.composer.right).toBeLessThanOrEqual(geometry.pocket.left + 1);
+  expect(geometry.prompt.width).toBeGreaterThan(geometry.send.width*5);
+  if(wide) expect(geometry.composer.width).toBeGreaterThanOrEqual(600);
+  expect(geometry.composer.width).toBeLessThanOrEqual(730);
+  expect(geometry.tools.top-geometry.hero.bottom).toBeGreaterThanOrEqual(20);
+  expect(geometry.tools.top-geometry.hero.bottom).toBeLessThanOrEqual(36);
   expect(geometry.companion.top).toBeGreaterThanOrEqual(geometry.tools.bottom - 1);
   expect(geometry.quickColumns).toBe(expectedColumns);
+  for(const card of geometry.toolCards){
+    expect(card.height).toBeGreaterThanOrEqual(100);
+    expect(card.height).toBeLessThanOrEqual(116);
+  }
+  expect(geometry.h1Font.toLowerCase()).toContain('sans');
+  expect(geometry.inputFont.toLowerCase()).toContain('sans');
 }
+
+test('900px tablet uses drawer navigation instead of permanent sidebar', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 800 });
+  const errors = await openPocket(page);
+  await expect(page.locator('#paSidebarToggle')).toBeVisible();
+  const closed = await page.locator('#paDesktopSidebar').evaluate(el => {
+    const r=el.getBoundingClientRect();
+    return {right:r.right,left:r.left,transform:getComputedStyle(el).transform,mainLeft:document.querySelector('body > main').getBoundingClientRect().left};
+  });
+  expect(closed.right).toBeLessThanOrEqual(1);
+  expect(closed.mainLeft).toBeLessThanOrEqual(25);
+  await page.locator('#paSidebarToggle').click();
+  await expect(page.locator('html')).toHaveClass(/pa-nav-open/);
+  await expect(page.locator('#paDesktopSidebar')).toHaveAttribute('role','dialog');
+  const open = await page.locator('#paDesktopSidebar').evaluate(el => el.getBoundingClientRect());
+  expect(open.left).toBeGreaterThanOrEqual(-1);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('html')).not.toHaveClass(/pa-nav-open/);
+  await expectNoPageErrors(errors);
+});
+
+test('mobile Home stacks greeting, Pocket, composer, then Local AI', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  const errors = await openPocket(page);
+  const pos = await page.evaluate(() => {
+    const r=s=>document.querySelector(s).getBoundingClientRect();
+    return {welcome:r('#home .home-welcome'),pocket:r('#home .home-hero-pocket'),composer:r('#homeComposer'),status:r('#home .home-ai-status')};
+  });
+  expect(pos.pocket.top).toBeGreaterThanOrEqual(pos.welcome.bottom - 1);
+  expect(pos.composer.top).toBeGreaterThanOrEqual(pos.pocket.bottom - 1);
+  expect(pos.status.top).toBeGreaterThanOrEqual(pos.composer.bottom - 1);
+  await expectNoPageErrors(errors);
+});
 
 test.describe('desktop Home layout', () => {
   test('1440px desktop uses a centered AI-first workspace', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     const errors = await openPocket(page);
-    await expectDesktopGeometry(page, 3);
+    await expectDesktopGeometry(page, 3, true);
     await expect(page.locator('#paDesktopSidebar')).toBeVisible();
     await expect(page.locator('#paSidebarToggle')).toBeHidden();
     await expectNoPageErrors(errors);
