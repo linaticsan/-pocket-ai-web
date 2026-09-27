@@ -57,6 +57,7 @@ function setMotion(m){
  root.classList.toggle('motion-off',choice==='off');
  safeSet('pocket-motion',choice);
  document.querySelectorAll('[data-motion]').forEach(b=>{const on=b.dataset.motion===choice;b.classList.toggle('active',on);b.setAttribute('aria-pressed',on?'true':'false')});
+ const preview=q('motionPreviewText');if(preview)preview.textContent=choice==='full'?'Full: breathing, blinking, pointer-follow and small reactions.':choice==='gentle'?'Gentle: slow breathing and blinking only.':'Off: Pocket stays completely still.';
  window.dispatchEvent(new CustomEvent('pocket-motion-change',{detail:{motion:choice}}));
 }
 
@@ -102,7 +103,7 @@ q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
 window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
 
-const POCKET_BUILD='step42-pocket-mascot-system';
+const POCKET_BUILD='step43-pocket-visual-identity';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -597,6 +598,7 @@ function createProject(){
  a.unshift(project);
  saveProjects(a);
  recordProgressionAction('project',project.id);
+ window.PocketMascot?.react?.('success');
 }
 function openProject(x){
  const a=projects(),i=a.findIndex(p=>(p.id&&p.id===x.id)||p.name===x.name);
@@ -611,7 +613,7 @@ function renderProjects(limit=3){
  const arr=projects();
  if(!arr.length){
   grid.className='project-grid is-empty';
-  grid.innerHTML='<div class="project-empty"><span class="friendly-empty-icon" aria-hidden="true">◇</span><strong>No projects yet</strong><p>Create your first project to group chats, files, code, and research.</p><button type="button" class="project-create">＋ New project</button></div>';
+  grid.innerHTML='<div class="project-empty"><div data-pocket-slot data-pocket-context="projects" data-pocket-size="medium" data-pocket-label="Pocket with a project folder"></div><strong>No projects yet</strong><p>Create your first project to group chats, files, code, and research.</p><button type="button" class="project-create">＋ New project</button></div>';window.PocketMascotViews?.hydrate?.(grid);
   grid.querySelector('.project-create').onclick=createProject;
   head.querySelector('.project-view-all').hidden=true;
   if(create)create.hidden=true;
@@ -650,9 +652,9 @@ if(progressionLocalStatus){
 }
 
 const COMPANION_KEY='pocket-companion-interactions-v1';
-const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline']);
+const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline','research','study','coding','files']);
 const MASCOT_SLEEP_MS=180000;
-const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline'};
+const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline',research:'Researching',study:'Studying',coding:'Coding',files:'Files'};
 const tapMessages=['Hi! ✦','Ready!','What are we making?','Let\'s learn something.','Need help?','Let\'s build!','Good to see you.'];
 const mascotBusyReasons=new Set();
 let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0,mascotBlinkTimer=0,mascotLookTimer=0,mascotTapLocked=false,mascotPointerFrame=0,mascotPointerEvent=null;
@@ -664,13 +666,13 @@ function mascotMotionAllowed(){return motionMode()!=='off'&&!reducedMotion()}
 function mascotElement(){return q('homeMascot')}
 function resetMascotEyes(){
  const home=mascotElement();if(!home)return;
- home.style.setProperty('--eye-x','0px');home.style.setProperty('--eye-y','0px');
+ home.style.setProperty('--pocket-eye-x','0px');home.style.setProperty('--pocket-eye-y','0px');
 }
 function setMascotState(state='idle',ms=0){
  const home=mascotElement(),label=q('pocketMoodLabel');if(!home)return false;
  const next=MASCOT_STATES.has(state)?state:'idle';
  clearTimeout(mascotStateTimer);
- mascotState=next;home.dataset.mascotState=next;resetMascotEyes();
+ mascotState=next;home.dataset.mascotState=next;home.dataset.pocketState=next;resetMascotEyes();window.dispatchEvent(new CustomEvent('pocket-mascot-state',{detail:{state:next}}));
  if(label)label.textContent=mascotMoods[next]||'Ready';
  if(ms>0)mascotStateTimer=setTimeout(()=>{
    if(mascotBusyReasons.size)return;
@@ -722,8 +724,8 @@ function scheduleIdleLook(){
      const home=mascotElement();
      if(home){
        const dir=Math.random()<.5?-1:1;
-       home.style.setProperty('--eye-x',(dir*(1.2+Math.random()*1.3)).toFixed(1)+'px');
-       home.style.setProperty('--eye-y',(Math.random()*.8-.4).toFixed(1)+'px');
+       home.style.setProperty('--pocket-eye-x',(dir*(1.2+Math.random()*1.3)).toFixed(1)+'px');
+       home.style.setProperty('--pocket-eye-y',(Math.random()*.8-.4).toFixed(1)+'px');
        setTimeout(resetMascotEyes,650+Math.random()*450);
      }
    }
@@ -749,7 +751,7 @@ function wakeMascot(){
 function setMascotBusy(reason,on,state='thinking'){
  const key=String(reason||'task');
  if(on){mascotBusyReasons.add(key);setMascotState(state,0);wakeMascot()}
- else{mascotBusyReasons.delete(key);if(!mascotBusyReasons.size&&['thinking','listening'].includes(mascotState))setMascotState(navigator.onLine===false?'offline':'idle',0)}
+ else{mascotBusyReasons.delete(key);if(!mascotBusyReasons.size&&['thinking','listening','research','study','coding','files'].includes(mascotState))setMascotState(navigator.onLine===false?'offline':'idle',0)}
 }
 function reactMascot(kind='tap'){
  const home=mascotElement();if(!home)return false;
@@ -781,8 +783,8 @@ function lookMascotToward(clientX,clientY,temporary=false){
  const home=mascotElement();if(!home||motionMode()!=='full'||reducedMotion()||mascotState==='sleep')return;
  const rect=home.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height*.46;
  const dx=clientX-cx,dy=clientY-cy,len=Math.max(1,Math.hypot(dx,dy)),max=2.5;
- home.style.setProperty('--eye-x',(dx/len*max).toFixed(2)+'px');
- home.style.setProperty('--eye-y',(dy/len*Math.min(max,1.8)).toFixed(2)+'px');
+ home.style.setProperty('--pocket-eye-x',(dx/len*max).toFixed(2)+'px');
+ home.style.setProperty('--pocket-eye-y',(dy/len*Math.min(max,1.8)).toFixed(2)+'px');
  if(temporary)setTimeout(resetMascotEyes,520);
 }
 function checkMascotSecret(){
