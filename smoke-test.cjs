@@ -87,7 +87,7 @@ assert(sw.includes("'./pocket-environment.css'")&&sw.includes("'./pocket-environ
 assert(environmentJs.includes("window.PocketEnvironment={"),'Central PocketEnvironment API is missing');
 assert(environmentJs.includes("getCurrentSeason")&&environmentJs.includes("setSeason:applySeason")&&environmentJs.includes("setWeather")&&environmentJs.includes("preview"),'Environment API is incomplete');
 assert(environmentJs.includes("for(let i=0;i<30;i++)")&&environmentJs.includes("pool.push(p)"),'Environment must use a capped reusable DOM pool');
-assert(environmentJs.includes("for(let i=0;i<10;i++"),'Pocket destination search must be capped');
+assert(pocketJs.includes("for(let i=0;i<10;i++"),'Pocket destination search must be capped');
 assert(pocketJs.includes("translate3d(")&&pocketJs.includes("randomDestination")&&pocketJs.includes("goHomeAll"),'Bounded transform-only Pocket movement is missing');
 assert(pocketJs.includes("3+Math.floor(Math.random()*5)"),'Random 3–7 return threshold is missing');
 assert(pocketJs.includes("Date.now()-d.lastMove<480"),'Pocket movement cooldown is missing');
