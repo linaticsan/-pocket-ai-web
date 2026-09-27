@@ -206,7 +206,7 @@ assert(index.includes('id="pocketCompanion"'),'Secondary Pocket companion panel 
 assert(!index.includes('data-room-action="chat"')&&!index.includes('data-room-action="research"')&&!index.includes('data-room-action="files"')&&!index.includes('data-room-action="coding"'),'Pocket Room must not duplicate primary tool entry points');
 assert(!index.includes('data-quick="chat"'),'Home Chat card must not duplicate the primary composer');
 assert(index.includes('Send a chat message')&&index.includes('Run Deep Research'),'Quest copy must state exact XP actions');
-assert(coreCss.includes('STEP 40 — Home hierarchy, spacing, contrast, and mobile touch pass'),'STEP 40 UI hierarchy CSS is missing');
+assert(coreCss.includes('STEP 44 — authoritative Home composition and shell spacing'),'STEP 44 authoritative Home CSS is missing');
 assert(coreCss.includes('--pa-accent-ink'),'Theme contrast ink token is missing');
 assert(read('motion-v32.css').includes('STEP 39 — app motion setting is authoritative'),'Global motion setting bridge is missing');
 assert(!read('motion-v32.css').includes('@keyframes pocketFloat'),'Legacy motion CSS must not redefine the Pocket mascot idle keyframe');
