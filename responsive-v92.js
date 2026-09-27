@@ -12,7 +12,8 @@ function buildSidebar(){
  aside.className='pa-desktop-sidebar';
  aside.setAttribute('aria-label','Pocket AI navigation');
  aside.innerHTML=
- '<div class="pa-side-mobile-head"><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+\n '<div class="pa-side-brand"><span data-pocket-slot data-pocket-context="sidebar" data-pocket-size="small" data-pocket-label="Pocket"></span><span><strong>Pocket AI</strong><small>Private workspace</small></span></div>'+
+ '<div class="pa-side-mobile-head"><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+
+ '<div class="pa-side-brand"><span data-pocket-slot data-pocket-context="sidebar" data-pocket-size="small" data-pocket-label="Pocket"></span><span><strong>Pocket AI</strong><small>Private workspace</small></span></div>'+
  '<button class="pa-new-chat" type="button" data-pa-action="new-chat"><strong>New Chat</strong></button>'+
  '<nav>'+
   '<div class="pa-nav-group"><small class="pa-nav-label">HOME</small><button type="button" data-pa-side="home"><span>Home</span></button></div>'+
