@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step39-theme-motion-fix', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step40-home-hierarchy', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -65,9 +65,9 @@ test('all five themes and motion modes stay canonical', async ({ page }) => {
   const errors = await openPocket(page);
   await page.locator('#settingsOpen').click();
   for (const theme of ['light','dark','sakura','green','oled']) {
-    await page.locator('[data-theme-choice="'+theme+'"]').click();
+    await page.locator('button[data-theme-choice="'+theme+'"]').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
-    await expect(page.locator('[data-theme-choice="'+theme+'"]')).toHaveAttribute('aria-pressed','true');
+    await expect(page.locator('button[data-theme-choice="'+theme+'"]')).toHaveAttribute('aria-pressed','true');
   }
   for (const motion of ['full','gentle','off']) {
     await page.locator('[data-motion="'+motion+'"]').click();
@@ -75,6 +75,19 @@ test('all five themes and motion modes stay canonical', async ({ page }) => {
     await expect(page.locator('[data-motion="'+motion+'"]')).toHaveAttribute('aria-pressed','true');
   }
   expect(await page.evaluate(() => localStorage.getItem('pocket-motion'))).toBe('off');
+  await expectNoPageErrors(errors);
+});
+
+test('Home prioritizes AI workspaces and keeps gamification secondary', async ({ page }) => {
+  const errors = await openPocket(page);
+  await expect(page.locator('#homeComposer')).toBeVisible();
+  await expect(page.locator('#home .quick-grid [data-quick]')).toHaveCount(3);
+  await expect(page.locator('#home [data-quick="chat"]')).toHaveCount(0);
+  await expect(page.locator('#pocketRoom [data-room-action]')).toHaveCount(0);
+  await expect(page.locator('#pocketCompanion')).not.toHaveAttribute('open', '');
+  await page.locator('#pocketCompanion > summary').click();
+  await expect(page.locator('#homeMascot')).toBeVisible();
+  await expect(page.locator('#pocketQuests')).toBeVisible();
   await expectNoPageErrors(errors);
 });
 
