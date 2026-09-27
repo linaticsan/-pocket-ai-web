@@ -152,7 +152,7 @@ for(const id of ['homePrompt','prompt','ghQuery','surfaceQuery','surfaceMode','c
 assert(coreCss.includes('STEP 36 — production UI/a11y hardening'),'Production a11y/responsive hardening CSS is missing');
 assert(!index.includes('id="headerWorkspace"'),'Dead workspace header control must stay removed');
 assert(!index.includes('class="home-attach"'),'Disabled Home attachment control must stay removed');
-assert(index.includes('<details class="home-step-section home-quests"'),'Quests should be collapsed optional content');
+assert(index.includes('<details class="home-step-section home-companion" id="pocketCompanion">')&&index.includes('id="pocketQuests"'),'Quests should remain secondary inside the collapsed Pocket companion');
 assert(index.includes('<details class="settings-diagnostics"'),'Diagnostics should be hidden under advanced disclosure');
 assert(coreCss.includes('STEP 37 — cleaner information hierarchy'),'STEP 37 clean UI layer is missing');
 assert(!index.includes('id="homeMood"'),'Duplicate Home readiness copy must stay removed');
