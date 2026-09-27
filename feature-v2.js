@@ -51,7 +51,7 @@ function loadPocketModule(path){
 const coreStyles=[
  './v3.css?v=20260925-step19-css-debt',
  './library-v33.css?v=20260925-step19-css-debt',
- './motion-v32.css?v=20260921-v59',
+ './motion-v32.css?v=20260927-step43-identity',
  './chat-v77.css?v=20260925-step20c-chat-focus'
 ];
 coreStyles.forEach(addPocketStyle);
