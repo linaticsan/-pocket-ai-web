@@ -80,7 +80,10 @@ function boundsFor(el){
  let minX=br.left+pad-homeLeft,maxX=br.right-pad-er.width-homeLeft,minY=br.top+pad-homeTop,maxY=br.bottom-pad-er.height-homeTop;
  const mobile=matchMedia('(max-width:767px)').matches,limit=mobile?Math.min(110,br.width*.27):Math.min(210,br.width*.38),vLimit=mobile?Math.min(72,br.height*.25):Math.min(105,br.height*.34);
  minX=Math.max(minX,-limit);maxX=Math.min(maxX,limit);minY=Math.max(minY,-vLimit);maxY=Math.min(maxY,vLimit);
- if(minX>maxX||minY>maxY)return null;return{box,br,er,homeLeft,homeTop,minX,maxX,minY,maxY,pad};
+ if(minX>maxX){minX=0;maxX=0}
+ if(minY>maxY){minY=0;maxY=0}
+ if(minX===0&&maxX===0&&minY===0&&maxY===0)return null;
+ return{box,br,er,homeLeft,homeTop,minX,maxX,minY,maxY,pad};
 }
 function overlapsExclusion(el,x,y,b){
  const next={left:b.homeLeft+x,top:b.homeTop+y,right:b.homeLeft+x+b.er.width,bottom:b.homeTop+y+b.er.height};
