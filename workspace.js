@@ -103,7 +103,7 @@ q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
 window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
 
-const POCKET_BUILD='step45-pocket-living-world';
+const POCKET_BUILD='step46-pocket-tap-movement-reliability';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
