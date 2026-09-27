@@ -61,11 +61,11 @@ if(coreStyle&&coreStyle!==document.head.lastElementChild)document.head.appendChi
 const FEATURE_BUNDLES={
   coding:{
     styles:['./coding-v1.css?v=20260918-1'],
-    modules:['./coding-v1.js?v=20260925-step16']
+    modules:['./coding-v1.js?v=20260927-step43-identity']
   },
   files:{
     styles:['./files-v80.css?v=20260926-step35-files-consolidated'],
-    modules:['./files-v32.js?v=20260922-v88']
+    modules:['./files-v32.js?v=20260927-step43-identity']
   },
   library:{
     styles:['./library-online-v34.css?v=20260920-v52','./webnovel-v42.css?v=20260920-v52'],
@@ -104,7 +104,7 @@ document.addEventListener('keydown',e=>{
  const started=performance.now();
  await Promise.all([
    loadPocketModule('./api-hub.js?v=20260922-v88'),
-   loadPocketModule('./v3.js?v=20260925-step16'),
+   loadPocketModule('./v3.js?v=20260927-step43-identity'),
    loadPocketModule('./v3-guard.js?v=20260925-step12'),
    loadPocketModule('./library-v33.js?v=20260926-step30-canonical-nav')
  ]);
