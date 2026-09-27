@@ -126,7 +126,7 @@ function syncActive(){
  const active=$('.view.active:not([hidden])')?.id||'home';
  const titles={home:'Home',chat:'Chat',coding:'Code',files:'Files',surface:'Research',local:'Local AI',github:'GitHub',library:'Library'};
  const title=$('#paWorkspaceTitle');if(title)title.textContent=titles[active]||'Pocket AI';
- $('[data-pa-side]').forEach(b=>{
+ $$('[data-pa-side]').forEach(b=>{
    const id=b.dataset.paSide;
    const on=id===active||(id==='study'&&active==='chat'&&$('#v3Study')?.classList.contains('active'))||(id==='projects'&&active==='home'&&location.hash==='#projects');
    b.classList.toggle('active',on);
