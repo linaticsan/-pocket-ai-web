@@ -95,15 +95,18 @@ window.addEventListener('pocket-core-ready',()=>{window.__pocketStartupUsable=tr
         <div class="room-decor room-mini-bot" aria-hidden="true"><i></i><b></b></div>
         <div class="room-mascot-zone">
         <div class="pocket-speech" id="pocketSpeech" aria-hidden="true"></div>
-        <button class="pocket-mascot" id="homeMascot" type="button" data-mascot-state="idle" aria-label="Play with Pocket">
-          <span class="pocket-mascot-visual" aria-hidden="true">
-          <span class="pocket-antenna"><i></i></span>
-          <span class="pocket-eye pocket-eye-left"></span>
-          <span class="pocket-eye pocket-eye-right"></span>
-          <span class="pocket-mouth"></span>
-          <span class="pocket-blush pocket-blush-left"></span>
-          <span class="pocket-blush pocket-blush-right"></span>
-        </span>
+        <button class="pocket-character pocket-mascot" id="homeMascot" type="button" data-pocket-character data-pocket-context="home" data-pocket-state="idle" data-pocket-size="large" data-mascot-state="idle" aria-label="Play with Pocket">
+          <span class="pocket-character__body pocket-mascot-visual" aria-hidden="true">
+            <span class="pocket-character__antenna pocket-antenna"></span>
+            <span class="pocket-character__eye pocket-character__eye--left pocket-eye pocket-eye-left"></span>
+            <span class="pocket-character__eye pocket-character__eye--right pocket-eye pocket-eye-right"></span>
+            <span class="pocket-character__mouth pocket-mouth"></span>
+            <span class="pocket-character__blush pocket-character__blush--left pocket-blush pocket-blush-left"></span>
+            <span class="pocket-character__blush pocket-character__blush--right pocket-blush pocket-blush-right"></span>
+            <span class="pocket-character__prop"></span>
+          </span>
+          <span class="pocket-character__dots" aria-hidden="true">• • •</span>
+          <span class="pocket-character__sparkles" aria-hidden="true"><i></i><i></i><i></i></span>
         </button>
         <div class="pocket-status" aria-live="off"><strong>Pocket <span id="pocketLevelInline">• Lv. 1</span></strong><span id="pocketMoodLabel">Ready</span></div>
         <div class="pocket-xp" id="pocketXP">
