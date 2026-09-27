@@ -2,7 +2,7 @@
 (()=>{'use strict';
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const CONTEXT_STATES={home:'idle',chat:'idle',research:'research',study:'study',coding:'coding',files:'files',projects:'files',settings:'idle',sidebar:'idle',local:'idle'};
-let globalState='idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0;
+let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0;
 
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
