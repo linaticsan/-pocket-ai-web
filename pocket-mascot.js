@@ -172,7 +172,7 @@ function scheduleAutonomous(){
 function handleLayoutReset(){
  clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{qa('.pocket-playground [data-pocket-character]').forEach(el=>{const d=initWander(el),b=boundsFor(el);if(!b||d.x<b.minX||d.x>b.maxX||d.y<b.minY||d.y>b.maxY)void goHome(el,true)})},180);
 }
-document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el&&el.id!=='homeMascot')tap(el);if(e.target.closest?.('[aria-haspopup="dialog"]'))setTimeout(()=>goHomeAll(true),60)});
+document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el&&el.id!=='homeMascot')tap(el);if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
 document.addEventListener('pointermove',e=>{
  if(e.pointerType!=='mouse'||matchMedia('(pointer:coarse)').matches||motion()!=='full'||reduced()||document.hidden)return;
  lastPointer=e;if(pointerFrame)return;
