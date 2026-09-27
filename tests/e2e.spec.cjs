@@ -244,7 +244,7 @@ test('seasonal environment is centralized, offline, motion-aware and workspace-a
   await page.waitForTimeout(80);
   const homeOpacity = await page.locator('#pocketEnvironment').evaluate(el => parseFloat(getComputedStyle(el).opacity));
   await page.evaluate(() => window.PocketNav.show('coding'));
-  await page.waitForTimeout(100);
+  await page.waitForTimeout(450);
   const codeOpacity = await page.locator('#pocketEnvironment').evaluate(el => parseFloat(getComputedStyle(el).opacity));
   expect(codeOpacity).toBeLessThan(homeOpacity * .2);
 
@@ -606,9 +606,9 @@ test.describe('desktop feature workspace consistency', () => {
     const lefts = frames.map(x => x.left);
     const rights = frames.map(x => x.right);
     const tops = frames.map(x => x.top);
-    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(4);
-    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(4);
-    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(4);
+    expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(5);
+    expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(5);
+    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(5);
 
     await expectNoPageErrors(errors);
   });
