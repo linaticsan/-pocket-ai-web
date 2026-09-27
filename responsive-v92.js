@@ -12,7 +12,7 @@ function buildSidebar(){
  aside.className='pa-desktop-sidebar';
  aside.setAttribute('aria-label','Pocket AI navigation');
  aside.innerHTML=
- '<div class="pa-side-mobile-head"><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+
+ '<div class="pa-side-mobile-head"><button type="button" class="pa-side-close" aria-label="Close menu">×</button></div>'+\n '<div class="pa-side-brand"><span data-pocket-slot data-pocket-context="sidebar" data-pocket-size="small" data-pocket-label="Pocket"></span><span><strong>Pocket AI</strong><small>Private workspace</small></span></div>'+
  '<button class="pa-new-chat" type="button" data-pa-action="new-chat"><strong>New Chat</strong></button>'+
  '<nav>'+
   '<div class="pa-nav-group"><small class="pa-nav-label">HOME</small><button type="button" data-pa-side="home"><span>Home</span></button></div>'+
@@ -88,7 +88,7 @@ function focusDestination(id){
   }
 }
 function openDrawer(opener=$('#paSidebarToggle')){
-  if(innerWidth>=768)return;
+  if(innerWidth>=1024)return;
   drawerOpener=opener instanceof HTMLElement?opener:$('#paSidebarToggle');
   document.documentElement.classList.add('pa-nav-open');
   $('#paSidebarToggle')?.setAttribute('aria-expanded','true');
@@ -121,7 +121,9 @@ function syncStatus(){
 }
 function syncActive(){
  const active=$('.view.active:not([hidden])')?.id||'home';
- $$('[data-pa-side]').forEach(b=>{
+ const titles={home:'Home',chat:'Chat',coding:'Code',files:'Files',surface:'Research',local:'Local AI',github:'GitHub',library:'Library'};
+ const title=$('#paWorkspaceTitle');if(title)title.textContent=titles[active]||'Pocket AI';
+ $('[data-pa-side]').forEach(b=>{
    const id=b.dataset.paSide;
    const on=id===active||(id==='study'&&active==='chat'&&$('#v3Study')?.classList.contains('active'))||(id==='projects'&&active==='home'&&location.hash==='#projects');
    b.classList.toggle('active',on);
@@ -129,7 +131,7 @@ function syncActive(){
  });
  syncStatus();
 }
-function sync(){buildSidebar();syncActive();if(innerWidth>=768)closeDrawer(false)}
+function sync(){buildSidebar();syncActive();if(innerWidth>=1024)closeDrawer(false)}
 let resizeQueued=false;
 function scheduleSync(){
  if(resizeQueued)return;
