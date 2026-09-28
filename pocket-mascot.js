@@ -4,7 +4,7 @@ const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelecto
 const CONTEXT_STATES={home:'idle',chat:'idle',research:'research',study:'study',coding:'coding',files:'files',projects:'files',settings:'idle',sidebar:'idle',local:'idle'};
 const ACTIVE_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep']);
 const wander=new WeakMap();
-let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0;
+let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0,scrollResetTimer=0;
 
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
@@ -87,7 +87,7 @@ function boundsFor(el){
  return{box:roam,br:rr,er,homeLeft,homeTop,minX,maxX,minY,maxY,pad};
 }
 function exclusionRects(b){
- const explicit=qa('[data-pocket-exclusion]',b.box);
+ const explicit=qa('[data-pocket-exclusion],[data-pocket-exclusion-group]',b.box);
  return explicit.filter(z=>z.offsetParent!==null).map(z=>z.getBoundingClientRect());
 }
 function overlapsExclusion(el,x,y,b){
@@ -208,8 +208,12 @@ function scheduleAutonomous(){
 function handleLayoutReset(){
  clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{qa('.pocket-playground [data-pocket-character]').forEach(el=>{const d=initWander(el),b=boundsFor(el);if(!b||d.x<b.minX||d.x>b.maxX||d.y<b.minY||d.y>b.maxY)void goHome(el,true)})},180);
 }
+function handleScrollReset(){
+ clearTimeout(scrollResetTimer);
+ scrollResetTimer=setTimeout(()=>goHomeAll(false),90);
+}
 document.addEventListener('pointerdown',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
-document.addEventListener('touchstart',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
+if(!('PointerEvent' in window))document.addEventListener('touchstart',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
 document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el&&el.id!=='homeMascot')tap(el);if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
 document.addEventListener('pointermove',e=>{
  if(e.pointerType!=='mouse'||matchMedia('(pointer:coarse)').matches||motion()!=='full'||reduced()||document.hidden)return;
@@ -221,7 +225,7 @@ document.addEventListener('input',e=>{if(e.target?.id==='fileText')syncFilesEmpt
 window.addEventListener('pocket-mascot-state',e=>setState(e.detail?.state||'idle'));
 window.addEventListener('pocket-motion-change',()=>{syncAll();scheduleBlink();if(motion()==='off')goHomeAll(false);scheduleAutonomous()});
 window.addEventListener('pocket-view-change',e=>{if(e.detail?.id!=='home')goHomeAll(true);scheduleHydrate();syncAll()});
-window.addEventListener('resize',handleLayoutReset,{passive:true});window.addEventListener('orientationchange',()=>goHomeAll(true),{passive:true});
+window.addEventListener('resize',handleLayoutReset,{passive:true});window.addEventListener('scroll',handleScrollReset,{passive:true});window.addEventListener('orientationchange',()=>goHomeAll(true),{passive:true});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(blinkTimer);clearTimeout(autoTimer)}else{scheduleBlink();scheduleAutonomous()}});
 const observer=new MutationObserver(scheduleHydrate);
 if(document.body)observer.observe(document.body,{childList:true,subtree:true});else addEventListener('DOMContentLoaded',()=>observer.observe(document.body,{childList:true,subtree:true}),{once:true});

@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step48-pocket-audible-laugh', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step49-runtime-bugfix-pass', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -209,6 +209,28 @@ test('Pocket tap builds an audible iPhone-safe laugh audio graph', async ({ page
   expect(probe.oscillators).toBeGreaterThanOrEqual(8);
   expect(probe.starts).toBeGreaterThanOrEqual(8);
   expect(probe.maxGain).toBeGreaterThanOrEqual(.15);
+  await expectNoPageErrors(errors);
+});
+
+test('Pocket roam avoids the whole Tools section and recovers safely after scrolling', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const errors = await openPocket(page);
+  await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom);
+  const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
+  await page.evaluate(() => window.PocketMascotViews.moveRandom());
+  await page.waitForTimeout(600);
+  const p=await pocket.boundingBox();
+  const tools=await page.locator('#home .home-tools').boundingBox();
+  const overlaps=!(p.x+p.width<tools.x||p.x>tools.x+tools.width||p.y+p.height<tools.y||p.y>tools.y+tools.height);
+  expect(overlaps).toBe(false);
+
+  await page.evaluate(() => window.scrollTo({top:document.body.scrollHeight,behavior:'instant'}));
+  await page.waitForTimeout(220);
+  await expect(pocket).toHaveAttribute('data-pocket-home','true');
+  const reset=await pocket.evaluate(el=>({transform:el.style.transform,x:el.style.getPropertyValue('--wander-x'),y:el.style.getPropertyValue('--wander-y')}));
+  expect(reset.transform).toContain('translate3d(0');
+  expect(reset.x).toBe('0px');
+  expect(reset.y).toBe('0px');
   await expectNoPageErrors(errors);
 });
 

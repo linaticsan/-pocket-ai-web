@@ -33,12 +33,12 @@ assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service worke
 assert(sw.includes("ignoreSearch:true"),'Offline cache must ignore cache-busting query strings');
 assert(sw.includes("event.request.mode==='navigate'"),'Offline HTML fallback must be navigation-only');
 
-assert(index.includes("const BUILD='step48-pocket-audible-laugh'"),'STEP 48 build marker is missing');
+assert(index.includes("const BUILD='step49-runtime-bugfix-pass'"),'STEP 49 build marker is missing');
 assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent inline boot closer is missing');
 assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v53'"),'STEP 48 app-shell cache must be v46');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v54'"),'STEP 49 app-shell cache must be v54');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -47,9 +47,9 @@ assert(icons.includes('function ensureIcon('),'Idempotent icon helper is missing
 assert(/\.\/icons-v132\.js\?v=20260926-step\d+[a-z0-9-]*/.test(index),'Current icon cache-bust is missing');
 const workspace=read('workspace.js');
 assert(workspace.includes("const THEME_CHOICES=new Set(['light','dark','sakura','green','oled','system'])"),'Authoritative six-theme engine is missing');
-assert(index.includes('./workspace.js?v=20260929-step48-audible-laugh'),'STEP 48 workspace cache-bust is missing');
+assert(index.includes('./workspace.js?v=20260929-step49-runtime-fixes'),'STEP 49 workspace cache-bust is missing');
 assert(index.includes('id="diagnosticsList"')&&index.includes('id="copyDiagnostics"')&&index.includes('id="refreshAppFiles"'),'STEP 24 diagnostics controls are missing');
-assert(workspace.includes("const POCKET_BUILD='step48-pocket-audible-laugh'"),'STEP 48 diagnostics build marker is missing');
+assert(workspace.includes("const POCKET_BUILD='step49-runtime-bugfix-pass'"),'STEP 49 diagnostics build marker is missing');
 assert(workspace.includes("key.startsWith('pocket-ai-web-shell-')"),'Selective Pocket cache refresh is missing');
 assert(coreCss.includes('STEP 24 — diagnostics and interaction reliability'),'STEP 24 diagnostics CSS is missing');
 assert(coreCss.includes('STEP 25 — touch and interaction reliability'),'STEP 25 interaction CSS is missing');
@@ -74,7 +74,7 @@ assert(index.includes('class="primary home-send" aria-label="Send to chat"><span
 assert(coreCss.includes('h1,h2,h3,h4,button,input,textarea,select{font-family:inherit}'),'Explicit font inheritance reset is missing');
 assert(!coreCss.includes('/* STEP 40 — Home hierarchy'),'Obsolete STEP 40 Home override must stay removed');
 assert(coreCss.includes('/* STEP 44 — authoritative Home composition and shell spacing */'),'STEP 44 Home layout owner is missing');
-assert(coreCss.includes('min-height:318px')&&coreCss.includes('max-width:720px'),'STEP 48 compact desktop hero/composer sizing is missing');
+assert(coreCss.includes('min-height:318px')&&coreCss.includes('max-width:720px'),'STEP 49 compact desktop hero/composer sizing is missing');
 assert(coreCss.includes('#home .quick-grid>button{min-height:106px'),'Compact Home tool-card sizing is missing');
 assert(pocketCss.includes('.pocket-character__ear')&&pocketCss.includes('.pocket-character__eye::before'),'Improved Pocket silhouette/eyelids are missing');
 assert(pocketCss.includes('.home-hero-pocket .pocket-character{width:156px;height:146px}'),'Desktop hero Pocket sizing is missing');
@@ -101,7 +101,7 @@ assert(environmentCss.includes("#pocketEnvironment")&&environmentCss.includes("p
 assert(environmentCss.includes('html[data-motion="off"] #pocketEnvironment')&&environmentCss.includes('@media(prefers-reduced-motion:reduce)'), 'Environment motion/reduced-motion guards are missing');
 assert(!environmentJs.includes('weatherapi')&&!environmentJs.includes('openweathermap')&&!environmentJs.includes('fetch('),'Environment base feature must remain offline and API-free');
 assert(!index.match(/id="pocketEnvironment"/g),'Environment container must be created once by the central engine, not duplicated in HTML');
-assert(index.includes('<dd>STEP 48</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dd>STEP 49</dd>'),'Visible diagnostics build label is stale');
 assert(index.includes('data-sound="on"')&&index.includes('data-sound="off"')&&index.includes('id="soundTest"'),'Gesture-gated sound settings are missing');
 assert(workspace.includes('window.AudioContext||window.webkitAudioContext')&&workspace.includes("const SOUND_KEY='pocket-sound-v1'")&&workspace.includes('async function playPocketSound'),'Gesture-gated Web Audio runtime is missing');
 assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includes('setTimeout(()=>playPocketSound'),'Sound must never retry in the background');
@@ -117,8 +117,8 @@ assert(!coreCss.includes('@keyframes pocket-shared-')&&!coreCss.includes('STEP 4
 assert(coreCss.includes('STEP 43 — non-mascot UI motion; mascot motion lives only in pocket-mascot.css'),'Shared non-mascot UI motion ownership marker is missing');
 assert(index.includes('pocket-character__body pocket-mascot-visual'),'Room mascot must use the shared visual body with compatibility alias');
 assert(!/#home \.pocket-mascot\{[^}]*animation:/.test(coreCss),'Clickable mascot hitbox must not own continuous animation');
-assert(index.includes('./ui-core.css?v=20260927-step44-shell'),'STEP 48 CSS cache-bust is missing');
-assert(index.includes('./pocket-mascot.css?v=20260928-step47-roam-laugh')&&index.includes('./pocket-mascot.js?v=20260929-step48-audible-laugh'),'STEP 48 shared mascot assets are missing');
+assert(index.includes('./ui-core.css?v=20260927-step44-shell'),'STEP 49 CSS cache-bust is missing');
+assert(index.includes('./pocket-mascot.css?v=20260928-step47-roam-laugh')&&index.includes('./pocket-mascot.js?v=20260929-step49-runtime-fixes'),'STEP 49 shared mascot assets are missing');
 assert(sw.includes("'./pocket-mascot.css'")&&sw.includes("'./pocket-mascot.js'"),'Service worker must precache shared mascot assets');
 assert(index.includes('class="home-hero-pocket"')&&index.includes('class="pocket-playground"')&&index.includes('data-pocket-context="home"'),'Home hero Pocket identity is missing');
 assert(index.includes('data-pocket-context="research"')&&index.includes('data-pocket-context="files"'),'Research/Files Pocket identity is missing');
@@ -180,7 +180,7 @@ assert(sw.includes('const CORE_ASSETS=')&&sw.includes('const OPTIONAL_ASSETS='),
 assert(!sw.includes('await cacheOptional(cache)'),'Optional feature assets must not preload during service-worker install');
 assert(!sw.includes('async function cacheOptional'),'Obsolete eager optional-cache helper must stay removed');
 assert(index.includes('window.__POCKET_BUILD=BUILD'),'Page build identifier must be globally available');
-assert(sw.includes("const BUILD='step48-pocket-audible-laugh'"),'Service-worker build identifier is missing');
+assert(sw.includes("const BUILD='step49-runtime-bugfix-pass'"),'Service-worker build identifier is missing');
 assert(sw.includes("type:'POCKET_SW_VERSION'")&&sw.includes("type==='POCKET_GET_VERSION'"),'Service-worker version handshake is missing');
 assert(app.includes('function handleSWVersion(message)')&&app.includes('function requestSWVersion()'),'App service-worker version handshake is missing');
 assert(workspace.includes("if(navigator.onLine===false)"),'Refresh app files must refuse destructive cache refresh while offline');
@@ -200,7 +200,7 @@ assert(!responsive.includes('PocketV39'),'Sidebar must use only canonical Pocket
 assert(!read('library-v33.js').includes('PocketV39'),'Library must use only canonical PocketNav');
 assert(!read('webnovel-v42.js').includes('PocketV39'),'Web Novel reader must use only canonical PocketNav');
 assert(index.includes('./ux-v39.js?v=20260926-step30-canonical-nav-cleanup'),'STEP 30 navigation cache-bust is missing');
-assert(index.includes('./responsive-v92.js?v=20260927-step44-shell'),'STEP 48 sidebar cache-bust is missing');
+assert(index.includes('./responsive-v92.js?v=20260927-step44-shell'),'STEP 49 sidebar cache-bust is missing');
 assert(feature.includes("library-v33.js?v=20260926-step30-canonical-nav")&&feature.includes("webnovel-v42.js?v=20260926-step30-canonical-nav"),'STEP 30 lazy-module cache-bust is missing');
 assert(!feature.includes('files-v31.css'),'Legacy Files CSS request must stay removed');
 assert(feature.includes("files-v80.css?v=20260926-step35-files-consolidated"),'Consolidated Files stylesheet cache-bust is missing');
@@ -220,7 +220,7 @@ assert(coreCss.includes('STEP 37 — cleaner information hierarchy'),'STEP 37 cl
 assert(!index.includes('id="homeMood"'),'Duplicate Home readiness copy must stay removed');
 assert(!index.includes('id="researchSteps"'),'Decorative fake Research progress labels must stay removed');
 assert(!index.includes('SURFACE • DEEP RESEARCH')&&!index.includes('FILES • PRIVATE')&&!index.includes('GITHUB • DISCOVER'),'Redundant section eyebrow copy must stay removed');
-assert(workspace.includes("const POCKET_BUILD='step48-pocket-audible-laugh'"),'Diagnostics build must match current UI build');
+assert(workspace.includes("const POCKET_BUILD='step49-runtime-bugfix-pass'"),'Diagnostics build must match current UI build');
 assert(coreCss.includes('STEP 38 — copy deduplication and compact content rhythm'),'STEP 38 copy cleanup CSS is missing');
 assert(workspace.includes("const MOTION_CHOICES=new Set(['full','gentle','off'])"),'Motion choices must be validated');
 assert(workspace.includes("pocket-motion-change"),'Motion changes must emit a canonical event');
@@ -280,7 +280,7 @@ assert(coreCss.includes("#coding.coding-studio"),'Desktop Code workspace normali
 assert((coreCss.match(/STEP 22 — authoritative desktop workspace polish/g)||[]).length===1,'STEP 22 desktop layout must have a single owner');
 assert(coreCss.includes('--desktop-content-max:1200px'),'Desktop content width token is missing');
 assert(coreCss.includes('@media(min-width:1280px)')&&coreCss.includes('--sidebar-width:240px'),'Large-desktop sidebar scaling is missing');
-assert(coreCss.includes('grid-template-columns:minmax(0,1.62fr) minmax(260px,.88fr)'),'STEP 48 desktop Home hero composition is missing');
+assert(coreCss.includes('grid-template-columns:minmax(0,1.62fr) minmax(260px,.88fr)'),'STEP 49 desktop Home hero composition is missing');
 assert(!coreCss.includes('STEP 10 — Mobile Home composition cleanup'),'Obsolete STEP 10 mobile patch must stay removed');
 assert((coreCss.match(/STEP 21 — authoritative mobile Home layout/g)||[]).length===1,'STEP 21 mobile Home layout must have a single owner');
 assert(coreCss.includes('#home .pocket-room{')&&coreCss.includes('height:220px'),'STEP 21 Pocket Room sizing is missing');
@@ -316,3 +316,9 @@ assert(pocketJs.includes("addEventListener('pointerdown'")&&pocketJs.includes("P
 assert(pocketJs.includes("addEventListener('touchstart'")&&pocketJs.includes("PocketSound?.unlock?.()"),'Touch-start audio unlock path is missing');
 assert(workspace.includes("master.gain.exponentialRampToValueAtTime(.16"),'Laugh output is too quiet');
 assert(workspace.includes("const notes=[")&&workspace.includes("const sparkle=ctx.createOscillator()")&&workspace.includes("notes.forEach((n,i)=>"),'Laugh must use a multi-voice oscillator pattern');
+
+assert(pocketJs.includes("'[data-pocket-exclusion],[data-pocket-exclusion-group]'"),'Roaming collision groups must be honored');
+assert(pocketJs.includes("addEventListener('scroll',handleScrollReset")&&pocketJs.includes("setTimeout(()=>goHomeAll(false),90)"),'Pocket must reset safely on scroll');
+assert(pocketJs.includes("if(!('PointerEvent' in window))document.addEventListener('touchstart'"),'Touch unlock fallback must not duplicate Pointer Events');
+assert(workspace.includes("master.disconnect();compressor.disconnect()"),'Laugh audio graph cleanup is missing');
+assert(workspace.includes("osc.disconnect();gain.disconnect()"),'Tone audio graph cleanup is missing');
