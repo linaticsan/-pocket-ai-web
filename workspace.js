@@ -153,7 +153,7 @@ window.PocketSound={
  isEnabled:soundEnabled
 };
 
-const POCKET_BUILD='step48-pocket-audible-laugh';
+const POCKET_BUILD='step49-runtime-bugfix-pass';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
