@@ -90,7 +90,7 @@ assert(environmentJs.includes("for(let i=0;i<30;i++)")&&environmentJs.includes("
 assert(pocketJs.includes("for(let i=0;i<14;i++"),'Pocket destination search must be capped');
 assert(pocketJs.includes("translate3d(")&&pocketJs.includes("randomDestination")&&pocketJs.includes("goHomeAll"),'Bounded transform-only Pocket movement is missing');
 assert(pocketJs.includes("3+Math.floor(Math.random()*5)"),'Random 3–7 return threshold is missing');
-assert(pocketJs.includes("Date.now()-d.lastMove<480"),'Pocket movement cooldown is missing');
+assert(pocketJs.includes("Date.now()-d.lastMove<(autonomous?700:220)"),'Pocket manual/autonomous movement cooldowns are missing');
 assert(pocketJs.includes("anchorDestinations")&&pocketJs.includes("composer-left")&&pocketJs.includes("composer-right")&&pocketJs.includes("top-left")&&pocketJs.includes("middle"),'Named Home roaming anchors are missing');
 assert(pocketJs.includes("(!autonomous||!reduced())"),'Reduced Motion must block autonomous wandering but allow user tap relocation');
 assert(pocketJs.includes("const scale=reduced()?0.24"),'Reduced Motion tap travel cap is missing');
