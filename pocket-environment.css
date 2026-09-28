@@ -58,8 +58,8 @@ html[data-env-effects="gentle"] #pocketEnvironment{opacity:calc(var(--env-worksp
 .environment-preview{display:flex;flex-wrap:wrap;gap:7px}
 .environment-preview button{min-height:38px;padding:7px 10px}
 #environmentStatus{margin:0}
-.pocket-playground{position:relative;display:grid;place-items:center;width:100%;min-height:174px;overflow:visible}
-.pocket-playground [data-pocket-character]{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0);transform-origin:50% 75%;z-index:2}
+.pocket-playground{position:relative;display:grid;place-items:center;width:100%;min-height:174px;overflow:visible;pointer-events:none}
+.pocket-playground [data-pocket-character]{position:relative;transform:translate3d(var(--wander-x,0),var(--wander-y,0),0);transform-origin:50% 75%;z-index:30;pointer-events:auto;touch-action:manipulation}
 .pocket-playground [data-pocket-character].is-pocket-moving{pointer-events:none}
 .pocket-playground [data-pocket-character][data-pocket-facing="left"] .pocket-character__antenna{transform:rotate(-4deg)}
 .pocket-playground [data-pocket-character][data-pocket-facing="right"] .pocket-character__antenna{transform:rotate(4deg)}
@@ -74,5 +74,11 @@ html[data-motion="off"] .pocket-playground [data-pocket-character]{transform:non
 @media(max-width:767px){
   .pocket-playground{min-height:100px}
   #pocketEnvironment{opacity:calc(var(--env-workspace-opacity,1) * .72)}
-  .pocket-playground{overflow:hidden}
+  .pocket-playground{overflow:visible}
 }
+
+/* STEP 47 — let Pocket roam beyond the hero mascot column without blocking controls */
+#home .home-hero{overflow:visible}
+#home .home-hero-pocket{position:relative;z-index:20;pointer-events:none}
+#home .home-pocket-speech{pointer-events:none}
+#home [data-pocket-roam-root]{position:relative}
