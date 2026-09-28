@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step46-pocket-tap-movement-reliability', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step47-pocket-fast-roam-laugh', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -174,6 +174,49 @@ test('iPhone Reduce Motion still allows a small user-triggered Pocket relocation
   await expectNoPageErrors(errors);
 });
 
+test('Pocket tap laughs, moves fast across named Home zones, and stays until tapped again', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  const errors = await openPocket(page);
+  await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketSound?.laugh);
+  await page.locator('#settingsOpen').click();
+  await page.locator('#settingsDialog [data-motion="full"]').click();
+  await page.locator('#settingsDialog .close').click();
+
+  await page.evaluate(() => {
+    window.__pocketLaughs=0;
+    const original=window.PocketSound.laugh;
+    window.PocketSound.laugh=()=>{window.__pocketLaughs++;return original();};
+  });
+
+  const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
+  const before=await pocket.boundingBox();
+  await pocket.click();
+  await page.waitForTimeout(560);
+  const after=await pocket.boundingBox();
+  const firstZone=await pocket.getAttribute('data-pocket-zone');
+  const stayUntil=Number(await pocket.getAttribute('data-pocket-stay-until'));
+  expect(Math.hypot(after.x-before.x,after.y-before.y)).toBeGreaterThan(55);
+  expect(['top-left','top-middle','top-right','left-side','middle','right-side','lower-left','lower-middle','lower-right','composer-left','composer-right','composer-above','composer-below','free']).toContain(firstZone);
+  expect(stayUntil-Date.now()).toBeGreaterThan(3500);
+  expect(await page.evaluate(()=>window.__pocketLaughs)).toBe(1);
+  expect(await page.evaluate(()=>localStorage.getItem('pocket-sound-v1'))).toBe('on');
+
+  await page.waitForTimeout(800);
+  const held=await pocket.boundingBox();
+  expect(Math.hypot(held.x-after.x,held.y-after.y)).toBeLessThan(3);
+
+  await pocket.click();
+  await page.waitForTimeout(560);
+  const afterSecond=await pocket.boundingBox();
+  expect(Math.hypot(afterSecond.x-held.x,afterSecond.y-held.y)).toBeGreaterThan(40);
+  expect(await page.evaluate(()=>window.__pocketLaughs)).toBe(2);
+
+  const composer=await page.locator('#homeComposer').boundingBox();
+  const overlaps=!(afterSecond.x+afterSecond.width<composer.x||afterSecond.x>composer.x+composer.width||afterSecond.y+afterSecond.height<composer.y||afterSecond.y>composer.y+composer.height);
+  expect(overlaps).toBe(false);
+  await expectNoPageErrors(errors);
+});
+
 test('Pocket living-world movement stays bounded and can return home', async ({ page }) => {
   const errors = await openPocket(page);
   await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketMascot?.goHome);
@@ -191,12 +234,12 @@ test('Pocket living-world movement stays bounded and can return home', async ({ 
     await pocket.click();
     await page.waitForTimeout(1050);
     const box = await pocket.boundingBox();
-    const playground = await page.locator('#home .pocket-playground').boundingBox();
-    expect(box && playground).toBeTruthy();
-    expect(box.x).toBeGreaterThanOrEqual(playground.x - 1);
-    expect(box.x+box.width).toBeLessThanOrEqual(playground.x+playground.width + 1);
-    expect(box.y).toBeGreaterThanOrEqual(playground.y - 1);
-    expect(box.y+box.height).toBeLessThanOrEqual(playground.y+playground.height + 1);
+    const roamRoot = await page.locator('#home [data-pocket-roam-root]').boundingBox();
+    expect(box && roamRoot).toBeTruthy();
+    expect(box.x).toBeGreaterThanOrEqual(roamRoot.x - 1);
+    expect(box.x+box.width).toBeLessThanOrEqual(roamRoot.x+roamRoot.width + 1);
+    expect(box.y).toBeGreaterThanOrEqual(Math.max(roamRoot.y, -1));
+    expect(box.y+box.height).toBeLessThanOrEqual(Math.min(roamRoot.y+roamRoot.height, 901));
     seen.add(Math.round(box.x/4)+':'+Math.round(box.y/4));
   }
   expect(seen.size).toBeGreaterThan(2);
@@ -222,9 +265,9 @@ test('Pocket living-world movement stays bounded and can return home', async ({ 
   await page.setViewportSize({ width: 1024, height: 768 });
   await page.waitForTimeout(550);
   const afterResize = await pocket.boundingBox();
-  const resizedPlayground = await page.locator('#home .pocket-playground').boundingBox();
-  expect(afterResize.x).toBeGreaterThanOrEqual(resizedPlayground.x - 1);
-  expect(afterResize.x+afterResize.width).toBeLessThanOrEqual(resizedPlayground.x+resizedPlayground.width + 1);
+  const resizedRoot = await page.locator('#home [data-pocket-roam-root]').boundingBox();
+  expect(afterResize.x).toBeGreaterThanOrEqual(resizedRoot.x - 1);
+  expect(afterResize.x+afterResize.width).toBeLessThanOrEqual(resizedRoot.x+resizedRoot.width + 1);
   await expectNoPageErrors(errors);
 });
 

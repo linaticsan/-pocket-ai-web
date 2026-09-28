@@ -76,12 +76,27 @@ function getPocketAudioContext(){
  if(!pocketAudioContext)pocketAudioContext=new Ctx();
  return pocketAudioContext;
 }
-async function playPocketSound(kind='tap'){
- if(!soundEnabled())return false;
+async function playPocketSound(kind='tap',{force=false}={}){
+ if(!force&&!soundEnabled())return false;
  const ctx=getPocketAudioContext();if(!ctx)return false;
  try{
   if(ctx.state==='suspended')await ctx.resume();
-  const now=ctx.currentTime,osc=ctx.createOscillator(),gain=ctx.createGain();
+  const now=ctx.currentTime;
+  if(kind==='laugh'){
+   const notes=[760,980,820],starts=[0,.075,.16],durations=[.085,.09,.1];
+   notes.forEach((freq,i)=>{
+    const osc=ctx.createOscillator(),gain=ctx.createGain(),start=now+starts[i],duration=durations[i];
+    osc.type=i===1?'triangle':'sine';
+    osc.frequency.setValueAtTime(freq,start);
+    osc.frequency.exponentialRampToValueAtTime(freq*(i===1?1.16:1.08),start+duration);
+    gain.gain.setValueAtTime(.0001,start);
+    gain.gain.exponentialRampToValueAtTime(.038,start+.012);
+    gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+    osc.connect(gain);gain.connect(ctx.destination);osc.start(start);osc.stop(start+duration+.02);
+   });
+   return true;
+  }
+  const osc=ctx.createOscillator(),gain=ctx.createGain();
   const tones={tap:[520,620,.055],happy:[660,880,.09],success:[740,1040,.12],error:[260,210,.12]};
   const [start,end,duration]=tones[kind]||tones.tap;
   osc.type='sine';osc.frequency.setValueAtTime(start,now);osc.frequency.exponentialRampToValueAtTime(Math.max(40,end),now+duration);
@@ -101,9 +116,9 @@ q('soundTest')?.addEventListener('click',async()=>{
 });
 q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
-window.PocketSound={play:playPocketSound,isEnabled:soundEnabled};
+window.PocketSound={play:playPocketSound,laugh:()=>{safeSet(SOUND_KEY,'on');renderSoundSetting();return playPocketSound('laugh',{force:true})},isEnabled:soundEnabled};
 
-const POCKET_BUILD='step46-pocket-tap-movement-reliability';
+const POCKET_BUILD='step47-pocket-fast-roam-laugh';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
