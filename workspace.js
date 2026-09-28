@@ -106,8 +106,8 @@ async function playPocketSound(kind='tap',{force=false}={}){
     osc.frequency.setValueAtTime(n.f,start);
     osc.frequency.exponentialRampToValueAtTime(n.end,start+n.d);
     gain.gain.setValueAtTime(.0001,start);
-    gain.gain.exponentialRampToValueAtTime(i===3?.095:.082,start+.012);
-    gain.gain.setValueAtTime(i===3?.095:.082,start+n.d*.55);
+    gain.gain.exponentialRampToValueAtTime(i===3 ? .095 : .082,start+.012);
+    gain.gain.setValueAtTime(i===3 ? .095 : .082,start+n.d*.55);
     gain.gain.exponentialRampToValueAtTime(.0001,start+n.d);
     osc.connect(gain);gain.connect(master);osc.start(start);osc.stop(start+n.d+.02);
     const sparkle=ctx.createOscillator(),sg=ctx.createGain();
