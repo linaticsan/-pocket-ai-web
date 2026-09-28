@@ -1,6 +1,6 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v53';
-const BUILD='step48-pocket-audible-laugh';
+const CACHE=APP_CACHE_PREFIX+'v54';
+const BUILD='step49-runtime-bugfix-pass';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
