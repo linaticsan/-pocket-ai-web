@@ -83,16 +83,38 @@ async function playPocketSound(kind='tap',{force=false}={}){
   if(ctx.state==='suspended')await ctx.resume();
   const now=ctx.currentTime;
   if(kind==='laugh'){
-   const notes=[760,980,820],starts=[0,.075,.16],durations=[.085,.09,.1];
-   notes.forEach((freq,i)=>{
-    const osc=ctx.createOscillator(),gain=ctx.createGain(),start=now+starts[i],duration=durations[i];
-    osc.type=i===1?'triangle':'sine';
-    osc.frequency.setValueAtTime(freq,start);
-    osc.frequency.exponentialRampToValueAtTime(freq*(i===1?1.16:1.08),start+duration);
+   const master=ctx.createGain(),compressor=ctx.createDynamicsCompressor();
+   master.gain.setValueAtTime(.0001,now);
+   master.gain.exponentialRampToValueAtTime(.16,now+.018);
+   master.gain.setValueAtTime(.16,now+.38);
+   master.gain.exponentialRampToValueAtTime(.0001,now+.58);
+   compressor.threshold.setValueAtTime(-18,now);
+   compressor.knee.setValueAtTime(18,now);
+   compressor.ratio.setValueAtTime(4,now);
+   compressor.attack.setValueAtTime(.003,now);
+   compressor.release.setValueAtTime(.12,now);
+   master.connect(compressor);compressor.connect(ctx.destination);
+   const notes=[
+    {f:690,t:0,d:.12,end:860},
+    {f:820,t:.13,d:.12,end:1040},
+    {f:760,t:.28,d:.1,end:940},
+    {f:930,t:.39,d:.13,end:1180}
+   ];
+   notes.forEach((n,i)=>{
+    const osc=ctx.createOscillator(),gain=ctx.createGain(),start=now+n.t;
+    osc.type=i%2?'triangle':'sine';
+    osc.frequency.setValueAtTime(n.f,start);
+    osc.frequency.exponentialRampToValueAtTime(n.end,start+n.d);
     gain.gain.setValueAtTime(.0001,start);
-    gain.gain.exponentialRampToValueAtTime(.038,start+.012);
-    gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
-    osc.connect(gain);gain.connect(ctx.destination);osc.start(start);osc.stop(start+duration+.02);
+    gain.gain.exponentialRampToValueAtTime(i===3?.095:.082,start+.012);
+    gain.gain.setValueAtTime(i===3?.095:.082,start+n.d*.55);
+    gain.gain.exponentialRampToValueAtTime(.0001,start+n.d);
+    osc.connect(gain);gain.connect(master);osc.start(start);osc.stop(start+n.d+.02);
+    const sparkle=ctx.createOscillator(),sg=ctx.createGain();
+    sparkle.type='sine';sparkle.frequency.setValueAtTime(n.f*2,start);
+    sparkle.frequency.exponentialRampToValueAtTime(n.end*2,start+n.d);
+    sg.gain.setValueAtTime(.0001,start);sg.gain.exponentialRampToValueAtTime(.018,start+.01);sg.gain.exponentialRampToValueAtTime(.0001,start+n.d);
+    sparkle.connect(sg);sg.connect(master);sparkle.start(start);sparkle.stop(start+n.d+.02);
    });
    return true;
   }
@@ -100,7 +122,7 @@ async function playPocketSound(kind='tap',{force=false}={}){
   const tones={tap:[520,620,.055],happy:[660,880,.09],success:[740,1040,.12],error:[260,210,.12]};
   const [start,end,duration]=tones[kind]||tones.tap;
   osc.type='sine';osc.frequency.setValueAtTime(start,now);osc.frequency.exponentialRampToValueAtTime(Math.max(40,end),now+duration);
-  gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.035,now+.01);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
+  gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.05,now+.01);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
   osc.connect(gain);gain.connect(ctx.destination);osc.start(now);osc.stop(now+duration+.02);
   return true;
  }catch{return false}
@@ -116,9 +138,18 @@ q('soundTest')?.addEventListener('click',async()=>{
 });
 q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
-window.PocketSound={play:playPocketSound,laugh:()=>{safeSet(SOUND_KEY,'on');renderSoundSetting();return playPocketSound('laugh',{force:true})},isEnabled:soundEnabled};
+async function unlockPocketAudio(){
+ const ctx=getPocketAudioContext();if(!ctx)return false;
+ try{if(ctx.state==='suspended')await ctx.resume();return ctx.state==='running'}catch{return false}
+}
+window.PocketSound={
+ play:playPocketSound,
+ unlock:unlockPocketAudio,
+ laugh:async()=>{safeSet(SOUND_KEY,'on');renderSoundSetting();await unlockPocketAudio();return playPocketSound('laugh',{force:true})},
+ isEnabled:soundEnabled
+};
 
-const POCKET_BUILD='step47-pocket-fast-roam-laugh';
+const POCKET_BUILD='step48-pocket-audible-laugh';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
