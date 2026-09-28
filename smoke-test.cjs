@@ -82,7 +82,7 @@ assert(index.includes('class="home-pocket-speech"'),'Pocket speech bubble markup
 assert(index.includes('class="pocket-playground"'),'Home Pocket playground is missing');
 assert(index.includes('data-pocket-exclusion'),'Pocket playground exclusion zone is missing');
 assert(index.includes('data-env-season-choice="auto"')&&index.includes('data-env-effects="gentle"')&&index.includes('data-env-preview="snow"'),'Environment settings controls are missing');
-assert(index.includes('./pocket-environment.css?v=20260927-step45-living-world')&&index.includes('./pocket-environment.js?v=20260927-step45-living-world'),'Environment assets are not loaded');
+assert(index.includes('./pocket-environment.css?v=20260928-step47-roam-laugh')&&index.includes('./pocket-environment.js?v=20260927-step45-living-world'),'Environment assets are not loaded');
 assert(sw.includes("'./pocket-environment.css'")&&sw.includes("'./pocket-environment.js'"),'Environment assets must be available offline');
 assert(environmentJs.includes("window.PocketEnvironment={"),'Central PocketEnvironment API is missing');
 assert(environmentJs.includes("getCurrentSeason")&&environmentJs.includes("setSeason:applySeason")&&environmentJs.includes("setWeather")&&environmentJs.includes("preview"),'Environment API is incomplete');
