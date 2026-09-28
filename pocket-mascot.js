@@ -182,7 +182,12 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
  if(autonomous&&Math.random()<.08)return void goHome(el,true);
  const dest=randomDestination(el,{far:!autonomous});if(!dest)return void goHome(el,true);
  if(dest.home)return void goHome(el,true);
- void animateMove(el,dest.x,dest.y,{quick:true,zone:dest.zone});return true;
+ const scale=reduced()?0.24:motion()==='gentle'?0.55:1;
+ let x=d.x+(dest.x-d.x)*scale,y=d.y+(dest.y-d.y)*scale;
+ if(!autonomous&&Math.hypot(x-d.x,y-d.y)<18){
+  const b=boundsFor(el);if(b){x=Math.max(b.minX,Math.min(b.maxX,d.x+(dest.x>=d.x?20:-20)));y=Math.max(b.minY,Math.min(b.maxY,y))}
+ }
+ void animateMove(el,x,y,{quick:true,zone:dest.zone});return true;
 }
 function tap(el){
  if(!el||el.dataset.pocketTapLock==='1')return;
