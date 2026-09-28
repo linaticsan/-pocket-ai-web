@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step47-pocket-fast-roam-laugh', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step48-pocket-audible-laugh', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -171,6 +171,44 @@ test('iPhone Reduce Motion still allows a small user-triggered Pocket relocation
   const playground = await page.locator('#home .pocket-playground').boundingBox();
   expect(after.x).toBeGreaterThanOrEqual(playground.x-1);
   expect(after.x+after.width).toBeLessThanOrEqual(playground.x+playground.width+1);
+  await expectNoPageErrors(errors);
+});
+
+test('Pocket tap builds an audible iPhone-safe laugh audio graph', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__audioProbe={oscillators:0,resumes:0,maxGain:0,compressors:0,starts:0};
+    class Param{
+      setValueAtTime(v){window.__audioProbe.maxGain=Math.max(window.__audioProbe.maxGain,Number(v)||0)}
+      exponentialRampToValueAtTime(v){window.__audioProbe.maxGain=Math.max(window.__audioProbe.maxGain,Number(v)||0)}
+    }
+    class Node{
+      constructor(){this.gain=new Param();this.frequency=new Param();this.threshold=new Param();this.knee=new Param();this.ratio=new Param();this.attack=new Param();this.release=new Param()}
+      connect(){return this}
+      start(){window.__audioProbe.starts++}
+      stop(){}
+    }
+    class FakeAudioContext{
+      constructor(){this.state='suspended';this.currentTime=1;this.destination=new Node()}
+      async resume(){window.__audioProbe.resumes++;this.state='running'}
+      createOscillator(){window.__audioProbe.oscillators++;return new Node()}
+      createGain(){return new Node()}
+      createDynamicsCompressor(){window.__audioProbe.compressors++;return new Node()}
+    }
+    window.AudioContext=FakeAudioContext;
+    window.webkitAudioContext=FakeAudioContext;
+  });
+  await page.setViewportSize({width:390,height:844});
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketSound?.laugh);
+  const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
+  await pocket.click();
+  await page.waitForTimeout(120);
+  const probe=await page.evaluate(()=>window.__audioProbe);
+  expect(probe.resumes).toBeGreaterThanOrEqual(1);
+  expect(probe.compressors).toBeGreaterThanOrEqual(1);
+  expect(probe.oscillators).toBeGreaterThanOrEqual(8);
+  expect(probe.starts).toBeGreaterThanOrEqual(8);
+  expect(probe.maxGain).toBeGreaterThanOrEqual(.15);
   await expectNoPageErrors(errors);
 });
 
