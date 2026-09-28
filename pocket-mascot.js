@@ -184,6 +184,10 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
  if(dest.home)return void goHome(el,true);
  const scale=reduced()?0.24:motion()==='gentle'?0.55:1;
  let x=d.x+(dest.x-d.x)*scale,y=d.y+(dest.y-d.y)*scale;
+ if(reduced()){
+  const dx=x-d.x,dy=y-d.y,dist=Math.max(1,Math.hypot(dx,dy)),cap=36;
+  if(dist>cap){x=d.x+dx/dist*cap;y=d.y+dy/dist*cap}
+ }
  if(!autonomous&&Math.hypot(x-d.x,y-d.y)<18){
   const b=boundsFor(el);if(b){x=Math.max(b.minX,Math.min(b.maxX,d.x+(dest.x>=d.x?20:-20)));y=Math.max(b.minY,Math.min(b.maxY,y))}
  }
