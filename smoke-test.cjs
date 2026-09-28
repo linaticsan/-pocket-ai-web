@@ -95,7 +95,7 @@ assert(pocketJs.includes("anchorDestinations")&&pocketJs.includes("composer-left
 assert(pocketJs.includes("(!autonomous||!reduced())"),'Reduced Motion must block autonomous wandering but allow user tap relocation');
 assert(pocketJs.includes("const scale=reduced()?0.24"),'Reduced Motion tap travel cap is missing');
 assert(pocketJs.includes("if(reduced()){")&&pocketJs.includes("const scale=reduced()?0.24:motion()==='gentle'?0.55:1"),'Low-motion relocation path is missing');
-assert(pocketJs.includes("matchMedia('(max-width:767px)')")&&pocketJs.includes("Math.min(110"),'Mobile wander cap is missing');
+assert(pocketJs.includes("matchMedia('(max-width:767px)')")&&pocketJs.includes("Math.min(170")&&pocketJs.includes("Math.min(250"),'Mobile wander cap is missing');
 assert(workspace.includes("goHome:()=>window.PocketMascotViews?.goHomeAll?.(true)")&&workspace.includes("moveRandom:()=>window.PocketMascotViews?.moveRandom?.()")&&workspace.includes("setWind:setMascotWind"),'PocketMascot living-world APIs are missing');
 assert(environmentCss.includes("#pocketEnvironment")&&environmentCss.includes("pointer-events:none"),'Environment layer must never intercept input');
 assert(environmentCss.includes('html[data-motion="off"] #pocketEnvironment')&&environmentCss.includes('@media(prefers-reduced-motion:reduce)'), 'Environment motion/reduced-motion guards are missing');
