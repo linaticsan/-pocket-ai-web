@@ -115,7 +115,10 @@ async function playPocketSound(kind='tap',{force=false}={}){
     sparkle.frequency.exponentialRampToValueAtTime(n.end*2,start+n.d);
     sg.gain.setValueAtTime(.0001,start);sg.gain.exponentialRampToValueAtTime(.018,start+.01);sg.gain.exponentialRampToValueAtTime(.0001,start+n.d);
     sparkle.connect(sg);sg.connect(master);sparkle.start(start);sparkle.stop(start+n.d+.02);
+    const cleanup=()=>{try{osc.disconnect();gain.disconnect();sparkle.disconnect();sg.disconnect()}catch{}};
+    sparkle.addEventListener?.('ended',cleanup,{once:true});
    });
+   setTimeout(()=>{try{master.disconnect();compressor.disconnect()}catch{}},720);
    return true;
   }
   const osc=ctx.createOscillator(),gain=ctx.createGain();
@@ -124,6 +127,7 @@ async function playPocketSound(kind='tap',{force=false}={}){
   osc.type='sine';osc.frequency.setValueAtTime(start,now);osc.frequency.exponentialRampToValueAtTime(Math.max(40,end),now+duration);
   gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.05,now+.01);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
   osc.connect(gain);gain.connect(ctx.destination);osc.start(now);osc.stop(now+duration+.02);
+  osc.addEventListener?.('ended',()=>{try{osc.disconnect();gain.disconnect()}catch{}},{once:true});
   return true;
  }catch{return false}
 }
