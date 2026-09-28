@@ -225,11 +225,12 @@ test('Pocket roam avoids the whole Tools section and recovers safely after scrol
   expect(overlaps).toBe(false);
 
   await page.evaluate(() => window.scrollTo({top:document.body.scrollHeight,behavior:'instant'}));
-  await page.waitForTimeout(320);
-  const scrolled=await pocket.boundingBox();
-  expect(scrolled).toBeTruthy();
-  expect(scrolled.y+scrolled.height).toBeGreaterThanOrEqual(-1);
-  expect(scrolled.y).toBeLessThanOrEqual(901);
+  await page.waitForTimeout(220);
+  await expect(pocket).toHaveAttribute('data-pocket-home','true');
+  const reset=await pocket.evaluate(el=>({transform:el.style.transform,x:el.style.getPropertyValue('--wander-x'),y:el.style.getPropertyValue('--wander-y')}));
+  expect(reset.transform).toContain('translate3d(0');
+  expect(reset.x).toBe('0px');
+  expect(reset.y).toBe('0px');
   await expectNoPageErrors(errors);
 });
 
