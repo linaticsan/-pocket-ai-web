@@ -36,7 +36,7 @@ function syncOne(el){if(!el)return;el.dataset.pocketState=effectiveState(el)}
 function syncAll(){qa('[data-pocket-character]').forEach(syncOne);syncFilesEmpty()}
 function initWander(el){
  if(!el||wander.has(el))return wander.get(el);
- const data={x:0,y:0,taps:0,returnAt:3+Math.floor(Math.random()*5),moving:false,queued:false,animation:null,lastMove:0};
+ const data={x:0,y:0,taps:0,returnAt:3+Math.floor(Math.random()*5),moving:false,queued:false,animation:null,lastMove:0,stayTimer:0,stayUntil:0,lastZone:''};
  wander.set(el,data);el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');return data;
 }
 function hydrate(root=document){
@@ -74,29 +74,64 @@ function syncFilesEmpty(){
  files.classList.toggle('has-pocket-document',!!editor?.value?.trim());
 }
 function boundsFor(el){
- const box=el.closest('.pocket-playground');if(!box)return null;
- const br=box.getBoundingClientRect(),er=el.getBoundingClientRect(),d=initWander(el);
- const homeLeft=er.left-d.x,homeTop=er.top-d.y,pad=10;
- let minX=br.left+pad-homeLeft,maxX=br.right-pad-er.width-homeLeft,minY=br.top+pad-homeTop,maxY=br.bottom-pad-er.height-homeTop;
- const mobile=matchMedia('(max-width:767px)').matches,limit=mobile?Math.min(110,br.width*.27):Math.min(210,br.width*.38),vLimit=mobile?Math.min(72,br.height*.25):Math.min(105,br.height*.34);
- minX=Math.max(minX,-limit);maxX=Math.min(maxX,limit);minY=Math.max(minY,-vLimit);maxY=Math.min(maxY,vLimit);
- if(minX>maxX){minX=0;maxX=0}
- if(minY>maxY){minY=0;maxY=0}
+ const roam=el.closest('[data-pocket-roam-root]')||el.closest('.pocket-playground');if(!roam)return null;
+ const rr=roam.getBoundingClientRect(),er=el.getBoundingClientRect(),d=initWander(el),pad=12;
+ const homeLeft=er.left-d.x,homeTop=er.top-d.y;
+ const visibleTop=Math.max(rr.top+pad,8),visibleBottom=Math.min(rr.bottom-pad,innerHeight-12);
+ let minX=rr.left+pad-homeLeft,maxX=rr.right-pad-er.width-homeLeft,minY=visibleTop-homeTop,maxY=visibleBottom-er.height-homeTop;
+ const mobile=matchMedia('(max-width:767px)').matches;
+ const xCap=mobile?Math.min(170,rr.width*.44):Math.min(620,rr.width*.62),yCap=mobile?Math.min(250,Math.max(80,innerHeight*.3)):Math.min(420,Math.max(120,innerHeight*.46));
+ minX=Math.max(minX,-xCap);maxX=Math.min(maxX,xCap);minY=Math.max(minY,-yCap);maxY=Math.min(maxY,yCap);
+ if(minX>maxX){minX=0;maxX=0} if(minY>maxY){minY=0;maxY=0}
  if(minX===0&&maxX===0&&minY===0&&maxY===0)return null;
- return{box,br,er,homeLeft,homeTop,minX,maxX,minY,maxY,pad};
+ return{box:roam,br:rr,er,homeLeft,homeTop,minX,maxX,minY,maxY,pad};
+}
+function exclusionRects(b){
+ const explicit=qa('[data-pocket-exclusion]',b.box);
+ return explicit.filter(z=>z.offsetParent!==null).map(z=>z.getBoundingClientRect());
 }
 function overlapsExclusion(el,x,y,b){
  const next={left:b.homeLeft+x,top:b.homeTop+y,right:b.homeLeft+x+b.er.width,bottom:b.homeTop+y+b.er.height};
- const zones=qa('[data-pocket-exclusion]',b.box);
- return zones.some(z=>{const r=z.getBoundingClientRect(),gap=6;return next.left<r.right+gap&&next.right>r.left-gap&&next.top<r.bottom+gap&&next.bottom>r.top-gap});
+ return exclusionRects(b).some(r=>{const gap=10;return next.left<r.right+gap&&next.right>r.left-gap&&next.top<r.bottom+gap&&next.bottom>r.top-gap});
 }
-function randomDestination(el){
- const b=boundsFor(el);if(!b)return null;
- for(let i=0;i<10;i++){
-  const x=b.minX+Math.random()*(b.maxX-b.minX),y=b.minY+Math.random()*(b.maxY-b.minY);
-  if(!overlapsExclusion(el,x,y,b))return{x,y};
+function targetFromPoint(b,cx,cy,name){
+ return{x:cx-b.er.width/2-b.homeLeft,y:cy-b.er.height/2-b.homeTop,zone:name};
+}
+function clampDestination(dest,b){
+ dest.x=Math.max(b.minX,Math.min(b.maxX,dest.x));dest.y=Math.max(b.minY,Math.min(b.maxY,dest.y));return dest;
+}
+function anchorDestinations(el,b){
+ const r=b.br,w=r.width,h=Math.max(180,Math.min(r.height,innerHeight-r.top)),composer=q('#homeComposer');
+ const cr=composer?.getBoundingClientRect();
+ const points=[
+  [r.left+w*.12,r.top+70,'top-left'],[r.left+w*.5,r.top+62,'top-middle'],[r.right-w*.12,r.top+70,'top-right'],
+  [r.left+w*.08,r.top+h*.38,'left-side'],[r.left+w*.5,r.top+h*.38,'middle'],[r.right-w*.08,r.top+h*.38,'right-side'],
+  [r.left+w*.14,r.top+h*.66,'lower-left'],[r.left+w*.5,r.top+h*.62,'lower-middle'],[r.right-w*.14,r.top+h*.66,'lower-right']
+ ];
+ if(cr){
+  points.push([cr.left-b.er.width*.65,cr.top+cr.height*.5,'composer-left']);
+  points.push([cr.right+b.er.width*.65,cr.top+cr.height*.5,'composer-right']);
+  points.push([cr.left+cr.width*.5,cr.top-b.er.height*.7,'composer-above']);
+  points.push([cr.left+cr.width*.5,cr.bottom+b.er.height*.7,'composer-below']);
  }
- return{x:0,y:0,home:true};
+ return points.map(p=>clampDestination(targetFromPoint(b,p[0],p[1],p[2]),b)).filter(d=>!overlapsExclusion(el,d.x,d.y,b));
+}
+function randomDestination(el,{far=false}={}){
+ const b=boundsFor(el);if(!b)return null;const d=initWander(el),anchors=anchorDestinations(el,b).filter(a=>!far||Math.hypot(a.x-d.x,a.y-d.y)>70);
+ const pool=anchors.filter(a=>a.zone!==d.lastZone);
+ if(pool.length){const chosen=(pool.length?pool:anchors)[Math.floor(Math.random()*(pool.length||anchors.length))];return{...chosen}}
+ for(let i=0;i<14;i++){
+  const x=b.minX+Math.random()*(b.maxX-b.minX),y=b.minY+Math.random()*(b.maxY-b.minY);
+  if(!overlapsExclusion(el,x,y,b)&&(!far||Math.hypot(x-d.x,y-d.y)>55))return{x,y,zone:'free'};
+ }
+ return{x:0,y:0,home:true,zone:'home'};
+}
+function clearStay(el){const d=initWander(el);clearTimeout(d.stayTimer);d.stayTimer=0;d.stayUntil=0}
+function scheduleStay(el){
+ const d=initWander(el);clearStay(el);
+ if(motion()!=='full'||reduced()||document.hidden||window.PocketMascot?.isBusy?.())return;
+ const stay=5000+Math.floor(Math.random()*6500);d.stayUntil=Date.now()+stay;
+ d.stayTimer=setTimeout(()=>{d.stayTimer=0;if(canWander(el,{autonomous:true}))moveRandom(el,{autonomous:true})},stay);
 }
 function faceDirection(el,dx){
  if(Math.abs(dx)<4)return;
@@ -111,66 +146,55 @@ function landingReaction(el){
  else if(roll<.82){el.classList.add('is-pocket-antenna-wiggle');setTimeout(()=>el.classList.remove('is-pocket-antenna-wiggle'),650)}
  setTimeout(()=>{if(!el.matches(':hover')){el.style.setProperty('--pocket-eye-x','0px');el.style.setProperty('--pocket-eye-y','0px')}},700);
 }
-async function animateMove(el,x,y,{home=false,quick=false}={}){
- const d=initWander(el);if(d.moving)return false;
- const dx=x-d.x,dy=y-d.y,dist=Math.hypot(dx,dy);
- if(dist<2){d.x=x;d.y=y;return true}
+async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
+ const d=initWander(el);if(d.moving)return false;clearStay(el);
+ const dx=x-d.x,dy=y-d.y,dist=Math.hypot(dx,dy);if(dist<2){d.x=x;d.y=y;scheduleStay(el);return true}
  d.moving=true;d.lastMove=Date.now();faceDirection(el,dx);
  if(reduced()){
-   d.x=x;d.y=y;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;
-   if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else{delete el.dataset.pocketHome}
-   d.moving=false;return true;
+  d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;
+  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
+  d.moving=false;scheduleStay(el);return true;
  }
  el.classList.add('is-pocket-moving');
- const lowMotion=reduced()||motion()==='gentle',duration=lowMotion?240:Math.max(520,Math.min(980,(quick?420:520)+dist*2.15)),hops=lowMotion?1:dist>95?3:dist>42?2:1;
+ const low=motion()==='gentle',duration=low?220:Math.max(260,Math.min(460,250+dist*.38)),hops=low?1:dist>260?2:1;
  const frames=[{transform:`translate3d(${d.x}px,${d.y}px,0) scale(1)`}];
- for(let i=1;i<hops;i++){const p=i/hops,arc=7+Math.min(8,dist*.035);frames.push({offset:p,transform:`translate3d(${d.x+dx*p}px,${d.y+dy*p-arc}px,0) scale(1.015,.985)`})}
- if(lowMotion)frames.push({transform:`translate3d(${x}px,${y}px,0) scale(1)`});
- else frames.push({offset:.9,transform:`translate3d(${x}px,${y-5}px,0) scale(.985,1.02)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
- try{d.animation=el.animate(frames,{duration,easing:'cubic-bezier(.22,.74,.2,1)',fill:'forwards'});await d.animation.finished}catch{}
- d.animation=null;d.x=x;d.y=y;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
- if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else{delete el.dataset.pocketHome}
- d.moving=false;landingReaction(el);
- if(d.queued){d.queued=false;setTimeout(()=>moveRandom(el,{autonomous:false}),90)}
+ if(hops>1)frames.push({offset:.52,transform:`translate3d(${d.x+dx*.52}px,${d.y+dy*.52-10}px,0) scale(.98,1.03)`});
+ frames.push({offset:.88,transform:`translate3d(${x}px,${y-4}px,0) scale(1.025,.975)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
+ try{d.animation=el.animate(frames,{duration,easing:'cubic-bezier(.16,.84,.2,1)',fill:'forwards'});await d.animation.finished}catch{}
+ d.animation=null;d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
+ if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
+ d.moving=false;landingReaction(el);scheduleStay(el);
+ if(d.queued){d.queued=false;setTimeout(()=>moveRandom(el,{autonomous:false}),70)}
  return true;
 }
 function goHome(el=q('.pocket-playground [data-pocket-character]'),animate=true){
- if(!el)return Promise.resolve(false);const d=initWander(el);d.queued=false;
+ if(!el)return Promise.resolve(false);const d=initWander(el);clearStay(el);d.queued=false;
  if(d.animation){try{d.animation.cancel()}catch{}d.animation=null;d.moving=false}
- if(!animate||motion()==='off'||reduced()){d.x=0;d.y=0;d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.style.transform='translate3d(0,0,0)';el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');el.dataset.pocketHome='true';return Promise.resolve(true)}
- return animateMove(el,0,0,{home:true});
+ if(!animate||motion()==='off'||reduced()){d.x=0;d.y=0;d.taps=0;d.lastZone='home';d.returnAt=3+Math.floor(Math.random()*5);el.style.transform='translate3d(0,0,0)';el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');el.dataset.pocketHome='true';return Promise.resolve(true)}
+ return animateMove(el,0,0,{home:true,zone:'home'});
 }
 function goHomeAll(animate=true){qa('.pocket-playground [data-pocket-character]').forEach(el=>void goHome(el,animate))}
 function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomous=false}={}){
- if(!el||!canWander(el,{autonomous}))return false;const d=initWander(el);
+ if(!el||!canWander(el,{autonomous}))return false;const d=initWander(el);clearStay(el);
  if(d.moving){d.queued=!autonomous;return false}
- if(Date.now()-d.lastMove<480)return false;
- const firstTap=d.taps===0;d.taps++;
- if(d.taps>=d.returnAt&&!firstTap)return void goHome(el,true);
- const roll=(firstTap&&!autonomous) ? 0.5 : Math.random();
- if(!firstTap&&roll<.05)return void goHome(el,true);
- if(!firstTap&&roll<.25){window.PocketMascot?.react?.('tap');blinkOne(el);return false}
- if(!firstTap&&roll<.35){el.classList.add('is-pocket-play-jump');setTimeout(()=>el.classList.remove('is-pocket-play-jump'),620);return false}
- const dest=randomDestination(el);if(!dest)return void goHome(el,true);
- if(dest.home&&firstTap){const b=boundsFor(el);if(!b)return false;dest.x=Math.max(b.minX,Math.min(b.maxX,(b.maxX>=24?24:b.maxX)));dest.y=0;delete dest.home}
- else if(dest.home)return void goHome(el,true);
- const scale=reduced()?0.24:motion()==='gentle'?0.46:1;
- let x=d.x+(dest.x-d.x)*scale,y=d.y+(dest.y-d.y)*scale;
- if(firstTap&&Math.hypot(x-d.x,y-d.y)<18){const b=boundsFor(el);x=Math.max(b.minX,Math.min(b.maxX,d.x+(b.maxX-d.x>=18?22:-22)));y=Math.max(b.minY,Math.min(b.maxY,d.y))}
- void animateMove(el,x,y,{quick:lowMotionMove()||roll>.91});return true;
+ if(Date.now()-d.lastMove<(autonomous?700:220))return false;
+ d.taps++;
+ if(autonomous&&Math.random()<.08)return void goHome(el,true);
+ const dest=randomDestination(el,{far:!autonomous});if(!dest)return void goHome(el,true);
+ if(dest.home)return void goHome(el,true);
+ void animateMove(el,dest.x,dest.y,{quick:true,zone:dest.zone});return true;
 }
-function lowMotionMove(){return reduced()||motion()==='gentle'}
 function tap(el){
  if(!el||el.dataset.pocketTapLock==='1')return;
- el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
- if(el.closest('.pocket-playground'))moveRandom(el);
- window.PocketMascot?.react?.('tap');
- setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},650);
- scheduleAutonomous();
+ const d=initWander(el);clearStay(el);el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
+ void window.PocketSound?.laugh?.();
+ if(el.closest('.pocket-playground'))moveRandom(el,{autonomous:false});
+ window.PocketMascot?.react?.('happy');
+ setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},360);
 }
 function scheduleAutonomous(){
  clearTimeout(autoTimer);if(motion()!=='full'||reduced()||document.hidden)return;
- autoTimer=setTimeout(()=>{const el=q('.pocket-playground [data-pocket-character]');if(el&&canWander(el)&&Date.now()-initWander(el).lastMove>18000)moveRandom(el,{autonomous:true});scheduleAutonomous()},20000+Math.floor(Math.random()*40000));
+ autoTimer=setTimeout(()=>{const el=q('.pocket-playground [data-pocket-character]');if(el&&canWander(el,{autonomous:true})&&!initWander(el).stayTimer)moveRandom(el,{autonomous:true});scheduleAutonomous()},12000+Math.floor(Math.random()*16000));
 }
 function handleLayoutReset(){
  clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{qa('.pocket-playground [data-pocket-character]').forEach(el=>{const d=initWander(el),b=boundsFor(el);if(!b||d.x<b.minX||d.x>b.maxX||d.y<b.minY||d.y>b.maxY)void goHome(el,true)})},180);
