@@ -116,7 +116,7 @@ q('soundTest')?.addEventListener('click',async()=>{
 });
 q('homeMascot')?.addEventListener('click',()=>{void playPocketSound('happy')});
 renderSoundSetting();
-window.PocketSound={play:playPocketSound,laugh:()=>playPocketSound('laugh',{force:true}),isEnabled:soundEnabled};
+window.PocketSound={play:playPocketSound,laugh:()=>{safeSet(SOUND_KEY,'on');renderSoundSetting();return playPocketSound('laugh',{force:true})},isEnabled:soundEnabled};
 
 const POCKET_BUILD='step47-pocket-fast-roam-laugh';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
