@@ -126,11 +126,11 @@ function randomDestination(el,{far=false}={}){
  }
  return{x:0,y:0,home:true,zone:'home'};
 }
-function clearStay(el){const d=initWander(el);clearTimeout(d.stayTimer);d.stayTimer=0;d.stayUntil=0}
+function clearStay(el){const d=initWander(el);clearTimeout(d.stayTimer);d.stayTimer=0;d.stayUntil=0;delete el.dataset.pocketStayUntil}
 function scheduleStay(el){
  const d=initWander(el);clearStay(el);
  if(motion()!=='full'||reduced()||document.hidden||window.PocketMascot?.isBusy?.())return;
- const stay=5000+Math.floor(Math.random()*6500);d.stayUntil=Date.now()+stay;
+ const stay=5000+Math.floor(Math.random()*6500);d.stayUntil=Date.now()+stay;el.dataset.pocketStayUntil=String(d.stayUntil);
  d.stayTimer=setTimeout(()=>{d.stayTimer=0;if(canWander(el,{autonomous:true}))moveRandom(el,{autonomous:true})},stay);
 }
 function faceDirection(el,dx){
@@ -151,7 +151,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
  const dx=x-d.x,dy=y-d.y,dist=Math.hypot(dx,dy);if(dist<2){d.x=x;d.y=y;scheduleStay(el);return true}
  d.moving=true;d.lastMove=Date.now();faceDirection(el,dx);
  if(reduced()){
-  d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;
+  d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.dataset.pocketZone=d.lastZone||'free';el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;
   if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
   d.moving=false;scheduleStay(el);return true;
  }
@@ -161,7 +161,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
  if(hops>1)frames.push({offset:.52,transform:`translate3d(${d.x+dx*.52}px,${d.y+dy*.52-10}px,0) scale(.98,1.03)`});
  frames.push({offset:.88,transform:`translate3d(${x}px,${y-4}px,0) scale(1.025,.975)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
  try{d.animation=el.animate(frames,{duration,easing:'cubic-bezier(.16,.84,.2,1)',fill:'forwards'});await d.animation.finished}catch{}
- d.animation=null;d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
+ d.animation=null;d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.dataset.pocketZone=d.lastZone||'free';el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
  d.moving=false;landingReaction(el);scheduleStay(el);
  if(d.queued){d.queued=false;setTimeout(()=>moveRandom(el,{autonomous:false}),70)}
