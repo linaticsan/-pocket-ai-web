@@ -315,4 +315,4 @@ assert(workspace.includes("async function unlockPocketAudio()"),'Pocket audio un
 assert(pocketJs.includes("addEventListener('pointerdown'")&&pocketJs.includes("PocketSound?.unlock?.()"),'Pointer-down audio unlock path is missing');
 assert(pocketJs.includes("addEventListener('touchstart'")&&pocketJs.includes("PocketSound?.unlock?.()"),'Touch-start audio unlock path is missing');
 assert(workspace.includes("master.gain.exponentialRampToValueAtTime(.16"),'Laugh output is too quiet');
-assert((workspace.match(/createOscillator\(\)/g)||[]).length>=4,'Laugh must use a multi-voice oscillator pattern');
+assert(workspace.includes("const notes=[")&&workspace.includes("const sparkle=ctx.createOscillator()")&&workspace.includes("notes.forEach((n,i)=>"),'Laugh must use a multi-voice oscillator pattern');
