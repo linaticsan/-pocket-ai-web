@@ -38,7 +38,7 @@ assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent i
 assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v54'"),'STEP 49 app-shell cache must be v46');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v54'"),'STEP 49 app-shell cache must be v54');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -318,7 +318,7 @@ assert(workspace.includes("master.gain.exponentialRampToValueAtTime(.16"),'Laugh
 assert(workspace.includes("const notes=[")&&workspace.includes("const sparkle=ctx.createOscillator()")&&workspace.includes("notes.forEach((n,i)=>"),'Laugh must use a multi-voice oscillator pattern');
 
 assert(pocketJs.includes("'[data-pocket-exclusion],[data-pocket-exclusion-group]'"),'Roaming collision groups must be honored');
-assert(pocketJs.includes("addEventListener('scroll',handleLayoutReset"),'Pocket bounds must revalidate on scroll');
+assert(pocketJs.includes("addEventListener('scroll',handleScrollReset")&&pocketJs.includes("setTimeout(()=>goHomeAll(false),90)"),'Pocket must reset safely on scroll');
 assert(pocketJs.includes("if(!('PointerEvent' in window))document.addEventListener('touchstart'"),'Touch unlock fallback must not duplicate Pointer Events');
 assert(workspace.includes("master.disconnect();compressor.disconnect()"),'Laugh audio graph cleanup is missing');
 assert(workspace.includes("osc.disconnect();gain.disconnect()"),'Tone audio graph cleanup is missing');
