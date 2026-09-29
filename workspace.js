@@ -705,7 +705,6 @@ if(progressionLocalStatus){
 const COMPANION_KEY='pocket-companion-interactions-v1';
 const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','sleepy','listening','excited','offline','research','study','coding','files','curious','mischievous','annoyed','grumpy','very-annoyed']);
 const MASCOT_TASK_STATES=new Set(['thinking','listening','research','study','coding','files']);
-const MASCOT_ANNOYED_STATES=new Set(['curious','annoyed','grumpy','very-annoyed']);
 const MASCOT_SLEEP_MS=180000;
 const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',sleepy:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline',research:'Researching',study:'Studying',coding:'Coding',files:'Files',curious:'Curious',mischievous:'Mischievous',annoyed:'Annoyed',grumpy:'Grumpy','very-annoyed':'Very annoyed'};
 const mascotLines={
@@ -948,7 +947,10 @@ document.addEventListener('visibilitychange',()=>{
  else{scheduleBlink();scheduleIdleLook();scheduleMascotSleep();if(mascotAnnoyance>0)scheduleAnnoyanceRecovery()}
 });
 window.addEventListener('pocket-motion-change',()=>{clearBlink();resetMascotEyes();scheduleBlink();scheduleIdleLook();scheduleMascotSleep()});
-window.addEventListener('pocket-mascot-home',()=>calmAnnoyance(false));
+window.addEventListener('pocket-mascot-home',()=>{
+ if(mascotBusyReasons.size||['success','error','thinking','listening','research','study','coding','files','offline'].includes(mascotState))return;
+ calmAnnoyance(false);
+});
 
 function setMascotWind(value=0){
  const v=Math.max(-1,Math.min(1,Number(value)||0));
