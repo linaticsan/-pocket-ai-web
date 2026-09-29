@@ -69,7 +69,7 @@ const FEATURE_BUNDLES={
   },
   library:{
     styles:['./library-online-v34.css?v=20260920-v52','./webnovel-v42.css?v=20260920-v52'],
-    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260926-step30-canonical-nav']
+    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260929-step50-observer-cleanup']
   }
 };
 function ensureFeatureBundle(name){
