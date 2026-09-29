@@ -159,6 +159,10 @@ html[data-motion="off"] .pocket-character__body{transform:none!important}
 .home-hero-pocket p{margin:0;color:var(--pa-secondary);font-size:13px}
 .home-pocket-speech{position:relative;padding:7px 11px;border:1px solid var(--pa-border);border-radius:11px;background:color-mix(in srgb,var(--pa-card) 88%,transparent);box-shadow:0 5px 16px color-mix(in srgb,var(--pa-text) 5%,transparent)}
 .home-pocket-speech::before{content:"";position:absolute;left:50%;top:-5px;width:8px;height:8px;margin-left:-4px;background:inherit;border-left:1px solid var(--pa-border);border-top:1px solid var(--pa-border);transform:rotate(45deg)}
+.home-pocket-speech.is-changing{animation:pocketSpeechPop .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes pocketSpeechPop{0%{opacity:.42;transform:translateY(4px) scale(.97)}70%{opacity:1;transform:translateY(-2px) scale(1.02)}100%{transform:none}}
+.topbar-pocket-logo{border-radius:10px;overflow:hidden;background:#f5f0fb;box-shadow:0 2px 8px color-mix(in srgb,var(--pa-text) 8%,transparent)}
+.topbar-pocket-logo img{display:block;width:100%;height:100%;object-fit:cover}
 .pocket-page-empty{display:grid;justify-items:center;text-align:center;gap:8px;padding:20px 16px 12px}
 .pocket-page-empty h2,.pocket-page-empty h3{margin:0}.pocket-page-empty p{margin:0;color:var(--pa-secondary)}
 #files.has-pocket-document .pocket-page-empty{display:none}
