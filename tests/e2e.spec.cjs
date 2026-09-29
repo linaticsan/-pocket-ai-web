@@ -484,7 +484,7 @@ test('PocketMascot exposes canonical states and respects motion off', async ({ p
   await page.locator('#settingsOpen').click();
   await page.locator('#settingsDialog [data-motion="off"]').click();
   await expect(page.locator('html')).toHaveAttribute('data-motion','off');
-  const animation = await page.locator('#homeMascot .pocket-mascot-visual').evaluate(el => getComputedStyle(el).animationName);
+  const animation = await page.locator('#homeMascot .pocket-character__body').evaluate(el => getComputedStyle(el).animationName);
   expect(animation).toBe('none');
   await expectNoPageErrors(errors);
 });
