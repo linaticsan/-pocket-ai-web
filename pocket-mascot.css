@@ -498,7 +498,7 @@ html[data-motion="off"] .pocket-character__antenna{transform:none!important}
 .pocket-character[data-pocket-state="mischievous"] .pocket-character__brow--left{opacity:.7;transform:rotate(12deg)}
 .pocket-character[data-pocket-state="mischievous"] .pocket-character__brow--right{opacity:.5;transform:rotate(-4deg)}
 .pocket-character[data-pocket-state="mischievous"] .pocket-character__mouth{transform:rotate(-5deg)}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth{opacity:.9;transform:scaleY(.72)}
+.pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth{opacity:0;transform:scaleY(.72)}
 .pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth i:nth-child(n+2){opacity:0}
 
 /* annoyed: cute first, fangs second */
