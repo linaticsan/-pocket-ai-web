@@ -122,7 +122,7 @@ async function playPocketSound(kind='tap',{force=false}={}){
    return true;
   }
   const osc=ctx.createOscillator(),gain=ctx.createGain();
-  const tones={tap:[520,620,.055],happy:[660,880,.09],success:[740,1040,.12],error:[260,210,.12]};
+  const tones={tap:[520,620,.055],chirp:[720,930,.075],grumble:[185,145,.11],growl:[150,105,.14],happy:[660,880,.09],success:[740,1040,.12],error:[260,210,.12]};
   const [start,end,duration]=tones[kind]||tones.tap;
   osc.type='sine';osc.frequency.setValueAtTime(start,now);osc.frequency.exponentialRampToValueAtTime(Math.max(40,end),now+duration);
   gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.05,now+.01);gain.gain.exponentialRampToValueAtTime(.0001,now+duration);
@@ -149,11 +149,11 @@ async function unlockPocketAudio(){
 window.PocketSound={
  play:playPocketSound,
  unlock:unlockPocketAudio,
- laugh:async()=>{safeSet(SOUND_KEY,'on');renderSoundSetting();await unlockPocketAudio();return playPocketSound('laugh',{force:true})},
+ laugh:async()=>{if(!soundEnabled())return false;await unlockPocketAudio();return playPocketSound('laugh')},
  isEnabled:soundEnabled
 };
 
-const POCKET_BUILD='step49-runtime-bugfix-pass';
+const POCKET_BUILD='step50-pocket-personality-cleanup';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -703,18 +703,29 @@ if(progressionLocalStatus){
 }
 
 const COMPANION_KEY='pocket-companion-interactions-v1';
-const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline','research','study','coding','files']);
+const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep','sleepy','listening','excited','offline','research','study','coding','files','curious','mischievous','annoyed','grumpy','very-annoyed']);
+const MASCOT_TASK_STATES=new Set(['thinking','listening','research','study','coding','files']);
+const MASCOT_ANNOYED_STATES=new Set(['curious','annoyed','grumpy','very-annoyed']);
 const MASCOT_SLEEP_MS=180000;
-const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline',research:'Researching',study:'Studying',coding:'Coding',files:'Files'};
-const tapMessages=['Hi! ✦','Ready!','What are we making?','Let\'s learn something.','Need help?','Let\'s build!','Good to see you.'];
+const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',sleepy:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline',research:'Researching',study:'Studying',coding:'Coding',files:'Files',curious:'Curious',mischievous:'Mischievous',annoyed:'Annoyed',grumpy:'Grumpy','very-annoyed':'Very annoyed'};
+const mascotLines={
+ friendly:['Hi!','Hehe.','That tickles.'],
+ curious:['Hm?','What is it?'],
+ annoyed:['Again?','Hey...','Hmph.'],
+ very:['Stop poking me.','I\'m watching you.']
+};
 const mascotBusyReasons=new Set();
 let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0,mascotBlinkTimer=0,mascotLookTimer=0,mascotTapLocked=false,mascotPointerFrame=0,mascotPointerEvent=null;
-let pressTimer=0,pressHandled=false,tapWindow=[];
+let pressTimer=0,pressHandled=false;
+let mascotAnnoyance=0,annoyThreshold=4+Math.floor(Math.random()*4),rapidTapCount=0,lastPersonalityTapAt=0,annoyRecoveryTimer=0;
 
 function motionMode(){return document.documentElement.dataset.motion||'full'}
 function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function mascotMotionAllowed(){return motionMode()!=='off'&&!reducedMotion()}
 function mascotElement(){return q('homeMascot')}
+function randomLine(group){const pool=mascotLines[group]||mascotLines.friendly;return pool[Math.floor(Math.random()*pool.length)]}
+function annoyanceState(level=mascotAnnoyance){return level>=4?'very-annoyed':level===3?'grumpy':level===2?'annoyed':level===1?'curious':'idle'}
+function restingMascotState(){return navigator.onLine===false?'offline':annoyanceState()}
 function resetMascotEyes(){
  const home=mascotElement();if(!home)return;
  home.style.setProperty('--pocket-eye-x','0px');home.style.setProperty('--pocket-eye-y','0px');
@@ -722,12 +733,13 @@ function resetMascotEyes(){
 function setMascotState(state='idle',ms=0){
  const home=mascotElement(),label=q('pocketMoodLabel');if(!home)return false;
  const next=MASCOT_STATES.has(state)?state:'idle';
+ if(mascotBusyReasons.size&&!MASCOT_TASK_STATES.has(next)&&!['error','success','offline'].includes(next))return false;
  clearTimeout(mascotStateTimer);
  mascotState=next;home.dataset.mascotState=next;home.dataset.pocketState=next;resetMascotEyes();window.dispatchEvent(new CustomEvent('pocket-mascot-state',{detail:{state:next}}));
  if(label)label.textContent=mascotMoods[next]||'Ready';
  if(ms>0)mascotStateTimer=setTimeout(()=>{
    if(mascotBusyReasons.size)return;
-   setMascotState(navigator.onLine===false?'offline':'idle',0);
+   setMascotState(restingMascotState(),0);
  },ms);
  return true;
 }
@@ -751,15 +763,13 @@ function spawnPocketParticles(kind='star',count=3){
 function bumpPocketInteractions(){
  let n=parseInt(safeGet(COMPANION_KEY,'0'),10);if(!Number.isFinite(n))n=0;safeSet(COMPANION_KEY,String(n+1));
 }
-function clearBlink(){
- const home=mascotElement();home?.classList.remove('is-blinking','is-double-blinking');
-}
+function clearBlink(){mascotElement()?.classList.remove('is-blinking','is-double-blinking')}
 function scheduleBlink(){
  clearTimeout(mascotBlinkTimer);
  if(document.hidden||motionMode()==='off'||reducedMotion())return;
  mascotBlinkTimer=setTimeout(()=>{
    const home=mascotElement();
-   if(home&&mascotState!=='sleep'){
+   if(home&&!['sleep','sleepy'].includes(mascotState)){
      const doubleBlink=Math.random()<.16;
      home.classList.add(doubleBlink?'is-double-blinking':'is-blinking');
      setTimeout(clearBlink,doubleBlink?420:190);
@@ -783,74 +793,131 @@ function scheduleIdleLook(){
    scheduleIdleLook();
  },8000+Math.floor(Math.random()*7000));
 }
-function canSleep(){
- return !mascotBusyReasons.size&&document.visibilityState==='visible'&&navigator.onLine!==false;
-}
+function canSleep(){return !mascotBusyReasons.size&&document.visibilityState==='visible'&&navigator.onLine!==false}
 function scheduleMascotSleep(){
  clearTimeout(mascotSleepTimer);
  if(motionMode()==='off')return;
  mascotSleepTimer=setTimeout(()=>{if(canSleep())setMascotState('sleep',0);else scheduleMascotSleep()},MASCOT_SLEEP_MS);
 }
 function wakeMascot(){
- if(mascotState==='sleep'){
-   setMascotState(navigator.onLine===false?'offline':'idle',0);
+ if(['sleep','sleepy'].includes(mascotState)){
+   setMascotState(restingMascotState(),0);
    const home=mascotElement();
    if(home&&mascotMotionAllowed()){home.classList.remove('is-waking');void home.offsetWidth;home.classList.add('is-waking');setTimeout(()=>home.classList.remove('is-waking'),650)}
  }
  scheduleMascotSleep();
 }
+function renderAnnoyance(){
+ const home=mascotElement();if(home)home.dataset.pocketAnnoyance=String(mascotAnnoyance);
+ document.documentElement.dataset.pocketAnnoyance=String(mascotAnnoyance);
+}
+function scheduleAnnoyanceRecovery(){
+ clearTimeout(annoyRecoveryTimer);
+ if(mascotAnnoyance<=0)return;
+ const delay=5000+Math.floor(Math.random()*10001);
+ annoyRecoveryTimer=setTimeout(()=>{
+   if(document.hidden){scheduleAnnoyanceRecovery();return}
+   mascotAnnoyance=Math.max(0,mascotAnnoyance-1);renderAnnoyance();
+   if(!mascotBusyReasons.size)setMascotState(restingMascotState(),mascotAnnoyance?1000:550);
+   if(mascotAnnoyance>0){annoyRecoveryTimer=setTimeout(function step(){mascotAnnoyance=Math.max(0,mascotAnnoyance-1);renderAnnoyance();if(!mascotBusyReasons.size)setMascotState(restingMascotState(),mascotAnnoyance?900:450);if(mascotAnnoyance>0)annoyRecoveryTimer=setTimeout(step,1800)},1800)}
+   else{rapidTapCount=0;annoyThreshold=4+Math.floor(Math.random()*4)}
+ },delay);
+}
+function setAnnoyance(level,{speak=false}={}){
+ mascotAnnoyance=Math.max(0,Math.min(4,Number(level)||0));renderAnnoyance();
+ if(!mascotBusyReasons.size)setMascotState(restingMascotState(),mascotAnnoyance?900:450);
+ if(speak){
+   const group=mascotAnnoyance>=4?'very':mascotAnnoyance>=2?'annoyed':mascotAnnoyance===1?'curious':'friendly';
+   showPocketSpeech(randomLine(group),1500);
+ }
+ scheduleAnnoyanceRecovery();return mascotAnnoyance;
+}
+function calmAnnoyance(full=false){
+ clearTimeout(annoyRecoveryTimer);
+ mascotAnnoyance=full?0:Math.max(0,mascotAnnoyance-1);rapidTapCount=full?0:rapidTapCount;renderAnnoyance();
+ if(full)annoyThreshold=4+Math.floor(Math.random()*4);
+ if(!mascotBusyReasons.size)setMascotState(restingMascotState(),0);
+ if(mascotAnnoyance>0)scheduleAnnoyanceRecovery();
+ return mascotAnnoyance;
+}
+function triggerCuteChomp(){
+ if(!mascotMotionAllowed())return;
+ document.querySelectorAll('[data-pocket-character]').forEach(el=>{el.classList.remove('is-pocket-chomp');void el.offsetWidth;el.classList.add('is-pocket-chomp');setTimeout(()=>el.classList.remove('is-pocket-chomp'),320)});
+}
+function runAwayAnnoyed(){
+ if(motionMode()==='off'||reducedMotion()||mascotBusyReasons.size)return false;
+ setTimeout(()=>window.PocketMascotViews?.dashAway?.(),140);return true;
+}
+function handleMascotTap(){
+ const now=Date.now(),delta=lastPersonalityTapAt?now-lastPersonalityTapAt:Infinity;lastPersonalityTapAt=now;
+ bumpPocketInteractions();wakeMascot();
+ if(mascotBusyReasons.size)return false;
+
+ if(delta>1800){
+   rapidTapCount=1;
+   if(mascotAnnoyance>0)mascotAnnoyance=Math.max(0,mascotAnnoyance-1);
+   renderAnnoyance();
+   const rare=Math.random()<.045;
+   setMascotState(rare?'mischievous':'happy',rare?800:650);
+   if(Math.random()<.46)showPocketSpeech(randomLine('friendly'),1400);
+   spawnPocketParticles(Math.random()<.45?'heart':'star',2);
+   void window.PocketSound?.play?.('chirp');
+   scheduleAnnoyanceRecovery();
+   return true;
+ }
+
+ rapidTapCount++;
+ if(rapidTapCount<3){
+   setMascotState('happy',520);spawnPocketParticles('star',1);void window.PocketSound?.play?.('chirp');return true;
+ }
+ if(rapidTapCount<annoyThreshold){
+   setAnnoyance(1,{speak:rapidTapCount===3});void window.PocketSound?.play?.('tap');return true;
+ }
+ const level=Math.min(4,2+Math.floor((rapidTapCount-annoyThreshold)/2));
+ const changed=level>mascotAnnoyance;setAnnoyance(Math.max(level,mascotAnnoyance),{speak:changed||Math.random()<.3});
+ if(mascotAnnoyance>=4){
+   void window.PocketSound?.play?.('growl');
+   if(Math.random()<.48)triggerCuteChomp();
+   if(Math.random()<.68)runAwayAnnoyed();
+ }else if(mascotAnnoyance>=2)void window.PocketSound?.play?.('grumble');
+ return true;
+}
 function setMascotBusy(reason,on,state='thinking'){
  const key=String(reason||'task');
  if(on){mascotBusyReasons.add(key);setMascotState(state,0);wakeMascot()}
- else{mascotBusyReasons.delete(key);if(!mascotBusyReasons.size&&['thinking','listening','research','study','coding','files'].includes(mascotState))setMascotState(navigator.onLine===false?'offline':'idle',0)}
+ else{mascotBusyReasons.delete(key);if(!mascotBusyReasons.size&&MASCOT_TASK_STATES.has(mascotState))setMascotState(restingMascotState(),0)}
 }
 function reactMascot(kind='tap'){
  const home=mascotElement();if(!home)return false;
- if(kind==='tap'){
-   if(mascotTapLocked)return false;
-   mascotTapLocked=true;bumpPocketInteractions();wakeMascot();
-   setMascotState('happy',650);
-   if(mascotMotionAllowed()){home.classList.remove('is-tap-reacting');void home.offsetWidth;home.classList.add('is-tap-reacting');setTimeout(()=>home.classList.remove('is-tap-reacting'),620)}
-   spawnPocketParticles(Math.random()<.35?'heart':'star',3);
-   if(Math.random()<.34)showPocketSpeech(tapMessages[Math.floor(Math.random()*tapMessages.length)],1700);
-   setTimeout(()=>{mascotTapLocked=false},520);
-   return true;
- }
+ if(kind==='tap')return handleMascotTap();
  if(kind==='success'){
-   setMascotState('success',900);spawnPocketParticles('star',3);void window.PocketSound?.play?.('success');return true;
+   calmAnnoyance(true);setMascotState('success',900);spawnPocketParticles('star',3);void window.PocketSound?.play?.('success');return true;
  }
- if(kind==='error'){
-   setMascotState('error',950);void window.PocketSound?.play?.('error');return true;
- }
+ if(kind==='error'){setMascotState('error',950);void window.PocketSound?.play?.('error');return true}
  if(kind==='levelUp'){
    setMascotState('excited',1400);spawnPocketParticles('star',4);
-   const xp=q('pocketXP');xp?.classList.add('is-level-up');setTimeout(()=>xp?.classList.remove('is-level-up'),1200);
-   return true;
+   const xp=q('pocketXP');xp?.classList.add('is-level-up');setTimeout(()=>xp?.classList.remove('is-level-up'),1200);return true;
  }
  if(kind==='happy'){setMascotState('happy',750);spawnPocketParticles('star',2);return true}
+ if(kind==='curious'){setMascotState('curious',700);return true}
  return false;
 }
 function lookMascotToward(clientX,clientY,temporary=false){
- const home=mascotElement();if(!home||motionMode()!=='full'||reducedMotion()||mascotState==='sleep')return;
+ const home=mascotElement();if(!home||motionMode()!=='full'||reducedMotion()||['sleep','sleepy'].includes(mascotState))return;
  const rect=home.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height*.46;
  const dx=clientX-cx,dy=clientY-cy,len=Math.max(1,Math.hypot(dx,dy)),max=2.5;
  home.style.setProperty('--pocket-eye-x',(dx/len*max).toFixed(2)+'px');
  home.style.setProperty('--pocket-eye-y',(dy/len*Math.min(max,1.8)).toFixed(2)+'px');
  if(temporary)setTimeout(resetMascotEyes,520);
 }
-function checkMascotSecret(){
- const now=Date.now();tapWindow=tapWindow.filter(t=>now-t<4000);tapWindow.push(now);
- if(tapWindow.length>=7){tapWindow=[];setMascotState('excited',1100);showPocketSpeech('You found my secret! ✦',2200);spawnPocketParticles('star',4);return true}
- return false;
-}
-function pocketTap(){if(checkMascotSecret())return;reactMascot('tap')}
+function pocketTap(){return handleMascotTap()}
 function pocketPet(){
- pressHandled=true;bumpPocketInteractions();wakeMascot();setMascotState('happy',950);showPocketSpeech(Math.random()<.5?'Hehe ✦':'That tickles!',1700);spawnPocketParticles('heart',3)
+ pressHandled=true;bumpPocketInteractions();wakeMascot();calmAnnoyance(false);setMascotState('happy',950);showPocketSpeech(randomLine('friendly'),1500);spawnPocketParticles('heart',3);void window.PocketSound?.play?.('chirp')
 }
 
 const homeMascot=q('homeMascot');
 if(homeMascot){
- homeMascot.dataset.mascotState='idle';
+ homeMascot.dataset.mascotState='idle';renderAnnoyance();
  homeMascot.addEventListener('click',()=>{if(pressHandled){pressHandled=false;return}pocketTap()});
  homeMascot.addEventListener('pointerdown',e=>{
    if(e.button!==undefined&&e.button!==0)return;
@@ -865,14 +932,17 @@ if(homeMascot){
 document.addEventListener('pointermove',e=>{
  if(e.pointerType!=='mouse'||matchMedia('(pointer:coarse)').matches||motionMode()!=='full'||reducedMotion()||document.hidden)return;
  mascotPointerEvent=e;if(mascotPointerFrame)return;
- mascotPointerFrame=requestAnimationFrame(()=>{mascotPointerFrame=0;const ev=mascotPointerEvent;mascotPointerEvent=null;if(ev&&['idle','happy'].includes(mascotState))lookMascotToward(ev.clientX,ev.clientY,false)});
+ mascotPointerFrame=requestAnimationFrame(()=>{mascotPointerFrame=0;const ev=mascotPointerEvent;mascotPointerEvent=null;if(ev&&['idle','happy','curious','mischievous'].includes(mascotState))lookMascotToward(ev.clientX,ev.clientY,false)});
 },{passive:true});
-['pointerdown','keydown','touchstart'].forEach(type=>document.addEventListener(type,wakeMascot,{passive:true}));
+document.addEventListener('pointerdown',wakeMascot,{passive:true});
+document.addEventListener('keydown',wakeMascot,{passive:true});
+if(!('PointerEvent' in window))document.addEventListener('touchstart',wakeMascot,{passive:true});
 document.addEventListener('visibilitychange',()=>{
  if(document.hidden){clearTimeout(mascotBlinkTimer);clearTimeout(mascotLookTimer);resetMascotEyes()}
- else{scheduleBlink();scheduleIdleLook();scheduleMascotSleep()}
+ else{scheduleBlink();scheduleIdleLook();scheduleMascotSleep();if(mascotAnnoyance>0)scheduleAnnoyanceRecovery()}
 });
 window.addEventListener('pocket-motion-change',()=>{clearBlink();resetMascotEyes();scheduleBlink();scheduleIdleLook();scheduleMascotSleep()});
+window.addEventListener('pocket-mascot-home',()=>calmAnnoyance(false));
 
 function setMascotWind(value=0){
  const v=Math.max(-1,Math.min(1,Number(value)||0));
@@ -885,7 +955,9 @@ function setMascotWind(value=0){
 window.PocketMascot={
  setState:setMascotState,
  react:reactMascot,
+ tap:handleMascotTap,
  setBusy:setMascotBusy,
+ calm:()=>calmAnnoyance(true),
  sleep:()=>{if(canSleep()){setMascotState('sleep',0);window.PocketMascotViews?.goHomeAll?.(true)}},
  wake:wakeMascot,
  lookAt:lookMascotToward,
@@ -893,6 +965,8 @@ window.PocketMascot={
  moveRandom:()=>window.PocketMascotViews?.moveRandom?.(),
  goHome:()=>window.PocketMascotViews?.goHomeAll?.(true),
  getState:()=>mascotState,
+ getAnnoyance:()=>mascotAnnoyance,
+ getAnnoyThreshold:()=>annoyThreshold,
  isBusy:()=>mascotBusyReasons.size>0
 };
 
