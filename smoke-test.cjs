@@ -108,7 +108,7 @@ assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includ
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
 assert(!workspace.includes("const mascots=document.querySelectorAll('[data-mascot]')"),'Unused mascot collection must stay removed');
 assert(workspace.includes('window.PocketMascot={')&&workspace.includes('setBusy:setMascotBusy')&&workspace.includes('react:reactMascot'),'Authoritative PocketMascot controller is missing');
-assert(workspace.includes("new Set(['idle','thinking','happy','success','error','sleep','listening','excited','offline','research','study','coding','files'])"),'Canonical mascot states are missing');
+assert(workspace.includes("'curious','mischievous','annoyed','grumpy','very-annoyed'")&&workspace.includes("'thinking','listening','research','study','coding','files'"),'Canonical mascot states are missing');
 assert(!workspace.includes('function runPocketMascot()')&&!workspace.includes('function runCuteLogo(source)'),'Obsolete game-like mascot runner must stay removed');
 assert(pocketCss.includes('Pocket mascot visual identity — shared component'),'Shared mascot stylesheet is missing');
 assert(pocketJs.includes('window.PocketMascotViews={'),'Shared mascot renderer is missing');
@@ -306,9 +306,9 @@ assert(index.includes('id="homeComposer" class="home-composer" data-pocket-exclu
 assert(pocketJs.includes("5000+Math.floor(Math.random()*6500)"),'Pocket randomized stay timer is missing');
 assert(pocketJs.includes("Date.now()-d.lastMove<(autonomous?700:220)"),'Fast manual relocation cooldown is missing');
 assert(pocketJs.includes("composer-left")&&pocketJs.includes("composer-right")&&pocketJs.includes("composer-above")&&pocketJs.includes("composer-below"),'Composer-adjacent roaming anchors are missing');
-assert(pocketJs.includes("void window.PocketSound?.laugh?.()"),'Pocket tap laugh hook is missing');
+assert(pocketJs.includes("window.PocketMascot?.tap?.({source:'roaming',element:el})"),'Renderer must forward taps to the central personality controller');
 assert(workspace.includes("kind==='laugh'")&&workspace.includes("const notes=[")&&workspace.includes("compressor.threshold.setValueAtTime(-18")&&workspace.includes("master.gain.exponentialRampToValueAtTime(.16"),'Audible synthesized laugh sound is missing');
-assert(workspace.includes("laugh:async()=>{safeSet(SOUND_KEY,'on')")&&workspace.includes("await unlockPocketAudio()"),'Pocket laugh must unlock audio from user gesture');
+assert(workspace.includes("laugh:async()=>{if(!soundEnabled())return false")&&workspace.includes("await unlockPocketAudio()"),'Pocket sound reactions must remain user-enabled and gesture-gated');
 assert(environmentCss.includes("#home .home-hero{overflow:visible}")&&environmentCss.includes("touch-action:manipulation"),'Roaming visibility/touch CSS is missing');
 
 assert(workspace.includes("async function unlockPocketAudio()"),'Pocket audio unlock helper is missing');
