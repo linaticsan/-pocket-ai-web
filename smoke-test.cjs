@@ -223,7 +223,7 @@ assert(coreCss.includes('STEP 37 — cleaner information hierarchy'),'STEP 37 cl
 assert(!index.includes('id="homeMood"'),'Duplicate Home readiness copy must stay removed');
 assert(!index.includes('id="researchSteps"'),'Decorative fake Research progress labels must stay removed');
 assert(!index.includes('SURFACE • DEEP RESEARCH')&&!index.includes('FILES • PRIVATE')&&!index.includes('GITHUB • DISCOVER'),'Redundant section eyebrow copy must stay removed');
-assert(workspace.includes("const POCKET_BUILD='step51-fluffy-animal-mascot'"),'Diagnostics build must match current UI build');
+assert(workspace.includes("const POCKET_BUILD='step52-mascot-state-guard'"),'Diagnostics build must match current UI build');
 assert(coreCss.includes('STEP 38 — copy deduplication and compact content rhythm'),'STEP 38 copy cleanup CSS is missing');
 assert(workspace.includes("const MOTION_CHOICES=new Set(['full','gentle','off'])"),'Motion choices must be validated');
 assert(workspace.includes("pocket-motion-change"),'Motion changes must emit a canonical event');
