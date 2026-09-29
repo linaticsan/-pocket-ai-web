@@ -38,7 +38,7 @@ assert(index.includes('window.__pocketForceBootClose=removeBoot'),'Independent i
 assert(/setTimeout\(\(\)=>\{[\s\S]*?removeBoot\(\);[\s\S]*?\},6500\)/.test(index),'Independent 6.5s inline boot watchdog is missing');
 assert(index.includes("window.dispatchEvent(new CustomEvent('pocket-startup-timeout'))"),'STEP 28 startup timeout event is missing');
 assert(index.indexOf('pocket-startup-timeout')<index.indexOf('src="./boot-v83.js'),'Inline boot watchdog must be defined before external boot-v83.js');
-assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v56'"),'STEP 51 app-shell cache must be v55');
+assert(sw.includes("const CACHE=APP_CACHE_PREFIX+'v56'"),'STEP 51 app-shell cache must be v56');
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon MutationObserver microtask loop must not return');
 assert(!icons.includes("document.addEventListener('click',()=>queueMicrotask(run)"),'Icon click refresh must not queue run() as a microtask');
 assert(icons.includes('function scheduleIconRun()'),'Coalesced icon scheduler is missing');
@@ -108,6 +108,7 @@ assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includ
 assert(!workspace.includes('PocketV39'),'Workspace must use canonical PocketNav only');
 assert(!workspace.includes("const mascots=document.querySelectorAll('[data-mascot]')"),'Unused mascot collection must stay removed');
 assert(workspace.includes('window.PocketMascot={')&&workspace.includes('setBusy:setMascotBusy')&&workspace.includes('react:reactMascot'),'Authoritative PocketMascot controller is missing');
+assert(workspace.includes("init:()=>{window.PocketMascotViews?.hydrate?.()"),'PocketMascot.init() entry point is missing');
 assert(workspace.includes("'curious','mischievous','annoyed','grumpy','very-annoyed'")&&workspace.includes("'thinking','listening','research','study','coding','files'"),'Canonical mascot states are missing');
 assert(!workspace.includes('function runPocketMascot()')&&!workspace.includes('function runCuteLogo(source)'),'Obsolete game-like mascot runner must stay removed');
 assert(pocketCss.includes('Pocket mascot visual identity — shared component'),'Shared mascot stylesheet is missing');
