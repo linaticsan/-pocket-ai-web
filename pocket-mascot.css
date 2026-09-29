@@ -580,6 +580,7 @@ html[data-motion="off"] .pocket-character__antenna{transform:none!important}
 @keyframes pocket-fluffy-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2.5%) scale(1.012,.99)}}
 @keyframes pocket-fluffy-happy{0%,100%{transform:translateY(0) scale(1)}42%{transform:translateY(-8%) scale(.98,1.035)}66%{transform:translateY(1%) scale(1.025,.975)}}
 @keyframes pocket-fluffy-curious{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-5deg) translateY(-2%)}}
+@keyframes pocket-fluffy-sleep{0%,100%{transform:scaleY(.94) translateY(3%)}50%{transform:scaleY(.91) translateY(5%) scaleX(1.02)}}
 @keyframes pocket-fluffy-annoyed{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-2px) rotate(-1deg)}75%{transform:translateX(2px) rotate(1deg)}}
 @keyframes pocket-fluffy-tuft{0%,100%{transform:translateX(-50%) rotate(calc(-2deg + var(--pocket-wind-angle,0deg)))}50%{transform:translateX(-50%) rotate(calc(3deg + var(--pocket-wind-angle,0deg)))}}
 @keyframes pocket-fluffy-paw-happy{0%,100%{transform:rotate(13deg) translateY(0)}50%{transform:rotate(18deg) translateY(-7%)}}
@@ -595,6 +596,8 @@ html[data-motion="full"] .pocket-character__antenna{animation:pocket-fluffy-tuft
 html[data-motion="full"] .pocket-character[data-pocket-state="happy"] .pocket-character__body,
 html[data-motion="full"] .pocket-character[data-pocket-state="success"] .pocket-character__body{animation:pocket-fluffy-happy .72s cubic-bezier(.2,.8,.2,1) both}
 html[data-motion="full"] .pocket-character[data-pocket-state="curious"] .pocket-character__body{animation:pocket-fluffy-curious 2.8s ease-in-out infinite}
+html[data-motion="full"] .pocket-character[data-pocket-state="sleep"] .pocket-character__body,
+html[data-motion="full"] .pocket-character[data-pocket-state="sleepy"] .pocket-character__body{animation:pocket-fluffy-sleep 6.8s ease-in-out infinite}
 html[data-motion="full"] .pocket-character[data-pocket-state="annoyed"] .pocket-character__body,
 html[data-motion="full"] .pocket-character[data-pocket-state="grumpy"] .pocket-character__body{animation:pocket-fluffy-annoyed .42s ease 1}
 html[data-motion="full"] .pocket-character[data-pocket-state="very-annoyed"] .pocket-character__body{animation:pocket-fluffy-annoyed .32s ease 2}
