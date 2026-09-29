@@ -961,6 +961,7 @@ function setMascotWind(value=0){
  return v;
 }
 window.PocketMascot={
+ init:()=>{window.PocketMascotViews?.hydrate?.();setMascotState(restingMascotState(),0);return true},
  setState:setMascotState,
  react:reactMascot,
  tap:handleMascotTap,
