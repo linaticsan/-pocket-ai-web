@@ -900,6 +900,10 @@ function reactMascot(kind='tap'){
  }
  if(kind==='happy'){setMascotState('happy',750);spawnPocketParticles('star',2);return true}
  if(kind==='curious'){setMascotState('curious',700);return true}
+ if(kind==='movement'){
+   if(mascotBusyReasons.size||mascotAnnoyance>=2)return false;
+   setMascotState(mascotAnnoyance===1?'curious':'happy',420);return true;
+ }
  return false;
 }
 function lookMascotToward(clientX,clientY,temporary=false){
