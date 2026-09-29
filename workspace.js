@@ -714,7 +714,7 @@ const mascotLines={
  very:['Stop poking me.','I\'m watching you.']
 };
 const mascotBusyReasons=new Set();
-let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0,mascotBlinkTimer=0,mascotLookTimer=0,mascotTapLocked=false,mascotPointerFrame=0,mascotPointerEvent=null;
+let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0,mascotBlinkTimer=0,mascotLookTimer=0,mascotPointerFrame=0,mascotPointerEvent=null;
 let pressTimer=0,pressHandled=false;
 let mascotAnnoyance=0,annoyThreshold=4+Math.floor(Math.random()*4),rapidTapCount=0,lastPersonalityTapAt=0,annoyRecoveryTimer=0;
 
