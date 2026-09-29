@@ -158,7 +158,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
  d.moving=true;d.lastMove=Date.now();faceDirection(el,dx);
  if(reduced()){
   d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.dataset.pocketZone=d.lastZone||'free';el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;
-  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
+  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true';window.dispatchEvent(new CustomEvent('pocket-mascot-home',{detail:{element:el}}))}else delete el.dataset.pocketHome;
   d.moving=false;scheduleStay(el);return true;
  }
  el.classList.add('is-pocket-moving');
@@ -168,7 +168,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
  frames.push({offset:.88,transform:`translate3d(${x}px,${y-4}px,0) scale(1.025,.975)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
  try{d.animation=el.animate(frames,{duration,easing:'cubic-bezier(.16,.84,.2,1)',fill:'forwards'});await d.animation.finished}catch{}
  d.animation=null;d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.dataset.pocketZone=d.lastZone||'free';el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
- if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
+ if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true';window.dispatchEvent(new CustomEvent('pocket-mascot-home',{detail:{element:el}}))}else delete el.dataset.pocketHome;
  d.moving=false;landingReaction(el);scheduleStay(el);
  if(d.queued){d.queued=false;setTimeout(()=>moveRandom(el,{autonomous:false}),70)}
  return true;
@@ -176,7 +176,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
 function goHome(el=q('.pocket-playground [data-pocket-character]'),animate=true){
  if(!el)return Promise.resolve(false);const d=initWander(el);clearStay(el);d.queued=false;
  if(d.animation){try{d.animation.cancel()}catch{}d.animation=null;d.moving=false}
- if(!animate||motion()==='off'||reduced()){d.x=0;d.y=0;d.taps=0;d.lastZone='home';d.returnAt=3+Math.floor(Math.random()*5);el.style.transform='translate3d(0,0,0)';el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');el.dataset.pocketHome='true';return Promise.resolve(true)}
+ if(!animate||motion()==='off'||reduced()){d.x=0;d.y=0;d.taps=0;d.lastZone='home';d.returnAt=3+Math.floor(Math.random()*5);el.style.transform='translate3d(0,0,0)';el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');el.dataset.pocketHome='true';window.dispatchEvent(new CustomEvent('pocket-mascot-home',{detail:{element:el}}));return Promise.resolve(true)}
  return animateMove(el,0,0,{home:true,zone:'home'});
 }
 function goHomeAll(animate=true){qa('.pocket-playground [data-pocket-character]').forEach(el=>void goHome(el,animate))}
