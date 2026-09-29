@@ -3,6 +3,7 @@
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const CONTEXT_STATES={home:'idle',chat:'idle',research:'research',study:'study',coding:'coding',files:'files',projects:'files',settings:'idle',sidebar:'idle',local:'idle'};
 const ACTIVE_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy','annoyed','grumpy','very-annoyed']);
+const RETURN_HOME_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy']);
 const wander=new WeakMap();
 let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0,scrollResetTimer=0;
 
@@ -70,7 +71,7 @@ function scheduleBlink(){
   visible.forEach((el,i)=>blinkOne(el,Math.random()<.13&&i===0));scheduleBlink();
  },3000+Math.floor(Math.random()*4000));
 }
-function setState(state){globalState=state||'idle';syncAll();if(ACTIVE_STATES.has(globalState))goHomeAll(false)}
+function setState(state){globalState=state||'idle';syncAll();if(RETURN_HOME_STATES.has(globalState))goHomeAll(false)}
 function setContext(target,context){
  const nodes=typeof target==='string'?qa(target):target instanceof Element?[target]:[];
  nodes.forEach(node=>{const el=node.matches?.('[data-pocket-character]')?node:q('[data-pocket-character]',node);if(el){el.dataset.pocketContext=context;syncOne(el)}});
