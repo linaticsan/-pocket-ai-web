@@ -1,6 +1,6 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v55';
-const BUILD='step50-pocket-personality-cleanup';
+const CACHE=APP_CACHE_PREFIX+'v56';
+const BUILD='step51-fluffy-animal-mascot';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[

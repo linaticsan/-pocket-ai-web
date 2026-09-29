@@ -153,7 +153,7 @@ window.PocketSound={
  isEnabled:soundEnabled
 };
 
-const POCKET_BUILD='step50-pocket-personality-cleanup';
+const POCKET_BUILD='step51-fluffy-animal-mascot';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -961,6 +961,7 @@ function setMascotWind(value=0){
  return v;
 }
 window.PocketMascot={
+ init:()=>{window.PocketMascotViews?.hydrate?.();setMascotState(restingMascotState(),0);return true},
  setState:setMascotState,
  react:reactMascot,
  tap:handleMascotTap,
