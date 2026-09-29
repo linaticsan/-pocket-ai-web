@@ -5,7 +5,31 @@ const CONTEXT_STATES={home:'idle',chat:'idle',research:'research',study:'study',
 const ACTIVE_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy','annoyed','grumpy','very-annoyed']);
 const RETURN_HOME_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy']);
 const wander=new WeakMap();
-let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0,scrollResetTimer=0;
+let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0,scrollResetTimer=0,heroLineIndex=-1;
+const HERO_CLICK_LINES=[
+ 'Hi! What shall we explore? ✨',
+ 'Ask me anything.',
+ 'Want to study together?',
+ 'Need help with Japanese?',
+ 'Let’s research something.',
+ 'Want to build something?',
+ 'Hehe, you found me!',
+ 'Where should I hop next?',
+ 'I’m listening 👀',
+ 'Ready when you are.',
+ 'What are we working on?',
+ 'Tap again — I can move!',
+ 'Let’s make something useful.',
+ 'Your turn. What’s the plan?'
+];
+function changeHeroSpeech(el){
+ if(!el?.closest?.('.home-hero-pocket'))return;
+ const speech=q('#homePocketSpeech');if(!speech)return;
+ heroLineIndex=(heroLineIndex+1)%HERO_CLICK_LINES.length;
+ speech.textContent=HERO_CLICK_LINES[heroLineIndex];
+ speech.classList.remove('is-changing');void speech.offsetWidth;speech.classList.add('is-changing');
+ setTimeout(()=>speech.classList.remove('is-changing'),320);
+}
 
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
@@ -203,7 +227,7 @@ function goHomeAll(animate=true){qa('.pocket-playground [data-pocket-character]'
 function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomous=false,force=false}={}){
  if(!el||!canWander(el,{autonomous,force}))return false;const d=initWander(el);clearStay(el);
  if(d.moving){d.queued=!autonomous;return false}
- if(Date.now()-d.lastMove<(autonomous?700:220))return false;
+ if(Date.now()-d.lastMove<(autonomous?700:80))return false;
  d.taps++;
  if(autonomous&&Math.random()<.08)return void goHome(el,true);
  const dest=randomDestination(el,{far:!autonomous});if(!dest)return void goHome(el,true);
@@ -224,6 +248,7 @@ function tap(el){
  const d=initWander(el);clearStay(el);el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
  if(el.closest('.pocket-playground'))moveRandom(el,{autonomous:false});
  window.PocketMascot?.tap?.({source:'roaming',element:el});
+ changeHeroSpeech(el);
  setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},360);
 }
 function scheduleAutonomous(){
