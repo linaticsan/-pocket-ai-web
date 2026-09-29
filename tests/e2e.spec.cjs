@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step50-pocket-personality-cleanup', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step51-fluffy-animal-mascot', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -112,12 +112,12 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
   await page.locator('#settingsDialog [data-motion="full"]').click();
   await expect(page.locator('#motionPreviewText')).toContainText('Full:');
   const fullAnimation = await preview.locator('.pocket-character__body').evaluate(el => getComputedStyle(el).animationName);
-  expect(fullAnimation).toContain('pocket-shared-breathe');
+  expect(fullAnimation).toContain('pocket-fluffy-breathe');
 
   await page.locator('#settingsDialog [data-motion="gentle"]').click();
   await expect(page.locator('#motionPreviewText')).toContainText('Gentle:');
   const gentleDuration = await preview.locator('.pocket-character__body').evaluate(el => getComputedStyle(el).animationDuration);
-  expect(gentleDuration).toBe('8s');
+  expect(gentleDuration).toBe('8.5s');
 
   await page.locator('#settingsDialog [data-motion="off"]').click();
   await expect(page.locator('#motionPreviewText')).toContainText('Off:');
@@ -267,6 +267,45 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   const composer=await page.locator('#homeComposer').boundingBox();
   const overlaps=!(afterSecond.x+afterSecond.width<composer.x||afterSecond.x>composer.x+composer.width||afterSecond.y+afterSecond.height<composer.y||afterSecond.y>composer.y+composer.height);
   expect(overlaps).toBe(false);
+  await expectNoPageErrors(errors);
+});
+
+test('STEP 51 Pocket renders as one shared fluffy animal component instead of the old blob', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
+  const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await expect(pocket).toBeVisible();
+  await expect(pocket.locator('.pocket-character__fur')).toHaveCount(7);
+  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__horn')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__tuft')).toHaveCount(1);
+  await expect(pocket.locator('.pocket-character__brow')).toHaveCount(2);
+
+  const visual=await pocket.evaluate(el=>{
+    const body=el.querySelector('.pocket-character__body');
+    const eye=el.querySelector('.pocket-character__eye');
+    const antenna=el.querySelector('.pocket-character__antenna');
+    return {
+      bodyRadius:getComputedStyle(body).borderRadius,
+      bodyBackground:getComputedStyle(body).backgroundImage,
+      eyeBackground:getComputedStyle(eye).backgroundImage,
+      eyeWidth:parseFloat(getComputedStyle(eye).width),
+      antennaWidth:parseFloat(getComputedStyle(antenna).width),
+      bodyWidth:parseFloat(getComputedStyle(body).width)
+    };
+  });
+  expect(visual.bodyBackground).toContain('gradient');
+  expect(visual.eyeBackground).toContain('gradient');
+  expect(visual.eyeWidth).toBeGreaterThan(12);
+  expect(visual.antennaWidth).toBeGreaterThan(visual.bodyWidth*.2);
+
+  await page.locator('#pocketCompanion > summary').click();
+  const room=page.locator('#homeMascot');
+  await expect(room).toBeVisible();
+  await expect(room.locator('.pocket-character__fur')).toHaveCount(7);
+  await expect(room.locator('.pocket-character__paw')).toHaveCount(2);
+  await expect(room.locator('.pocket-character__tuft')).toHaveCount(1);
   await expectNoPageErrors(errors);
 });
 
