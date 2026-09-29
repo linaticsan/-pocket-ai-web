@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step49-runtime-bugfix-pass', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=step50-pocket-personality-cleanup', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -174,9 +174,10 @@ test('iPhone Reduce Motion still allows a small user-triggered Pocket relocation
   await expectNoPageErrors(errors);
 });
 
-test('Pocket tap builds an audible iPhone-safe laugh audio graph', async ({ page }) => {
+test('friendly Pocket tap uses gesture-gated cute chirp only when sound is enabled', async ({ page }) => {
   await page.addInitScript(() => {
-    window.__audioProbe={oscillators:0,resumes:0,maxGain:0,compressors:0,starts:0};
+    try{localStorage.setItem('pocket-sound-v1','on')}catch{}
+    window.__audioProbe={oscillators:0,resumes:0,maxGain:0,starts:0};
     class Param{
       setValueAtTime(v){window.__audioProbe.maxGain=Math.max(window.__audioProbe.maxGain,Number(v)||0)}
       exponentialRampToValueAtTime(v){window.__audioProbe.maxGain=Math.max(window.__audioProbe.maxGain,Number(v)||0)}
@@ -184,31 +185,31 @@ test('Pocket tap builds an audible iPhone-safe laugh audio graph', async ({ page
     class Node{
       constructor(){this.gain=new Param();this.frequency=new Param();this.threshold=new Param();this.knee=new Param();this.ratio=new Param();this.attack=new Param();this.release=new Param()}
       connect(){return this}
+      disconnect(){}
       start(){window.__audioProbe.starts++}
       stop(){}
+      addEventListener(){}
     }
     class FakeAudioContext{
       constructor(){this.state='suspended';this.currentTime=1;this.destination=new Node()}
       async resume(){window.__audioProbe.resumes++;this.state='running'}
       createOscillator(){window.__audioProbe.oscillators++;return new Node()}
       createGain(){return new Node()}
-      createDynamicsCompressor(){window.__audioProbe.compressors++;return new Node()}
+      createDynamicsCompressor(){return new Node()}
     }
     window.AudioContext=FakeAudioContext;
     window.webkitAudioContext=FakeAudioContext;
   });
   await page.setViewportSize({width:390,height:844});
   const errors=await openPocket(page);
-  await page.waitForFunction(()=>!!window.PocketSound?.laugh);
   const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
   await pocket.click();
-  await page.waitForTimeout(120);
+  await page.waitForTimeout(140);
   const probe=await page.evaluate(()=>window.__audioProbe);
   expect(probe.resumes).toBeGreaterThanOrEqual(1);
-  expect(probe.compressors).toBeGreaterThanOrEqual(1);
-  expect(probe.oscillators).toBeGreaterThanOrEqual(8);
-  expect(probe.starts).toBeGreaterThanOrEqual(8);
-  expect(probe.maxGain).toBeGreaterThanOrEqual(.15);
+  expect(probe.oscillators).toBeGreaterThanOrEqual(1);
+  expect(probe.starts).toBeGreaterThanOrEqual(1);
+  expect(probe.maxGain).toBeGreaterThanOrEqual(.05);
   await expectNoPageErrors(errors);
 });
 
@@ -234,19 +235,13 @@ test('Pocket roam avoids the whole Tools section and recovers safely after scrol
   await expectNoPageErrors(errors);
 });
 
-test('Pocket tap laughs, moves fast across named Home zones, and stays until tapped again', async ({ page }) => {
+test('Pocket tap moves fast across named Home zones without silently enabling sound', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   const errors = await openPocket(page);
-  await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketSound?.laugh);
+  await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketMascot?.tap);
   await page.locator('#settingsOpen').click();
   await page.locator('#settingsDialog [data-motion="full"]').click();
   await page.locator('#settingsDialog .close').click();
-
-  await page.evaluate(() => {
-    window.__pocketLaughs=0;
-    const original=window.PocketSound.laugh;
-    window.PocketSound.laugh=()=>{window.__pocketLaughs++;return original();};
-  });
 
   const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
   const before=await pocket.boundingBox();
@@ -258,8 +253,7 @@ test('Pocket tap laughs, moves fast across named Home zones, and stays until tap
   expect(Math.hypot(after.x-before.x,after.y-before.y)).toBeGreaterThan(55);
   expect(['top-left','top-middle','top-right','left-side','middle','right-side','lower-left','lower-middle','lower-right','composer-left','composer-right','composer-above','composer-below','free']).toContain(firstZone);
   expect(stayUntil-Date.now()).toBeGreaterThan(3500);
-  expect(await page.evaluate(()=>window.__pocketLaughs)).toBe(1);
-  expect(await page.evaluate(()=>localStorage.getItem('pocket-sound-v1'))).toBe('on');
+  expect(await page.evaluate(()=>localStorage.getItem('pocket-sound-v1'))).toBeNull();
 
   await page.waitForTimeout(800);
   const held=await pocket.boundingBox();
@@ -269,11 +263,50 @@ test('Pocket tap laughs, moves fast across named Home zones, and stays until tap
   await page.waitForTimeout(560);
   const afterSecond=await pocket.boundingBox();
   expect(Math.hypot(afterSecond.x-held.x,afterSecond.y-held.y)).toBeGreaterThan(40);
-  expect(await page.evaluate(()=>window.__pocketLaughs)).toBe(2);
 
   const composer=await page.locator('#homeComposer').boundingBox();
   const overlaps=!(afterSecond.x+afterSecond.width<composer.x||afterSecond.x>composer.x+composer.width||afterSecond.y+afterSecond.height<composer.y||afterSecond.y>composer.y+composer.height);
   expect(overlaps).toBe(false);
+  await expectNoPageErrors(errors);
+});
+
+test('Pocket personality progresses from cute to annoyed and respects AI priority', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascot?.tap && !!window.PocketMascot?.getAnnoyance);
+  const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
+  await expect(pocket.locator('.pocket-character__horn')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__teeth')).toHaveCount(1);
+  const idleTeeth=await pocket.locator('.pocket-character__teeth').evaluate(el=>getComputedStyle(el).opacity);
+  expect(Number(idleTeeth)).toBe(0);
+
+  const threshold=await page.evaluate(()=>window.PocketMascot.getAnnoyThreshold());
+  expect(threshold).toBeGreaterThanOrEqual(4);
+  expect(threshold).toBeLessThanOrEqual(7);
+  await page.evaluate(n=>{for(let i=0;i<n;i++)window.PocketMascot.tap()},threshold);
+  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBeGreaterThanOrEqual(2);
+  await expect(pocket).toHaveAttribute('data-pocket-state',/annoyed|grumpy|very-annoyed/);
+  await expect.poll(async()=>pocket.locator('.pocket-character__teeth').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:700}).toBeGreaterThan(.5);
+
+  await page.evaluate(()=>{let guard=0;while(window.PocketMascot.getAnnoyance()<4&&guard++<10)window.PocketMascot.tap()});
+  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(4);
+  await expect(pocket).toHaveAttribute('data-pocket-state','very-annoyed');
+  const beforeDash=await pocket.boundingBox();
+  await page.evaluate(()=>window.PocketMascotViews.dashAway());
+  await page.waitForTimeout(560);
+  const afterDash=await pocket.boundingBox();
+  expect(Math.hypot(afterDash.x-beforeDash.x,afterDash.y-beforeDash.y)).toBeGreaterThan(25);
+  await expect(pocket).toHaveAttribute('data-pocket-state','very-annoyed');
+
+  await page.evaluate(()=>window.PocketMascot.react('success'));
+  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(0);
+  await expect(pocket).toHaveAttribute('data-pocket-state','success');
+
+  await page.evaluate(()=>window.PocketMascot.setBusy('personality-test',true,'thinking'));
+  await expect(pocket).toHaveAttribute('data-pocket-state','thinking');
+  await page.evaluate(()=>{for(let i=0;i<8;i++)window.PocketMascot.tap()});
+  await expect(pocket).toHaveAttribute('data-pocket-state','thinking');
+  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(0);
+  await page.evaluate(()=>window.PocketMascot.setBusy('personality-test',false));
   await expectNoPageErrors(errors);
 });
 

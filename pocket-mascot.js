@@ -2,24 +2,31 @@
 (()=>{'use strict';
 const q=(s,r=document)=>r.querySelector(s),qa=(s,r=document)=>[...r.querySelectorAll(s)];
 const CONTEXT_STATES={home:'idle',chat:'idle',research:'research',study:'study',coding:'coding',files:'files',projects:'files',settings:'idle',sidebar:'idle',local:'idle'};
-const ACTIVE_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep']);
+const ACTIVE_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy','annoyed','grumpy','very-annoyed']);
+const RETURN_HOME_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy']);
 const wander=new WeakMap();
 let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0,scrollResetTimer=0;
 
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
-function canWander(el,{autonomous=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&!ACTIVE_STATES.has(globalState)}
+function canWander(el,{autonomous=false,force=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&(force||!ACTIVE_STATES.has(globalState))}
 function html(context='home',size='medium',label='Pocket'){
  return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+
   '<span class="pocket-character__body" aria-hidden="true">'+
    '<span class="pocket-character__ear pocket-character__ear--left"></span>'+
    '<span class="pocket-character__ear pocket-character__ear--right"></span>'+
+   '<span class="pocket-character__horn pocket-character__horn--left"></span>'+
+   '<span class="pocket-character__horn pocket-character__horn--right"></span>'+
    '<span class="pocket-character__antenna"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--left"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--right"></span>'+
-   '<span class="pocket-character__mouth"></span>'+
+   '<span class="pocket-character__eyelid pocket-character__eyelid--left"></span>'+
+   '<span class="pocket-character__eyelid pocket-character__eyelid--right"></span>'+
+   '<span class="pocket-character__mouth"><span class="pocket-character__teeth"><i></i><i></i><i></i></span></span>'+
    '<span class="pocket-character__blush pocket-character__blush--left"></span>'+
    '<span class="pocket-character__blush pocket-character__blush--right"></span>'+
+   '<span class="pocket-character__cheek-detail pocket-character__cheek-detail--left"></span>'+
+   '<span class="pocket-character__cheek-detail pocket-character__cheek-detail--right"></span>'+
    '<span class="pocket-character__prop"></span>'+
   '</span>'+
   '<span class="pocket-character__dots" aria-hidden="true">• • •</span>'+
@@ -28,7 +35,7 @@ function html(context='home',size='medium',label='Pocket'){
 }
 function effectiveState(el){
  const context=el.dataset.pocketContext||'home';
- if(['thinking','happy','success','error','sleep','listening','excited','offline'].includes(globalState))return globalState;
+ if(['thinking','happy','success','error','sleep','sleepy','listening','excited','offline','curious','mischievous','annoyed','grumpy','very-annoyed'].includes(globalState))return globalState;
  if(context==='chat'&&q('#v3Study')?.classList.contains('active'))return'study';
  return CONTEXT_STATES[context]||'idle';
 }
@@ -64,7 +71,7 @@ function scheduleBlink(){
   visible.forEach((el,i)=>blinkOne(el,Math.random()<.13&&i===0));scheduleBlink();
  },3000+Math.floor(Math.random()*4000));
 }
-function setState(state){globalState=state||'idle';syncAll();if(ACTIVE_STATES.has(globalState))goHomeAll(false)}
+function setState(state){globalState=state||'idle';syncAll();if(RETURN_HOME_STATES.has(globalState))goHomeAll(false)}
 function setContext(target,context){
  const nodes=typeof target==='string'?qa(target):target instanceof Element?[target]:[];
  nodes.forEach(node=>{const el=node.matches?.('[data-pocket-character]')?node:q('[data-pocket-character]',node);if(el){el.dataset.pocketContext=context;syncOne(el)}});
@@ -142,7 +149,7 @@ function landingReaction(el){
  const roll=Math.random();
  if(roll<.28)blinkOne(el,Math.random()<.25);
  else if(roll<.5){el.classList.add('is-pocket-settle');setTimeout(()=>el.classList.remove('is-pocket-settle'),460)}
- else if(roll<.68)window.PocketMascot?.react?.('happy');
+ else if(roll<.68)window.PocketMascot?.react?.('movement');
  else if(roll<.82){el.classList.add('is-pocket-antenna-wiggle');setTimeout(()=>el.classList.remove('is-pocket-antenna-wiggle'),650)}
  setTimeout(()=>{if(!el.matches(':hover')){el.style.setProperty('--pocket-eye-x','0px');el.style.setProperty('--pocket-eye-y','0px')}},700);
 }
@@ -152,7 +159,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
  d.moving=true;d.lastMove=Date.now();faceDirection(el,dx);
  if(reduced()){
   d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.dataset.pocketZone=d.lastZone||'free';el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;
-  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
+  if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true';window.dispatchEvent(new CustomEvent('pocket-mascot-home',{detail:{element:el}}))}else delete el.dataset.pocketHome;
   d.moving=false;scheduleStay(el);return true;
  }
  el.classList.add('is-pocket-moving');
@@ -162,7 +169,7 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
  frames.push({offset:.88,transform:`translate3d(${x}px,${y-4}px,0) scale(1.025,.975)`},{transform:`translate3d(${x}px,${y}px,0) scale(1)`});
  try{d.animation=el.animate(frames,{duration,easing:'cubic-bezier(.16,.84,.2,1)',fill:'forwards'});await d.animation.finished}catch{}
  d.animation=null;d.x=x;d.y=y;d.lastZone=zone||d.lastZone;el.dataset.pocketZone=d.lastZone||'free';el.style.setProperty('--wander-x',x.toFixed(1)+'px');el.style.setProperty('--wander-y',y.toFixed(1)+'px');el.style.transform=`translate3d(${x}px,${y}px,0)`;el.classList.remove('is-pocket-moving');
- if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true'}else delete el.dataset.pocketHome;
+ if(home){d.taps=0;d.returnAt=3+Math.floor(Math.random()*5);el.dataset.pocketHome='true';window.dispatchEvent(new CustomEvent('pocket-mascot-home',{detail:{element:el}}))}else delete el.dataset.pocketHome;
  d.moving=false;landingReaction(el);scheduleStay(el);
  if(d.queued){d.queued=false;setTimeout(()=>moveRandom(el,{autonomous:false}),70)}
  return true;
@@ -170,12 +177,12 @@ async function animateMove(el,x,y,{home=false,quick=true,zone=''}={}){
 function goHome(el=q('.pocket-playground [data-pocket-character]'),animate=true){
  if(!el)return Promise.resolve(false);const d=initWander(el);clearStay(el);d.queued=false;
  if(d.animation){try{d.animation.cancel()}catch{}d.animation=null;d.moving=false}
- if(!animate||motion()==='off'||reduced()){d.x=0;d.y=0;d.taps=0;d.lastZone='home';d.returnAt=3+Math.floor(Math.random()*5);el.style.transform='translate3d(0,0,0)';el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');el.dataset.pocketHome='true';return Promise.resolve(true)}
+ if(!animate||motion()==='off'||reduced()){d.x=0;d.y=0;d.taps=0;d.lastZone='home';d.returnAt=3+Math.floor(Math.random()*5);el.style.transform='translate3d(0,0,0)';el.style.setProperty('--wander-x','0px');el.style.setProperty('--wander-y','0px');el.dataset.pocketHome='true';window.dispatchEvent(new CustomEvent('pocket-mascot-home',{detail:{element:el}}));return Promise.resolve(true)}
  return animateMove(el,0,0,{home:true,zone:'home'});
 }
 function goHomeAll(animate=true){qa('.pocket-playground [data-pocket-character]').forEach(el=>void goHome(el,animate))}
-function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomous=false}={}){
- if(!el||!canWander(el,{autonomous}))return false;const d=initWander(el);clearStay(el);
+function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomous=false,force=false}={}){
+ if(!el||!canWander(el,{autonomous,force}))return false;const d=initWander(el);clearStay(el);
  if(d.moving){d.queued=!autonomous;return false}
  if(Date.now()-d.lastMove<(autonomous?700:220))return false;
  d.taps++;
@@ -196,9 +203,8 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
 function tap(el){
  if(!el||el.dataset.pocketTapLock==='1')return;
  const d=initWander(el);clearStay(el);el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
- void window.PocketSound?.laugh?.();
  if(el.closest('.pocket-playground'))moveRandom(el,{autonomous:false});
- window.PocketMascot?.react?.('happy');
+ window.PocketMascot?.tap?.({source:'roaming',element:el});
  setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},360);
 }
 function scheduleAutonomous(){
@@ -229,6 +235,6 @@ window.addEventListener('resize',handleLayoutReset,{passive:true});window.addEve
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(blinkTimer);clearTimeout(autoTimer)}else{scheduleBlink();scheduleAutonomous()}});
 const observer=new MutationObserver(scheduleHydrate);
 if(document.body)observer.observe(document.body,{childList:true,subtree:true});else addEventListener('DOMContentLoaded',()=>observer.observe(document.body,{childList:true,subtree:true}),{once:true});
-window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,moveRandom,goHome,goHomeAll};
+window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true})};
 hydrate();scheduleBlink();scheduleAutonomous();
 })();

@@ -145,8 +145,11 @@ window.PocketWebNovels={featured:FEATURED,sources:SOURCES,read:readFree,openWeb,
   controls.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const p=read();if(b.dataset.reader49Theme)p.theme=b.dataset.reader49Theme;if(b.dataset.reader49Font)p.font=Math.max(14,Math.min(24,p.font+Number(b.dataset.reader49Font)));save(p);apply()});
   apply();
  }
- const obs=new MutationObserver(()=>{install();apply()});
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>{install();obs.observe(document.body,{subtree:true,childList:true})},{once:true});
- else{install();obs.observe(document.body,{subtree:true,childList:true})}
+ let prefsFrame=0;
+ const schedulePrefs=()=>{if(prefsFrame)return;prefsFrame=requestAnimationFrame(()=>{prefsFrame=0;install();apply()})};
+ const obs=new MutationObserver(records=>{if(records.some(r=>r.addedNodes.length))schedulePrefs()});
+ const startPrefs=()=>{install();obs.observe(document.body,{subtree:true,childList:true})};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startPrefs,{once:true});
+ else startPrefs();
  window.PocketReaderPrefsV49={apply};
 })();

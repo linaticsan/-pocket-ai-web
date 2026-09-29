@@ -5,7 +5,18 @@ function updateFileCount(){const t=f('fileText')?.value||'';if(f('fileCount'))f(
 f('fileText')?.addEventListener('input',updateFileCount);f('fileInput')?.addEventListener('change',()=>setTimeout(updateFileCount,60));f('clearFile')?.addEventListener('click',()=>setTimeout(updateFileCount,20));updateFileCount();
 
 document.querySelectorAll('[data-gh-chip]').forEach(b=>b.addEventListener('click',()=>{f('ghQuery').value=b.dataset.ghChip;f('ghForm').requestSubmit();}));
-f('deepResearch')?.addEventListener('click',()=>{if(!f('surfaceQuery').value.trim())return;const steps=f('researchSteps');steps.hidden=false;steps.querySelectorAll('span').forEach((s,i)=>{s.style.opacity=i?'.48':'1'});let i=0;const timer=setInterval(()=>{if(!f('deepResearch').disabled){clearInterval(timer);steps.querySelectorAll('span').forEach(s=>s.style.opacity='1');return}i=Math.min(i+1,3);steps.querySelectorAll('span').forEach((s,n)=>s.style.opacity=n<=i?'1':'.48');},1600);},{capture:true});
+let researchProgressTimer=0;
+function stopResearchProgress(){if(researchProgressTimer){clearInterval(researchProgressTimer);researchProgressTimer=0}}
+f('deepResearch')?.addEventListener('click',()=>{
+  if(!f('surfaceQuery').value.trim())return;
+  const steps=f('researchSteps');steps.hidden=false;steps.querySelectorAll('span').forEach((s,i)=>{s.style.opacity=i?'.48':'1'});let i=0;stopResearchProgress();
+  researchProgressTimer=setInterval(()=>{
+    if(document.hidden||!f('deepResearch').disabled){stopResearchProgress();steps.querySelectorAll('span').forEach(s=>s.style.opacity='1');return}
+    i=Math.min(i+1,3);steps.querySelectorAll('span').forEach((s,n)=>s.style.opacity=n<=i?'1':'.48');
+  },1600);
+},{capture:true});
+window.addEventListener('pocket-view-change',e=>{if(e.detail?.id!=='surface')stopResearchProgress()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopResearchProgress()});
 function addDiagnostics(){const box=document.createElement('details');box.className='diagnostics';box.innerHTML='<summary><strong>System check</strong> <span class="muted">• test this feature on this device</span></summary><div class="diag-list"></div><div class="row"><button type="button" class="run-diag">Run checks</button></div>';f('local')?.append(box);box.querySelector('.run-diag').onclick=runDiagnostics;}
 function row(name,state,text){const d=document.createElement('div');d.className='diag-row';const a=document.createElement('span');a.textContent=name;const b=document.createElement('strong');b.className='diag-'+state;b.textContent=text;d.append(a,b);return d;}
 async function fetchCheck(url,opts={}){try{const r=await fetch(url,{...opts,cache:'no-store'});return r.ok?['pass','OK']:['warn','HTTP '+r.status]}catch{return['fail','Blocked/offline']}}
@@ -22,8 +33,6 @@ function syncWorkspaceStates(){
  f('surface')?.classList.toggle('is-empty',!hasResults&&!hasReport);
 }
 f('ghForm')?.addEventListener('submit',()=>f('github')?.classList.remove('is-empty'),{capture:true});f('surfaceForm')?.addEventListener('submit',()=>f('surface')?.classList.remove('is-empty'),{capture:true});f('deepResearch')?.addEventListener('click',()=>f('surface')?.classList.remove('is-empty'),{capture:true});syncWorkspaceStates();
-
-try{const k='pocket-v3-chats',a=JSON.parse(localStorage.getItem(k)||'[]');if(Array.isArray(a)){let kept=false;const clean=a.filter(c=>{const blank=(c?.title||'New chat')==='New chat'&&(!Array.isArray(c?.messages)||c.messages.length===0);if(!blank)return true;if(kept)return false;kept=true;return true});if(clean.length!==a.length)localStorage.setItem(k,JSON.stringify(clean));}}catch(err){console.warn('Pocket AI chat history cleanup skipped',err)}
 
 const loadedStyles=new Map();
 const loadedModules=new Map();
@@ -69,7 +78,7 @@ const FEATURE_BUNDLES={
   },
   library:{
     styles:['./library-online-v34.css?v=20260920-v52','./webnovel-v42.css?v=20260920-v52'],
-    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260926-step30-canonical-nav']
+    modules:['./library-online-v34.js?v=20260922-v94','./webnovel-v42.js?v=20260929-step50-observer-cleanup']
   }
 };
 function ensureFeatureBundle(name){
