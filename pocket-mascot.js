@@ -10,28 +10,42 @@ let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFr
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
 function canWander(el,{autonomous=false,force=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&(force||!ACTIVE_STATES.has(globalState))}
-function html(context='home',size='medium',label='Pocket'){
- return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+
-  '<span class="pocket-character__body" aria-hidden="true">'+
+function characterParts(){
+ return '<span class="pocket-character__body" aria-hidden="true">'+
+   '<span class="pocket-character__fur pocket-character__fur--top-left"></span>'+
+   '<span class="pocket-character__fur pocket-character__fur--top"></span>'+
+   '<span class="pocket-character__fur pocket-character__fur--top-right"></span>'+
+   '<span class="pocket-character__fur pocket-character__fur--left"></span>'+
+   '<span class="pocket-character__fur pocket-character__fur--right"></span>'+
+   '<span class="pocket-character__fur pocket-character__fur--lower-left"></span>'+
+   '<span class="pocket-character__fur pocket-character__fur--lower-right"></span>'+
    '<span class="pocket-character__ear pocket-character__ear--left"></span>'+
    '<span class="pocket-character__ear pocket-character__ear--right"></span>'+
    '<span class="pocket-character__horn pocket-character__horn--left"></span>'+
    '<span class="pocket-character__horn pocket-character__horn--right"></span>'+
-   '<span class="pocket-character__antenna"></span>'+
+   '<span class="pocket-character__antenna"><span class="pocket-character__tuft"></span></span>'+
    '<span class="pocket-character__eye pocket-character__eye--left"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--right"></span>'+
    '<span class="pocket-character__eyelid pocket-character__eyelid--left"></span>'+
    '<span class="pocket-character__eyelid pocket-character__eyelid--right"></span>'+
+   '<span class="pocket-character__brow pocket-character__brow--left"></span>'+
+   '<span class="pocket-character__brow pocket-character__brow--right"></span>'+
    '<span class="pocket-character__mouth"><span class="pocket-character__teeth"><i></i><i></i><i></i></span></span>'+
    '<span class="pocket-character__blush pocket-character__blush--left"></span>'+
    '<span class="pocket-character__blush pocket-character__blush--right"></span>'+
    '<span class="pocket-character__cheek-detail pocket-character__cheek-detail--left"></span>'+
    '<span class="pocket-character__cheek-detail pocket-character__cheek-detail--right"></span>'+
+   '<span class="pocket-character__paw pocket-character__paw--left"></span>'+
+   '<span class="pocket-character__paw pocket-character__paw--right"></span>'+
+   '<span class="pocket-character__foot pocket-character__foot--left"></span>'+
+   '<span class="pocket-character__foot pocket-character__foot--right"></span>'+
    '<span class="pocket-character__prop"></span>'+
   '</span>'+
   '<span class="pocket-character__dots" aria-hidden="true">• • •</span>'+
-  '<span class="pocket-character__sparkles" aria-hidden="true"><i></i><i></i><i></i></span>'+
- '</span>';
+  '<span class="pocket-character__sparkles" aria-hidden="true"><i></i><i></i><i></i></span>';
+}
+function html(context='home',size='medium',label='Pocket'){
+ return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+characterParts()+'</span>';
 }
 function effectiveState(el){
  const context=el.dataset.pocketContext||'home';
@@ -51,8 +65,13 @@ function hydrate(root=document){
   const context=slot.dataset.pocketContext||'home',size=slot.dataset.pocketSize||'medium',label=slot.dataset.pocketLabel||('Pocket '+context);
   slot.innerHTML=html(context,size,label);slot.dataset.pocketHydrated='1';
  });
- const legacy=q('#homeMascot');
- if(legacy&&!legacy.dataset.pocketCharacter){legacy.dataset.pocketCharacter='';legacy.dataset.pocketContext='home';legacy.dataset.pocketState=globalState}
+ qa('[data-pocket-character]',root).forEach(el=>{
+  if(!q('.pocket-character__body',el))el.insertAdjacentHTML('afterbegin',characterParts());
+  if(!el.dataset.pocketContext)el.dataset.pocketContext='home';
+  if(!el.dataset.pocketState)el.dataset.pocketState=globalState;
+  if(!el.dataset.pocketSize)el.dataset.pocketSize='medium';
+  if(el.tagName!=='BUTTON'&&!el.hasAttribute('role'))el.setAttribute('role','img');
+ });
  qa('[data-pocket-character]').forEach(initWander);
  syncAll();
 }
@@ -235,6 +254,6 @@ window.addEventListener('resize',handleLayoutReset,{passive:true});window.addEve
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(blinkTimer);clearTimeout(autoTimer)}else{scheduleBlink();scheduleAutonomous()}});
 const observer=new MutationObserver(scheduleHydrate);
 if(document.body)observer.observe(document.body,{childList:true,subtree:true});else addEventListener('DOMContentLoaded',()=>observer.observe(document.body,{childList:true,subtree:true}),{once:true});
-window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true})};
+window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,characterParts,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true})};
 hydrate();scheduleBlink();scheduleAutonomous();
 })();
