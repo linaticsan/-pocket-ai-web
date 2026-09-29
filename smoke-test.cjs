@@ -115,7 +115,7 @@ assert(pocketCss.includes('Pocket mascot visual identity — shared component'),
 assert(pocketJs.includes('window.PocketMascotViews={'),'Shared mascot renderer is missing');
 assert(pocketCss.includes('@keyframes pocket-shared-breathe')&&pocketCss.includes('@keyframes pocket-shared-blink'),'Shared mascot animation owner is incomplete');
 assert(pocketCss.includes('.pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth{opacity:0'),'Mischievous Pocket must keep sharp teeth hidden');
-assert(pocketCss.includes('.pocket-character[data-pocket-state="annoyed"] .pocket-character__teeth{opacity:.88')&&pocketCss.includes('.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__teeth{opacity:1'),'Sharp teeth must reveal only in annoyed states');
+assert(pocketCss.includes('.pocket-character[data-pocket-state="annoyed"] .pocket-character__teeth{opacity:.92')&&pocketCss.includes('.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__teeth{opacity:1'),'Sharp teeth must reveal only in annoyed states');
 assert(!coreCss.includes('@keyframes pocket-shared-')&&!coreCss.includes('STEP 42 — authoritative Pocket mascot animation system'),'ui-core.css must not own mascot animations');
 assert(coreCss.includes('STEP 43 — non-mascot UI motion; mascot motion lives only in pocket-mascot.css'),'Shared non-mascot UI motion ownership marker is missing');
 assert(index.includes('id="homeMascot"')&&!index.includes('pocket-character__body pocket-mascot-visual'),'Room mascot must be hydrated from the shared renderer instead of duplicating face/body markup');
