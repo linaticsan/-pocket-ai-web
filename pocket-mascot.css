@@ -348,7 +348,6 @@ html[data-motion="off"] .pocket-character__antenna{transform:none!important}
 @keyframes pocket-personality-annoyed-shake{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-2px) rotate(-.8deg)}75%{transform:translateX(2px) rotate(.8deg)}}
 @keyframes pocket-personality-antenna-flick{0%,100%{transform:rotate(var(--pocket-wind-angle,0deg))}45%{transform:rotate(calc(-9deg + var(--pocket-wind-angle,0deg)))}70%{transform:rotate(calc(7deg + var(--pocket-wind-angle,0deg)))}}
 @keyframes pocket-personality-chomp{0%,100%{transform:scaleY(1)}45%{transform:scaleY(.35)}68%{transform:scaleY(1.12)}}
-@keyframes pocket-personality-puff{0%{opacity:0;transform:translate(0,0) scale(.6)}30%{opacity:.7}100%{opacity:0;transform:translate(12px,-10px) scale(1.2)}}
 
 html[data-motion="full"] .pocket-character[data-pocket-state="annoyed"] .pocket-character__body,
 html[data-motion="full"] .pocket-character[data-pocket-state="grumpy"] .pocket-character__body{animation:pocket-personality-annoyed-shake .44s ease 1}
