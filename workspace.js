@@ -859,8 +859,7 @@ function handleMascotTap(){
    rapidTapCount=1;
    if(mascotAnnoyance>0)mascotAnnoyance=Math.max(0,mascotAnnoyance-1);
    renderAnnoyance();
-   const rare=Math.random()<.045;
-   setMascotState(rare?'mischievous':'happy',rare?800:650);
+   setMascotState('happy',650);
    if(Math.random()<.46)showPocketSpeech(randomLine('friendly'),1400);
    spawnPocketParticles(Math.random()<.45?'heart':'star',2);
    void window.PocketSound?.play?.('chirp');
@@ -870,7 +869,8 @@ function handleMascotTap(){
 
  rapidTapCount++;
  if(rapidTapCount<3){
-   setMascotState('happy',520);spawnPocketParticles('star',1);void window.PocketSound?.play?.('chirp');return true;
+   const playful=rapidTapCount===2&&Math.random()<.05;
+   setMascotState(playful?'mischievous':'happy',playful?760:520);spawnPocketParticles('star',1);void window.PocketSound?.play?.('chirp');return true;
  }
  if(rapidTapCount<annoyThreshold){
    setAnnoyance(1,{speak:rapidTapCount===3});void window.PocketSound?.play?.('tap');return true;
