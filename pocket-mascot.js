@@ -148,7 +148,7 @@ function landingReaction(el){
  const roll=Math.random();
  if(roll<.28)blinkOne(el,Math.random()<.25);
  else if(roll<.5){el.classList.add('is-pocket-settle');setTimeout(()=>el.classList.remove('is-pocket-settle'),460)}
- else if(roll<.68)window.PocketMascot?.react?.('happy');
+ else if(roll<.68)window.PocketMascot?.react?.('movement');
  else if(roll<.82){el.classList.add('is-pocket-antenna-wiggle');setTimeout(()=>el.classList.remove('is-pocket-antenna-wiggle'),650)}
  setTimeout(()=>{if(!el.matches(':hover')){el.style.setProperty('--pocket-eye-x','0px');el.style.setProperty('--pocket-eye-y','0px')}},700);
 }
