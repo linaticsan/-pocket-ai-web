@@ -852,6 +852,8 @@ function handleMascotTap(){
  const now=Date.now(),delta=lastPersonalityTapAt?now-lastPersonalityTapAt:Infinity;lastPersonalityTapAt=now;
  bumpPocketInteractions();wakeMascot();
  if(mascotBusyReasons.size)return false;
+ const home=mascotElement();
+ if(home&&mascotMotionAllowed()){home.classList.remove('is-tap-reacting');void home.offsetWidth;home.classList.add('is-tap-reacting');setTimeout(()=>home.classList.remove('is-tap-reacting'),620)}
 
  if(delta>1800){
    rapidTapCount=1;
