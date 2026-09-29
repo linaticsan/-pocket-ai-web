@@ -285,8 +285,7 @@ test('Pocket personality progresses from cute to annoyed and respects AI priorit
   await page.evaluate(n=>{for(let i=0;i<n;i++)window.PocketMascot.tap()},threshold);
   expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBeGreaterThanOrEqual(2);
   await expect(pocket).toHaveAttribute('data-pocket-state',/annoyed|grumpy|very-annoyed/);
-  const annoyedTeeth=await pocket.locator('.pocket-character__teeth').evaluate(el=>Number(getComputedStyle(el).opacity));
-  expect(annoyedTeeth).toBeGreaterThan(.5);
+  await expect.poll(async()=>pocket.locator('.pocket-character__teeth').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:700}).toBeGreaterThan(.5);
 
   await page.evaluate(()=>{let guard=0;while(window.PocketMascot.getAnnoyance()<4&&guard++<10)window.PocketMascot.tap()});
   expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(4);
