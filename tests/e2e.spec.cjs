@@ -270,6 +270,31 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
+test('STEP 54 Pocket matches the soft round reference proportions', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
+  const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await expect(pocket).toBeVisible();
+  const visual=await pocket.evaluate(el=>{
+    const body=el.querySelector('.pocket-character__body');
+    const eye=el.querySelector('.pocket-character__eye');
+    const horn=el.querySelector('.pocket-character__horn');
+    const paw=el.querySelector('.pocket-character__paw');
+    return {
+      body:getComputedStyle(body),
+      eye:getComputedStyle(eye),
+      horn:getComputedStyle(horn),
+      paw:getComputedStyle(paw)
+    };
+  });
+  expect(parseFloat(visual.eye.width)).toBeGreaterThan(25);
+  expect(parseFloat(visual.eye.height)).toBeGreaterThan(30);
+  expect(parseFloat(visual.horn.height)).toBeLessThan(30);
+  expect(parseFloat(visual.paw.width)).toBeGreaterThan(18);
+  await expect(page.locator('#homePocketSpeech')).toBeVisible();
+  await expectNoPageErrors(errors);
+});
+
 test('STEP 51 Pocket renders as one shared fluffy animal component instead of the old blob', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
