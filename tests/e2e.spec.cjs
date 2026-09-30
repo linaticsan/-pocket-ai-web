@@ -270,67 +270,52 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
-test('STEP 54 Pocket matches the soft round reference proportions', async ({ page }) => {
+test('STEP 55 Pocket has exactly two cute ears and no extra bubble pieces', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
   await expect(pocket).toBeVisible();
-  const visual=await pocket.evaluate(el=>{
-    const body=el.querySelector('.pocket-character__body');
-    const eye=el.querySelector('.pocket-character__eye');
-    const horn=el.querySelector('.pocket-character__horn');
-    const paw=el.querySelector('.pocket-character__paw');
-    return {
-      body:getComputedStyle(body),
-      eye:getComputedStyle(eye),
-      horn:getComputedStyle(horn),
-      paw:getComputedStyle(paw)
-    };
-  });
-  expect(parseFloat(visual.eye.width)).toBeGreaterThan(25);
-  expect(parseFloat(visual.eye.height)).toBeGreaterThan(30);
-  expect(parseFloat(visual.horn.height)).toBeLessThan(30);
-  expect(parseFloat(visual.paw.width)).toBeGreaterThan(18);
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__fur')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__horn')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__antenna')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__tuft')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__sparkles')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__eye')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(2);
   await expect(page.locator('#homePocketSpeech')).toBeVisible();
   await expectNoPageErrors(errors);
 });
 
-test('STEP 51 Pocket renders as one shared fluffy animal component instead of the old blob', async ({ page }) => {
+test('Pocket uses the same simplified two-ear component everywhere', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
   await expect(pocket).toBeVisible();
-  await expect(pocket.locator('.pocket-character__fur')).toHaveCount(7);
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
   await expect(pocket.locator('.pocket-character__paw')).toHaveCount(2);
   await expect(pocket.locator('.pocket-character__foot')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__horn')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__tuft')).toHaveCount(1);
-  await expect(pocket.locator('.pocket-character__brow')).toHaveCount(2);
-
+  await expect(pocket.locator('.pocket-character__fur,.pocket-character__horn,.pocket-character__tuft,.pocket-character__antenna')).toHaveCount(0);
   const visual=await pocket.evaluate(el=>{
     const body=el.querySelector('.pocket-character__body');
     const eye=el.querySelector('.pocket-character__eye');
-    const antenna=el.querySelector('.pocket-character__antenna');
     return {
-      bodyRadius:getComputedStyle(body).borderRadius,
       bodyBackground:getComputedStyle(body).backgroundImage,
       eyeBackground:getComputedStyle(eye).backgroundImage,
-      eyeWidth:parseFloat(getComputedStyle(eye).width),
-      antennaWidth:parseFloat(getComputedStyle(antenna).width),
-      bodyWidth:parseFloat(getComputedStyle(body).width)
+      eyeWidth:parseFloat(getComputedStyle(eye).width)
     };
   });
   expect(visual.bodyBackground).toContain('gradient');
   expect(visual.eyeBackground).toContain('gradient');
   expect(visual.eyeWidth).toBeGreaterThan(12);
-  expect(visual.antennaWidth).toBeGreaterThan(visual.bodyWidth*.2);
 
   await page.locator('#pocketCompanion > summary').click();
   const room=page.locator('#homeMascot');
   await expect(room).toBeVisible();
-  await expect(room.locator('.pocket-character__fur')).toHaveCount(7);
+  await expect(room.locator('.pocket-character__ear')).toHaveCount(2);
   await expect(room.locator('.pocket-character__paw')).toHaveCount(2);
-  await expect(room.locator('.pocket-character__tuft')).toHaveCount(1);
+  await expect(room.locator('.pocket-character__fur,.pocket-character__horn,.pocket-character__tuft,.pocket-character__antenna')).toHaveCount(0);
   await expectNoPageErrors(errors);
 });
 
@@ -338,7 +323,7 @@ test('Pocket personality progresses from cute to annoyed and respects AI priorit
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascot?.tap && !!window.PocketMascot?.getAnnoyance);
   const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
-  await expect(pocket.locator('.pocket-character__horn')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
   await expect(pocket.locator('.pocket-character__teeth')).toHaveCount(1);
   const idleTeeth=await pocket.locator('.pocket-character__teeth').evaluate(el=>getComputedStyle(el).opacity);
   expect(Number(idleTeeth)).toBe(0);
