@@ -327,9 +327,9 @@ assert(workspace.includes("master.disconnect();compressor.disconnect()"),'Laugh 
 assert(workspace.includes("osc.disconnect();gain.disconnect()"),'Tone audio graph cleanup is missing');
 
 /* STEP 51 — character personality + cleanup contracts */
-assert(pocketJs.includes('pocket-character__horn pocket-character__horn--left')&&pocketJs.includes('pocket-character__teeth'),'Shared mascot markup must include horns and hidden teeth');
-assert(pocketJs.includes('pocket-character__fur pocket-character__fur--top')&&pocketJs.includes('pocket-character__paw pocket-character__paw--left')&&pocketJs.includes('pocket-character__brow pocket-character__brow--left'),'Shared mascot renderer must include fur, paws and brows');
-assert(pocketJs.includes('pocket-character__tuft'),'Shared mascot renderer must include the magical fluffy top tuft');
+assert((pocketJs.match(/pocket-character__ear pocket-character__ear--/g)||[]).length===2&&pocketJs.includes('pocket-character__teeth'),'Shared mascot markup must include exactly two ears and hidden teeth');
+assert(pocketJs.includes('pocket-character__paw pocket-character__paw--left')&&pocketJs.includes('pocket-character__brow pocket-character__brow--left'),'Shared mascot renderer must preserve paws and facial expression controls');
+assert(!pocketJs.includes('pocket-character__fur pocket-character__fur--')&&!pocketJs.includes('pocket-character__horn pocket-character__horn--')&&!pocketJs.includes('pocket-character__tuft')&&!pocketJs.includes('pocket-character__antenna'),'Shared mascot renderer must not include extra fur bubbles, horns, tuft, or antenna');
 assert(pocketCss.includes('STEP 51 — authoritative fluffy-animal Pocket visual system'),'STEP 51 fluffy animal visual owner is missing');
 assert(pocketCss.includes('STEP 54 — reference-tuned soft round Pocket'),'STEP 54 reference-tuned mascot layer is missing');
 assert(pocketCss.includes('STEP 55 — simplified Pocket: exactly two cute ears'),'STEP 55 simplified mascot layer is missing');
