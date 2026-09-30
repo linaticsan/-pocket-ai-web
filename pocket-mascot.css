@@ -648,3 +648,190 @@ html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!im
   .pocket-character__antenna{transform:translateX(-50%)!important}
 }
 
+
+
+/* STEP 54 — reference-tuned soft round Pocket */
+:root{
+  --pocket-fur:#fffefe;
+  --pocket-fur-mid:#f8f4fc;
+  --pocket-fur-shadow:#ece4f5;
+  --pocket-fur-outline:#d9cce9;
+  --pocket-iris:#6d4aa6;
+  --pocket-iris-deep:#2a183e;
+  --pocket-horn:#bfa8ec;
+  --pocket-horn-shadow:#8d70c3;
+  --pocket-blush:#f6b4c7;
+}
+.pocket-character{
+  filter:drop-shadow(0 10px 13px rgba(70,47,94,.13));
+}
+.pocket-character__body{
+  inset:11% 6% 5%;
+  border-radius:49% 49% 45% 45% / 46% 46% 40% 40%;
+  border-color:color-mix(in srgb,var(--pocket-fur-outline) 72%,transparent);
+  background:
+    radial-gradient(ellipse at 50% 20%,rgba(255,255,255,1) 0 24%,transparent 54%),
+    radial-gradient(ellipse at 20% 58%,rgba(255,255,255,.92),transparent 42%),
+    radial-gradient(ellipse at 80% 60%,rgba(255,255,255,.88),transparent 42%),
+    linear-gradient(168deg,#ffffff 0 28%,var(--pocket-fur-mid) 70%,var(--pocket-fur-shadow) 100%);
+  box-shadow:
+    inset 0 6px 12px rgba(255,255,255,.95),
+    inset 0 -10px 15px rgba(205,190,224,.22),
+    0 1px 0 rgba(255,255,255,.9),
+    0 9px 18px rgba(79,55,105,.12);
+}
+[data-theme="dark"] .pocket-character__body,
+[data-theme="oled"] .pocket-character__body{
+  background:
+    radial-gradient(ellipse at 50% 20%,rgba(255,255,255,1) 0 24%,transparent 54%),
+    linear-gradient(168deg,#ffffff,#f6f0fb 72%,#e5daf1);
+  border-color:#d2c2e4;
+}
+
+/* fluff is rounded instead of spiky */
+.pocket-character__fur{
+  border-color:color-mix(in srgb,var(--pocket-fur-outline) 62%,transparent);
+  background:linear-gradient(150deg,#fff,var(--pocket-fur-mid));
+  border-radius:58% 48% 62% 44%;
+  box-shadow:inset 0 -2px 5px rgba(189,167,210,.16);
+}
+.pocket-character__fur--top-left{left:15%;top:1%;width:16%;height:16%;transform:rotate(-18deg)}
+.pocket-character__fur--top{left:42%;top:-2%;width:17%;height:18%;transform:rotate(4deg)}
+.pocket-character__fur--top-right{right:15%;top:1%;width:16%;height:16%;transform:rotate(18deg) scaleX(-1)}
+.pocket-character__fur--left{left:-2%;top:38%;width:17%;height:18%;transform:rotate(-22deg)}
+.pocket-character__fur--right{right:-2%;top:38%;width:17%;height:18%;transform:rotate(22deg) scaleX(-1)}
+.pocket-character__fur--lower-left{left:5%;bottom:8%;width:15%;height:14%;transform:rotate(-22deg)}
+.pocket-character__fur--lower-right{right:5%;bottom:8%;width:15%;height:14%;transform:rotate(22deg) scaleX(-1)}
+
+.pocket-character__ear{
+  top:20%;width:15%;height:17%;
+  background:
+    radial-gradient(circle at 55% 58%,#f5d6e9 0 34%,transparent 36%),
+    linear-gradient(145deg,#fff,#f5eef9);
+  border-color:color-mix(in srgb,var(--pocket-fur-outline) 68%,transparent);
+}
+.pocket-character__ear--left{left:1%;transform:rotate(-15deg)}
+.pocket-character__ear--right{right:1%;transform:rotate(15deg) scaleX(-1)}
+
+/* small lavender horns like the reference */
+.pocket-character__horn{
+  top:8%;width:13%;height:15%;
+  border-radius:72% 72% 42% 42% / 92% 92% 28% 28%;
+  background:linear-gradient(145deg,#e9defb 0 18%,#cdb7f3 45%,#9a7acb 100%);
+  box-shadow:inset 2px 2px 3px rgba(255,255,255,.68),0 0 0 1px rgba(117,85,161,.18);
+}
+.pocket-character__horn--left{left:24%;transform:rotate(-10deg)}
+.pocket-character__horn--right{right:24%;transform:rotate(10deg)}
+
+/* compact white forehead tuft + tiny purple sparkle */
+.pocket-character__antenna{
+  left:50%;top:-3%;width:27%;height:24%;
+  transform:translateX(-50%);background:none;
+}
+.pocket-character__antenna::before{
+  left:18%;bottom:1%;width:63%;height:76%;
+  border:0;
+  background:
+    radial-gradient(ellipse at 30% 72%,#fff 0 28%,transparent 30%),
+    radial-gradient(ellipse at 54% 45%,#fff 0 34%,transparent 36%),
+    radial-gradient(ellipse at 75% 72%,#f7f1fb 0 30%,transparent 32%);
+  filter:drop-shadow(0 1px 0 #d9cde7);
+  transform:none;
+}
+.pocket-character__antenna::after{
+  right:auto;left:50%;top:-9%;width:10px;height:10px;margin-left:-5px;
+  border:0;border-radius:2px;
+  background:linear-gradient(135deg,#d8c2ff,#9f79ed 58%,#6f4ab5);
+  clip-path:polygon(50% 0,62% 36%,100% 50%,62% 64%,50% 100%,38% 64%,0 50%,38% 36%);
+  box-shadow:0 0 0 4px rgba(166,126,236,.08),0 0 9px rgba(166,126,236,.28);
+}
+.pocket-character__tuft{
+  left:31%;bottom:1%;width:38%;height:55%;
+  border-radius:62% 45% 66% 40%;
+  background:linear-gradient(160deg,#fff,#f2eaf8);
+  transform:rotate(-7deg);
+  box-shadow:inset -2px -2px 4px rgba(179,155,201,.12);
+}
+
+/* oversized glossy purple eyes */
+.pocket-character__eye{
+  top:34%;width:22%;height:31%;
+  border-radius:51% 51% 48% 48%;
+  background:
+    radial-gradient(circle at 33% 23%,#fff 0 9%,transparent 10%),
+    radial-gradient(circle at 35% 28%,rgba(255,255,255,.9) 0 3%,transparent 4%),
+    radial-gradient(circle at 70% 73%,#d6c5ff 0 7%,transparent 8%),
+    linear-gradient(180deg,#20132f 0 17%,#34204f 18% 38%,#60408f 58%,#8b69c5 82%,#b9a0e8 100%);
+  box-shadow:
+    inset 0 -3px 0 rgba(255,255,255,.18),
+    0 0 0 1px rgba(45,27,64,.85),
+    0 2px 4px rgba(55,33,80,.18);
+}
+.pocket-character__eye--left{left:21%}
+.pocket-character__eye--right{right:21%}
+.pocket-character__eye::before{left:13%;top:9%;width:31%;height:25%;background:#fff}
+.pocket-character__eye::after{right:18%;bottom:15%;width:17%;height:14%;background:rgba(255,255,255,.72)}
+.pocket-character__brow{opacity:.12;top:25%}
+
+/* tiny w-shaped smile */
+.pocket-character__mouth{
+  top:66%;width:17%;height:9%;margin-left:-8.5%;
+}
+.pocket-character__mouth::before,.pocket-character__mouth::after{
+  border-bottom-color:#493451;border-bottom-width:1.7px;
+}
+.pocket-character__blush{
+  top:61%;width:19%;height:10%;
+  background:radial-gradient(ellipse,rgba(247,180,203,.68),rgba(247,180,203,.2) 58%,transparent 74%);
+  opacity:.7;
+}
+.pocket-character__blush--left{left:7%}
+.pocket-character__blush--right{right:7%}
+
+/* round side paws + soft little feet */
+.pocket-character__paw{
+  top:59%;width:19%;height:27%;
+  border-radius:55% 55% 50% 50%;
+  background:linear-gradient(160deg,#fff,#f5effa);
+  border-color:color-mix(in srgb,var(--pocket-fur-outline) 52%,transparent);
+  box-shadow:inset 0 -3px 5px rgba(188,165,207,.15);
+}
+.pocket-character__paw--left{left:7%;transform:rotate(18deg)}
+.pocket-character__paw--right{right:7%;transform:rotate(-18deg)}
+.pocket-character__foot{
+  bottom:1%;width:24%;height:12%;
+  background:linear-gradient(#fff,#f3edf8);
+  border-color:color-mix(in srgb,var(--pocket-fur-outline) 52%,transparent);
+  border-radius:62% 62% 52% 52%;
+}
+.pocket-character__foot--left{left:17%}
+.pocket-character__foot--right{right:17%}
+
+/* Home reference composition */
+.home-hero-pocket{
+  gap:14px;
+}
+.home-hero-pocket .pocket-character{
+  width:166px;height:154px;
+}
+.home-pocket-speech{
+  min-width:180px;
+  max-width:min(280px,90vw);
+  padding:10px 15px;
+  border:1px solid color-mix(in srgb,var(--pa-accent) 16%,var(--pa-border));
+  border-radius:14px;
+  background:color-mix(in srgb,var(--pa-card) 94%,#f7f0ff);
+  color:var(--pa-secondary);
+  font-size:13px;
+  line-height:1.35;
+  box-shadow:0 8px 20px rgba(68,45,95,.07);
+}
+.home-pocket-speech::before{
+  top:-6px;width:10px;height:10px;margin-left:-5px;
+  border-color:color-mix(in srgb,var(--pa-accent) 16%,var(--pa-border));
+}
+@media(max-width:767px){
+  .home-hero-pocket .pocket-character{width:124px;height:116px}
+  .home-hero-pocket{gap:10px;min-height:124px}
+  .home-pocket-speech{min-width:160px;max-width:min(250px,88vw);padding:9px 13px;font-size:12px}
+}
