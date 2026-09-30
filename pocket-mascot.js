@@ -36,18 +36,8 @@ function motion(){return document.documentElement.dataset.motion||'full'}
 function canWander(el,{autonomous=false,force=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&(force||!ACTIVE_STATES.has(globalState))}
 function characterParts(){
  return '<span class="pocket-character__body" aria-hidden="true">'+
-   '<span class="pocket-character__fur pocket-character__fur--top-left"></span>'+
-   '<span class="pocket-character__fur pocket-character__fur--top"></span>'+
-   '<span class="pocket-character__fur pocket-character__fur--top-right"></span>'+
-   '<span class="pocket-character__fur pocket-character__fur--left"></span>'+
-   '<span class="pocket-character__fur pocket-character__fur--right"></span>'+
-   '<span class="pocket-character__fur pocket-character__fur--lower-left"></span>'+
-   '<span class="pocket-character__fur pocket-character__fur--lower-right"></span>'+
    '<span class="pocket-character__ear pocket-character__ear--left"></span>'+
    '<span class="pocket-character__ear pocket-character__ear--right"></span>'+
-   '<span class="pocket-character__horn pocket-character__horn--left"></span>'+
-   '<span class="pocket-character__horn pocket-character__horn--right"></span>'+
-   '<span class="pocket-character__antenna"><span class="pocket-character__tuft"></span></span>'+
    '<span class="pocket-character__eye pocket-character__eye--left"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--right"></span>'+
    '<span class="pocket-character__eyelid pocket-character__eyelid--left"></span>'+
@@ -57,16 +47,13 @@ function characterParts(){
    '<span class="pocket-character__mouth"><span class="pocket-character__teeth"><i></i><i></i><i></i></span></span>'+
    '<span class="pocket-character__blush pocket-character__blush--left"></span>'+
    '<span class="pocket-character__blush pocket-character__blush--right"></span>'+
-   '<span class="pocket-character__cheek-detail pocket-character__cheek-detail--left"></span>'+
-   '<span class="pocket-character__cheek-detail pocket-character__cheek-detail--right"></span>'+
    '<span class="pocket-character__paw pocket-character__paw--left"></span>'+
    '<span class="pocket-character__paw pocket-character__paw--right"></span>'+
    '<span class="pocket-character__foot pocket-character__foot--left"></span>'+
    '<span class="pocket-character__foot pocket-character__foot--right"></span>'+
    '<span class="pocket-character__prop"></span>'+
   '</span>'+
-  '<span class="pocket-character__dots" aria-hidden="true">• • •</span>'+
-  '<span class="pocket-character__sparkles" aria-hidden="true"><i></i><i></i><i></i></span>';
+  '<span class="pocket-character__dots" aria-hidden="true">• • •</span>';
 }
 function html(context='home',size='medium',label='Pocket'){
  return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+characterParts()+'</span>';
