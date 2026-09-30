@@ -835,3 +835,39 @@ html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!im
   .home-hero-pocket{gap:10px;min-height:124px}
   .home-pocket-speech{min-width:160px;max-width:min(250px,88vw);padding:9px 13px;font-size:12px}
 }
+
+
+/* STEP 55 — simplified Pocket: exactly two cute ears, no extra bubble/fluff pieces */
+.pocket-character__fur,
+.pocket-character__horn,
+.pocket-character__antenna,
+.pocket-character__tuft,
+.pocket-character__cheek-detail,
+.pocket-character__sparkles{
+  display:none!important;
+}
+.pocket-character__body{
+  inset:10% 7% 5%;
+  border-radius:50% 50% 46% 46% / 47% 47% 42% 42%;
+}
+.pocket-character__ear{
+  top:18%;
+  width:16%;
+  height:18%;
+  border-radius:52% 52% 48% 48%;
+  background:
+    radial-gradient(circle at 52% 58%,#f5d6e9 0 35%,transparent 37%),
+    linear-gradient(155deg,#fff,#f4eef9);
+  box-shadow:inset 0 -2px 4px rgba(185,158,207,.15);
+}
+.pocket-character__ear--left{left:3%;transform:rotate(-13deg)}
+.pocket-character__ear--right{right:3%;transform:rotate(13deg) scaleX(-1)}
+.pocket-character__eye{top:33%;width:22%;height:31%}
+.pocket-character__eye--left{left:21%}
+.pocket-character__eye--right{right:21%}
+.pocket-character__paw{top:60%;width:18%;height:24%}
+.pocket-character__paw--left{left:7%;transform:rotate(16deg)}
+.pocket-character__paw--right{right:7%;transform:rotate(-16deg)}
+.pocket-character__foot{bottom:2%;width:22%;height:11%}
+.pocket-character__foot--left{left:17%}
+.pocket-character__foot--right{right:17%}
