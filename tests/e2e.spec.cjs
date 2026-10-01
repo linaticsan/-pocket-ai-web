@@ -270,38 +270,30 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
-test('STEP 60 Pocket is a true round jelly slime', async ({ page }) => {
+test('STEP 61 jelly mascot is one blob and keyboard accessible', async ({ page }) => {
   const errors=await openPocket(page);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
   await expect(pocket).toBeVisible();
-  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(0);
-  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(0);
-  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(0);
-  await expect(pocket.locator('.pocket-character__eye')).toHaveCount(2);
-  const visual=await pocket.locator('.pocket-character__body').evaluate(el=>{
-    const s=getComputedStyle(el);
-    return {radius:s.borderRadius,bg:s.backgroundImage};
-  });
-  expect(visual.radius).toBeTruthy();
-  expect(visual.bg).toContain('gradient');
-  await pocket.click();
-  await expect(pocket).toHaveAttribute('data-pocket-expression','happy');
+  await expect(pocket).toHaveAttribute('role','button');
+  await expect(pocket).toHaveAttribute('tabindex','0');
+  for(const selector of ['.pocket-character__ear','.pocket-character__paw','.pocket-character__foot','.pocket-character__prop']) await expect(pocket.locator(selector)).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__body')).toHaveCount(1);
+  await pocket.focus();
+  await page.keyboard.press('Enter');
+  await expect(pocket).not.toHaveAttribute('data-pocket-expression','normal');
   await expectNoPageErrors(errors);
 });
 
-test('clicking Pocket cycles cute happy sleepy annoyed', async ({ page }) => {
+test('STEP 61 rapid taps escalate and recover', async ({ page }) => {
   const errors=await openPocket(page);
-  await page.waitForFunction(()=>!!window.PocketMascotViews?.CLICK_EXPRESSIONS);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
-  await expect(pocket).toHaveAttribute('data-pocket-expression','cute');
-  await pocket.click();
-  await expect(pocket).toHaveAttribute('data-pocket-expression','happy');
-  await pocket.click();
-  await expect(pocket).toHaveAttribute('data-pocket-expression','sleepy');
-  await pocket.click();
-  await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
-  await pocket.click();
-  await expect(pocket).toHaveAttribute('data-pocket-expression','cute');
+  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','happy');
+  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','surprised');
+  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','excited');
+  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','curious');
+  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
+  await page.waitForTimeout(2100);
+  await expect(pocket).toHaveAttribute('data-pocket-expression','normal');
   await expectNoPageErrors(errors);
 });
 
