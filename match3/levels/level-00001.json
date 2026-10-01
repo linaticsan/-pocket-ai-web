@@ -1,0 +1,1 @@
+{"id":1,"name":"Moonseed Meadow","width":8,"height":8,"moves":22,"seed":812739,"colors":["red","blue","green","yellow","purple"],"gravity":"down","objectives":[{"type":"collect","color":"blue","count":18}],"board":[],"portals":[],"generators":[],"spawnRules":{"avoidStartingMatches":true},"difficultyMetadata":{"targetDifficulty":"easy"}}
