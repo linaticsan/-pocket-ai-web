@@ -1,4 +1,6 @@
-import{GameEngine,LevelLoader}from"./core.js";import{BoardView,wireDebug}from"./ui.js";
+import{GameEngine,LevelLoader}from"./core.js";
+import{BoardView,wireDebug}from"./ui.js";
+import{AnalyticsService,PlayerProgressStore}from"./services.js";
 
 const params=new URLSearchParams(location.search);
 const draft=params.get("draft")==="1";
@@ -17,8 +19,15 @@ try{
   document.title=`${level.name} · Luma Grove`;
   document.querySelector("[data-level-name]").textContent=level.name+(draft?" · Draft":"");
   const engine=new GameEngine(level,seed===undefined?{}:{seed});window.lumaEngine=engine;
+  const analytics=new AnalyticsService(),progress=new PlayerProgressStore();
   new BoardView(engine,document.querySelector("[data-board]"));wireDebug(engine);
   status.textContent=`${draft?"Editor draft":`Level ${level.id}`} · seed ${engine.seed}`;
+  if(!draft)analytics.track("level_started",{levelId:level.id,seed:engine.seed});
+  engine.events.on("MoveMade",e=>!draft&&analytics.track("move_made",{levelId:level.id,movesRemaining:e.movesRemaining}));
+  engine.events.on("SpecialCreated",e=>!draft&&analytics.track("special_created",{levelId:level.id,special:e.special}));
+  engine.events.on("Reshuffled",()=>!draft&&analytics.track("reshuffle_triggered",{levelId:level.id}));
+  engine.events.on("LevelWon",s=>{if(!draft){progress.completeLevel(level.id,{score:s.score,stars:s.movesRemaining>Math.ceil(level.moves*.45)?3:s.movesRemaining>0?2:1});analytics.track("level_completed",{levelId:level.id,score:Math.floor(s.score),movesRemaining:s.movesRemaining})}});
+  engine.events.on("LevelLost",s=>!draft&&analytics.track("level_failed",{levelId:level.id,movesRemaining:s.movesRemaining,objectivesRemaining:s.objectives}));
   document.querySelector("[data-restart]").addEventListener("click",()=>location.reload());
   const next=document.querySelector("[data-next]");
   if(draft){
