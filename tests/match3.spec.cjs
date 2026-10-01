@@ -7,7 +7,7 @@ test.describe('Luma Grove match-3', () => {
     await page.goto('/match3/index.html?level=00001&seed=812739');
     await expect(page.locator('[data-level-name]')).toContainText('Moonseed Meadow');
     await expect(page.locator('[data-board] .cell')).toHaveCount(64);
-    await expect(page.locator('[data-state]')).toHaveText('PLAYER_INPUT');
+    await expect(page.locator('[data-state]')).toHaveText('Ready');
 
     const before = Number(await page.locator('[data-moves]').textContent());
     const move = await page.evaluate(() => window.lumaEngine.snapshot().legalMoves[0]);
@@ -16,7 +16,7 @@ test.describe('Luma Grove match-3', () => {
     await page.locator(`.cell[data-row="${move[0].row}"][data-col="${move[0].column}"]`).click();
     await page.locator(`.cell[data-row="${move[1].row}"][data-col="${move[1].column}"]`).click();
     await expect.poll(async () => Number(await page.locator('[data-moves]').textContent())).toBe(before - 1);
-    await expect(page.locator('[data-state]')).toHaveText(/PLAYER_INPUT|WIN|LOSE/);
+    await expect(page.locator('[data-state]')).toHaveText(/Ready|Complete|Finished/);
     expect(errors).toEqual([]);
   });
 
