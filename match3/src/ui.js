@@ -157,7 +157,8 @@ export class BoardView{
     if(moves&&moves.textContent!==String(snap.movesRemaining))this.bump(moves);
     if(score&&score.textContent!==String(Math.floor(snap.score)))this.bump(score);
     moves.textContent=snap.movesRemaining;score.textContent=Math.floor(snap.score);
-    document.querySelector("[data-state]").textContent=snap.state;
+    const stateLabels={PLAYER_INPUT:"Ready",SWAPPING:"Swapping",MATCH_CHECK:"Checking",RESOLVING:"Blooming",GRAVITY:"Falling",SPAWNING:"Growing",CASCADE_CHECK:"Cascading",OBJECTIVE_CHECK:"Checking",RESHUFFLE:"Shuffling",WIN:"Complete",LOSE:"Finished",IDLE:"Ready"};
+    document.querySelector("[data-state]").textContent=stateLabels[snap.state]||"Playing";
     const list=document.querySelector("[data-objectives]");list.innerHTML="";
     for(const o of snap.objectives){
       const li=document.createElement("li");li.className="objective-item";
