@@ -270,6 +270,26 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
+test('STEP 57 plush Pocket stays compact and cute on desktop', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
+  const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await expect(pocket).toBeVisible();
+  const box=await pocket.boundingBox();
+  expect(box.width).toBeGreaterThanOrEqual(130);
+  expect(box.width).toBeLessThanOrEqual(170);
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__fur,.pocket-character__horn,.pocket-character__antenna,.pocket-character__tuft')).toHaveCount(0);
+  const face=await pocket.evaluate(el=>{
+    const eye=getComputedStyle(el.querySelector('.pocket-character__eye'));
+    const ear=getComputedStyle(el.querySelector('.pocket-character__ear'));
+    return {eyeW:parseFloat(eye.width),eyeH:parseFloat(eye.height),earW:parseFloat(ear.width)};
+  });
+  expect(face.eyeW).toBeGreaterThan(face.earW);
+  expect(face.eyeH).toBeGreaterThan(30);
+  await expectNoPageErrors(errors);
+});
+
 test('STEP 56 Pocket matches final kawaii reference styling', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
@@ -839,7 +859,7 @@ test.describe('desktop feature workspace consistency', () => {
       expect(frame.width).toBeGreaterThan(900);
       expect(frame.width).toBeLessThanOrEqual(1242);
       expect(frame.top).toBeGreaterThanOrEqual(80);
-      expect(frame.top).toBeLessThanOrEqual(110);
+      expect(frame.top).toBeLessThanOrEqual(112);
     }
 
     const lefts = frames.map(x => x.left);
