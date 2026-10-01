@@ -153,7 +153,7 @@ window.PocketSound={
  isEnabled:soundEnabled
 };
 
-const POCKET_BUILD='step60-round-jelly-slime';
+const POCKET_BUILD='step61-authoritative-jelly';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -714,9 +714,7 @@ const mascotLines={
  very:['Stop poking me.','I\'m watching you.']
 };
 const mascotBusyReasons=new Set();
-let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0,mascotBlinkTimer=0,mascotLookTimer=0,mascotPointerFrame=0,mascotPointerEvent=null;
-let pressTimer=0,pressHandled=false;
-let mascotAnnoyance=0,annoyThreshold=4+Math.floor(Math.random()*4),rapidTapCount=0,lastPersonalityTapAt=0,annoyRecoveryTimer=0;
+let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0;
 
 function motionMode(){return document.documentElement.dataset.motion||'full'}
 function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
@@ -724,8 +722,8 @@ function mascotMotionAllowed(){return motionMode()!=='off'&&!reducedMotion()}
 function mascotElement(){return q('homeMascot')}
 function randomLine(group){const pool=mascotLines[group]||mascotLines.friendly;return pool[Math.floor(Math.random()*pool.length)]}
 function annoyanceState(level=mascotAnnoyance){return level>=4?'very-annoyed':level===3?'grumpy':level===2?'annoyed':level===1?'curious':'idle'}
-function restingMascotState(){return navigator.onLine===false?'offline':annoyanceState()}
-function resetMascotEyes(){
+function restingMascotState(){return navigator.onLine===false?'offline':'idle'}
+function {
  const home=mascotElement();if(!home)return;
  home.style.setProperty('--pocket-eye-x','0px');home.style.setProperty('--pocket-eye-y','0px');
 }
@@ -734,7 +732,7 @@ function setMascotState(state='idle',ms=0){
  const next=MASCOT_STATES.has(state)?state:'idle';
  if(mascotBusyReasons.size&&!MASCOT_TASK_STATES.has(next)&&!['error','success','offline'].includes(next))return false;
  clearTimeout(mascotStateTimer);
- mascotState=next;home.dataset.mascotState=next;home.dataset.pocketState=next;resetMascotEyes();window.dispatchEvent(new CustomEvent('pocket-mascot-state',{detail:{state:next}}));
+ mascotState=next;home.dataset.mascotState=next;home.dataset.pocketState=next;window.dispatchEvent(new CustomEvent('pocket-mascot-state',{detail:{state:next}}));
  if(label)label.textContent=mascotMoods[next]||'Ready';
  if(ms>0)mascotStateTimer=setTimeout(()=>{
    if(mascotBusyReasons.size)return;
@@ -762,36 +760,6 @@ function spawnPocketParticles(kind='star',count=3){
 function bumpPocketInteractions(){
  let n=parseInt(safeGet(COMPANION_KEY,'0'),10);if(!Number.isFinite(n))n=0;safeSet(COMPANION_KEY,String(n+1));
 }
-function clearBlink(){mascotElement()?.classList.remove('is-blinking','is-double-blinking')}
-function scheduleBlink(){
- clearTimeout(mascotBlinkTimer);
- if(document.hidden||motionMode()==='off'||reducedMotion())return;
- mascotBlinkTimer=setTimeout(()=>{
-   const home=mascotElement();
-   if(home&&!['sleep','sleepy'].includes(mascotState)){
-     const doubleBlink=Math.random()<.16;
-     home.classList.add(doubleBlink?'is-double-blinking':'is-blinking');
-     setTimeout(clearBlink,doubleBlink?420:190);
-   }
-   scheduleBlink();
- },3000+Math.floor(Math.random()*4000));
-}
-function scheduleIdleLook(){
- clearTimeout(mascotLookTimer);
- if(document.hidden||motionMode()!=='full'||reducedMotion()||matchMedia('(pointer:coarse)').matches)return;
- mascotLookTimer=setTimeout(()=>{
-   if(mascotState==='idle'&&!mascotBusyReasons.size){
-     const home=mascotElement();
-     if(home){
-       const dir=Math.random()<.5?-1:1;
-       home.style.setProperty('--pocket-eye-x',(dir*(1.2+Math.random()*1.3)).toFixed(1)+'px');
-       home.style.setProperty('--pocket-eye-y',(Math.random()*.8-.4).toFixed(1)+'px');
-       setTimeout(resetMascotEyes,650+Math.random()*450);
-     }
-   }
-   scheduleIdleLook();
- },8000+Math.floor(Math.random()*7000));
-}
 function canSleep(){return !mascotBusyReasons.size&&document.visibilityState==='visible'&&navigator.onLine!==false}
 function scheduleMascotSleep(){
  clearTimeout(mascotSleepTimer);
@@ -806,83 +774,11 @@ function wakeMascot(){
  }
  scheduleMascotSleep();
 }
-function renderAnnoyance(){
- const home=mascotElement();if(home)home.dataset.pocketAnnoyance=String(mascotAnnoyance);
- document.documentElement.dataset.pocketAnnoyance=String(mascotAnnoyance);
-}
-function scheduleAnnoyanceRecovery(){
- clearTimeout(annoyRecoveryTimer);
- if(mascotAnnoyance<=0)return;
- const delay=5000+Math.floor(Math.random()*10001);
- annoyRecoveryTimer=setTimeout(()=>{
-   if(document.hidden){scheduleAnnoyanceRecovery();return}
-   mascotAnnoyance=Math.max(0,mascotAnnoyance-1);renderAnnoyance();
-   if(!mascotBusyReasons.size)setMascotState(restingMascotState(),mascotAnnoyance?1000:550);
-   if(mascotAnnoyance>0){annoyRecoveryTimer=setTimeout(function step(){mascotAnnoyance=Math.max(0,mascotAnnoyance-1);renderAnnoyance();if(!mascotBusyReasons.size)setMascotState(restingMascotState(),mascotAnnoyance?900:450);if(mascotAnnoyance>0)annoyRecoveryTimer=setTimeout(step,1800)},1800)}
-   else{rapidTapCount=0;annoyThreshold=4+Math.floor(Math.random()*4)}
- },delay);
-}
-function setAnnoyance(level,{speak=false}={}){
- mascotAnnoyance=Math.max(0,Math.min(4,Number(level)||0));renderAnnoyance();
- if(!mascotBusyReasons.size)setMascotState(restingMascotState(),mascotAnnoyance?900:450);
- if(speak){
-   const group=mascotAnnoyance>=4?'very':mascotAnnoyance>=2?'annoyed':mascotAnnoyance===1?'curious':'friendly';
-   showPocketSpeech(randomLine(group),1500);
- }
- scheduleAnnoyanceRecovery();return mascotAnnoyance;
-}
-function calmAnnoyance(full=false){
- clearTimeout(annoyRecoveryTimer);
- mascotAnnoyance=full?0:Math.max(0,mascotAnnoyance-1);rapidTapCount=full?0:rapidTapCount;renderAnnoyance();
- if(full)annoyThreshold=4+Math.floor(Math.random()*4);
- if(!mascotBusyReasons.size)setMascotState(restingMascotState(),0);
- if(mascotAnnoyance>0)scheduleAnnoyanceRecovery();
- return mascotAnnoyance;
-}
-function triggerCuteChomp(){
- if(!mascotMotionAllowed())return;
- document.querySelectorAll('[data-pocket-character]').forEach(el=>{el.classList.remove('is-pocket-chomp');void el.offsetWidth;el.classList.add('is-pocket-chomp');setTimeout(()=>el.classList.remove('is-pocket-chomp'),320)});
-}
-function runAwayAnnoyed(){
- if(motionMode()==='off'||reducedMotion()||mascotBusyReasons.size)return false;
- setTimeout(()=>window.PocketMascotViews?.dashAway?.(),140);return true;
-}
 function handleMascotTap(){
- const now=Date.now(),delta=lastPersonalityTapAt?now-lastPersonalityTapAt:Infinity;lastPersonalityTapAt=now;
- bumpPocketInteractions();wakeMascot();
- if(mascotBusyReasons.size)return false;
- const home=mascotElement();
- if(home&&mascotMotionAllowed()){home.classList.remove('is-tap-reacting');void home.offsetWidth;home.classList.add('is-tap-reacting');setTimeout(()=>home.classList.remove('is-tap-reacting'),620)}
-
- if(delta>1800){
-   rapidTapCount=1;
-   if(mascotAnnoyance>0)mascotAnnoyance=Math.max(0,mascotAnnoyance-1);
-   renderAnnoyance();
-   setMascotState('happy',650);
-   if(Math.random()<.46)showPocketSpeech(randomLine('friendly'),1400);
-   spawnPocketParticles(Math.random()<.45?'heart':'star',2);
-   void window.PocketSound?.play?.('chirp');
-   scheduleAnnoyanceRecovery();
-   return true;
- }
-
- rapidTapCount++;
- if(rapidTapCount<3){
-   const playful=rapidTapCount===2&&Math.random()<.05;
-   setMascotState(playful?'mischievous':'happy',playful?760:520);spawnPocketParticles('star',1);void window.PocketSound?.play?.('chirp');return true;
- }
- if(rapidTapCount<annoyThreshold){
-   setAnnoyance(1,{speak:rapidTapCount===3});void window.PocketSound?.play?.('tap');return true;
- }
- const level=Math.min(4,2+Math.floor((rapidTapCount-annoyThreshold)/2));
- const changed=level>mascotAnnoyance;setAnnoyance(Math.max(level,mascotAnnoyance),{speak:changed||Math.random()<.3});
- if(mascotAnnoyance>=4){
-   void window.PocketSound?.play?.('growl');
-   if(Math.random()<.48)triggerCuteChomp();
-   if(Math.random()<.68)runAwayAnnoyed();
- }else if(mascotAnnoyance>=2)void window.PocketSound?.play?.('grumble');
- return true;
+  bumpPocketInteractions();wakeMascot();
+  return !mascotBusyReasons.size;
 }
+
 function setMascotBusy(reason,on,state='thinking'){
  const key=String(reason||'task');
  if(on){mascotBusyReasons.add(key);setMascotState(state,0);wakeMascot()}
@@ -902,8 +798,7 @@ function reactMascot(kind='tap'){
  if(kind==='happy'){setMascotState('happy',750);spawnPocketParticles('star',2);return true}
  if(kind==='curious'){setMascotState('curious',700);return true}
  if(kind==='movement'){
-   if(mascotBusyReasons.size||mascotAnnoyance>=2)return false;
-   setMascotState(mascotAnnoyance===1?'curious':'happy',420);return true;
+   if(mascotBusyReasons.size)return false;setMascotState('happy',420);return true;
  }
  return false;
 }
@@ -920,37 +815,6 @@ function pocketPet(){
  pressHandled=true;bumpPocketInteractions();wakeMascot();calmAnnoyance(false);setMascotState('happy',950);showPocketSpeech(randomLine('friendly'),1500);spawnPocketParticles('heart',3);void window.PocketSound?.play?.('chirp')
 }
 
-const homeMascot=q('homeMascot');
-if(homeMascot){
- homeMascot.dataset.mascotState='idle';renderAnnoyance();
- homeMascot.addEventListener('click',()=>{if(pressHandled){pressHandled=false;return}pocketTap()});
- homeMascot.addEventListener('pointerdown',e=>{
-   if(e.button!==undefined&&e.button!==0)return;
-   pressHandled=false;wakeMascot();
-   if(e.pointerType!=='mouse')lookMascotToward(e.clientX,e.clientY,true);
-   homeMascot.setPointerCapture?.(e.pointerId);clearTimeout(pressTimer);pressTimer=setTimeout(()=>pocketPet(),650);
- });
- const endPress=e=>{clearTimeout(pressTimer);try{homeMascot.releasePointerCapture?.(e.pointerId)}catch{}};
- homeMascot.addEventListener('pointerup',endPress);homeMascot.addEventListener('pointercancel',endPress);homeMascot.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')clearTimeout(pressTimer)});
- homeMascot.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pocketTap()}});
-}
-document.addEventListener('pointermove',e=>{
- if(e.pointerType!=='mouse'||matchMedia('(pointer:coarse)').matches||motionMode()!=='full'||reducedMotion()||document.hidden)return;
- mascotPointerEvent=e;if(mascotPointerFrame)return;
- mascotPointerFrame=requestAnimationFrame(()=>{mascotPointerFrame=0;const ev=mascotPointerEvent;mascotPointerEvent=null;if(ev&&['idle','happy','curious','mischievous'].includes(mascotState))lookMascotToward(ev.clientX,ev.clientY,false)});
-},{passive:true});
-document.addEventListener('pointerdown',wakeMascot,{passive:true});
-document.addEventListener('keydown',wakeMascot,{passive:true});
-if(!('PointerEvent' in window))document.addEventListener('touchstart',wakeMascot,{passive:true});
-document.addEventListener('visibilitychange',()=>{
- if(document.hidden){clearTimeout(mascotBlinkTimer);clearTimeout(mascotLookTimer);resetMascotEyes()}
- else{scheduleBlink();scheduleIdleLook();scheduleMascotSleep();if(mascotAnnoyance>0)scheduleAnnoyanceRecovery()}
-});
-window.addEventListener('pocket-motion-change',()=>{clearBlink();resetMascotEyes();scheduleBlink();scheduleIdleLook();scheduleMascotSleep()});
-window.addEventListener('pocket-mascot-home',()=>{
- if(mascotBusyReasons.size||['success','error','thinking','listening','research','study','coding','files','offline'].includes(mascotState))return;
- calmAnnoyance(false);
-});
 
 function setMascotWind(value=0){
  const v=Math.max(-1,Math.min(1,Number(value)||0));
@@ -966,7 +830,7 @@ window.PocketMascot={
  react:reactMascot,
  tap:handleMascotTap,
  setBusy:setMascotBusy,
- calm:()=>calmAnnoyance(true),
+ 
  sleep:()=>{if(canSleep()){setMascotState('sleep',0);window.PocketMascotViews?.goHomeAll?.(true)}},
  wake:wakeMascot,
  lookAt:lookMascotToward,
@@ -974,14 +838,12 @@ window.PocketMascot={
  moveRandom:()=>window.PocketMascotViews?.moveRandom?.(),
  goHome:()=>window.PocketMascotViews?.goHomeAll?.(true),
  getState:()=>mascotState,
- getAnnoyance:()=>mascotAnnoyance,
- getAnnoyThreshold:()=>annoyThreshold,
- isBusy:()=>mascotBusyReasons.size>0
+  isBusy:()=>mascotBusyReasons.size>0
 };
 
 q('homePrompt')?.addEventListener('focus',wakeMascot);
 q('homePrompt')?.addEventListener('input',wakeMascot);
-scheduleBlink();scheduleIdleLook();scheduleMascotSleep();
+scheduleMascotSleep();
 if(navigator.onLine===false)setMascotState('offline',0);
 
 window.addEventListener('pocket-network-change',event=>{
