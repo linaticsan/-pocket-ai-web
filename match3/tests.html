@@ -1,0 +1,15 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Luma Grove Engine Tests</title><link rel="stylesheet" href="./styles.css"></head><body><main class="app"><header class="top"><div><div class="eyebrow">Browser test runner</div><h1>Engine Tests</h1></div><div class="actions"><a href="./index.html">Game</a><a href="./editor.html">Editor</a></div></header><section class="panel"><pre data-tests>Running…</pre></section></main><script type="module">
+import{Board,MatchDetector,LegalMoveDetector,SeededRandom,LevelValidator,GameEngine,GravitySystem}from"./src/core.js";
+const out=document.querySelector("[data-tests]");const lines=[];let pass=0,fail=0;
+const test=(name,fn)=>{try{fn();lines.push("✓ "+name);pass++}catch(e){lines.push("✗ "+name+" — "+e.message);fail++}};
+const eq=(a,b,m="values differ")=>{if(JSON.stringify(a)!==JSON.stringify(b))throw new Error(m+" "+JSON.stringify(a)+" != "+JSON.stringify(b))};
+test("seeded RNG is reproducible",()=>{const a=new SeededRandom(42),b=new SeededRandom(42);eq([a.next(),a.next(),a.next()],[b.next(),b.next(),b.next()])});
+test("horizontal match detection",()=>{const b=new Board(5,5);for(let c=0;c<3;c++)b.get(1,c).piece={color:"red"};if(!MatchDetector.runs(b).some(r=>r.axis==="h"&&r.cells.length===3))throw Error("no horizontal run")});
+test("vertical match detection",()=>{const b=new Board(5,5);for(let r=0;r<4;r++)b.get(r,2).piece={color:"blue"};if(!MatchDetector.runs(b).some(x=>x.axis==="v"&&x.cells.length===4))throw Error("no vertical run")});
+test("level validation catches bad dimensions",()=>{const v=LevelValidator.validate({width:2,height:8,moves:10,colors:["a","b","c"],board:[]});if(v.valid)throw Error("invalid level accepted")});
+test("gravity moves piece downward",()=>{const b=new Board(3,3);b.get(0,0).piece={color:"red"};GravitySystem.apply(b,"down",[]);if(b.get(2,0).piece?.color!=="red")throw Error("piece did not fall")});
+test("legal move detector finds a swap",()=>{const b=new Board(3,3);const x=[["r","b","r"],["g","r","b"],["g","b","g"]];for(let r=0;r<3;r++)for(let c=0;c<3;c++)b.get(r,c).piece={color:{r:"red",b:"blue",g:"green"}[x[r][c]]};if(!LegalMoveDetector.getLegalMoves(b).length)throw Error("no legal move")});
+const level={id:1,name:"Test",width:8,height:8,moves:10,seed:5,colors:["red","blue","green","yellow","purple"],gravity:"down",objectives:[{type:"collect",color:"blue",count:3}],board:[],portals:[],generators:[]};
+test("game initializes stable board",()=>{const g=new GameEngine(level);if(MatchDetector.hasMatch(g.board))throw Error("starting match exists");if(!LegalMoveDetector.getLegalMoves(g.board).length)throw Error("no legal move")});
+lines.push("");lines.push(`${pass} passed · ${fail} failed`);out.textContent=lines.join("\n");document.title=fail?"Tests failed":"All tests passed";
+</script></body></html>
