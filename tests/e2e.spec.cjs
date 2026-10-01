@@ -270,6 +270,36 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
+test('STEP 56 Pocket matches final kawaii reference styling', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
+  const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await expect(pocket).toBeVisible();
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__fur,.pocket-character__horn,.pocket-character__antenna,.pocket-character__tuft')).toHaveCount(0);
+  const style=await pocket.evaluate(el=>{
+    const body=getComputedStyle(el.querySelector('.pocket-character__body'));
+    const eye=getComputedStyle(el.querySelector('.pocket-character__eye'));
+    const ear=getComputedStyle(el.querySelector('.pocket-character__ear'));
+    const paw=getComputedStyle(el.querySelector('.pocket-character__paw'));
+    const foot=getComputedStyle(el.querySelector('.pocket-character__foot'));
+    return {
+      bodyRadius:body.borderRadius,
+      eyeWidth:parseFloat(eye.width),
+      eyeHeight:parseFloat(eye.height),
+      earWidth:parseFloat(ear.width),
+      pawWidth:parseFloat(paw.width),
+      footWidth:parseFloat(foot.width)
+    };
+  });
+  expect(style.eyeWidth).toBeGreaterThan(style.earWidth);
+  expect(style.eyeHeight).toBeGreaterThan(28);
+  expect(style.pawWidth).toBeGreaterThan(15);
+  expect(style.footWidth).toBeGreaterThan(15);
+  await expect(page.locator('#homePocketSpeech')).toBeVisible();
+  await expectNoPageErrors(errors);
+});
+
 test('STEP 55 Pocket has exactly two cute ears and no extra bubble pieces', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
