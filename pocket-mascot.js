@@ -6,41 +6,65 @@ const ACTIVE_STATES=new Set(['thinking','research','study','coding','files','lis
 const RETURN_HOME_STATES=new Set(['thinking','research','study','coding','files','listening','error','success','excited','offline','sleep','sleepy']);
 const wander=new WeakMap();
 let globalState=window.PocketMascot?.getState?.()||'idle',blinkTimer=0,pointerFrame=0,lastPointer=null,mountFrame=0,autoTimer=0,resizeTimer=0,scrollResetTimer=0,heroLineIndex=-1;
-const HERO_CLICK_LINES=[
- 'Hi! What shall we explore? ✨',
- 'Ask me anything.',
- 'Want to study together?',
- 'Need help with Japanese?',
- 'Let’s research something.',
- 'Want to build something?',
- 'Hehe, you found me!',
- 'Where should I hop next?',
- 'I’m listening 👀',
- 'Ready when you are.',
- 'What are we working on?',
- 'Tap again — I can move!',
- 'Let’s make something useful.',
- 'Your turn. What’s the plan?'
-];
-const CLICK_EXPRESSIONS=['cute','happy','sleepy','annoyed'];
-const EXPRESSION_LABELS={cute:'Cute',happy:'Happy',sleepy:'Sleepy',annoyed:'Annoyed'};
-function cycleClickExpression(el){
- if(!el)return'cute';
- const current=el.dataset.pocketExpression||'cute';
- const next=CLICK_EXPRESSIONS[(CLICK_EXPRESSIONS.indexOf(current)+1)%CLICK_EXPRESSIONS.length];
+const EXPRESSIONS={
+ normal:{label:'Normal',speech:['Ready when you are.','I\'m listening.','One idea at a time.']},
+ happy:{label:'Happy',speech:['Let\'s make something.','That tickled.','Let\'s build something.']},
+ excited:{label:'Excited',speech:['Let\'s go!','Something fun?','I\'m ready!']},
+ sleepy:{label:'Sleepy',speech:['Still here...','Just a tiny rest.','Wake me if you need me.']},
+ surprised:{label:'Surprised',speech:['Oh!','Whoa!','You surprised me.']},
+ shy:{label:'Shy',speech:['Hehe...','Okay, maybe.','I\'m listening.']},
+ curious:{label:'Curious',speech:['What\'s the plan?','Tell me more.','Let\'s figure it out.']},
+ annoyed:{label:'Annoyed',speech:['Again?','Hey!','Okay, okay.']}
+};
+const EXPRESSION_NAMES=Object.keys(EXPRESSIONS);
+const RAPID_SEQUENCE=['happy','surprised','excited','curious','annoyed','annoyed'];
+let lastExpression='normal',lastSpeech='',lastTapAt=0,rapidTapCount=0,expressionResetTimer=0;
+
+function chooseRandomExpression(){
+ const pool=EXPRESSION_NAMES.filter(x=>x!=='normal'&&x!==lastExpression);
+ return pool[Math.floor(Math.random()*pool.length)]||'happy';
+}
+function speechFor(expression){
+ const pool=EXPRESSIONS[expression]?.speech||EXPRESSIONS.normal.speech;
+ const choices=pool.filter(x=>x!==lastSpeech);
+ const line=(choices.length?choices:pool)[Math.floor(Math.random()*(choices.length||pool.length))];
+ lastSpeech=line;return line;
+}
+function setClickExpression(el,expression='normal',{temporary=true,intensity=0}={}){
+ if(!el)return'normal';
+ const next=EXPRESSIONS[expression]?expression:'normal';
  el.dataset.pocketExpression=next;
- el.setAttribute('aria-label','Pocket — '+EXPRESSION_LABELS[next]);
- window.dispatchEvent(new CustomEvent('pocket-expression-change',{detail:{expression:next,element:el}}));
+ if(intensity)el.dataset.pocketExpressionIntensity=String(intensity);else delete el.dataset.pocketExpressionIntensity;
+ el.setAttribute('aria-label','Pocket companion — '+EXPRESSIONS[next].label);
+ lastExpression=next;
+ window.dispatchEvent(new CustomEvent('pocket-expression-change',{detail:{expression:next,element:el,intensity}}));
+ clearTimeout(expressionResetTimer);
+ if(temporary&&next!=='normal'){
+   expressionResetTimer=setTimeout(()=>setClickExpression(el,'normal',{temporary:false}),1200+Math.floor(Math.random()*801));
+ }
  return next;
 }
-
-function changeHeroSpeech(el){
+function reactToPress(el){
+ const now=Date.now(),rapid=now-lastTapAt<900;lastTapAt=now;
+ rapidTapCount=rapid?rapidTapCount+1:1;
+ let expression;
+ if(rapid){
+   expression=RAPID_SEQUENCE[Math.min(rapidTapCount-1,RAPID_SEQUENCE.length-1)];
+ }else{
+   rapidTapCount=1;
+   expression=chooseRandomExpression();
+ }
+ const intensity=rapidTapCount>=6?2:rapidTapCount>=5?1:0;
+ setClickExpression(el,expression,{temporary:true,intensity});
+ changeHeroSpeech(el,expression);
+ return expression;
+}
+function changeHeroSpeech(el,expression=el?.dataset?.pocketExpression||'normal'){
  if(!el?.closest?.('.home-hero-pocket'))return;
  const speech=q('#homePocketSpeech');if(!speech)return;
- heroLineIndex=(heroLineIndex+1)%HERO_CLICK_LINES.length;
- speech.textContent=HERO_CLICK_LINES[heroLineIndex];
+ speech.textContent=speechFor(expression);
  speech.classList.remove('is-changing');void speech.offsetWidth;speech.classList.add('is-changing');
- setTimeout(()=>speech.classList.remove('is-changing'),320);
+ setTimeout(()=>speech.classList.remove('is-changing'),260);
 }
 
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
@@ -56,13 +80,10 @@ function characterParts(){
    '<span class="pocket-character__brow pocket-character__brow--right"></span>'+
    '<span class="pocket-character__mouth"><span class="pocket-character__teeth"><i></i><i></i><i></i></span></span>'+
    '<span class="pocket-character__blush pocket-character__blush--left"></span>'+
-   '<span class="pocket-character__blush pocket-character__blush--right"></span>'+
-      '<span class="pocket-character__prop"></span>'+
-  '</span>'+
-  '<span class="pocket-character__dots" aria-hidden="true">• • •</span>';
+   '<span class="pocket-character__blush pocket-character__blush--right"></span>'+  '</span>'+;
 }
 function html(context='home',size='medium',label='Pocket'){
- return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-expression="cute" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+characterParts()+'</span>';
+ return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-expression="normal" data-pocket-size="'+size+'" role="button" tabindex="0" aria-label="'+label+'">'+characterParts()+'</span>';
 }
 function effectiveState(el){
  const context=el.dataset.pocketContext||'home';
@@ -85,7 +106,7 @@ function hydrate(root=document){
  qa('[data-pocket-character]',root).forEach(el=>{
   if(!q('.pocket-character__body',el))el.insertAdjacentHTML('afterbegin',characterParts());
   if(!el.dataset.pocketContext)el.dataset.pocketContext='home';
-  if(!el.dataset.pocketState)el.dataset.pocketState=globalState;if(!el.dataset.pocketExpression)el.dataset.pocketExpression='cute';
+  if(!el.dataset.pocketState)el.dataset.pocketState=globalState;if(!el.dataset.pocketExpression)el.dataset.pocketExpression='normal';if(el.tagName!=='BUTTON'){el.setAttribute('role','button');el.tabIndex=0;el.setAttribute('aria-label','Pocket companion')}
   if(!el.dataset.pocketSize)el.dataset.pocketSize='medium';
   if(el.tagName!=='BUTTON'&&!el.hasAttribute('role'))el.setAttribute('role','img');
  });
@@ -239,11 +260,12 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
 function tap(el){
  if(!el||el.dataset.pocketTapLock==='1')return;
  const d=initWander(el);clearStay(el);el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
+ reactToPress(el);
  if(el.closest('.pocket-playground'))moveRandom(el,{autonomous:false});
- window.PocketMascot?.tap?.({source:'roaming',element:el});
- changeHeroSpeech(el);
- setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},360);
+ window.PocketMascot?.tap?.({source:'mascot',element:el,expression:el.dataset.pocketExpression});
+ setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},720);
 }
+
 function scheduleAutonomous(){
  clearTimeout(autoTimer);if(motion()!=='full'||reduced()||document.hidden)return;
  autoTimer=setTimeout(()=>{const el=q('.pocket-playground [data-pocket-character]');if(el&&canWander(el,{autonomous:true})&&!initWander(el).stayTimer)moveRandom(el,{autonomous:true});scheduleAutonomous()},12000+Math.floor(Math.random()*16000));
@@ -257,11 +279,13 @@ function handleScrollReset(){
 }
 document.addEventListener('pointerdown',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
 if(!('PointerEvent' in window))document.addEventListener('touchstart',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
-document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el){cycleClickExpression(el);if(el.id!=='homeMascot')tap(el)}if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
+document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)tap(el);if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
+document.addEventListener('keydown',e=>{const el=e.target.closest?.('[data-pocket-character]');if(!el||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();tap(el)});
+document.addEventListener('pointerleave',e=>{const el=e.target.closest?.('[data-pocket-character]');if(!el)return;el.style.setProperty('--pocket-eye-x','0px');el.style.setProperty('--pocket-eye-y','0px');el.style.setProperty('--pocket-lean','0deg')},true);
 document.addEventListener('pointermove',e=>{
  if(e.pointerType!=='mouse'||matchMedia('(pointer:coarse)').matches||motion()!=='full'||reduced()||document.hidden)return;
  lastPointer=e;if(pointerFrame)return;
- pointerFrame=requestAnimationFrame(()=>{pointerFrame=0;const ev=lastPointer;lastPointer=null;if(!ev)return;qa('[data-pocket-character]').forEach(el=>{if(el.id==='homeMascot'||el.offsetParent===null)return;const rect=el.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height*.46,dx=ev.clientX-cx,dy=ev.clientY-cy,len=Math.max(1,Math.hypot(dx,dy));el.style.setProperty('--pocket-eye-x',(dx/len*2.4).toFixed(2)+'px');el.style.setProperty('--pocket-eye-y',(dy/len*1.6).toFixed(2)+'px')})});
+ pointerFrame=requestAnimationFrame(()=>{pointerFrame=0;const ev=lastPointer;lastPointer=null;if(!ev)return;qa('[data-pocket-character]').forEach(el=>{if(el.offsetParent===null)return;const rect=el.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height*.46,dx=ev.clientX-cx,dy=ev.clientY-cy,len=Math.max(1,Math.hypot(dx,dy));el.style.setProperty('--pocket-eye-x',(dx/len*2.6).toFixed(2)+'px');el.style.setProperty('--pocket-eye-y',(dy/len*1.8).toFixed(2)+'px');el.style.setProperty('--pocket-lean',(dx/len*.8).toFixed(2)+'deg')})});
 },{passive:true});
 document.addEventListener('change',e=>{if(e.target?.id==='fileInput')setTimeout(syncFilesEmpty,0)});
 document.addEventListener('input',e=>{if(e.target?.id==='fileText')syncFilesEmpty()});
