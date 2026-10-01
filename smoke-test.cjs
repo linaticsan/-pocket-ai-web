@@ -343,8 +343,8 @@ assert(pocketJs.includes("document.addEventListener('keydown'"),'Keyboard mascot
 assert(pocketJs.includes("matchMedia('(pointer:coarse)')"),'Mobile eye tracking guard is missing');
 for(const dead of ['artifact-v3.js','document-v3.js','local-v3.js','qa-v79.js','qa-report.html','qa-v37.html'])assert(!fs.existsSync(path.join(__dirname,dead)),'Obsolete file still present: '+dead);
 
-assert(pocketJs.includes("HERO_CLICK_LINES"),"hero mascot should cycle click speech");
-assert(pocketJs.includes("changeHeroSpeech(el)"),"hero mascot click should update speech");
+assert(pocketJs.includes("function speechFor(expression)")&&pocketJs.includes("lastSpeech"),"hero mascot should cycle expression-specific speech without immediate repeats");
+assert(pocketJs.includes("function changeHeroSpeech(el,expression=")&&pocketJs.includes("speechFor(expression)"),"hero mascot click should update speech from expression data");
 assert(index.includes('id="homePocketSpeech"'),"home hero speech should be live-updatable");
 assert(index.includes('topbar-pocket-logo'),"uploaded mascot logo should be used in the top bar");
 assert(iconSvg.includes('Pocket AI mascot logo'),"icon.svg should contain the mascot logo");
