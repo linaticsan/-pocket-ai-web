@@ -270,6 +270,22 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
+test('clicking Pocket cycles cute happy sleepy annoyed', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascotViews?.CLICK_EXPRESSIONS);
+  const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await expect(pocket).toHaveAttribute('data-pocket-expression','cute');
+  await pocket.click();
+  await expect(pocket).toHaveAttribute('data-pocket-expression','happy');
+  await pocket.click();
+  await expect(pocket).toHaveAttribute('data-pocket-expression','sleepy');
+  await pocket.click();
+  await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
+  await pocket.click();
+  await expect(pocket).toHaveAttribute('data-pocket-expression','cute');
+  await expectNoPageErrors(errors);
+});
+
 test('STEP 57 plush Pocket stays compact and cute on desktop', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.characterParts);
