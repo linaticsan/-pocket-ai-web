@@ -114,9 +114,9 @@ assert(workspace.includes("'curious','mischievous','annoyed','grumpy','very-anno
 assert(!workspace.includes('function runPocketMascot()')&&!workspace.includes('function runCuteLogo(source)'),'Obsolete game-like mascot runner must stay removed');
 assert(pocketCss.includes('Pocket mascot visual identity — shared component'),'Shared mascot stylesheet is missing');
 assert(pocketJs.includes('window.PocketMascotViews={'),'Shared mascot renderer is missing');
-assert(pocketCss.includes('@keyframes pocket-shared-breathe')&&pocketCss.includes('@keyframes pocket-shared-blink'),'Shared mascot animation owner is incomplete');
-assert(pocketCss.includes('.pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth{opacity:0'),'Mischievous Pocket must keep sharp teeth hidden');
-assert(pocketCss.includes('.pocket-character[data-pocket-state="annoyed"] .pocket-character__teeth{opacity:.92')&&pocketCss.includes('.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__teeth{opacity:1'),'Sharp teeth must reveal only in annoyed states');
+assert(pocketCss.includes('@keyframes pocket-jelly-breathe')&&pocketCss.includes('@keyframes pocket-jelly-tap'),'Shared jelly animation owner is incomplete');
+assert(pocketCss.includes('.pocket-character__teeth{')&&pocketCss.includes('opacity:0;')&&pocketCss.includes('transform:scaleY(0)'),'Jelly fang must be hidden by default');
+assert(pocketCss.includes('[data-pocket-expression="annoyed"][data-pocket-expression-intensity="2"] .pocket-character__teeth'),'Tiny fang may reveal only for high-intensity annoyed expression');
 assert(!coreCss.includes('@keyframes pocket-shared-')&&!coreCss.includes('STEP 42 — authoritative Pocket mascot animation system'),'ui-core.css must not own mascot animations');
 assert(coreCss.includes('STEP 43 — non-mascot UI motion; mascot motion lives only in pocket-mascot.css'),'Shared non-mascot UI motion ownership marker is missing');
 assert(index.includes('id="homeMascot"')&&!index.includes('pocket-character__body pocket-mascot-visual'),'Room mascot must be hydrated from the shared renderer instead of duplicating face/body markup');
