@@ -1,17 +1,5 @@
 import{GameEngine,LegalMoveDetector}from"./core.js";
 
-function scoreMove(engine,move){
-  const [a,b]=move,ca=engine.board.get(a.row,a.column),cb=engine.board.get(b.row,b.column);
-  let score=0;
-  if(ca?.piece?.special||cb?.piece?.special)score+=80;
-  const before=engine.objectives.snapshot().reduce((s,o)=>s+o.remaining,0);
-  engine.board.swap(ca,cb);
-  const matches=(awaitableGroups=>awaitableGroups)([]);
-  engine.board.swap(ca,cb);
-  score+=Math.random()*0.01;
-  return score-before*0.001;
-}
-
 export async function simulateLevel(level,attempts=100){
   let wins=0,losses=0,totalMoves=0,totalReshuffles=0,totalSpecials=0;
   for(let i=0;i<attempts;i++){
@@ -25,7 +13,8 @@ export async function simulateLevel(level,attempts=100){
       let best=legal[0],bestScore=-Infinity;
       for(const move of legal){
         const [a,b]=move,ca=engine.board.get(a.row,a.column),cb=engine.board.get(b.row,b.column);
-        let s=0;if(ca.piece?.special||cb.piece?.special)s+=100;
+        let s=0;
+        if(ca.piece?.special||cb.piece?.special)s+=100;
         const centerR=(level.height-1)/2,centerC=(level.width-1)/2;
         s-=Math.abs(b.row-centerR)+Math.abs(b.column-centerC);
         if(s>bestScore){bestScore=s;best=move}
