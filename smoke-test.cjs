@@ -8,6 +8,7 @@ const sw=read('sw.js');
 const ux=read('ux-v39.js');
 const app=read('app.js');
 const icons=read('icons-v132.js');
+const iconSvg=read('icon.svg');
 const boot=read('boot-v83.js');
 const coreCss=read('ui-core.css');
 const responsive=read('responsive-v92.js');
@@ -359,8 +360,8 @@ assert(!pocketJs.includes("PocketSound?.laugh?.()"),'Renderer must not own tap s
 assert(read('webnovel-v42.js').includes('requestAnimationFrame')&&read('webnovel-v42.js').includes('records.some(r=>r.addedNodes.length)'),'Web Novel body observer must be coalesced');
 for(const dead of ['artifact-v3.js','document-v3.js','local-v3.js','qa-v79.js','qa-report.html','qa-v37.html'])assert(!fs.existsSync(path.join(__dirname,dead)),'Obsolete file still present: '+dead);
 
-assert.ok(mascot.includes("HERO_CLICK_LINES"),"hero mascot should cycle click speech");
-assert.ok(mascot.includes("changeHeroSpeech(el)"),"hero mascot click should update speech");
+assert.ok(pocketJs.includes("HERO_CLICK_LINES"),"hero mascot should cycle click speech");
+assert.ok(pocketJs.includes("changeHeroSpeech(el)"),"hero mascot click should update speech");
 assert.ok(index.includes('id="homePocketSpeech"'),"home hero speech should be live-updatable");
 assert.ok(index.includes('topbar-pocket-logo'),"uploaded mascot logo should be used in the top bar");
-assert.ok(icon.includes('Pocket AI mascot logo'),"icon.svg should contain the mascot logo");
+assert.ok(iconSvg.includes('Pocket AI mascot logo'),"icon.svg should contain the mascot logo");
