@@ -40,7 +40,10 @@ export class BoardView{
       if(c.piece){
         const p=document.createElement("span");
         p.className=`piece piece-${c.piece.color||"color"} special-${c.piece.special||"none"}`;
-        p.dataset.color=c.piece.color||"color";p.textContent=this.cellLabel(c);el.append(p);
+        p.dataset.color=c.piece.color||"color";
+        const core=document.createElement("b");core.className="piece-core";core.textContent=this.cellLabel(c);
+        const glint=document.createElement("i");glint.className="piece-glint";
+        p.append(core,glint);el.append(p);
       }
       if(c.blocker){const layer=document.createElement("i");layer.className="blocker-layer";layer.textContent=c.blocker.hitPoints>1?c.blocker.hitPoints:"";el.append(layer)}
       if(this.selected&&this.selected.row===c.row&&this.selected.column===c.column)el.classList.add("selected");
@@ -73,6 +76,24 @@ export class BoardView{
     }
     const ring=document.createElement("i");ring.className="fx-ring";ring.style.left=pos.x+"px";ring.style.top=pos.y+"px";ring.style.setProperty("--ring",color);this.fx?.append(ring);
     ring.animate([{transform:"translate(-50%,-50%) scale(.2)",opacity:.95},{transform:"translate(-50%,-50%) scale(1.45)",opacity:0}],{duration:360,easing:"ease-out"}).finished.finally(()=>ring.remove());
+    this.scorePopup(pos,cascade>1?`+${Math.round(10*(1+(cascade-1)*.25))} ×${cascade}`:"+10",color);
+    if(piece?.special==="row"||piece?.special==="column")this.specialBeam(pos,piece.special,color);
+    if(piece?.special==="area")this.areaPulse(pos,color);
+  }
+  scorePopup(pos,text,color){
+    if(!this.fx||prefersReducedMotion())return;
+    const n=document.createElement("span");n.className="score-pop";n.textContent=text;n.style.left=pos.x+"px";n.style.top=pos.y+"px";n.style.setProperty("--score-color",color);this.fx.append(n);
+    n.animate([{transform:"translate(-50%,-30%) scale(.7)",opacity:0},{transform:"translate(-50%,-70%) scale(1.08)",opacity:1,offset:.25},{transform:"translate(-50%,-145%) scale(.92)",opacity:0}],{duration:720,easing:"cubic-bezier(.2,.8,.25,1)"}).finished.finally(()=>n.remove());
+  }
+  specialBeam(pos,axis,color){
+    if(!this.fx||prefersReducedMotion())return;
+    const beam=document.createElement("i");beam.className=`fx-beam fx-beam-${axis}`;beam.style.left=pos.x+"px";beam.style.top=pos.y+"px";beam.style.setProperty("--beam",color);this.fx.append(beam);
+    beam.animate([{opacity:0,transform:"translate(-50%,-50%) scale(.2)"},{opacity:1,transform:"translate(-50%,-50%) scale(1)",offset:.28},{opacity:0,transform:"translate(-50%,-50%) scale(1.08)"}],{duration:420,easing:"ease-out"}).finished.finally(()=>beam.remove());
+  }
+  areaPulse(pos,color){
+    if(!this.fx||prefersReducedMotion())return;
+    const blast=document.createElement("i");blast.className="fx-blast";blast.style.left=pos.x+"px";blast.style.top=pos.y+"px";blast.style.setProperty("--blast",color);this.fx.append(blast);
+    blast.animate([{transform:"translate(-50%,-50%) scale(.15)",opacity:.9},{transform:"translate(-50%,-50%) scale(1.8)",opacity:0}],{duration:520,easing:"cubic-bezier(.12,.75,.25,1)"}).finished.finally(()=>blast.remove());
   }
   specialFlash({cell,special}){
     const el=this.getCellEl(cell);if(!el||prefersReducedMotion())return;
@@ -89,6 +110,12 @@ export class BoardView{
     this.combo.textContent=labels[Math.min(cascade,labels.length-1)]||`Bloom ×${cascade}`;
     this.combo.classList.remove("show");void this.combo.offsetWidth;this.combo.classList.add("show");
     document.body.dataset.cascade=String(Math.min(cascade,5));
+    const shell=document.querySelector(".game-card");
+    if(shell&&!prefersReducedMotion()&&cascade>=3){
+      const strength=Math.min(1,cascade*.16);
+      shell.animate([{transform:"translate(0,0)"},{transform:`translate(${-5*strength}px,${2*strength}px)`},{transform:`translate(${5*strength}px,${-2*strength}px)`},{transform:"translate(0,0)"}],{duration:220,easing:"ease-out"});
+    }
+    if(cascade>=4)this.combo.classList.add("mega");else this.combo.classList.remove("mega");
   }
   animateSwapHint({a,b}){
     if(prefersReducedMotion())return;
