@@ -394,7 +394,7 @@ function awardXP(amount,label=''){
  if(after>before){
   
   window.PocketMascot?.react?.('levelUp');
-  showPocketSpeech('Level up! ✦',1800);
+  window.PocketMascotViews?.say?.('Level up! ✦',1800);
   setTimeout(()=>showXPFeedback('Pocket reached Lv. '+displayLevel(),''),250);
   if(crossedRoomDecorThreshold(before,after))setTimeout(roomDecorUnlockedFeedback,650);
  }else 
@@ -512,7 +512,7 @@ function crossedRoomDecorThreshold(before,after){
 }
 function roomDecorUnlockedFeedback(){
  window.PocketMascot?.react?.('success');
- showPocketSpeech('New room decor available ✦',1800);
+ window.PocketMascotViews?.say?.('New room decor available ✦',1800);
 }
 function syncPocketRoom(){
  const room=q('pocketRoom');if(!room)return;
@@ -590,7 +590,7 @@ function finishStarGame(){
  if(q('starGameResultText'))q('starGameResultText').textContent='You caught '+starGame.score+' '+(starGame.score===1?'star.':'stars.');
  if(q('starGameBestMessage'))q('starGameBestMessage').textContent=isBest?'New best! ✦':starGame.score>=10?'Amazing! ✦':'Nice catching!';
  window.PocketMascot?.react?.(starGame.score>=10?'levelUp':'happy');
- showPocketSpeech(starGame.score>=10?'Amazing! ✦':'Nice catching!',1500);
+ window.PocketMascotViews?.say?.(starGame.score>=10?'Amazing! ✦':'Nice catching!',1500);
 }
 function startStarGame(){
  stopStarGame(false);
@@ -598,7 +598,7 @@ function startStarGame(){
  if(q('starGameReady'))q('starGameReady').hidden=true;
  if(q('starGameResult'))q('starGameResult').hidden=true;
  renderStarGameHud();placeStarTarget(false);
- setMascotState('excited',700);showPocketSpeech("Let's play! ✦",1000);
+ setMascotState('excited',700);window.PocketMascotViews?.say?.("Let's play! ✦",1000);
  starGameTimer=setInterval(()=>{
   if(starGame.state!=='playing'){stopStarGame(false);return}
   starGame.timeLeft=Math.max(0,starGame.timeLeft-1);renderStarGameHud();
@@ -629,7 +629,7 @@ document.querySelectorAll('#pocketRoom [data-room-action]').forEach(button=>{
   button.classList.remove('room-object-react');void button.offsetWidth;button.classList.add('room-object-react');
   setTimeout(()=>button.classList.remove('room-object-react'),260);
   setMascotState(cfg.state==='curious'?'surprised':cfg.state,650);
-  showPocketSpeech(cfg.speech,900);
+  window.PocketMascotViews?.say?.(cfg.speech,900);
   const navigate=()=>{if(action==='research'){go('surface');if(q('surfaceMode'))q('surfaceMode').value='research';}else go(cfg.target)};
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
   const delay=motionMode()==='off'||reduced?0:140;
@@ -770,7 +770,7 @@ function reactMascot(kind='tap'){
  const home=mascotElement();if(!home)return false;
  if(kind==='tap')return handleMascotTap();
  if(kind==='success'){
-   calmAnnoyance(true);setMascotState('success',900);spawnPocketParticles('star',3);void window.PocketSound?.play?.('success');return true;
+   setMascotState('success',900);spawnPocketParticles('star',3);void window.PocketSound?.play?.('success');return true;
  }
  if(kind==='error'){setMascotState('error',950);void window.PocketSound?.play?.('error');return true}
  if(kind==='levelUp'){
@@ -784,25 +784,11 @@ function reactMascot(kind='tap'){
  }
  return false;
 }
-function lookMascotToward(clientX,clientY,temporary=false){
- const home=mascotElement();if(!home||motionMode()!=='full'||reducedMotion()||['sleep','sleepy'].includes(mascotState))return;
- const rect=home.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height*.46;
- const dx=clientX-cx,dy=clientY-cy,len=Math.max(1,Math.hypot(dx,dy)),max=2.5;
- home.style.setProperty('--pocket-eye-x',(dx/len*max).toFixed(2)+'px');
- home.style.setProperty('--pocket-eye-y',(dy/len*Math.min(max,1.8)).toFixed(2)+'px');
- if(temporary)setTimeout(resetMascotEyes,520);
-}
-function pocketTap(){return handleMascotTap()}
-function pocketPet(){
- pressHandled=true;bumpPocketInteractions();wakeMascot();calmAnnoyance(false);setMascotState('happy',950);showPocketSpeech(randomLine('friendly'),1500);spawnPocketParticles('heart',3);void window.PocketSound?.play?.('chirp')
-}
-
-
 function setMascotWind(value=0){
  const v=Math.max(-1,Math.min(1,Number(value)||0));
  document.documentElement.style.setProperty('--pocket-wind-angle',(v*7).toFixed(2)+'deg');
  if(Math.abs(v)>.16&&mascotState==='idle'){
-   const home=mascotElement();if(home){home.style.setProperty('--pocket-eye-x',(v>0?1.2:-1.2)+'px');setTimeout(resetMascotEyes,900)}
+   const home=mascotElement();if(home){home.style.setProperty('--pocket-eye-x',(v>0?1.2:-1.2)+'px');setTimeout(()=>home.style.setProperty('--pocket-eye-x','0px'),900)}
  }
  return v;
 }
