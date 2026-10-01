@@ -263,1168 +263,63 @@ html[data-motion="off"] #home .pocket-speech{transition:none}
 html[data-motion="gentle"] .pocket-character__antenna{transform:rotate(var(--pocket-wind-angle,0deg))}
 html[data-motion="off"] .pocket-character__antenna{transform:none!important}
 
-
-/* STEP 51 — authoritative fluffy-animal Pocket visual system
-   Reference direction: warm-white plush pom-pom pet, tiny soft horns,
-   glossy purple eyes, magical fur tuft, paws, hidden fangs. */
-:root{
-  --pocket-fur:#fffaf7;
-  --pocket-fur-mid:#f6f0fa;
-  --pocket-fur-shadow:#e7def2;
-  --pocket-fur-outline:#c8b9dd;
-  --pocket-iris:#5d3f8d;
-  --pocket-iris-deep:#2f2047;
-  --pocket-blush:#f5a9bd;
-  --pocket-horn:#c8b1ee;
-  --pocket-horn-shadow:#9f83d5;
-}
+/* STEP 61 — authoritative one-blob jelly mascot */
 .pocket-character{
-  --pocket-eye-x:0px;--pocket-eye-y:0px;
-  filter:drop-shadow(0 8px 10px color-mix(in srgb,var(--pa-text) 10%,transparent));
-}
-.pocket-character__body{
-  inset:9% 4% 3%;
-  overflow:visible;
-  border:1px solid color-mix(in srgb,var(--pocket-fur-outline) 76%,transparent);
-  border-radius:46% 46% 43% 43% / 43% 43% 38% 38%;
-  background:
-    radial-gradient(ellipse at 50% 24%,rgba(255,255,255,.96) 0 26%,transparent 58%),
-    radial-gradient(ellipse at 25% 64%,rgba(255,255,255,.76),transparent 45%),
-    radial-gradient(ellipse at 75% 66%,rgba(255,255,255,.72),transparent 44%),
-    linear-gradient(165deg,var(--pocket-fur),var(--pocket-fur-mid) 67%,var(--pocket-fur-shadow));
-  box-shadow:
-    inset 0 5px 10px rgba(255,255,255,.82),
-    inset 0 -11px 15px color-mix(in srgb,var(--pocket-fur-shadow) 72%,transparent),
-    0 5px 0 -3px color-mix(in srgb,var(--pocket-fur-outline) 55%,transparent),
-    0 10px 20px color-mix(in srgb,#5b4279 11%,transparent);
-  transform-origin:50% 83%;
-}
-[data-theme="dark"] .pocket-character__body,
-[data-theme="oled"] .pocket-character__body{
-  background:
-    radial-gradient(ellipse at 50% 22%,rgba(255,255,255,.92),transparent 55%),
-    linear-gradient(165deg,#fffdfb,#eee7f5 72%,#d9cce8);
-  border-color:#b5a2cd;
-}
-
-/* soft furry silhouette: simple puffs stay inexpensive to animate */
-.pocket-character__fur{
-  position:absolute;z-index:0;width:18%;height:18%;
-  border:1px solid color-mix(in srgb,var(--pocket-fur-outline) 68%,transparent);
-  background:linear-gradient(145deg,#fffefd,var(--pocket-fur-mid));
-  border-radius:70% 35% 68% 38%;
-  box-shadow:inset 0 -3px 5px color-mix(in srgb,var(--pocket-fur-shadow) 48%,transparent);
-  pointer-events:none;
-}
-.pocket-character__fur--top-left{left:12%;top:-3%;transform:rotate(-26deg)}
-.pocket-character__fur--top{left:41%;top:-7%;width:19%;height:20%;transform:rotate(8deg)}
-.pocket-character__fur--top-right{right:12%;top:-3%;transform:rotate(26deg) scaleX(-1)}
-.pocket-character__fur--left{left:-5%;top:34%;transform:rotate(-34deg)}
-.pocket-character__fur--right{right:-5%;top:35%;transform:rotate(34deg) scaleX(-1)}
-.pocket-character__fur--lower-left{left:3%;bottom:4%;width:16%;height:15%;transform:rotate(-36deg)}
-.pocket-character__fur--lower-right{right:3%;bottom:4%;width:16%;height:15%;transform:rotate(36deg) scaleX(-1)}
-
-/* tiny animal ear puffs, no mechanical side nodes */
-.pocket-character__ear{
-  z-index:0;top:12%;width:18%;height:18%;
-  border:1px solid color-mix(in srgb,var(--pocket-fur-outline) 72%,transparent);
-  background:
-    radial-gradient(circle at 55% 58%,color-mix(in srgb,var(--pocket-horn) 34%,#ffd8e5) 0 34%,transparent 36%),
-    linear-gradient(145deg,#fffefd,var(--pocket-fur-mid));
-  border-radius:70% 42% 62% 44%;
-  box-shadow:inset 0 -3px 5px color-mix(in srgb,var(--pocket-fur-shadow) 55%,transparent);
-}
-.pocket-character__ear--left{left:3%;transform:rotate(-24deg)}
-.pocket-character__ear--right{right:3%;transform:rotate(24deg) scaleX(-1)}
-
-/* rounded devil-pet horns */
-.pocket-character__horn{
-  position:absolute;z-index:1;top:3%;width:12%;height:14%;
-  border:0;border-radius:78% 78% 42% 42% / 88% 88% 30% 30%;
-  background:linear-gradient(155deg,#eadffd 0 25%,var(--pocket-horn) 58%,var(--pocket-horn-shadow));
-  box-shadow:0 0 0 1px color-mix(in srgb,var(--pocket-horn-shadow) 64%,transparent),inset 2px 2px 3px rgba(255,255,255,.62);
-  transform-origin:50% 100%;transition:transform .18s ease;
-}
-.pocket-character__horn--left{left:20%;transform:rotate(-13deg)}
-.pocket-character__horn--right{right:20%;transform:rotate(13deg)}
-
-/* old antenna class is retained for JS wind compatibility, but visually becomes a fluffy magical curl */
-.pocket-character__antenna{
-  z-index:2;left:50%;top:-14%;width:34%;height:31%;
-  background:none;border:0;transform:translateX(-50%);
-  transform-origin:50% 88%;pointer-events:none;
-}
-.pocket-character__antenna::before{
-  content:"";position:absolute;left:19%;bottom:0;width:60%;height:72%;
-  border:0;border-left:8px solid #fffdfb;border-top:7px solid #fffdfb;
-  border-radius:72% 30% 55% 30%;
-  filter:drop-shadow(-1px 1px 0 var(--pocket-fur-outline));
-  transform:rotate(18deg) skewX(-8deg);
-}
-.pocket-character__antenna::after{
-  content:"";position:absolute;right:-4%;top:2%;width:22%;height:22%;margin:0;
-  border:1px solid #9f7ce0;border-radius:4px;
-  background:linear-gradient(135deg,#f4e9ff,#b686ff 55%,#7952bd);
-  clip-path:polygon(50% 0,61% 34%,100% 50%,62% 63%,50% 100%,38% 64%,0 50%,38% 36%);
-  transform:none;box-shadow:0 0 0 4px color-mix(in srgb,#a979ff 12%,transparent),0 0 12px color-mix(in srgb,#a979ff 42%,transparent);
-}
-.pocket-character__tuft{
-  position:absolute;left:35%;bottom:10%;width:28%;height:46%;border-radius:70% 35% 70% 30%;
-  background:linear-gradient(160deg,#fff,#f3ecf8);transform:rotate(-18deg);
-  box-shadow:inset -2px -3px 4px color-mix(in srgb,var(--pocket-fur-shadow) 60%,transparent);
-}
-
-/* large glossy purple anime eyes */
-.pocket-character__eye{
-  z-index:4;top:34%;width:19%;height:27%;border-radius:52% 52% 48% 48%;
-  background:
-    radial-gradient(circle at 35% 26%,#fff 0 8%,transparent 9%),
-    radial-gradient(circle at 65% 68%,#b99cff 0 8%,transparent 9%),
-    linear-gradient(180deg,#241832 0 18%,var(--pocket-iris-deep) 20% 46%,var(--pocket-iris) 70%,#a987e7 100%);
-  box-shadow:
-    inset 0 -3px 0 rgba(255,255,255,.16),
-    0 0 0 1px color-mix(in srgb,#281a38 82%,transparent),
-    0 2px 3px rgba(56,35,82,.18);
-  transform:translate(var(--pocket-eye-x),var(--pocket-eye-y));
-  transform-origin:center;
-  transition:transform .12s ease,height .16s ease,width .16s ease,top .16s ease,border-radius .16s ease;
-}
-.pocket-character__eye::before{
-  content:"";position:absolute;left:13%;top:10%;width:29%;height:23%;border:0;border-radius:50%;
-  background:rgba(255,255,255,.94);opacity:1;
-}
-.pocket-character__eye::after{
-  content:"";position:absolute;right:18%;bottom:17%;width:16%;height:13%;border-radius:50%;
-  background:rgba(255,255,255,.66);box-shadow:none;opacity:1;
-}
-.pocket-character__eye--left{left:23%}.pocket-character__eye--right{right:23%}
-
-.pocket-character__eyelid{
-  position:absolute;z-index:5;top:31%;width:21%;height:10%;
-  border-top:2px solid #3c294f;border-radius:50%;opacity:0;pointer-events:none;
-  transition:opacity .16s ease,transform .18s ease;
-}
-.pocket-character__eyelid--left{left:22%}.pocket-character__eyelid--right{right:22%}
-.pocket-character__brow{
-  position:absolute;z-index:6;top:24%;width:10%;height:5%;
-  border-top:2px solid color-mix(in srgb,#4a315d 58%,transparent);
-  border-radius:50%;opacity:.32;transition:transform .18s ease,opacity .18s ease;
-}
-.pocket-character__brow--left{left:28%;transform:rotate(-7deg)}
-.pocket-character__brow--right{right:28%;transform:rotate(7deg)}
-
-/* tiny cat-like mouth by default; fangs remain completely hidden */
-.pocket-character__mouth{
-  z-index:6;left:50%;top:64%;width:16%;height:9%;margin-left:-8%;
-  border:0;background:transparent;overflow:visible;transform:none;
-}
-.pocket-character__mouth::before,.pocket-character__mouth::after{
-  content:"";position:absolute;top:0;width:49%;height:70%;
-  border-bottom:2px solid #4a315d;border-radius:0 0 10px 10px;
-}
-.pocket-character__mouth::before{left:3%;transform:rotate(7deg)}
-.pocket-character__mouth::after{right:3%;transform:rotate(-7deg)}
-.pocket-character__teeth{
-  position:absolute;left:50%;top:0;width:80%;height:76%;margin-left:-40%;
-  display:flex;align-items:flex-start;justify-content:center;gap:2%;
-  opacity:0;transform:scaleY(0);transform-origin:50% 0;
-  transition:opacity .12s ease,transform .14s ease;
-}
-.pocket-character__teeth i{
-  width:27%;height:68%;background:#fff;border:1px solid rgba(70,42,81,.14);
-  clip-path:polygon(0 0,100% 0,50% 100%);filter:drop-shadow(0 1px 0 rgba(0,0,0,.08));
-}
-
-/* soft cheek volume and blush */
-.pocket-character__blush{
-  z-index:3;top:59%;width:18%;height:9%;border-radius:50%;
-  background:radial-gradient(ellipse,rgba(245,169,189,.72),rgba(245,169,189,.18) 58%,transparent 72%);
-  opacity:.58;filter:none;
-}
-.pocket-character__blush--left{left:8%}.pocket-character__blush--right{right:8%}
-.pocket-character__cheek-detail{
-  position:absolute;z-index:5;top:64%;width:8%;height:3%;border-top:1px solid #d985a3;
-  opacity:.18;transition:opacity .16s ease,transform .16s ease;
-}
-.pocket-character__cheek-detail--left{left:14%;transform:rotate(12deg)}
-.pocket-character__cheek-detail--right{right:14%;transform:rotate(-12deg)}
-
-/* plush front paws and tiny feet make the silhouette animal-like */
-.pocket-character__paw{
-  position:absolute;z-index:3;top:58%;width:24%;height:28%;
-  border:1px solid color-mix(in srgb,var(--pocket-fur-outline) 55%,transparent);
-  border-radius:58% 58% 48% 48%;
-  background:linear-gradient(160deg,#fffefd,#f3edf8);
-  box-shadow:inset 0 -4px 6px color-mix(in srgb,var(--pocket-fur-shadow) 48%,transparent);
+  --pocket-eye-x:0px;
+  --pocket-eye-y:0px;
+  --pocket-lean:0deg;
+  position:relative;
+  display:inline-block;
+  width:132px;
+  height:126px;
+  border:0;
+  background:transparent;
+  padding:0;
+  cursor:pointer;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  touch-action:manipulation;
+  transform:rotate(var(--pocket-lean));
   transform-origin:50% 82%;
+  filter:drop-shadow(0 9px 15px rgba(75,52,101,.12));
+  transition:transform .18s ease;
 }
-.pocket-character__paw::after{
-  content:"";position:absolute;left:28%;right:28%;bottom:17%;height:2px;border-radius:99px;background:rgba(184,151,199,.3);
-}
-.pocket-character__paw--left{left:16%;transform:rotate(13deg)}
-.pocket-character__paw--right{right:16%;transform:rotate(-13deg)}
-.pocket-character__foot{
-  position:absolute;z-index:2;bottom:-2%;width:22%;height:13%;
-  border:1px solid color-mix(in srgb,var(--pocket-fur-outline) 58%,transparent);
-  border-radius:60% 60% 50% 50%;background:linear-gradient(#fff,#f1eaf7);
-}
-.pocket-character__foot--left{left:15%;transform:rotate(5deg)}
-.pocket-character__foot--right{right:15%;transform:rotate(-5deg)}
+.pocket-character[data-pocket-size="small"]{width:76px;height:72px}
+.pocket-character[data-pocket-size="medium"]{width:108px;height:103px}
+.pocket-character[data-pocket-size="large"]{width:136px;height:130px}
+.home-hero-pocket .pocket-character{width:136px;height:130px}
 
-/* props remain small UI hints, never robotic body parts */
-.pocket-character__prop{z-index:8}
-
-/* facial state system */
-.pocket-character[data-pocket-state="happy"] .pocket-character__eye,
-.pocket-character[data-pocket-state="success"] .pocket-character__eye,
-.pocket-character[data-pocket-state="excited"] .pocket-character__eye{
-  height:6%;top:43%;border-radius:999px;background:#4a315d;box-shadow:none;
-}
-.pocket-character[data-pocket-state="happy"] .pocket-character__eye::before,
-.pocket-character[data-pocket-state="happy"] .pocket-character__eye::after,
-.pocket-character[data-pocket-state="success"] .pocket-character__eye::before,
-.pocket-character[data-pocket-state="success"] .pocket-character__eye::after{display:none}
-.pocket-character[data-pocket-state="happy"] .pocket-character__mouth,
-.pocket-character[data-pocket-state="success"] .pocket-character__mouth{
-  top:63%;width:18%;height:13%;margin-left:-9%;border-radius:0 0 50% 50%;
-}
-.pocket-character[data-pocket-state="happy"] .pocket-character__blush,
-.pocket-character[data-pocket-state="success"] .pocket-character__blush{opacity:.8}
-
-.pocket-character[data-pocket-state="curious"] .pocket-character__body{transform:rotate(-3deg)}
-.pocket-character[data-pocket-state="curious"] .pocket-character__brow--left{transform:translateY(-2px) rotate(-14deg);opacity:.55}
-.pocket-character[data-pocket-state="curious"] .pocket-character__brow--right{transform:translateY(1px) rotate(12deg);opacity:.45}
-.pocket-character[data-pocket-state="curious"] .pocket-character__eye--right{transform:translate(var(--pocket-eye-x),calc(var(--pocket-eye-y) - 2px)) scale(1.04)}
-.pocket-character[data-pocket-state="curious"] .pocket-character__antenna{transform:translateX(-50%) rotate(-6deg)}
-
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__eye--left{height:16%;top:39%}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__eyelid--left{opacity:.8;transform:rotate(10deg)}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__brow--left{opacity:.7;transform:rotate(12deg)}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__brow--right{opacity:.5;transform:rotate(-4deg)}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__mouth{transform:rotate(-5deg)}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth{opacity:0;transform:scaleY(.72)}
-.pocket-character[data-pocket-state="mischievous"] .pocket-character__teeth i:nth-child(n+2){opacity:0}
-
-/* annoyed: cute first, fangs second */
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__eye,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__eye,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__eye{
-  height:18%;top:39%;border-radius:48% 48% 42% 42%;
-}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__eyelid,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__eyelid,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__eyelid{opacity:.94}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__eyelid--left,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__eyelid--left,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__eyelid--left{transform:rotate(12deg)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__eyelid--right,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__eyelid--right,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__eyelid--right{transform:rotate(-12deg)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__brow--left,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__brow--left,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__brow--left{opacity:.9;transform:rotate(15deg)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__brow--right,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__brow--right,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__brow--right{opacity:.9;transform:rotate(-15deg)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__horn--left,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__horn--left,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__horn--left{transform:rotate(-2deg) translateY(2px)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__horn--right,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__horn--right,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__horn--right{transform:rotate(2deg) translateY(2px)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__mouth,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__mouth,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__mouth{
-  top:66%;width:19%;height:12%;margin-left:-9.5%;border:1px solid rgba(63,35,70,.62);
-  border-radius:22% 22% 52% 52%;background:#583047;overflow:hidden;transform:none;
-}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__mouth::before,
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__mouth::after,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__mouth::before,
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__mouth::after,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__mouth::before,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__mouth::after{display:none}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__teeth{opacity:.92;transform:scaleY(.8)}
-.pocket-character[data-pocket-state="annoyed"] .pocket-character__teeth i:nth-child(2){opacity:0}
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__teeth,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__teeth{opacity:1;transform:scaleY(1)}
-.pocket-character[data-pocket-state="grumpy"] .pocket-character__cheek-detail,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__cheek-detail{opacity:.72}
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__mouth{width:23%;height:14%;margin-left:-11.5%}
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__fur--left,
-.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__fur--right{transform:scale(1.14) rotate(34deg)}
-
-/* task/sleep states keep the same animal identity */
-.pocket-character[data-pocket-state="thinking"] .pocket-character__dots{display:block}
-.pocket-character[data-pocket-state="thinking"] .pocket-character__brow--left{transform:translateY(-2px) rotate(-9deg);opacity:.5}
-.pocket-character[data-pocket-state="research"] .pocket-character__prop{display:grid}
-.pocket-character[data-pocket-state="research"] .pocket-character__prop::before{content:"⌕"}
-.pocket-character[data-pocket-state="study"] .pocket-character__prop{display:grid}
-.pocket-character[data-pocket-state="study"] .pocket-character__prop::before{content:"▤"}
-.pocket-character[data-pocket-state="coding"] .pocket-character__prop{display:grid;min-width:34px}
-.pocket-character[data-pocket-state="coding"] .pocket-character__prop::before{content:"</>";font-size:9px}
-.pocket-character[data-pocket-state="files"] .pocket-character__prop{display:grid}
-.pocket-character[data-pocket-state="files"] .pocket-character__prop::before{content:"▱"}
-.pocket-character[data-pocket-state="error"] .pocket-character__brow--left{opacity:.7;transform:rotate(-15deg)}
-.pocket-character[data-pocket-state="error"] .pocket-character__brow--right{opacity:.7;transform:rotate(15deg)}
-.pocket-character[data-pocket-state="sleep"] .pocket-character__eye,
-.pocket-character[data-pocket-state="sleepy"] .pocket-character__eye{height:4%;top:44%;border-radius:999px;background:#4a315d;box-shadow:none}
-.pocket-character[data-pocket-state="sleep"] .pocket-character__eye::before,
-.pocket-character[data-pocket-state="sleep"] .pocket-character__eye::after,
-.pocket-character[data-pocket-state="sleepy"] .pocket-character__eye::before,
-.pocket-character[data-pocket-state="sleepy"] .pocket-character__eye::after{display:none}
-.pocket-character[data-pocket-state="sleep"] .pocket-character__body,
-.pocket-character[data-pocket-state="sleepy"] .pocket-character__body{transform:scaleY(.94) translateY(3%)}
-.pocket-character[data-pocket-state="sleep"]::after,
-.pocket-character[data-pocket-state="sleepy"]::after{
-  content:"z · Z";position:absolute;right:-10%;top:2%;color:#9274c1;font-weight:700;font-size:11px;
-}
-
-/* fluffy-state motion */
-@keyframes pocket-fluffy-breathe{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2.5%) scale(1.012,.99)}}
-@keyframes pocket-fluffy-happy{0%,100%{transform:translateY(0) scale(1)}42%{transform:translateY(-8%) scale(.98,1.035)}66%{transform:translateY(1%) scale(1.025,.975)}}
-@keyframes pocket-fluffy-curious{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-5deg) translateY(-2%)}}
-@keyframes pocket-fluffy-sleep{0%,100%{transform:scaleY(.94) translateY(3%)}50%{transform:scaleY(.91) translateY(5%) scaleX(1.02)}}
-@keyframes pocket-fluffy-annoyed{0%,100%{transform:translateX(0) rotate(0)}25%{transform:translateX(-2px) rotate(-1deg)}75%{transform:translateX(2px) rotate(1deg)}}
-@keyframes pocket-fluffy-tuft{0%,100%{transform:translateX(-50%) rotate(calc(-2deg + var(--pocket-wind-angle,0deg)))}50%{transform:translateX(-50%) rotate(calc(3deg + var(--pocket-wind-angle,0deg)))}}
-@keyframes pocket-fluffy-paw-happy{0%,100%{transform:rotate(13deg) translateY(0)}50%{transform:rotate(18deg) translateY(-7%)}}
-@keyframes pocket-personality-chomp{0%,100%{transform:scaleY(1)}45%{transform:scaleY(.34)}68%{transform:scaleY(1.12)}}
-@keyframes pocket-shared-blink{0%,100%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(1)}45%,60%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.06)}}
-@keyframes pocket-shared-double-blink{0%,100%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(1)}18%,32%,60%,74%{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.06)}}
-@keyframes pocket-shared-error{0%,100%{transform:translateX(0)}30%{transform:translateX(-3px)}60%{transform:translateX(3px)}}
-@keyframes pocket-shared-sparkle{0%{opacity:0;transform:scale(.5) rotate(45deg)}25%{opacity:.9}100%{opacity:0;transform:translateY(-12px) scale(1.08) rotate(45deg)}}
-@keyframes pocket-shared-dots{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-2px)}}
-
-html[data-motion="full"] .pocket-character__body{animation:pocket-fluffy-breathe 5.6s ease-in-out infinite}
-html[data-motion="full"] .pocket-character__antenna{animation:pocket-fluffy-tuft 4.8s ease-in-out infinite}
-html[data-motion="full"] .pocket-character[data-pocket-state="happy"] .pocket-character__body,
-html[data-motion="full"] .pocket-character[data-pocket-state="success"] .pocket-character__body{animation:pocket-fluffy-happy .72s cubic-bezier(.2,.8,.2,1) both}
-html[data-motion="full"] .pocket-character[data-pocket-state="curious"] .pocket-character__body{animation:pocket-fluffy-curious 2.8s ease-in-out infinite}
-html[data-motion="full"] .pocket-character[data-pocket-state="sleep"] .pocket-character__body,
-html[data-motion="full"] .pocket-character[data-pocket-state="sleepy"] .pocket-character__body{animation:pocket-fluffy-sleep 6.8s ease-in-out infinite}
-html[data-motion="full"] .pocket-character[data-pocket-state="annoyed"] .pocket-character__body,
-html[data-motion="full"] .pocket-character[data-pocket-state="grumpy"] .pocket-character__body{animation:pocket-fluffy-annoyed .42s ease 1}
-html[data-motion="full"] .pocket-character[data-pocket-state="very-annoyed"] .pocket-character__body{animation:pocket-fluffy-annoyed .32s ease 2}
-html[data-motion="full"] .pocket-character[data-pocket-state="happy"] .pocket-character__paw--left{animation:pocket-fluffy-paw-happy .6s ease 1}
-html[data-motion="full"] .pocket-character[data-pocket-state="success"] .pocket-character__sparkles i,
-html[data-motion="full"] .pocket-character[data-pocket-state="excited"] .pocket-character__sparkles i{animation:pocket-shared-sparkle .8s ease-out both}
-html[data-motion="full"] .pocket-character[data-pocket-state="error"] .pocket-character__body{animation:pocket-shared-error .4s ease both}
-html[data-motion="full"] .pocket-character__dots{animation:pocket-shared-dots 1.1s ease-in-out infinite}
-html[data-motion="full"] .pocket-character.is-pocket-blinking .pocket-character__eye{animation:pocket-shared-blink .18s ease both}
-html[data-motion="full"] .pocket-character.is-pocket-double-blinking .pocket-character__eye{animation:pocket-shared-double-blink .42s ease both}
-html[data-motion="full"] .pocket-character.is-pocket-chomp .pocket-character__mouth{animation:pocket-personality-chomp .26s ease 1}
-
-html[data-motion="gentle"] .pocket-character__body{animation:pocket-fluffy-breathe 8.5s ease-in-out infinite}
-html[data-motion="gentle"] .pocket-character__antenna{animation:none!important;transform:translateX(-50%) rotate(var(--pocket-wind-angle,0deg))}
-html[data-motion="gentle"] .pocket-character.is-pocket-blinking .pocket-character__eye{animation:pocket-shared-blink .18s ease both}
-html[data-motion="gentle"] .pocket-character__sparkles i,
-html[data-motion="gentle"] .pocket-character__dots{animation:none!important}
-
-html[data-motion="off"] .pocket-character *,
-html[data-motion="off"] .pocket-character::after{animation:none!important;transition:none!important}
-html[data-motion="off"] .pocket-character__body{transform:none!important}
-html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!important}
-
-/* size adaptations: keep parts readable in sidebar/avatar uses */
-.pocket-character[data-pocket-size="small"] .pocket-character__brow,
-.pocket-character[data-pocket-size="small"] .pocket-character__cheek-detail,
-.pocket-character[data-pocket-size="small"] .pocket-character__foot{display:none}
-.pocket-character[data-pocket-size="small"] .pocket-character__horn{width:11%;height:13%}
-.pocket-character[data-pocket-size="small"] .pocket-character__fur--left,
-.pocket-character[data-pocket-size="small"] .pocket-character__fur--right{width:15%;height:15%}
-.pocket-character[data-pocket-size="small"] .pocket-character__antenna{top:-9%;height:25%}
-.pocket-character[data-pocket-size="small"] .pocket-character__paw{top:61%;height:23%}
-.pocket-character[data-pocket-size="small"] .pocket-character__teeth{gap:0}
-
-/* settings preview uses the exact production mascot */
-.settings-motion-preview .pocket-character__body{box-shadow:inset 0 4px 8px rgba(255,255,255,.8),inset 0 -8px 12px rgba(220,205,235,.48),0 7px 15px rgba(68,44,91,.09)}
-
-@media(pointer:coarse){
-  .pocket-character{--pocket-eye-x:0px!important;--pocket-eye-y:0px!important}
-}
-@media(prefers-reduced-motion:reduce){
-  .pocket-character *, .pocket-character::after{animation:none!important;transition:none!important}
-  .pocket-character__body{transform:none!important}
-  .pocket-character__antenna{transform:translateX(-50%)!important}
-}
-
-
-
-/* STEP 54 — reference-tuned soft round Pocket */
-:root{
-  --pocket-fur:#fffefe;
-  --pocket-fur-mid:#f8f4fc;
-  --pocket-fur-shadow:#ece4f5;
-  --pocket-fur-outline:#d9cce9;
-  --pocket-iris:#6d4aa6;
-  --pocket-iris-deep:#2a183e;
-  --pocket-horn:#bfa8ec;
-  --pocket-horn-shadow:#8d70c3;
-  --pocket-blush:#f6b4c7;
-}
-.pocket-character{
-  filter:drop-shadow(0 10px 13px rgba(70,47,94,.13));
-}
 .pocket-character__body{
-  inset:11% 6% 5%;
-  border-radius:49% 49% 45% 45% / 46% 46% 40% 40%;
-  border-color:color-mix(in srgb,var(--pocket-fur-outline) 72%,transparent);
-  background:
-    radial-gradient(ellipse at 50% 20%,rgba(255,255,255,1) 0 24%,transparent 54%),
-    radial-gradient(ellipse at 20% 58%,rgba(255,255,255,.92),transparent 42%),
-    radial-gradient(ellipse at 80% 60%,rgba(255,255,255,.88),transparent 42%),
-    linear-gradient(168deg,#ffffff 0 28%,var(--pocket-fur-mid) 70%,var(--pocket-fur-shadow) 100%);
-  box-shadow:
-    inset 0 6px 12px rgba(255,255,255,.95),
-    inset 0 -10px 15px rgba(205,190,224,.22),
-    0 1px 0 rgba(255,255,255,.9),
-    0 9px 18px rgba(79,55,105,.12);
-}
-[data-theme="dark"] .pocket-character__body,
-[data-theme="oled"] .pocket-character__body{
-  background:
-    radial-gradient(ellipse at 50% 20%,rgba(255,255,255,1) 0 24%,transparent 54%),
-    linear-gradient(168deg,#ffffff,#f6f0fb 72%,#e5daf1);
-  border-color:#d2c2e4;
-}
-
-/* fluff is rounded instead of spiky */
-.pocket-character__fur{
-  border-color:color-mix(in srgb,var(--pocket-fur-outline) 62%,transparent);
-  background:linear-gradient(150deg,#fff,var(--pocket-fur-mid));
-  border-radius:58% 48% 62% 44%;
-  box-shadow:inset 0 -2px 5px rgba(189,167,210,.16);
-}
-.pocket-character__fur--top-left{left:15%;top:1%;width:16%;height:16%;transform:rotate(-18deg)}
-.pocket-character__fur--top{left:42%;top:-2%;width:17%;height:18%;transform:rotate(4deg)}
-.pocket-character__fur--top-right{right:15%;top:1%;width:16%;height:16%;transform:rotate(18deg) scaleX(-1)}
-.pocket-character__fur--left{left:-2%;top:38%;width:17%;height:18%;transform:rotate(-22deg)}
-.pocket-character__fur--right{right:-2%;top:38%;width:17%;height:18%;transform:rotate(22deg) scaleX(-1)}
-.pocket-character__fur--lower-left{left:5%;bottom:8%;width:15%;height:14%;transform:rotate(-22deg)}
-.pocket-character__fur--lower-right{right:5%;bottom:8%;width:15%;height:14%;transform:rotate(22deg) scaleX(-1)}
-
-.pocket-character__ear{
-  top:20%;width:15%;height:17%;
-  background:
-    radial-gradient(circle at 55% 58%,#f5d6e9 0 34%,transparent 36%),
-    linear-gradient(145deg,#fff,#f5eef9);
-  border-color:color-mix(in srgb,var(--pocket-fur-outline) 68%,transparent);
-}
-.pocket-character__ear--left{left:1%;transform:rotate(-15deg)}
-.pocket-character__ear--right{right:1%;transform:rotate(15deg) scaleX(-1)}
-
-/* small lavender horns like the reference */
-.pocket-character__horn{
-  top:8%;width:13%;height:15%;
-  border-radius:72% 72% 42% 42% / 92% 92% 28% 28%;
-  background:linear-gradient(145deg,#e9defb 0 18%,#cdb7f3 45%,#9a7acb 100%);
-  box-shadow:inset 2px 2px 3px rgba(255,255,255,.68),0 0 0 1px rgba(117,85,161,.18);
-}
-.pocket-character__horn--left{left:24%;transform:rotate(-10deg)}
-.pocket-character__horn--right{right:24%;transform:rotate(10deg)}
-
-/* compact white forehead tuft + tiny purple sparkle */
-.pocket-character__antenna{
-  left:50%;top:-3%;width:27%;height:24%;
-  transform:translateX(-50%);background:none;
-}
-.pocket-character__antenna::before{
-  left:18%;bottom:1%;width:63%;height:76%;
+  position:absolute;
+  inset:5% 6% 6%;
+  overflow:visible;
   border:0;
+  border-radius:45% 45% 42% 42% / 42% 42% 55% 55%;
   background:
-    radial-gradient(ellipse at 30% 72%,#fff 0 28%,transparent 30%),
-    radial-gradient(ellipse at 54% 45%,#fff 0 34%,transparent 36%),
-    radial-gradient(ellipse at 75% 72%,#f7f1fb 0 30%,transparent 32%);
-  filter:drop-shadow(0 1px 0 #d9cde7);
-  transform:none;
-}
-.pocket-character__antenna::after{
-  right:auto;left:50%;top:-9%;width:10px;height:10px;margin-left:-5px;
-  border:0;border-radius:2px;
-  background:linear-gradient(135deg,#d8c2ff,#9f79ed 58%,#6f4ab5);
-  clip-path:polygon(50% 0,62% 36%,100% 50%,62% 64%,50% 100%,38% 64%,0 50%,38% 36%);
-  box-shadow:0 0 0 4px rgba(166,126,236,.08),0 0 9px rgba(166,126,236,.28);
-}
-.pocket-character__tuft{
-  left:31%;bottom:1%;width:38%;height:55%;
-  border-radius:62% 45% 66% 40%;
-  background:linear-gradient(160deg,#fff,#f2eaf8);
-  transform:rotate(-7deg);
-  box-shadow:inset -2px -2px 4px rgba(179,155,201,.12);
-}
-
-/* oversized glossy purple eyes */
-.pocket-character__eye{
-  top:34%;width:22%;height:31%;
-  border-radius:51% 51% 48% 48%;
-  background:
-    radial-gradient(circle at 33% 23%,#fff 0 9%,transparent 10%),
-    radial-gradient(circle at 35% 28%,rgba(255,255,255,.9) 0 3%,transparent 4%),
-    radial-gradient(circle at 70% 73%,#d6c5ff 0 7%,transparent 8%),
-    linear-gradient(180deg,#20132f 0 17%,#34204f 18% 38%,#60408f 58%,#8b69c5 82%,#b9a0e8 100%);
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.98) 0 12%,transparent 13%),
+    radial-gradient(circle at 41% 31%,rgba(255,255,255,.38) 0 5%,transparent 6%),
+    radial-gradient(circle at 35% 25%,rgba(255,255,255,.98),rgba(250,247,255,.96) 42%,rgba(239,230,255,.96) 100%);
   box-shadow:
-    inset 0 -3px 0 rgba(255,255,255,.18),
-    0 0 0 1px rgba(45,27,64,.85),
-    0 2px 4px rgba(55,33,80,.18);
-}
-.pocket-character__eye--left{left:21%}
-.pocket-character__eye--right{right:21%}
-.pocket-character__eye::before{left:13%;top:9%;width:31%;height:25%;background:#fff}
-.pocket-character__eye::after{right:18%;bottom:15%;width:17%;height:14%;background:rgba(255,255,255,.72)}
-.pocket-character__brow{opacity:.12;top:25%}
-
-/* tiny w-shaped smile */
-.pocket-character__mouth{
-  top:66%;width:17%;height:9%;margin-left:-8.5%;
-}
-.pocket-character__mouth::before,.pocket-character__mouth::after{
-  border-bottom-color:#493451;border-bottom-width:1.7px;
-}
-.pocket-character__blush{
-  top:61%;width:19%;height:10%;
-  background:radial-gradient(ellipse,rgba(247,180,203,.68),rgba(247,180,203,.2) 58%,transparent 74%);
-  opacity:.7;
-}
-.pocket-character__blush--left{left:7%}
-.pocket-character__blush--right{right:7%}
-
-/* round side paws + soft little feet */
-.pocket-character__paw{
-  top:59%;width:19%;height:27%;
-  border-radius:55% 55% 50% 50%;
-  background:linear-gradient(160deg,#fff,#f5effa);
-  border-color:color-mix(in srgb,var(--pocket-fur-outline) 52%,transparent);
-  box-shadow:inset 0 -3px 5px rgba(188,165,207,.15);
-}
-.pocket-character__paw--left{left:7%;transform:rotate(18deg)}
-.pocket-character__paw--right{right:7%;transform:rotate(-18deg)}
-.pocket-character__foot{
-  bottom:1%;width:24%;height:12%;
-  background:linear-gradient(#fff,#f3edf8);
-  border-color:color-mix(in srgb,var(--pocket-fur-outline) 52%,transparent);
-  border-radius:62% 62% 52% 52%;
-}
-.pocket-character__foot--left{left:17%}
-.pocket-character__foot--right{right:17%}
-
-/* Home reference composition */
-.home-hero-pocket{
-  gap:14px;
-}
-.home-hero-pocket .pocket-character{
-  width:166px;height:154px;
-}
-.home-pocket-speech{
-  min-width:180px;
-  max-width:min(280px,90vw);
-  padding:10px 15px;
-  border:1px solid color-mix(in srgb,var(--pa-accent) 16%,var(--pa-border));
-  border-radius:14px;
-  background:color-mix(in srgb,var(--pa-card) 94%,#f7f0ff);
-  color:var(--pa-secondary);
-  font-size:13px;
-  line-height:1.35;
-  box-shadow:0 8px 20px rgba(68,45,95,.07);
-}
-.home-pocket-speech::before{
-  top:-6px;width:10px;height:10px;margin-left:-5px;
-  border-color:color-mix(in srgb,var(--pa-accent) 16%,var(--pa-border));
-}
-@media(max-width:767px){
-  .home-hero-pocket .pocket-character{width:124px;height:116px}
-  .home-hero-pocket{gap:10px;min-height:124px}
-  .home-pocket-speech{min-width:160px;max-width:min(250px,88vw);padding:9px 13px;font-size:12px}
-}
-
-
-/* STEP 55 — simplified Pocket: exactly two cute ears, no extra bubble/fluff pieces */
-.pocket-character__fur,
-.pocket-character__horn,
-.pocket-character__antenna,
-.pocket-character__tuft,
-.pocket-character__cheek-detail,
-.pocket-character__sparkles{
-  display:none!important;
-}
-.pocket-character__body{
-  inset:10% 7% 5%;
-  border-radius:50% 50% 46% 46% / 47% 47% 42% 42%;
-}
-.pocket-character__ear{
-  top:18%;
-  width:16%;
-  height:18%;
-  border-radius:52% 52% 48% 48%;
-  background:
-    radial-gradient(circle at 52% 58%,#f5d6e9 0 35%,transparent 37%),
-    linear-gradient(155deg,#fff,#f4eef9);
-  box-shadow:inset 0 -2px 4px rgba(185,158,207,.15);
-}
-.pocket-character__ear--left{left:3%;transform:rotate(-13deg)}
-.pocket-character__ear--right{right:3%;transform:rotate(13deg) scaleX(-1)}
-.pocket-character__eye{top:33%;width:22%;height:31%}
-.pocket-character__eye--left{left:21%}
-.pocket-character__eye--right{right:21%}
-.pocket-character__paw{top:60%;width:18%;height:24%}
-.pocket-character__paw--left{left:7%;transform:rotate(16deg)}
-.pocket-character__paw--right{right:7%;transform:rotate(-16deg)}
-.pocket-character__foot{bottom:2%;width:22%;height:11%}
-.pocket-character__foot--left{left:17%}
-.pocket-character__foot--right{right:17%}
-
-
-/* STEP 56 — final reference mascot: round kawaii white plush */
-.pocket-character{
-  filter:drop-shadow(0 12px 20px rgba(105,78,139,.12));
-}
-.pocket-character__body{
-  inset:7% 6% 4%;
-  border:1px solid rgba(216,205,232,.9);
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 50% 18%,rgba(255,255,255,1) 0 24%,transparent 25%),
-    radial-gradient(circle at 23% 54%,rgba(255,255,255,.94) 0 18%,transparent 44%),
-    radial-gradient(circle at 77% 54%,rgba(255,255,255,.94) 0 18%,transparent 44%),
-    linear-gradient(180deg,#fff 0%,#fff 48%,#fbf8ff 74%,#f1eaf9 100%);
-  box-shadow:
-    inset 0 9px 15px rgba(255,255,255,.98),
-    inset 0 -9px 14px rgba(209,193,229,.22),
-    0 10px 20px rgba(95,67,128,.08);
-}
-[data-theme="dark"] .pocket-character__body,
-[data-theme="oled"] .pocket-character__body{
-  background:
-    radial-gradient(circle at 50% 18%,rgba(255,255,255,1) 0 24%,transparent 25%),
-    linear-gradient(180deg,#fff 0%,#fbf8ff 72%,#eee5f7 100%);
-  border-color:#d7c8e7;
-}
-
-/* exactly two round bear-like ears */
-.pocket-character__ear{
-  display:block!important;
-  top:14%;
-  width:16%;
-  height:16%;
-  border:1px solid rgba(223,212,237,.92);
-  border-radius:50%;
-  background:
-    radial-gradient(circle at 50% 53%,#f5cfe2 0 35%,#f8dceb 36% 47%,transparent 49%),
-    linear-gradient(160deg,#fff,#f4edf9);
-  box-shadow:
-    inset 0 -3px 5px rgba(189,163,211,.14),
-    0 3px 8px rgba(98,69,127,.06);
-  z-index:3;
-}
-.pocket-character__ear--left{left:7%;transform:rotate(-6deg)}
-.pocket-character__ear--right{right:7%;transform:rotate(6deg)}
-
-/* huge glossy purple eyes with sparkle highlights */
-.pocket-character__eye{
-  display:block!important;
-  top:33%;
-  width:23%;
-  height:31%;
-  border:1px solid rgba(60,35,86,.72);
-  border-radius:50% 50% 48% 48%;
-  background:
-    radial-gradient(circle at 29% 19%,#fff 0 11%,transparent 12%),
-    radial-gradient(circle at 63% 31%,rgba(255,255,255,.9) 0 2.5%,transparent 3.5%),
-    radial-gradient(circle at 76% 66%,rgba(255,255,255,.95) 0 2.2%,transparent 3%),
-    radial-gradient(circle at 49% 78%,rgba(230,217,255,.95) 0 4%,transparent 5%),
-    linear-gradient(180deg,#20112f 0 18%,#3b205d 38%,#6d45aa 66%,#9c76dd 84%,#d5c3ff 100%);
-  box-shadow:
-    inset 0 -4px 0 rgba(255,255,255,.14),
-    0 2px 5px rgba(70,40,100,.15);
-  z-index:5;
-}
-.pocket-character__eye--left{left:20.5%}
-.pocket-character__eye--right{right:20.5%}
-.pocket-character__eye::before{
-  content:"";
-  position:absolute;
-  left:12%;
-  top:9%;
-  width:31%;
-  height:25%;
-  border-radius:50%;
-  background:#fff;
-}
-.pocket-character__eye::after{
-  content:"✦";
-  position:absolute;
-  right:11%;
-  bottom:15%;
-  color:#fff;
-  font-size:clamp(5px,12%,11px);
-  line-height:1;
-  text-shadow:-8px -13px 0 rgba(255,255,255,.92);
-}
-
-/* no visible brows/eyelids in normal cute face; states may reveal them */
-.pocket-character__brow{opacity:0}
-.pocket-character__eyelid{opacity:0}
-
-/* tiny W smile */
-.pocket-character__mouth{
-  top:65%;
-  width:15%;
-  height:8%;
-  margin-left:-7.5%;
-  z-index:7;
-}
-.pocket-character__mouth::before,
-.pocket-character__mouth::after{
-  top:0;
-  height:70%;
-  border-bottom:1.8px solid #705887;
-}
-.pocket-character__mouth::before{left:3%;transform:rotate(8deg)}
-.pocket-character__mouth::after{right:3%;transform:rotate(-8deg)}
-
-/* soft blush like the reference */
-.pocket-character__blush{
-  display:block!important;
-  top:57%;
-  width:19%;
-  height:10%;
-  opacity:.78;
-  background:
-    repeating-linear-gradient(105deg,transparent 0 5px,rgba(244,167,197,.28) 5px 7px,transparent 7px 11px),
-    radial-gradient(ellipse,rgba(249,190,211,.55),rgba(249,190,211,.14) 62%,transparent 74%);
-}
-.pocket-character__blush--left{left:10%}
-.pocket-character__blush--right{right:10%}
-
-/* cheek paws */
-.pocket-character__paw{
-  display:block!important;
-  top:61%;
-  width:17%;
-  height:19%;
-  border:1px solid rgba(225,214,238,.92);
-  border-radius:50%;
-  background:linear-gradient(160deg,#fff,#f5effa);
-  box-shadow:inset 0 -3px 6px rgba(189,164,209,.12);
-  z-index:4;
-}
-.pocket-character__paw--left{left:17%;transform:rotate(5deg)}
-.pocket-character__paw--right{right:17%;transform:rotate(-5deg)}
-
-/* small oval feet */
-.pocket-character__foot{
-  display:block!important;
-  bottom:5%;
-  width:19%;
-  height:9%;
-  border:1px solid rgba(225,214,238,.92);
-  border-radius:999px;
-  background:linear-gradient(180deg,#fff,#f3edf8);
-  box-shadow:inset 0 -2px 4px rgba(189,164,209,.1);
-  z-index:4;
-}
-.pocket-character__foot--left{left:23%;transform:rotate(3deg)}
-.pocket-character__foot--right{right:23%;transform:rotate(-3deg)}
-
-/* old decorative anatomy is not part of this design */
-.pocket-character__fur,
-.pocket-character__horn,
-.pocket-character__antenna,
-.pocket-character__tuft,
-.pocket-character__cheek-detail,
-.pocket-character__sparkles{
-  display:none!important;
-}
-
-/* home presentation follows the supplied reference proportions */
-.home-hero-pocket .pocket-character{width:176px;height:166px}
-.home-pocket-speech{
-  min-width:184px;
-  max-width:min(270px,88vw);
-  padding:10px 15px;
-  border:1px solid #ded7eb;
-  border-radius:14px;
-  background:#fcfbff;
-  color:#8a83a3;
-  font-size:13px;
-  line-height:1.35;
-  box-shadow:0 7px 18px rgba(81,57,111,.06);
-}
-.home-pocket-speech::before{
-  width:10px;height:10px;top:-6px;margin-left:-5px;
-  background:#fcfbff;border-color:#ded7eb;
-}
-@media(max-width:767px){
-  .home-hero-pocket .pocket-character{width:132px;height:124px}
-  .home-pocket-speech{min-width:164px;max-width:min(245px,88vw);font-size:12px}
-}
-
-
-/* STEP 57 — extra-cute plush Pocket redesign */
-.pocket-character{
-  filter:drop-shadow(0 11px 18px rgba(87,61,116,.12));
-}
-.pocket-character__body{
-  inset:8% 8% 4%;
-  border:1px solid rgba(218,207,233,.9);
-  border-radius:48% 48% 44% 44% / 42% 42% 54% 54%;
-  background:
-    radial-gradient(ellipse at 50% 16%,rgba(255,255,255,1) 0 28%,transparent 29%),
-    radial-gradient(ellipse at 30% 48%,rgba(255,255,255,.95),transparent 46%),
-    radial-gradient(ellipse at 70% 48%,rgba(255,255,255,.95),transparent 46%),
-    linear-gradient(180deg,#fff 0%,#fff 50%,#faf6ff 78%,#eee6f7 100%);
-  box-shadow:
-    inset 0 7px 12px rgba(255,255,255,.98),
-    inset 0 -10px 16px rgba(206,189,228,.18),
-    0 9px 18px rgba(86,61,112,.08);
-}
-[data-theme="dark"] .pocket-character__body,
-[data-theme="oled"] .pocket-character__body{
-  background:linear-gradient(180deg,#fff 0%,#fbf7ff 74%,#ece3f5 100%);
-  border-color:#d7c7e7;
-}
-
-/* tiny tucked ears make the face feel younger and softer */
-.pocket-character__ear{
-  top:16%;
-  width:14%;
-  height:14%;
-  border-radius:50%;
-  border:1px solid rgba(223,211,237,.92);
-  background:
-    radial-gradient(circle at 52% 55%,#f6d6e7 0 36%,#f9e4ef 37% 48%,transparent 50%),
-    linear-gradient(155deg,#fff,#f4edf9);
-  box-shadow:inset 0 -2px 4px rgba(188,160,210,.12);
-}
-.pocket-character__ear--left{left:9%;transform:rotate(-4deg)}
-.pocket-character__ear--right{right:9%;transform:rotate(4deg)}
-
-/* oversized lower-set eyes for a baby-plush look */
-.pocket-character__eye{
-  top:31%;
-  width:24%;
-  height:32%;
-  border-radius:51% 51% 48% 48%;
-  background:
-    radial-gradient(circle at 28% 20%,#fff 0 12%,transparent 13%),
-    radial-gradient(circle at 31% 24%,rgba(255,255,255,.92) 0 3%,transparent 4%),
-    radial-gradient(circle at 73% 72%,#e3d6ff 0 6%,transparent 7%),
-    radial-gradient(circle at 62% 44%,rgba(255,255,255,.86) 0 2%,transparent 3%),
-    linear-gradient(180deg,#21122f 0 18%,#412563 37%,#6f49aa 64%,#9671d5 82%,#d7c5ff 100%);
-  border:1px solid rgba(58,33,82,.72);
-  box-shadow:
-    inset 0 -4px 0 rgba(255,255,255,.13),
-    0 2px 5px rgba(67,42,91,.14);
-}
-.pocket-character__eye--left{left:19.5%}
-.pocket-character__eye--right{right:19.5%}
-.pocket-character__eye::before{
-  left:12%;
-  top:9%;
-  width:32%;
-  height:27%;
-  background:#fff;
-}
-.pocket-character__eye::after{
-  content:"✦";
-  right:10%;
-  bottom:12%;
-  color:#fff;
-  font-size:10px;
-  text-shadow:-10px -17px 0 rgba(255,255,255,.92),-3px 9px 0 rgba(255,255,255,.65);
-}
-
-/* softer shy cheeks */
-.pocket-character__blush{
-  top:58%;
-  width:18%;
-  height:9%;
-  opacity:.76;
-  background:
-    repeating-linear-gradient(104deg,transparent 0 5px,rgba(244,164,196,.22) 5px 6.5px,transparent 6.5px 10px),
-    radial-gradient(ellipse,rgba(249,190,212,.5),rgba(249,190,212,.1) 64%,transparent 75%);
-}
-.pocket-character__blush--left{left:8%}
-.pocket-character__blush--right{right:8%}
-
-/* tiny uwu smile */
-.pocket-character__mouth{
-  top:65%;
-  width:14%;
-  height:8%;
-  margin-left:-7%;
-}
-.pocket-character__mouth::before,
-.pocket-character__mouth::after{
-  height:66%;
-  border-bottom:1.7px solid #6f5984;
-}
-.pocket-character__mouth::before{left:2%;transform:rotate(8deg)}
-.pocket-character__mouth::after{right:2%;transform:rotate(-8deg)}
-
-/* little paws sit closer to the cheeks */
-.pocket-character__paw{
-  top:62%;
-  width:16%;
-  height:18%;
-  border-radius:52% 52% 48% 48%;
-  background:linear-gradient(155deg,#fff,#f5effa);
-  border-color:rgba(224,213,237,.9);
-  box-shadow:inset 0 -3px 5px rgba(187,161,207,.1);
-}
-.pocket-character__paw::after{
-  content:"";
-  position:absolute;
-  left:34%;
-  right:34%;
-  bottom:18%;
-  height:2px;
-  border-radius:99px;
-  background:rgba(203,178,218,.22);
-}
-.pocket-character__paw--left{left:14%;transform:rotate(8deg)}
-.pocket-character__paw--right{right:14%;transform:rotate(-8deg)}
-
-/* tiny pill-shaped feet */
-.pocket-character__foot{
-  bottom:6%;
-  width:18%;
-  height:8.5%;
-  border-radius:999px;
-  background:linear-gradient(180deg,#fff,#f1e9f7);
-  border-color:rgba(224,213,237,.9);
-}
-.pocket-character__foot--left{left:24%;transform:rotate(3deg)}
-.pocket-character__foot--right{right:24%;transform:rotate(-3deg)}
-
-/* keep the silhouette clean */
-.pocket-character__fur,
-.pocket-character__horn,
-.pocket-character__antenna,
-.pocket-character__tuft,
-.pocket-character__cheek-detail,
-.pocket-character__sparkles{
-  display:none!important;
-}
-
-/* fit the desktop AI-first hero contract */
-.home-hero-pocket .pocket-character{width:164px;height:154px}
-@media(max-width:767px){
-  .home-hero-pocket .pocket-character{width:120px;height:112px}
-}
-
-
-/* STEP 58 — complete kawaii mascot expression system */
-.pocket-character{
-  --pocket-eye-scale-y:1;
-  --pocket-eye-rotate:0deg;
-}
-.pocket-character[data-pocket-expression="cute"] .pocket-character__eye{
-  opacity:1;
-  transform:translate(var(--pocket-eye-x,0),var(--pocket-eye-y,0)) scaleY(1);
-}
-.pocket-character[data-pocket-expression="cute"] .pocket-character__eyelid,
-.pocket-character[data-pocket-expression="cute"] .pocket-character__brow{opacity:0}
-.pocket-character[data-pocket-expression="cute"] .pocket-character__mouth{background:transparent}
-.pocket-character[data-pocket-expression="cute"] .pocket-character__teeth{opacity:0!important;transform:scaleY(0)!important}
-
-/* happy: closed crescent eyes and open pink smile */
-.pocket-character[data-pocket-expression="happy"] .pocket-character__eye{opacity:0}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid{
-  opacity:1!important;
-  top:42%;
-  width:24%;
-  height:11%;
-  border:0;
-  border-top:6px solid #5c3a78;
-  border-radius:50% 50% 0 0;
-  background:transparent;
-}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid--left{left:20%;transform:rotate(7deg)}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid--right{right:20%;transform:rotate(-7deg)}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__brow{opacity:0}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth{
-  top:61%;
-  width:16%;
-  height:15%;
-  margin-left:-8%;
-  border:2px solid #80558d;
-  border-top:0;
-  border-radius:0 0 50% 50%;
-  background:linear-gradient(#f8b7ce,#f7c7d8);
-}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth::before,
-.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth::after{display:none}
-.pocket-character[data-pocket-expression="happy"] .pocket-character__teeth{opacity:0!important;transform:scaleY(0)!important}
-
-/* sleepy: relaxed closed eyes */
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eye{opacity:0}
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eyelid{
-  opacity:1!important;
-  top:45%;
-  width:25%;
-  height:8%;
-  border:0;
-  border-bottom:5px solid #624277;
-  border-radius:0 0 50% 50%;
-  background:transparent;
-}
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eyelid--left{left:19%;transform:rotate(2deg)}
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eyelid--right{right:19%;transform:rotate(-2deg)}
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__brow{opacity:.08}
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__mouth{top:66%;width:13%;margin-left:-6.5%}
-.pocket-character[data-pocket-expression="sleepy"] .pocket-character__teeth{opacity:0!important;transform:scaleY(0)!important}
-
-/* annoyed: narrowed glossy eyes, brows, tiny fang */
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__eye{
-  opacity:1;
-  top:37%;
-  height:23%;
-  transform:translate(var(--pocket-eye-x,0),var(--pocket-eye-y,0)) scaleY(.82);
-}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__brow{
-  opacity:1!important;
-  top:28%;
-  width:20%;
-  height:9%;
-  border-top:4px solid #6a4d7c;
-  border-radius:50%;
-  background:transparent;
-}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__brow--left{left:20%;transform:rotate(13deg)}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__brow--right{right:20%;transform:rotate(-13deg)}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__eyelid{opacity:0}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__mouth{
-  top:66%;
-  width:12%;
-  margin-left:-6%;
-}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__teeth{
-  opacity:1!important;
-  transform:scaleY(1)!important;
-  width:34%;
-  margin-left:-17%;
-  gap:0;
-}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__teeth i{display:none}
-.pocket-character[data-pocket-expression="annoyed"] .pocket-character__teeth i:first-child{
-  display:block;
-  width:100%;
-  height:80%;
-}
-
-/* keep click expression visual stronger than ordinary state styling */
-.pocket-character[data-pocket-expression] .pocket-character__eye,
-.pocket-character[data-pocket-expression] .pocket-character__eyelid,
-.pocket-character[data-pocket-expression] .pocket-character__brow,
-.pocket-character[data-pocket-expression] .pocket-character__mouth{
-  transition:opacity .16s ease,transform .18s ease,top .18s ease,height .18s ease;
-}
-
-
-/* STEP 59 — handless/legless slime Pocket */
-.pocket-character{
-  filter:drop-shadow(0 12px 18px rgba(83,61,112,.12));
-}
-.pocket-character__body{
-  inset:8% 7% 5%;
-  border-radius:48% 48% 44% 44% / 42% 42% 58% 58%;
-  background:
-    radial-gradient(ellipse at 50% 14%,rgba(255,255,255,.98) 0 26%,transparent 27%),
-    radial-gradient(ellipse at 34% 45%,rgba(255,255,255,.78),transparent 42%),
-    radial-gradient(ellipse at 66% 45%,rgba(255,255,255,.74),transparent 42%),
-    linear-gradient(180deg,#fff 0%,#fbf7ff 62%,#eee4f8 100%);
-  box-shadow:
-    inset 0 8px 14px rgba(255,255,255,.95),
-    inset 0 -12px 18px rgba(197,178,221,.18),
-    0 10px 18px rgba(91,67,118,.08);
-  transform-origin:50% 86%;
-}
-/* soft slime base instead of legs */
-.pocket-character__body::after{
-  content:"";
-  position:absolute;
-  left:12%;
-  right:12%;
-  bottom:-2%;
-  height:12%;
-  border-radius:50%;
-  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(233,223,244,.92));
-  box-shadow:0 5px 10px rgba(88,64,112,.08),inset 0 -2px 4px rgba(186,165,207,.12);
-}
-/* no limbs */
-.pocket-character__paw,
-.pocket-character__foot{display:none!important}
-/* cute slime ears remain tiny and integrated */
-.pocket-character__ear{top:15%;width:13%;height:13%}
-.pocket-character__ear--left{left:10%}
-.pocket-character__ear--right{right:10%}
-/* face centered slightly lower on slime blob */
-.pocket-character__eye{top:34%}
-.pocket-character__mouth{top:66%}
-.pocket-character__blush{top:58%}
-/* subtle jelly squish on tap */
-.pocket-character.is-pocket-tapped .pocket-character__body,
-.is-pocket-tapped .pocket-character__body{
-  animation:pocketSlimeSquish .34s ease;
-}
-@keyframes pocketSlimeSquish{
-  0%{transform:scale(1)}
-  35%{transform:scaleX(1.06) scaleY(.93)}
-  70%{transform:scaleX(.97) scaleY(1.04)}
-  100%{transform:scale(1)}
-}
-@media(prefers-reduced-motion:reduce){
-  .pocket-character.is-pocket-tapped .pocket-character__body,
-  .is-pocket-tapped .pocket-character__body{animation:none}
-}
-
-
-/* STEP 60 — true round jelly slime Pocket */
-.pocket-character{
-  filter:drop-shadow(0 12px 20px rgba(86,60,116,.13));
-}
-.pocket-character__body{
-  inset:6% 7% 5%;
-  border:1px solid rgba(216,204,233,.92);
-  border-radius:50% 50% 46% 46% / 46% 46% 54% 54%;
-  background:
-    radial-gradient(circle at 36% 24%,rgba(255,255,255,.96) 0 11%,transparent 12%),
-    radial-gradient(circle at 64% 20%,rgba(255,255,255,.62) 0 6%,transparent 7%),
-    radial-gradient(ellipse at 50% 18%,rgba(255,255,255,.92) 0 24%,transparent 25%),
-    linear-gradient(180deg,#fff 0%,#fbf7ff 57%,#f2eafb 78%,#e9def5 100%);
-  box-shadow:
-    inset 0 10px 16px rgba(255,255,255,.98),
-    inset 0 -14px 22px rgba(190,166,217,.2),
-    0 11px 20px rgba(84,59,110,.09);
+    inset 0 7px 13px rgba(255,255,255,.78),
+    inset 0 -12px 20px rgba(171,140,207,.13),
+    0 7px 18px rgba(71,45,98,.08);
   transform-origin:50% 88%;
 }
-/* rounded jelly crown bumps: organic, not ears */
 .pocket-character__body::before{
   content:"";
   position:absolute;
   left:18%;
-  top:-4%;
-  width:24%;
-  height:18%;
+  right:18%;
+  bottom:-11px;
+  height:12px;
   border-radius:50%;
-  background:linear-gradient(180deg,#fff,#f3eafb);
-  box-shadow:
-    36px -1px 0 -2px #f8f2fd,
-    72px 4px 0 -5px #efe4f8;
-  opacity:.98;
+  background:rgba(72,48,98,.13);
+  filter:blur(7px);
+  z-index:-1;
 }
-.pocket-character__body::after{
-  content:"";
-  position:absolute;
-  left:13%;
-  right:13%;
-  bottom:-3%;
-  height:13%;
-  border-radius:50%;
-  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(231,219,244,.96));
-  box-shadow:0 6px 12px rgba(79,56,103,.08),inset 0 -2px 5px rgba(180,156,203,.14);
-}
-/* no animal anatomy at all */
+/* no detached base or top bumps */
+.pocket-character__body::after{content:none}
 .pocket-character__ear,
 .pocket-character__paw,
 .pocket-character__foot,
@@ -1432,46 +327,213 @@ html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!im
 .pocket-character__horn,
 .pocket-character__antenna,
 .pocket-character__tuft,
-.pocket-character__cheek-detail,
-.pocket-character__sparkles{
-  display:none!important;
-}
-/* face placement for a round slime */
+.pocket-character__prop,
+.pocket-character__dots,
+.pocket-character__sparkles,
+.pocket-character__cheek-detail{display:none!important}
+
 .pocket-character__eye{
-  top:34%;
-  width:22%;
-  height:29%;
-}
-.pocket-character__eye--left{left:22%}
-.pocket-character__eye--right{right:22%}
-.pocket-character__blush{top:59%;width:17%;height:8%}
-.pocket-character__blush--left{left:11%}
-.pocket-character__blush--right{right:11%}
-.pocket-character__mouth{top:67%}
-/* decorative lower jelly pearl becomes part of the body, not a foot/limb */
-.pocket-character__prop{
   position:absolute;
-  left:24%;
-  right:24%;
-  bottom:1%;
-  height:7%;
+  top:35%;
+  width:24px;
+  height:30px;
+  border-radius:48% 48% 50% 50%;
+  border:1px solid rgba(55,31,81,.55);
+  background:
+    radial-gradient(circle at 30% 22%,#fff 0 10%,transparent 11%),
+    radial-gradient(circle at 68% 66%,rgba(255,255,255,.82) 0 4%,transparent 5%),
+    linear-gradient(180deg,#261438 0 17%,#49266f 45%,#7b52b6 75%,#b99be8 100%);
+  box-shadow:0 0 7px rgba(118,76,170,.17),inset 0 -3px 0 rgba(255,255,255,.12);
+  transform:translate(var(--pocket-eye-x),var(--pocket-eye-y));
+  transform-origin:center;
+  z-index:3;
+}
+.pocket-character__eye--left{left:26%}
+.pocket-character__eye--right{right:26%}
+.pocket-character__eye::before,
+.pocket-character__eye::after{content:none}
+
+.pocket-character__eyelid{
+  position:absolute;
+  top:35%;
+  width:24px;
+  height:30px;
+  opacity:0;
+  pointer-events:none;
+  z-index:4;
+}
+.pocket-character__eyelid--left{left:26%}
+.pocket-character__eyelid--right{right:26%}
+.pocket-character__brow{
+  position:absolute;
+  opacity:0;
+  z-index:5;
+}
+.pocket-character__mouth{
+  position:absolute;
+  left:50%;
+  top:67%;
+  width:12px;
+  height:7px;
+  margin-left:-6px;
+  z-index:5;
+}
+.pocket-character__mouth::before,
+.pocket-character__mouth::after{
+  content:"";
+  position:absolute;
+  top:0;
+  width:50%;
+  height:70%;
+  border-bottom:1.6px solid #725987;
+  border-radius:0 0 8px 8px;
+}
+.pocket-character__mouth::before{left:0;transform:rotate(7deg)}
+.pocket-character__mouth::after{right:0;transform:rotate(-7deg)}
+.pocket-character__teeth{
+  position:absolute;
+  left:50%;
+  top:1px;
+  width:10px;
+  height:7px;
+  margin-left:-5px;
+  opacity:0;
+  transform:scaleY(0);
+  transform-origin:top;
+}
+.pocket-character__teeth i{display:none}
+.pocket-character__teeth i:first-child{
+  width:7px;height:6px;background:#fff;clip-path:polygon(0 0,100% 0,50% 100%);
+}
+.pocket-character__blush{
+  position:absolute;
+  top:59%;
+  width:19px;
+  height:8px;
   border-radius:50%;
-  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(226,211,241,.9));
-  opacity:.72;
+  background:radial-gradient(ellipse,rgba(240,170,205,.32),rgba(205,168,238,.10) 62%,transparent 74%);
+  opacity:.6;
 }
-/* stronger jelly physics on click */
-.pocket-character.is-pocket-tapped .pocket-character__body,
-.is-pocket-tapped .pocket-character__body{
-  animation:pocketRoundJelly .42s cubic-bezier(.2,.9,.25,1);
+.pocket-character__blush--left{left:13%}
+.pocket-character__blush--right{right:13%}
+
+/* Expressions */
+.pocket-character[data-pocket-expression="normal"] .pocket-character__eye{opacity:1}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__eye{opacity:0}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid{
+  opacity:1;top:43%;height:9px;border-top:4px solid #64417e;border-radius:50% 50% 0 0
 }
-@keyframes pocketRoundJelly{
-  0%{transform:scale(1)}
-  24%{transform:scaleX(1.10) scaleY(.90)}
-  48%{transform:scaleX(.94) scaleY(1.07)}
-  70%{transform:scaleX(1.035) scaleY(.975)}
-  100%{transform:scale(1)}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth{
+  top:64%;height:10px;border-bottom:2px solid #815b96;border-radius:0 0 50% 50%
 }
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth::before,
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth::after{display:none}
+
+.pocket-character[data-pocket-expression="excited"] .pocket-character__eye{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scale(1.08)}
+.pocket-character[data-pocket-expression="excited"] .pocket-character__mouth{
+  top:64%;width:10px;height:11px;margin-left:-5px;border:2px solid #7b578f;border-radius:50%;background:#f4bdd4
+}
+.pocket-character[data-pocket-expression="excited"] .pocket-character__mouth::before,
+.pocket-character[data-pocket-expression="excited"] .pocket-character__mouth::after{display:none}
+.pocket-character[data-pocket-expression="excited"] .pocket-character__blush{opacity:.86}
+
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eye{opacity:.15;transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.34)}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__mouth{top:68%}
+
+.pocket-character[data-pocket-expression="surprised"] .pocket-character__eye{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scale(1.04)}
+.pocket-character[data-pocket-expression="surprised"] .pocket-character__mouth{
+  top:65%;width:8px;height:9px;margin-left:-4px;border:1.7px solid #76588b;border-radius:50%
+}
+.pocket-character[data-pocket-expression="surprised"] .pocket-character__mouth::before,
+.pocket-character[data-pocket-expression="surprised"] .pocket-character__mouth::after{display:none}
+
+.pocket-character[data-pocket-expression="shy"] .pocket-character__eye--left{transform:translate(var(--pocket-eye-x),calc(var(--pocket-eye-y) + 1px)) rotate(2deg) scaleY(.9)}
+.pocket-character[data-pocket-expression="shy"] .pocket-character__eye--right{transform:translate(var(--pocket-eye-x),calc(var(--pocket-eye-y) + 1px)) rotate(-2deg) scaleY(.9)}
+.pocket-character[data-pocket-expression="shy"] .pocket-character__blush{opacity:.95}
+.pocket-character[data-pocket-expression="shy"] .pocket-character__mouth{width:9px;margin-left:-4.5px}
+
+.pocket-character[data-pocket-expression="curious"] .pocket-character__eye--left{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scale(.92,1.02)}
+.pocket-character[data-pocket-expression="curious"] .pocket-character__eye--right{transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scale(1.04)}
+.pocket-character[data-pocket-expression="curious"] .pocket-character__mouth{transform:rotate(-8deg)}
+
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__eye{
+  top:38%;height:22px;transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.82)
+}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__mouth::before,
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__mouth::after{
+  border-bottom:0;border-top:1.6px solid #725987;border-radius:8px 8px 0 0
+}
+.pocket-character[data-pocket-expression="annoyed"][data-pocket-expression-intensity="2"] .pocket-character__teeth{
+  opacity:1;transform:scaleY(1)
+}
+.pocket-character[data-pocket-expression="annoyed"][data-pocket-expression-intensity] .pocket-character__blush{
+  background:radial-gradient(ellipse,rgba(244,143,174,.42),transparent 72%);opacity:.9
+}
+
+/* Natural blinking */
+.pocket-character.is-pocket-blinking .pocket-character__eye{
+  transform:translate(var(--pocket-eye-x),var(--pocket-eye-y)) scaleY(.08)!important;
+  transition:transform 70ms ease;
+}
+.pocket-character.is-pocket-double-blinking .pocket-character__eye{
+  animation:pocket-double-blink .28s ease
+}
+@keyframes pocket-double-blink{0%,100%{transform:scaleY(1)}20%,32%,58%,70%{transform:scaleY(.08)}26%,64%{transform:scaleY(1)}}
+
+/* Jelly motion */
+@keyframes pocket-jelly-breathe{
+  0%,100%{transform:scale(1)}
+  50%{transform:scaleX(1.015) scaleY(.985)}
+}
+@keyframes pocket-jelly-idle-squish{
+  0%,100%{transform:scale(1)}
+  45%{transform:scaleX(1.035) scaleY(.97)}
+  72%{transform:scaleX(.992) scaleY(1.012)}
+}
+@keyframes pocket-jelly-tap{
+  0%{transform:scale(1) rotate(0)}
+  22%{transform:scaleX(1.09) scaleY(.91)}
+  44%{transform:scaleX(.96) scaleY(1.05)}
+  60%{transform:rotate(-1deg) scale(1.015)}
+  76%{transform:rotate(1deg) scale(.995)}
+  100%{transform:scale(1) rotate(0)}
+}
+html[data-motion="full"] .pocket-character__body{animation:pocket-jelly-breathe 3.6s ease-in-out infinite}
+html[data-motion="full"] .pocket-character:nth-of-type(2n) .pocket-character__body{animation-duration:4.05s}
+html[data-motion="full"] .pocket-character.is-pocket-tapped .pocket-character__body{animation:pocket-jelly-tap .68s cubic-bezier(.34,1.56,.64,1)}
+html[data-motion="gentle"] .pocket-character__body{animation:pocket-jelly-breathe 5.8s ease-in-out infinite}
+html[data-motion="gentle"] .pocket-character.is-pocket-tapped .pocket-character__body{animation:pocket-jelly-tap .46s ease-out}
+html[data-motion="off"] .pocket-character,
+html[data-motion="off"] .pocket-character__body,
+html[data-motion="off"] .pocket-character__eye{animation:none!important;transition:none!important}
 @media(prefers-reduced-motion:reduce){
-  .pocket-character.is-pocket-tapped .pocket-character__body,
-  .is-pocket-tapped .pocket-character__body{animation:none}
+  .pocket-character,.pocket-character__body,.pocket-character__eye{animation:none!important;transition:opacity .12s linear!important}
+}
+
+/* Hero + speech bubble */
+.home-hero-pocket{align-self:center}
+.home-pocket-speech{
+  max-width:210px;
+  margin:9px auto 0;
+  padding:9px 12px;
+  border:1px solid color-mix(in srgb,var(--pa-accent) 15%,var(--pa-border));
+  border-radius:14px;
+  background:color-mix(in srgb,var(--pa-card) 96%,#f7f1ff);
+  color:var(--pa-secondary);
+  box-shadow:0 5px 14px rgba(75,48,101,.06);
+  text-align:center;
+  font-size:12.5px;
+  line-height:1.35;
+}
+.home-pocket-speech::before{
+  content:"";
+  position:absolute;
+  left:50%;top:-5px;width:9px;height:9px;margin-left:-4.5px;
+  background:inherit;border-left:1px solid color-mix(in srgb,var(--pa-accent) 15%,var(--pa-border));
+  border-top:1px solid color-mix(in srgb,var(--pa-accent) 15%,var(--pa-border));transform:rotate(45deg)
+}
+@media(max-width:900px){.home-hero-pocket .pocket-character{width:126px;height:120px}}
+@media(max-width:767px){
+  .home-hero-pocket .pocket-character{width:112px;height:107px}
+  .home-pocket-speech{max-width:190px;font-size:12px}
 }
