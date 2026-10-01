@@ -1211,3 +1211,111 @@ html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!im
 @media(max-width:767px){
   .home-hero-pocket .pocket-character{width:120px;height:112px}
 }
+
+
+/* STEP 58 — complete kawaii mascot expression system */
+.pocket-character{
+  --pocket-eye-scale-y:1;
+  --pocket-eye-rotate:0deg;
+}
+.pocket-character[data-pocket-expression="cute"] .pocket-character__eye{
+  opacity:1;
+  transform:translate(var(--pocket-eye-x,0),var(--pocket-eye-y,0)) scaleY(1);
+}
+.pocket-character[data-pocket-expression="cute"] .pocket-character__eyelid,
+.pocket-character[data-pocket-expression="cute"] .pocket-character__brow{opacity:0}
+.pocket-character[data-pocket-expression="cute"] .pocket-character__mouth{background:transparent}
+.pocket-character[data-pocket-expression="cute"] .pocket-character__teeth{opacity:0!important;transform:scaleY(0)!important}
+
+/* happy: closed crescent eyes and open pink smile */
+.pocket-character[data-pocket-expression="happy"] .pocket-character__eye{opacity:0}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid{
+  opacity:1!important;
+  top:42%;
+  width:24%;
+  height:11%;
+  border:0;
+  border-top:6px solid #5c3a78;
+  border-radius:50% 50% 0 0;
+  background:transparent;
+}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid--left{left:20%;transform:rotate(7deg)}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__eyelid--right{right:20%;transform:rotate(-7deg)}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__brow{opacity:0}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth{
+  top:61%;
+  width:16%;
+  height:15%;
+  margin-left:-8%;
+  border:2px solid #80558d;
+  border-top:0;
+  border-radius:0 0 50% 50%;
+  background:linear-gradient(#f8b7ce,#f7c7d8);
+}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth::before,
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth::after{display:none}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__teeth{opacity:0!important;transform:scaleY(0)!important}
+
+/* sleepy: relaxed closed eyes */
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eye{opacity:0}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eyelid{
+  opacity:1!important;
+  top:45%;
+  width:25%;
+  height:8%;
+  border:0;
+  border-bottom:5px solid #624277;
+  border-radius:0 0 50% 50%;
+  background:transparent;
+}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eyelid--left{left:19%;transform:rotate(2deg)}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eyelid--right{right:19%;transform:rotate(-2deg)}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__brow{opacity:.08}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__mouth{top:66%;width:13%;margin-left:-6.5%}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__teeth{opacity:0!important;transform:scaleY(0)!important}
+
+/* annoyed: narrowed glossy eyes, brows, tiny fang */
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__eye{
+  opacity:1;
+  top:37%;
+  height:23%;
+  transform:translate(var(--pocket-eye-x,0),var(--pocket-eye-y,0)) scaleY(.82);
+}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__brow{
+  opacity:1!important;
+  top:28%;
+  width:20%;
+  height:9%;
+  border-top:4px solid #6a4d7c;
+  border-radius:50%;
+  background:transparent;
+}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__brow--left{left:20%;transform:rotate(13deg)}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__brow--right{right:20%;transform:rotate(-13deg)}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__eyelid{opacity:0}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__mouth{
+  top:66%;
+  width:12%;
+  margin-left:-6%;
+}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__teeth{
+  opacity:1!important;
+  transform:scaleY(1)!important;
+  width:34%;
+  margin-left:-17%;
+  gap:0;
+}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__teeth i{display:none}
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__teeth i:first-child{
+  display:block;
+  width:100%;
+  height:80%;
+}
+
+/* keep click expression visual stronger than ordinary state styling */
+.pocket-character[data-pocket-expression] .pocket-character__eye,
+.pocket-character[data-pocket-expression] .pocket-character__eyelid,
+.pocket-character[data-pocket-expression] .pocket-character__brow,
+.pocket-character[data-pocket-expression] .pocket-character__mouth{
+  transition:opacity .16s ease,transform .18s ease,top .18s ease,height .18s ease;
+}
