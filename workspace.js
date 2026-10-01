@@ -707,12 +707,6 @@ const MASCOT_STATES=new Set(['idle','thinking','happy','success','error','sleep'
 const MASCOT_TASK_STATES=new Set(['thinking','listening','research','study','coding','files']);
 const MASCOT_SLEEP_MS=180000;
 const mascotMoods={idle:'Ready',thinking:'Thinking',happy:'Happy',success:'Done',error:'Concerned',sleep:'Sleepy',sleepy:'Sleepy',listening:'Listening',excited:'Excited',offline:'Offline',research:'Researching',study:'Studying',coding:'Coding',files:'Files',curious:'Curious',mischievous:'Mischievous',annoyed:'Annoyed',grumpy:'Grumpy','very-annoyed':'Very annoyed'};
-const mascotLines={
- friendly:['Hi!','Hehe.','That tickles.'],
- curious:['Hm?','What is it?'],
- annoyed:['Again?','Hey...','Hmph.'],
- very:['Stop poking me.','I\'m watching you.']
-};
 const mascotBusyReasons=new Set();
 let mascotState='idle',mascotStateTimer=0,mascotSleepTimer=0;
 
@@ -720,13 +714,7 @@ function motionMode(){return document.documentElement.dataset.motion||'full'}
 function reducedMotion(){return !!window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function mascotMotionAllowed(){return motionMode()!=='off'&&!reducedMotion()}
 function mascotElement(){return q('homeMascot')}
-function randomLine(group){const pool=mascotLines[group]||mascotLines.friendly;return pool[Math.floor(Math.random()*pool.length)]}
-function annoyanceState(level=mascotAnnoyance){return level>=4?'very-annoyed':level===3?'grumpy':level===2?'annoyed':level===1?'curious':'idle'}
 function restingMascotState(){return navigator.onLine===false?'offline':'idle'}
-function {
- const home=mascotElement();if(!home)return;
- home.style.setProperty('--pocket-eye-x','0px');home.style.setProperty('--pocket-eye-y','0px');
-}
 function setMascotState(state='idle',ms=0){
  const home=mascotElement(),label=q('pocketMoodLabel');if(!home)return false;
  const next=MASCOT_STATES.has(state)?state:'idle';
@@ -739,12 +727,6 @@ function setMascotState(state='idle',ms=0){
    setMascotState(restingMascotState(),0);
  },ms);
  return true;
-}
-function showPocketSpeech(text,ms=2200){
- const b=q('pocketSpeech');if(!b)return;
- b.textContent=text;b.classList.add('is-visible');
- clearTimeout(showPocketSpeech._timer);
- showPocketSpeech._timer=setTimeout(()=>b.classList.remove('is-visible'),ms);
 }
 function spawnPocketParticles(kind='star',count=3){
  if(!mascotMotionAllowed())return;
