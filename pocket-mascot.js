@@ -22,6 +22,18 @@ const HERO_CLICK_LINES=[
  'Let’s make something useful.',
  'Your turn. What’s the plan?'
 ];
+const CLICK_EXPRESSIONS=['cute','happy','sleepy','annoyed'];
+const EXPRESSION_LABELS={cute:'Cute',happy:'Happy',sleepy:'Sleepy',annoyed:'Annoyed'};
+function cycleClickExpression(el){
+ if(!el)return'cute';
+ const current=el.dataset.pocketExpression||'cute';
+ const next=CLICK_EXPRESSIONS[(CLICK_EXPRESSIONS.indexOf(current)+1)%CLICK_EXPRESSIONS.length];
+ el.dataset.pocketExpression=next;
+ el.setAttribute('aria-label','Pocket — '+EXPRESSION_LABELS[next]);
+ window.dispatchEvent(new CustomEvent('pocket-expression-change',{detail:{expression:next,element:el}}));
+ return next;
+}
+
 function changeHeroSpeech(el){
  if(!el?.closest?.('.home-hero-pocket'))return;
  const speech=q('#homePocketSpeech');if(!speech)return;
@@ -56,7 +68,7 @@ function characterParts(){
   '<span class="pocket-character__dots" aria-hidden="true">• • •</span>';
 }
 function html(context='home',size='medium',label='Pocket'){
- return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+characterParts()+'</span>';
+ return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-expression="cute" data-pocket-size="'+size+'" role="img" aria-label="'+label+'">'+characterParts()+'</span>';
 }
 function effectiveState(el){
  const context=el.dataset.pocketContext||'home';
@@ -79,7 +91,7 @@ function hydrate(root=document){
  qa('[data-pocket-character]',root).forEach(el=>{
   if(!q('.pocket-character__body',el))el.insertAdjacentHTML('afterbegin',characterParts());
   if(!el.dataset.pocketContext)el.dataset.pocketContext='home';
-  if(!el.dataset.pocketState)el.dataset.pocketState=globalState;
+  if(!el.dataset.pocketState)el.dataset.pocketState=globalState;if(!el.dataset.pocketExpression)el.dataset.pocketExpression='cute';
   if(!el.dataset.pocketSize)el.dataset.pocketSize='medium';
   if(el.tagName!=='BUTTON'&&!el.hasAttribute('role'))el.setAttribute('role','img');
  });
@@ -251,7 +263,7 @@ function handleScrollReset(){
 }
 document.addEventListener('pointerdown',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
 if(!('PointerEvent' in window))document.addEventListener('touchstart',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
-document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el&&el.id!=='homeMascot')tap(el);if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
+document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el){cycleClickExpression(el);if(el.id!=='homeMascot')tap(el)}if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
 document.addEventListener('pointermove',e=>{
  if(e.pointerType!=='mouse'||matchMedia('(pointer:coarse)').matches||motion()!=='full'||reduced()||document.hidden)return;
  lastPointer=e;if(pointerFrame)return;
