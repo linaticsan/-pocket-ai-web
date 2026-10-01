@@ -67,6 +67,12 @@ function changeHeroSpeech(el,expression=el?.dataset?.pocketExpression||'normal')
  setTimeout(()=>speech.classList.remove('is-changing'),260);
 }
 
+function say(text,ms=1800){
+ const hero=q('#homePocketSpeech'),room=q('#pocketSpeech');
+ if(hero){hero.textContent=String(text||'');hero.classList.remove('is-changing');void hero.offsetWidth;hero.classList.add('is-changing');setTimeout(()=>hero.classList.remove('is-changing'),260)}
+ if(room){room.textContent=String(text||'');room.classList.add('is-visible');clearTimeout(say._timer);say._timer=setTimeout(()=>room.classList.remove('is-visible'),ms)}
+}
+
 function reduced(){return !!matchMedia?.('(prefers-reduced-motion: reduce)')?.matches}
 function motion(){return document.documentElement.dataset.motion||'full'}
 function canWander(el,{autonomous=false,force=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&(force||!ACTIVE_STATES.has(globalState))}
@@ -297,6 +303,6 @@ window.addEventListener('resize',handleLayoutReset,{passive:true});window.addEve
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(blinkTimer);clearTimeout(autoTimer)}else{scheduleBlink();scheduleAutonomous()}});
 const observer=new MutationObserver(scheduleHydrate);
 if(document.body)observer.observe(document.body,{childList:true,subtree:true});else addEventListener('DOMContentLoaded',()=>observer.observe(document.body,{childList:true,subtree:true}),{once:true});
-window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,characterParts,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true}),EXPRESSIONS,setClickExpression,reactToPress};
+window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,characterParts,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true}),EXPRESSIONS,setClickExpression,reactToPress,say};
 hydrate();scheduleBlink();scheduleAutonomous();
 })();
