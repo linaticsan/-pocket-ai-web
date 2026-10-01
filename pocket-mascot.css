@@ -1377,3 +1377,101 @@ html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!im
   .pocket-character.is-pocket-tapped .pocket-character__body,
   .is-pocket-tapped .pocket-character__body{animation:none}
 }
+
+
+/* STEP 60 — true round jelly slime Pocket */
+.pocket-character{
+  filter:drop-shadow(0 12px 20px rgba(86,60,116,.13));
+}
+.pocket-character__body{
+  inset:6% 7% 5%;
+  border:1px solid rgba(216,204,233,.92);
+  border-radius:50% 50% 46% 46% / 46% 46% 54% 54%;
+  background:
+    radial-gradient(circle at 36% 24%,rgba(255,255,255,.96) 0 11%,transparent 12%),
+    radial-gradient(circle at 64% 20%,rgba(255,255,255,.62) 0 6%,transparent 7%),
+    radial-gradient(ellipse at 50% 18%,rgba(255,255,255,.92) 0 24%,transparent 25%),
+    linear-gradient(180deg,#fff 0%,#fbf7ff 57%,#f2eafb 78%,#e9def5 100%);
+  box-shadow:
+    inset 0 10px 16px rgba(255,255,255,.98),
+    inset 0 -14px 22px rgba(190,166,217,.2),
+    0 11px 20px rgba(84,59,110,.09);
+  transform-origin:50% 88%;
+}
+/* rounded jelly crown bumps: organic, not ears */
+.pocket-character__body::before{
+  content:"";
+  position:absolute;
+  left:18%;
+  top:-4%;
+  width:24%;
+  height:18%;
+  border-radius:50%;
+  background:linear-gradient(180deg,#fff,#f3eafb);
+  box-shadow:
+    36px -1px 0 -2px #f8f2fd,
+    72px 4px 0 -5px #efe4f8;
+  opacity:.98;
+}
+.pocket-character__body::after{
+  content:"";
+  position:absolute;
+  left:13%;
+  right:13%;
+  bottom:-3%;
+  height:13%;
+  border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(231,219,244,.96));
+  box-shadow:0 6px 12px rgba(79,56,103,.08),inset 0 -2px 5px rgba(180,156,203,.14);
+}
+/* no animal anatomy at all */
+.pocket-character__ear,
+.pocket-character__paw,
+.pocket-character__foot,
+.pocket-character__fur,
+.pocket-character__horn,
+.pocket-character__antenna,
+.pocket-character__tuft,
+.pocket-character__cheek-detail,
+.pocket-character__sparkles{
+  display:none!important;
+}
+/* face placement for a round slime */
+.pocket-character__eye{
+  top:34%;
+  width:22%;
+  height:29%;
+}
+.pocket-character__eye--left{left:22%}
+.pocket-character__eye--right{right:22%}
+.pocket-character__blush{top:59%;width:17%;height:8%}
+.pocket-character__blush--left{left:11%}
+.pocket-character__blush--right{right:11%}
+.pocket-character__mouth{top:67%}
+/* decorative lower jelly pearl becomes part of the body, not a foot/limb */
+.pocket-character__prop{
+  position:absolute;
+  left:24%;
+  right:24%;
+  bottom:1%;
+  height:7%;
+  border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(226,211,241,.9));
+  opacity:.72;
+}
+/* stronger jelly physics on click */
+.pocket-character.is-pocket-tapped .pocket-character__body,
+.is-pocket-tapped .pocket-character__body{
+  animation:pocketRoundJelly .42s cubic-bezier(.2,.9,.25,1);
+}
+@keyframes pocketRoundJelly{
+  0%{transform:scale(1)}
+  24%{transform:scaleX(1.10) scaleY(.90)}
+  48%{transform:scaleX(.94) scaleY(1.07)}
+  70%{transform:scaleX(1.035) scaleY(.975)}
+  100%{transform:scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .pocket-character.is-pocket-tapped .pocket-character__body,
+  .is-pocket-tapped .pocket-character__body{animation:none}
+}
