@@ -270,6 +270,18 @@ test('Pocket tap moves fast across named Home zones without silently enabling so
   await expectNoPageErrors(errors);
 });
 
+test('STEP 59 slime Pocket has no hands or legs', async ({ page }) => {
+  const errors=await openPocket(page);
+  const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await expect(pocket).toBeVisible();
+  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
+  const body=await pocket.locator('.pocket-character__body').evaluate(el=>getComputedStyle(el).borderRadius);
+  expect(body).toBeTruthy();
+  await expectNoPageErrors(errors);
+});
+
 test('clicking Pocket cycles cute happy sleepy annoyed', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascotViews?.CLICK_EXPRESSIONS);
@@ -330,9 +342,7 @@ test('STEP 56 Pocket matches final kawaii reference styling', async ({ page }) =
   });
   expect(style.eyeWidth).toBeGreaterThan(style.earWidth);
   expect(style.eyeHeight).toBeGreaterThan(28);
-  expect(style.pawWidth).toBeGreaterThan(15);
-  expect(style.footWidth).toBeGreaterThan(15);
-  await expect(page.locator('#homePocketSpeech')).toBeVisible();
+      await expect(page.locator('#homePocketSpeech')).toBeVisible();
   await expectNoPageErrors(errors);
 });
 
@@ -348,9 +358,7 @@ test('STEP 55 Pocket has exactly two cute ears and no extra bubble pieces', asyn
   await expect(pocket.locator('.pocket-character__tuft')).toHaveCount(0);
   await expect(pocket.locator('.pocket-character__sparkles')).toHaveCount(0);
   await expect(pocket.locator('.pocket-character__eye')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(2);
-  await expect(page.locator('#homePocketSpeech')).toBeVisible();
+      await expect(page.locator('#homePocketSpeech')).toBeVisible();
   await expectNoPageErrors(errors);
 });
 
@@ -360,9 +368,7 @@ test('Pocket uses the same simplified two-ear component everywhere', async ({ pa
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
   await expect(pocket).toBeVisible();
   await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__fur,.pocket-character__horn,.pocket-character__tuft,.pocket-character__antenna')).toHaveCount(0);
+      await expect(pocket.locator('.pocket-character__fur,.pocket-character__horn,.pocket-character__tuft,.pocket-character__antenna')).toHaveCount(0);
   const visual=await pocket.evaluate(el=>{
     const body=el.querySelector('.pocket-character__body');
     const eye=el.querySelector('.pocket-character__eye');
