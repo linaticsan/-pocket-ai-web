@@ -1319,3 +1319,61 @@ html[data-motion="off"] .pocket-character__antenna{transform:translateX(-50%)!im
 .pocket-character[data-pocket-expression] .pocket-character__mouth{
   transition:opacity .16s ease,transform .18s ease,top .18s ease,height .18s ease;
 }
+
+
+/* STEP 59 — handless/legless slime Pocket */
+.pocket-character{
+  filter:drop-shadow(0 12px 18px rgba(83,61,112,.12));
+}
+.pocket-character__body{
+  inset:8% 7% 5%;
+  border-radius:48% 48% 44% 44% / 42% 42% 58% 58%;
+  background:
+    radial-gradient(ellipse at 50% 14%,rgba(255,255,255,.98) 0 26%,transparent 27%),
+    radial-gradient(ellipse at 34% 45%,rgba(255,255,255,.78),transparent 42%),
+    radial-gradient(ellipse at 66% 45%,rgba(255,255,255,.74),transparent 42%),
+    linear-gradient(180deg,#fff 0%,#fbf7ff 62%,#eee4f8 100%);
+  box-shadow:
+    inset 0 8px 14px rgba(255,255,255,.95),
+    inset 0 -12px 18px rgba(197,178,221,.18),
+    0 10px 18px rgba(91,67,118,.08);
+  transform-origin:50% 86%;
+}
+/* soft slime base instead of legs */
+.pocket-character__body::after{
+  content:"";
+  position:absolute;
+  left:12%;
+  right:12%;
+  bottom:-2%;
+  height:12%;
+  border-radius:50%;
+  background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(233,223,244,.92));
+  box-shadow:0 5px 10px rgba(88,64,112,.08),inset 0 -2px 4px rgba(186,165,207,.12);
+}
+/* no limbs */
+.pocket-character__paw,
+.pocket-character__foot{display:none!important}
+/* cute slime ears remain tiny and integrated */
+.pocket-character__ear{top:15%;width:13%;height:13%}
+.pocket-character__ear--left{left:10%}
+.pocket-character__ear--right{right:10%}
+/* face centered slightly lower on slime blob */
+.pocket-character__eye{top:34%}
+.pocket-character__mouth{top:66%}
+.pocket-character__blush{top:58%}
+/* subtle jelly squish on tap */
+.pocket-character.is-pocket-tapped .pocket-character__body,
+.is-pocket-tapped .pocket-character__body{
+  animation:pocketSlimeSquish .34s ease;
+}
+@keyframes pocketSlimeSquish{
+  0%{transform:scale(1)}
+  35%{transform:scaleX(1.06) scaleY(.93)}
+  70%{transform:scaleX(.97) scaleY(1.04)}
+  100%{transform:scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .pocket-character.is-pocket-tapped .pocket-character__body,
+  .is-pocket-tapped .pocket-character__body{animation:none}
+}
