@@ -80,7 +80,8 @@ function characterParts(){
    '<span class="pocket-character__brow pocket-character__brow--right"></span>'+
    '<span class="pocket-character__mouth"><span class="pocket-character__teeth"><i></i><i></i><i></i></span></span>'+
    '<span class="pocket-character__blush pocket-character__blush--left"></span>'+
-   '<span class="pocket-character__blush pocket-character__blush--right"></span>'+  '</span>'+;
+   '<span class="pocket-character__blush pocket-character__blush--right"></span>'+
+  '</span>';
 }
 function html(context='home',size='medium',label='Pocket'){
  return '<span class="pocket-character" data-pocket-character data-pocket-context="'+context+'" data-pocket-state="idle" data-pocket-expression="normal" data-pocket-size="'+size+'" role="button" tabindex="0" aria-label="'+label+'">'+characterParts()+'</span>';
@@ -108,7 +109,7 @@ function hydrate(root=document){
   if(!el.dataset.pocketContext)el.dataset.pocketContext='home';
   if(!el.dataset.pocketState)el.dataset.pocketState=globalState;if(!el.dataset.pocketExpression)el.dataset.pocketExpression='normal';if(el.tagName!=='BUTTON'){el.setAttribute('role','button');el.tabIndex=0;el.setAttribute('aria-label','Pocket companion')}
   if(!el.dataset.pocketSize)el.dataset.pocketSize='medium';
-  if(el.tagName!=='BUTTON'&&!el.hasAttribute('role'))el.setAttribute('role','img');
+  
  });
  qa('[data-pocket-character]').forEach(initWander);
  syncAll();
@@ -296,6 +297,6 @@ window.addEventListener('resize',handleLayoutReset,{passive:true});window.addEve
 document.addEventListener('visibilitychange',()=>{if(document.hidden){clearTimeout(blinkTimer);clearTimeout(autoTimer)}else{scheduleBlink();scheduleAutonomous()}});
 const observer=new MutationObserver(scheduleHydrate);
 if(document.body)observer.observe(document.body,{childList:true,subtree:true});else addEventListener('DOMContentLoaded',()=>observer.observe(document.body,{childList:true,subtree:true}),{once:true});
-window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,characterParts,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true})};
+window.PocketMascotViews={hydrate,sync:syncAll,setState,setContext,html,characterParts,moveRandom,goHome,goHomeAll,dashAway:(el=q('.pocket-playground [data-pocket-character]'))=>moveRandom(el,{autonomous:false,force:true}),EXPRESSIONS,setClickExpression,reactToPress};
 hydrate();scheduleBlink();scheduleAutonomous();
 })();
