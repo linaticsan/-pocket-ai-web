@@ -59,11 +59,7 @@ function characterParts(){
    '<span class="pocket-character__mouth"><span class="pocket-character__teeth"><i></i><i></i><i></i></span></span>'+
    '<span class="pocket-character__blush pocket-character__blush--left"></span>'+
    '<span class="pocket-character__blush pocket-character__blush--right"></span>'+
-   '<span class="pocket-character__paw pocket-character__paw--left"></span>'+
-   '<span class="pocket-character__paw pocket-character__paw--right"></span>'+
-   '<span class="pocket-character__foot pocket-character__foot--left"></span>'+
-   '<span class="pocket-character__foot pocket-character__foot--right"></span>'+
-   '<span class="pocket-character__prop"></span>'+
+      '<span class="pocket-character__prop"></span>'+
   '</span>'+
   '<span class="pocket-character__dots" aria-hidden="true">• • •</span>';
 }
