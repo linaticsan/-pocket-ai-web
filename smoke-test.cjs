@@ -310,7 +310,7 @@ assert(index.includes('id="homeComposer" class="home-composer" data-pocket-exclu
 assert(pocketJs.includes("5000+Math.floor(Math.random()*6500)"),'Pocket randomized stay timer is missing');
 assert(pocketJs.includes("Date.now()-d.lastMove<(autonomous?700:80)"),'Fast manual relocation cooldown is missing');
 assert(pocketJs.includes("composer-left")&&pocketJs.includes("composer-right")&&pocketJs.includes("composer-above")&&pocketJs.includes("composer-below"),'Composer-adjacent roaming anchors are missing');
-assert(pocketJs.includes("window.PocketMascot?.tap?.({source:'roaming',element:el})"),'Renderer must forward taps to the central personality controller');
+assert(pocketJs.includes("reactToPress(el)")&&pocketJs.includes("window.PocketMascot?.tap?.({source:'mascot',element:el,expression:el.dataset.pocketExpression})"),'Mascot module must own visual tap reactions and forward only integration metadata');
 assert(workspace.includes("kind==='laugh'")&&workspace.includes("const notes=[")&&workspace.includes("compressor.threshold.setValueAtTime(-18")&&workspace.includes("master.gain.exponentialRampToValueAtTime(.16"),'Audible synthesized laugh sound is missing');
 assert(workspace.includes("laugh:async()=>{if(!soundEnabled())return false")&&workspace.includes("await unlockPocketAudio()"),'Pocket sound reactions must remain user-enabled and gesture-gated');
 assert(environmentCss.includes("#home .home-hero{overflow:visible}")&&environmentCss.includes("touch-action:manipulation"),'Roaming visibility/touch CSS is missing');
