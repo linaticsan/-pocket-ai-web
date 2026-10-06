@@ -1,6 +1,6 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v78';
-const BUILD='step75-runtime-fix';
+const CACHE=APP_CACHE_PREFIX+'v79';
+const BUILD='step78-audit-fix';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
