@@ -87,6 +87,7 @@ for(const theme of ['dark','oled','sakura','green']){
 // 9. One canonical mascot implementation.
 assert(pocketJs.includes('window.PocketMascotViews={'),'Shared mascot renderer is missing');
 assert(workspace.includes('window.PocketMascot={'),'Mascot controller is missing');
+assert(workspace.includes('function lookMascotToward(')&&workspace.includes('lookAt:lookMascotToward'),'PocketMascot lookAt API must reference a defined helper');
 assert(pocketCss.includes('STEP 69 — canonical refresh mascot'),'Canonical mascot CSS marker is missing');
 for(const stale of ['STEP 65 — restored purple horned Pocket identity','STEP 66 — match the refresh/loading mascot exactly','STEP 67 — mascot identity is theme-invariant','STEP 68 — mascot palette follows the active app theme']){
   assert(!pocketCss.includes(stale),'Stale mascot override returned: '+stale);
