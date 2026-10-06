@@ -283,8 +283,7 @@ function tap(el){
  initWander(el);clearStay(el);
  el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
  reactToPress(el);
- const tapState=expressionData(el);
- if(el.closest('.pocket-playground')&&tapState.rapidTapCount<=1)moveRandom(el,{autonomous:false});
+ if(el.closest('.pocket-playground'))moveRandom(el,{autonomous:false});
  window.PocketMascot?.tap?.({source:'mascot',element:el,expression:el.dataset.pocketExpression});
  clearTimeout(el._pocketTapVisualTimer);
  el._pocketTapVisualTimer=setTimeout(()=>el.classList.remove('is-pocket-tapped'),720);
