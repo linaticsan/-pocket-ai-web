@@ -1908,12 +1908,9 @@ html[data-motion="off"].theme-switching *{transition:none!important}
   .settings-dialog button,.room-decor-dialog button,.star-game-dialog button{min-height:44px}
 }
 
-/* STEP 41 — settings clarity for System theme and opt-in sound */
+/* Settings theme grid */
 .settings-dialog .theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-.settings-dialog .sound-setting-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.settings-dialog .sound-setting-row .segmented{flex:1 1 220px}
-.settings-dialog #soundTest{flex:0 0 auto}
-@media(max-width:520px){
- .settings-dialog .theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:520px){.settings-dialog .theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
  .settings-dialog .sound-setting-row>*{flex:1 1 100%}
 }
