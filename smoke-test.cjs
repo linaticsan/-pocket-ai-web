@@ -47,7 +47,7 @@ assert(workspace.includes("const POCKET_BUILD=window.__POCKET_BUILD||'"+pageBuil
 assert(index.includes('manifest.webmanifest?v=20261006-'+pageBuild),'Manifest cache-bust is out of sync');
 assert(index.includes('icon.svg?v=20261006-'+pageBuild),'Icon cache-bust is out of sync');
 assert(manifest.icons?.some(x=>String(x.src||'').includes(pageBuild)),'Manifest icon cache-bust is out of sync');
-assert(index.includes('<dt>Build</dt><dd>STEP '+pageBuild.match(/step(\\d+)/i)?.[1]+'</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dt>Build</dt><dd>STEP '+pageBuild.match(/step(\d+)/i)?.[1]+'</dd>'),'Visible diagnostics build label is stale');
 
 // 5. PWA/offline safety.
 assert(app.includes("navigator.serviceWorker.register('./sw.js'"),'Service-worker registration is missing');
