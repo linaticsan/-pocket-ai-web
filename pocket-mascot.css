@@ -813,3 +813,49 @@ html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-char
 html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-character__horn--right{animation:pocketBootHornRight .42s ease!important}
 @keyframes pocketBootHornLeft{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(-20deg)}}
 @keyframes pocketBootHornRight{0%,100%{transform:rotate(15deg)}50%{transform:rotate(20deg)}}
+
+
+/* STEP 67 — mascot identity is theme-invariant */
+/* Theme may recolor the app, but never Pocket itself. */
+html[data-theme] .pocket-character{
+  color-scheme:light!important;
+  color:#ffffff!important;
+  filter:drop-shadow(0 10px 17px rgba(151,83,237,.22))!important;
+}
+html[data-theme] .pocket-character__body{
+  border:0!important;
+  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
+  box-shadow:0 12px 25px rgba(151,83,237,.20)!important;
+}
+html[data-theme] .pocket-character__horn{
+  border:0!important;
+  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
+  filter:none!important;
+}
+html[data-theme] .pocket-character__eye{
+  border:0!important;
+  background:#ffffff!important;
+  box-shadow:none!important;
+}
+html[data-theme] .pocket-character__eye::after{
+  background:rgba(155,91,234,.34)!important;
+  box-shadow:none!important;
+}
+html[data-theme] .pocket-character__eyelid{
+  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
+}
+html[data-theme] .pocket-character__mouth{
+  border-color:rgba(255,255,255,.92)!important;
+}
+html[data-theme] .pocket-character__body::before{
+  background:rgba(105,58,153,.13)!important;
+}
+html[data-theme] .topbar-pocket-logo{
+  background:#f8f4ff!important;
+  filter:none!important;
+}
+html[data-theme] .topbar-pocket-logo img{
+  filter:none!important;
+  opacity:1!important;
+  mix-blend-mode:normal!important;
+}
