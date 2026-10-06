@@ -1,6 +1,6 @@
 const APP_CACHE_PREFIX='pocket-ai-web-shell-';
-const CACHE=APP_CACHE_PREFIX+'v89';
-const BUILD='step88-canonical-scary-ui';
+const CACHE=APP_CACHE_PREFIX+'v90';
+const BUILD='step89-true-scary-mascot';
 const LEGACY_APP_CACHES=['pocket-ai-web-step1-css'];
 
 const CORE_ASSETS=[
