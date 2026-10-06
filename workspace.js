@@ -62,7 +62,7 @@ function setMotion(m){
 }
 
 
-const POCKET_BUILD=window.__POCKET_BUILD||'step69-cleanup';
+const POCKET_BUILD=window.__POCKET_BUILD||'step70-cleanup-final';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -679,9 +679,9 @@ function reactMascot(kind='tap'){
  const home=mascotElement();if(!home)return false;
  if(kind==='tap')return handleMascotTap();
  if(kind==='success'){
-   setMascotState('success',900);spawnPocketParticles('star',3);void window.PocketSound?.play?.('success');return true;
+   setMascotState('success',900);spawnPocketParticles('star',3);return true;
  }
- if(kind==='error'){setMascotState('error',950);void window.PocketSound?.play?.('error');return true}
+ if(kind==='error'){setMascotState('error',950);return true}
  if(kind==='levelUp'){
    setMascotState('excited',1400);spawnPocketParticles('star',4);
    const xp=q('pocketXP');xp?.classList.add('is-level-up');setTimeout(()=>xp?.classList.remove('is-level-up'),1200);return true;
