@@ -78,6 +78,8 @@ function motion(){return document.documentElement.dataset.motion||'full'}
 function canWander(el,{autonomous=false,force=false}={}){return !!el?.closest?.('.pocket-playground')&&motion()!=='off'&&(!autonomous||!reduced())&&!document.hidden&&!window.PocketMascot?.isBusy?.()&&(force||!ACTIVE_STATES.has(globalState))}
 function characterParts(){
  return '<span class="pocket-character__body" aria-hidden="true">'+
+   '<span class="pocket-character__horn pocket-character__horn--left"></span>'+ 
+   '<span class="pocket-character__horn pocket-character__horn--right"></span>'+ 
    '<span class="pocket-character__eye pocket-character__eye--left"></span>'+
    '<span class="pocket-character__eye pocket-character__eye--right"></span>'+
    '<span class="pocket-character__eyelid pocket-character__eyelid--left"></span>'+
