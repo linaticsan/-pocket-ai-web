@@ -265,6 +265,21 @@ test('Pocket rapid tap expressions escalate and recover', async ({ page }) => {
   await expectNoPageErrors(errors);
 });
 
+
+
+test('mascot instances keep independent expression state', async ({ page }) => {
+  const errors=await openPocket(page);
+  await page.locator('#settingsOpen').click();
+  const settingsPocket=page.locator('#settingsDialog [data-pocket-character]').first();
+  const homePocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
+  await settingsPocket.click({force:true});
+  const settingsExpression=await settingsPocket.getAttribute('data-pocket-expression');
+  await page.locator('#settingsDialog .close').click();
+  await homePocket.click({force:true});
+  await expect(homePocket).not.toHaveAttribute('data-pocket-expression','normal');
+  expect(settingsExpression).not.toBe('normal');
+  await expectNoPageErrors(errors);
+});
 test('Pocket horned identity stays consistent and AI busy state has priority', async ({ page }) => {
   const errors=await openPocket(page);
   await page.waitForFunction(()=>!!window.PocketMascot?.tap && !!window.PocketMascot?.setBusy);
