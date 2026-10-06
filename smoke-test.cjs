@@ -13,6 +13,7 @@ const feature=read('feature-v2.js');
 const ux=read('ux-v39.js');
 const responsive=read('responsive-v92.js');
 const icons=read('icons-v132.js');
+const uiCore=read('ui-core.css');
 const pocketCss=read('pocket-mascot.css');
 const pocketJs=read('pocket-mascot.js');
 const environmentJs=read('pocket-environment.js');
