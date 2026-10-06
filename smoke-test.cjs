@@ -107,6 +107,7 @@ assert(!/mode==='audio'|async function itunes\(/.test(app),'Audio research runti
 // 11. Environment ownership/safety.
 assert(environmentCss.includes('#pocketEnvironment')&&environmentCss.includes('pointer-events:none'),'Environment overlay must not intercept input');
 assert(!/weatherapi|openweathermap|fetch\(/i.test(environmentJs),'Base environment must remain offline/API-free');
+assert(!environmentCss.includes('pocket-character__antenna'),'Environment CSS still targets removed antenna');
 
 // 12. Known loop/duplication regressions.
 assert(!icons.includes('new MutationObserver(()=>queueMicrotask(run))'),'Dangerous icon microtask observer must stay removed');
