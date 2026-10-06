@@ -44,6 +44,7 @@ assert(swBuild,'Service-worker build marker is missing');
 assert(pageBuild===swBuild,'Page/SW build mismatch: '+pageBuild+' vs '+swBuild);
 assert(index.includes('window.__POCKET_BUILD=BUILD'),'Global page build identifier is missing');
 assert(workspace.includes("const POCKET_BUILD=window.__POCKET_BUILD||'"+pageBuild+"'"),'Diagnostics build fallback is out of sync');
+assert(workspace.includes("url.searchParams.set('v',POCKET_BUILD+'-refresh-'+Date.now())"),'Refresh app files must use the current build marker');
 assert(index.includes('manifest.webmanifest?v=20261006-'+pageBuild),'Manifest cache-bust is out of sync');
 assert(index.includes('icon.svg?v=20261006-'+pageBuild),'Icon cache-bust is out of sync');
 assert(manifest.icons?.some(x=>String(x.src||'').includes(pageBuild)),'Manifest icon cache-bust is out of sync');
