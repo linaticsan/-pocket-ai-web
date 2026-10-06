@@ -48,7 +48,7 @@ function reactPocket(type){
  if(!window.PocketMascot||motion()==='off'||document.hidden)return;
  if(type==='wind'){window.PocketMascot.setWind?.(wind);return}
  if(type==='snow'&&Math.random()<.45)window.PocketMascot.react?.('happy');
- if(['snow','sakura','leaf','rain'].includes(type))setTimeout(()=>{const el=q('.pocket-playground [data-pocket-character]');if(el){const r=el.getBoundingClientRect();window.PocketMascot.lookAt?.(r.left+r.width*.6,r.top-80,true)}},500+Math.random()*900);
+ if(['snow','sakura','leaf','rain'].includes(type))setTimeout(()=>{const el=q('.pocket-playground [data-pocket-character]');if(el)window.PocketMascotViews?.setClickExpression?.(el,'curious',{temporary:true})},500+Math.random()*900);
 }
 function startEffect(type,{duration=0,preview=false,intensity=1}={}){
  const valid=new Set(['sakura','snow','rain','leaf','light']);if(!valid.has(type)||effectiveMode()==='off')return false;
