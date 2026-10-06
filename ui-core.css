@@ -1912,5 +1912,90 @@ html[data-motion="off"].theme-switching *{transition:none!important}
 .settings-dialog .theme-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:520px){.settings-dialog .theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
- .settings-dialog .sound-setting-row>*{flex:1 1 100%}
+
+
+/* STEP 87 — cleaner visual hierarchy */
+:root{
+  --clean-card-shadow:0 10px 28px rgba(19,14,31,.05);
+  --clean-card-shadow-hover:0 14px 34px rgba(19,14,31,.08);
+}
+.topbar{
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.pa-desktop-sidebar{
+  box-shadow:1px 0 0 var(--pa-border);
+}
+.pa-desktop-sidebar button,
+.command-list button{
+  border-radius:10px;
+}
+.pa-desktop-sidebar button:hover,
+.command-list button:hover{
+  transform:none;
+}
+.view,
+#home .home-hero,
+#home .home-companion,
+.pa-card,.card,.result-card,.project-card,.book-card,.free-card,.wn44-book,.wn46-source{
+  box-shadow:var(--clean-card-shadow);
+}
+#home .home-hero{
+  border-radius:18px;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--pa-card) 96%,transparent),var(--pa-card));
+}
+#home .home-welcome h1{
+  letter-spacing:-.035em;
+}
+#home .home-lede{
+  max-width:650px;
+}
+#home .home-composer{
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(20,15,35,.06);
+}
+#home .quick-grid{
+  gap:10px;
+}
+#home .quick-grid>button{
+  border-radius:14px;
+  box-shadow:none;
+  transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease,background .15s ease;
+}
+#home .quick-grid>button:hover{
+  transform:translateY(-1px);
+  box-shadow:var(--clean-card-shadow-hover);
+}
+#home .quick-icon{
+  border-radius:11px;
+}
+#home .home-section-head h2,
+#home .home-section-head h3{
+  font-size:19px;
+}
+#home .home-companion{
+  box-shadow:none;
+}
+.settings-dialog,
+.command-dialog,
+.room-decor-dialog,
+.star-game-dialog{
+  border-radius:18px;
+  box-shadow:0 24px 80px rgba(12,9,20,.18);
+}
+.settings-dialog .settings-group{
+  margin-bottom:16px;
+  padding-bottom:16px;
+}
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[role="button"]:focus-visible{
+  outline:2px solid var(--pa-accent);
+  outline-offset:2px;
+}
+@media(max-width:767px){
+  #home .home-hero{border-radius:14px}
+  #home .quick-grid>button{border-radius:12px}
 }
