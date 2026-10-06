@@ -97,7 +97,9 @@ for(const stale of ['STEP 65 — restored purple horned Pocket identity','STEP 6
 }
 assert((pocketCss.match(/STEP 69 — canonical refresh mascot/g)||[]).length===1,'Canonical mascot block must exist exactly once');
 assert(!pocketCss.includes('STEP 62 — cute jelly polish'),'Obsolete STEP 62 mascot override returned');
-assert(pocketCss.includes('STEP 87 — scary Pocket character'),'Scary Pocket visual layer is missing');
+assert(pocketCss.includes('STEP 88 — canonical scary Pocket identity'),'Canonical scary Pocket visual layer is missing');
+assert(!pocketCss.includes('STEP 69 — canonical refresh mascot'),'Obsolete STEP 69 mascot override returned');
+assert(!pocketCss.includes('STEP 87 — scary Pocket character'),'Obsolete STEP 87 mascot override returned');
 assert(!uiCore.includes('sound-setting-row'),'Removed sound-settings CSS returned');
 assert(pocketJs.includes('pocket-character__horn--left')&&pocketJs.includes('pocket-character__horn--right'),'Refresh-style mascot horns are missing');
 
