@@ -62,7 +62,7 @@ function setMotion(m){
 }
 
 
-const POCKET_BUILD=window.__POCKET_BUILD||'step74-unified-theme-mascot';
+const POCKET_BUILD=window.__POCKET_BUILD||'step75-runtime-fix';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
@@ -692,6 +692,15 @@ function reactMascot(kind='tap'){
    if(mascotBusyReasons.size)return false;setMascotState('happy',420);return true;
  }
  return false;
+}
+function lookMascotToward(x=0,y=0){
+ const dx=Math.max(-1,Math.min(1,Number(x)||0));
+ const dy=Math.max(-1,Math.min(1,Number(y)||0));
+ document.querySelectorAll('[data-pocket-character]').forEach(el=>{
+   el.style.setProperty('--pocket-eye-x',(dx*2.6).toFixed(2)+'px');
+   el.style.setProperty('--pocket-eye-y',(dy*1.8).toFixed(2)+'px');
+ });
+ return {x:dx,y:dy};
 }
 function setMascotWind(value=0){
  const v=Math.max(-1,Math.min(1,Number(value)||0));
