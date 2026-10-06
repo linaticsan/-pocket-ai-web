@@ -62,7 +62,7 @@ function setMotion(m){
 }
 
 
-const POCKET_BUILD=window.__POCKET_BUILD||'step84-mascot-state-stability';
+const POCKET_BUILD=window.__POCKET_BUILD||'step85-stability-polish';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
