@@ -174,45 +174,6 @@ test('iPhone Reduce Motion still allows a small user-triggered Pocket relocation
   await expectNoPageErrors(errors);
 });
 
-test('friendly Pocket tap uses gesture-gated cute chirp only when sound is enabled', async ({ page }) => {
-  await page.addInitScript(() => {
-    try{localStorage.setItem('pocket-sound-v1','on')}catch{}
-    window.__audioProbe={oscillators:0,resumes:0,maxGain:0,starts:0};
-    class Param{
-      setValueAtTime(v){window.__audioProbe.maxGain=Math.max(window.__audioProbe.maxGain,Number(v)||0)}
-      exponentialRampToValueAtTime(v){window.__audioProbe.maxGain=Math.max(window.__audioProbe.maxGain,Number(v)||0)}
-    }
-    class Node{
-      constructor(){this.gain=new Param();this.frequency=new Param();this.threshold=new Param();this.knee=new Param();this.ratio=new Param();this.attack=new Param();this.release=new Param()}
-      connect(){return this}
-      disconnect(){}
-      start(){window.__audioProbe.starts++}
-      stop(){}
-      addEventListener(){}
-    }
-    class FakeAudioContext{
-      constructor(){this.state='suspended';this.currentTime=1;this.destination=new Node()}
-      async resume(){window.__audioProbe.resumes++;this.state='running'}
-      createOscillator(){window.__audioProbe.oscillators++;return new Node()}
-      createGain(){return new Node()}
-      createDynamicsCompressor(){return new Node()}
-    }
-    window.AudioContext=FakeAudioContext;
-    window.webkitAudioContext=FakeAudioContext;
-  });
-  await page.setViewportSize({width:390,height:844});
-  const errors=await openPocket(page);
-  const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
-  await pocket.click();
-  await page.waitForTimeout(140);
-  const probe=await page.evaluate(()=>window.__audioProbe);
-  expect(probe.resumes).toBeGreaterThanOrEqual(1);
-  expect(probe.oscillators).toBeGreaterThanOrEqual(1);
-  expect(probe.starts).toBeGreaterThanOrEqual(1);
-  expect(probe.maxGain).toBeGreaterThanOrEqual(.05);
-  await expectNoPageErrors(errors);
-});
-
 test('Pocket roam avoids the whole Tools section and recovers safely after scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   const errors = await openPocket(page);
@@ -442,7 +403,7 @@ test('seasonal environment is centralized, offline, motion-aware and workspace-a
   await expectNoPageErrors(errors);
 });
 
-test('Pocket mascot click keeps its room position and sound stays opt-in', async ({ page }) => {
+test('Pocket mascot click keeps its room position and audio features stay removed', async ({ page }) => {
   const errors = await openPocket(page);
   await page.locator('#pocketCompanion > summary').click();
   const mascot = page.locator('#homeMascot');
@@ -455,8 +416,9 @@ test('Pocket mascot click keeps its room position and sound stays opt-in', async
   await expect(mascot).toHaveClass(/is-tap-reacting/);
   await expect(mascot).toHaveAttribute('data-mascot-state','happy');
   await expect(mascot).not.toHaveClass(/is-tap-reacting/, { timeout: 1500 });
-  await expect(page.locator('[data-sound]')).toHaveCount(2);
-  await expect(page.locator('#soundTest')).toHaveCount(1);
+  await expect(page.locator('[data-sound]')).toHaveCount(0);
+  await expect(page.locator('#soundTest')).toHaveCount(0);
+  expect(await page.evaluate(() => typeof window.PocketSound)).toBe('undefined');
   expect(await page.evaluate(() => localStorage.getItem('pocket-sound-v1'))).toBeNull();
   await expectNoPageErrors(errors);
 });
