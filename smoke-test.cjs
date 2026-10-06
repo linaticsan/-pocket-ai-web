@@ -336,7 +336,7 @@ assert(!pocketJs.includes('pocket-character__paw pocket-character__paw--'),'Jell
 assert(!pocketJs.includes('pocket-character__foot pocket-character__foot--'),'Jelly must not render legs');
 assert(!pocketJs.includes('pocket-character__prop'),'Jelly must not render a detached platform');
 assert(pocketCss.includes('STEP 61 — authoritative one-blob jelly mascot'),'Authoritative jelly CSS is missing');
-assert(pocketCss.includes('STEP 64 — cute jelly polish'),'STEP 64 jelly visual polish is missing');
+assert(pocketCss.includes('STEP 62 — cute jelly polish'),'STEP 62 jelly visual polish must remain intact after restoring the old icon');
 assert(!pocketCss.includes('STEP 51 — authoritative fluffy-animal Pocket visual system'),'Legacy mascot CSS must be removed');
 assert(pocketCss.includes('@keyframes pocket-jelly-breathe')&&pocketCss.includes('@keyframes pocket-jelly-tap'),'Jelly animations are missing');
 assert(!workspace.includes('function scheduleBlink()')&&!workspace.includes("document.addEventListener('pointermove',e=>"),'Workspace must not duplicate visual mascot handlers');
