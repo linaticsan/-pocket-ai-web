@@ -62,7 +62,7 @@ function setMotion(m){
 }
 
 
-const POCKET_BUILD=window.__POCKET_BUILD||'step78-audit-fix';
+const POCKET_BUILD=window.__POCKET_BUILD||'step79-dedup-audit';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
