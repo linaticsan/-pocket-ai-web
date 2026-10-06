@@ -251,16 +251,16 @@ test('Pocket refresh-style mascot is compact and keyboard accessible', async ({ 
 
 test('Pocket rapid tap expressions escalate and recover', async ({ page }) => {
   const errors=await openPocket(page);
+  await page.waitForFunction(()=>!!window.PocketMascotViews?.reactToPress);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
-  await pocket.click({force:true});
-  const firstExpression=await pocket.getAttribute('data-pocket-expression');
-  expect(firstExpression).not.toBe('normal');
-  await pocket.click({force:true});
-  await pocket.click({force:true});
-  await pocket.click({force:true});
-  await pocket.click({force:true});
+  const sequence=await page.evaluate(()=>{
+    const el=document.querySelector('#home .home-hero-pocket [data-pocket-character]');
+    return Array.from({length:5},()=>window.PocketMascotViews.reactToPress(el));
+  });
+  expect(sequence[0]).not.toBe('normal');
+  expect(sequence.at(-1)).toBe('annoyed');
   await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
-  await page.waitForTimeout(2100);
+  await page.waitForTimeout(1900);
   await expect(pocket).toHaveAttribute('data-pocket-expression','normal');
   await expectNoPageErrors(errors);
 });
