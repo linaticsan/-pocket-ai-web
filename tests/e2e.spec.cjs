@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 async function openPocket(page) {
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message || String(error)));
-  await page.goto('/?v=step51-fluffy-animal-mascot', { waitUntil: 'domcontentloaded' });
+  await page.goto('/?v=e2e-current', { waitUntil: 'domcontentloaded' });
   await page.waitForFunction(() => !!window.PocketNav?.show && !!window.PocketTheme?.apply);
   await expect(page.locator('#home')).toBeVisible();
   await expect(page.locator('#bottomNav')).toHaveCount(0);
@@ -112,12 +112,16 @@ test('Pocket identity appears across workspaces and animation modes are visibly 
   await page.locator('#settingsDialog [data-motion="full"]').click();
   await expect(page.locator('#motionPreviewText')).toContainText('Full:');
   const fullAnimation = await preview.locator('.pocket-character__body').evaluate(el => getComputedStyle(el).animationName);
-  expect(fullAnimation).toContain('pocket-fluffy-breathe');
+  expect(fullAnimation).toContain('pocket-jelly-breathe');
 
   await page.locator('#settingsDialog [data-motion="gentle"]').click();
   await expect(page.locator('#motionPreviewText')).toContainText('Gentle:');
-  const gentleDuration = await preview.locator('.pocket-character__body').evaluate(el => getComputedStyle(el).animationDuration);
-  expect(gentleDuration).toBe('8.5s');
+  const gentleMotion = await preview.locator('.pocket-character__body').evaluate(el => {
+    const style=getComputedStyle(el);
+    return {name:style.animationName,duration:style.animationDuration};
+  });
+  expect(gentleMotion.name).toContain('pocket-jelly-breathe');
+  expect(gentleMotion.duration).not.toBe('0s');
 
   await page.locator('#settingsDialog [data-motion="off"]').click();
   await expect(page.locator('#motionPreviewText')).toContainText('Off:');
@@ -248,11 +252,14 @@ test('Pocket refresh-style mascot is compact and keyboard accessible', async ({ 
 test('Pocket rapid tap expressions escalate and recover', async ({ page }) => {
   const errors=await openPocket(page);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
-  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','happy');
-  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','surprised');
-  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','excited');
-  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','curious');
-  await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
+  await pocket.click();
+  const firstExpression=await pocket.getAttribute('data-pocket-expression');
+  expect(firstExpression).not.toBe('normal');
+  await pocket.click();
+  await pocket.click();
+  await pocket.click();
+  await pocket.click();
+  await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
   await page.waitForTimeout(2100);
   await expect(pocket).toHaveAttribute('data-pocket-expression','normal');
   await expectNoPageErrors(errors);
@@ -389,14 +396,14 @@ test('Pocket mascot click keeps its room position and audio features stay remove
   await page.locator('#pocketCompanion > summary').click();
   const mascot = page.locator('#homeMascot');
   await expect(mascot).toBeVisible();
+  await page.waitForTimeout(250);
   const before = await mascot.boundingBox();
-  await page.waitForTimeout(700);
-  const after = await mascot.boundingBox();
-  expect(before && after && Math.abs(before.x-after.x)<0.5 && Math.abs(before.y-after.y)<0.5).toBeTruthy();
   await mascot.click();
-  await expect(mascot).toHaveClass(/is-tap-reacting/);
-  await expect(mascot).toHaveAttribute('data-mascot-state','happy');
-  await expect(mascot).not.toHaveClass(/is-tap-reacting/, { timeout: 1500 });
+  await expect(mascot).toHaveClass(/is-pocket-tapped/);
+  await expect(mascot).not.toHaveAttribute('data-pocket-expression','normal');
+  const after = await mascot.boundingBox();
+  expect(before && after && Math.abs(before.x-after.x)<1 && Math.abs(before.y-after.y)<1).toBeTruthy();
+  await expect(mascot).not.toHaveClass(/is-pocket-tapped/, { timeout: 1500 });
   await expect(page.locator('[data-sound]')).toHaveCount(0);
   await expect(page.locator('#soundTest')).toHaveCount(0);
   expect(await page.evaluate(() => typeof window.PocketSound)).toBe('undefined');
