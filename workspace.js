@@ -114,7 +114,7 @@ async function refreshPocketAppFiles(){
    const reg=await navigator.serviceWorker.getRegistration();
    try{await reg?.update()}catch{}
   }
-  const url=new URL(location.href);url.searchParams.set('v','step69-refresh-'+Date.now());location.replace(url.toString());
+  const url=new URL(location.href);url.searchParams.set('v',POCKET_BUILD+'-refresh-'+Date.now());location.replace(url.toString());
  }catch{
   if(status)status.textContent='Could not refresh app files. Check your connection and try again.';
   if(btn)btn.disabled=false;
