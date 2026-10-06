@@ -537,3 +537,61 @@ html[data-motion="off"] .pocket-character__eye{animation:none!important;transiti
   .home-hero-pocket .pocket-character{width:112px;height:107px}
   .home-pocket-speech{max-width:190px;font-size:12px}
 }
+
+
+/* STEP 62 — cute jelly polish */
+.pocket-character{
+  filter:
+    drop-shadow(0 10px 16px rgba(88,62,119,.10))
+    drop-shadow(0 2px 4px rgba(118,82,155,.05));
+}
+.pocket-character__body{
+  border-radius:48% 48% 44% 44% / 44% 44% 57% 57%;
+  background:
+    radial-gradient(circle at 34% 23%,rgba(255,255,255,.98) 0 11%,transparent 12%),
+    radial-gradient(circle at 42% 30%,rgba(255,255,255,.38) 0 4%,transparent 5%),
+    radial-gradient(ellipse at 50% 18%,rgba(255,255,255,.86) 0 22%,transparent 23%),
+    linear-gradient(180deg,#fff 0%,#fdfaff 48%,#f6efff 76%,#eadcf8 100%);
+  box-shadow:
+    inset 0 8px 14px rgba(255,255,255,.9),
+    inset 0 -13px 22px rgba(174,140,211,.14),
+    0 8px 18px rgba(75,50,101,.07);
+}
+.pocket-character__body::before{
+  left:20%;
+  right:20%;
+  bottom:-9px;
+  height:10px;
+  background:rgba(86,58,115,.10);
+  filter:blur(8px);
+}
+.pocket-character__eye{
+  border-color:rgba(69,39,96,.48);
+  background:
+    radial-gradient(circle at 29% 20%,#fff 0 10%,transparent 11%),
+    radial-gradient(circle at 68% 66%,rgba(255,255,255,.9) 0 4%,transparent 5%),
+    radial-gradient(circle at 62% 80%,rgba(226,211,255,.85) 0 5%,transparent 6%),
+    linear-gradient(180deg,#26143a 0 17%,#4d2874 44%,#7e56b9 75%,#c5a7ef 100%);
+  box-shadow:
+    0 0 8px rgba(123,78,177,.14),
+    inset 0 -3px 0 rgba(255,255,255,.14);
+}
+.pocket-character__blush{
+  background:radial-gradient(ellipse,rgba(244,165,205,.38),rgba(212,171,239,.10) 62%,transparent 74%);
+  opacity:.72;
+}
+.pocket-character__mouth::before,
+.pocket-character__mouth::after{
+  border-bottom-color:#735a88;
+}
+.home-pocket-speech{
+  border-radius:16px;
+  background:color-mix(in srgb,var(--pa-card) 97%,#f7efff);
+  box-shadow:0 6px 16px rgba(76,50,101,.055);
+}
+.pocket-character:hover{
+  filter:
+    drop-shadow(0 12px 18px rgba(88,62,119,.13))
+    drop-shadow(0 0 10px rgba(173,132,225,.08));
+}
+html[data-motion="off"] .pocket-character:hover{filter:drop-shadow(0 9px 14px rgba(88,62,119,.10))}
