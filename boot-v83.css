@@ -1,4 +1,4 @@
-/* Pocket AI V83 — cute fast boot + dialog tap safety */
+/* Pocket AI V83 — scary fast boot + dialog tap safety */
 #pocketBoot{
   position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;
   padding:24px;background:
@@ -14,17 +14,17 @@
   box-shadow:0 24px 70px rgba(86,54,130,.16);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)
 }
 .pocket-boot-mascot{
-  position:relative;width:92px;height:92px;margin:0 auto 20px;border-radius:30px;
-  display:grid;place-items:center;color:#fff;font-size:32px;font-weight:900;
+  position:relative;width:92px;height:92px;margin:0 auto 20px;border-radius:24px 24px 30px 30px;
+  display:grid;place-items:center;color:#fff;font-size:30px;font-weight:900;
   background:linear-gradient(145deg,var(--pocket-a,#f35da9),var(--pocket-b,#9859ef) 72%,var(--pocket-c,#8650df));
   box-shadow:0 18px 38px var(--pocket-shadow,rgba(151,83,237,.25));
   animation:pocketBootFloat 1.7s ease-in-out infinite
 }
 .pocket-boot-mascot:before,.pocket-boot-mascot:after{
-  content:'';position:absolute;top:-13px;width:29px;height:32px;background:inherit;border-radius:7px 22px 4px 4px
+  content:'';position:absolute;top:-18px;width:28px;height:38px;background:inherit;border-radius:3px;clip-path:polygon(10% 100%,35% 8%,88% 0,100% 100%)
 }
-.pocket-boot-mascot:before{left:9px;transform:rotate(-15deg)}
-.pocket-boot-mascot:after{right:9px;transform:rotate(15deg)}
+.pocket-boot-mascot:before{left:8px;transform:rotate(-22deg)}
+.pocket-boot-mascot:after{right:8px;transform:scaleX(-1) rotate(-22deg)}
 .pocket-boot-eyes{position:relative;z-index:2;display:inline-block;letter-spacing:7px;transform:translateX(3px);animation:pocketBootBlink 3.8s ease-in-out infinite}
 .pocket-boot-stars{height:22px;margin:0 auto 4px;font-size:15px;letter-spacing:9px;color:var(--pocket-b,#b464f0);animation:pocketStars 1.1s ease-in-out infinite alternate}
 .pocket-boot-card strong{display:block;font:800 23px/1.1 system-ui,-apple-system,sans-serif;color:#1b1732;margin-bottom:8px}
@@ -59,3 +59,12 @@ dialog .close,.api-hub-close{
 .pocket-boot-skeleton i{display:block;height:12px;border-radius:999px;background:linear-gradient(90deg,#eee8f8 20%,#fff 45%,#eee8f8 70%);background-size:220% 100%;animation:pocketSkeleton 1.25s ease-in-out infinite}
 .pocket-boot-skeleton i:nth-child(2){width:82%;margin:auto}.pocket-boot-skeleton i:nth-child(3){width:64%;margin:auto}
 @keyframes pocketSkeleton{to{background-position:-220% 0}}
+
+.pocket-boot-mascot{background:linear-gradient(155deg,var(--pocket-a,#9e5ee8),var(--pocket-b,#5d2aa8) 64%,var(--pocket-c,#2b0e4a))}
+.pocket-boot-eyes{font-size:0;letter-spacing:0;width:54px;height:24px}
+.pocket-boot-eyes::before,.pocket-boot-eyes::after{
+  content:"";position:absolute;top:5px;width:22px;height:12px;background:#f8f3ff;border-radius:70% 30% 70% 30%;
+  box-shadow:inset 0 0 0 6px #1b0928
+}
+.pocket-boot-eyes::before{left:1px;transform:rotate(9deg)}
+.pocket-boot-eyes::after{right:1px;transform:scaleX(-1) rotate(9deg)}
