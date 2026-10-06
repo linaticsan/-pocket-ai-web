@@ -91,15 +91,16 @@ for(const theme of ['dark','oled','sakura','green']){
 assert(pocketJs.includes('window.PocketMascotViews={'),'Shared mascot renderer is missing');
 assert(workspace.includes('window.PocketMascot={'),'Mascot controller is missing');
 assert(workspace.includes('function lookMascotToward(')&&workspace.includes('lookAt:lookMascotToward'),'PocketMascot lookAt API must reference a defined helper');
-assert(pocketCss.includes('STEP 88 — canonical scary Pocket identity'),'Canonical mascot CSS marker is missing');
+assert(pocketCss.includes('STEP 89 — true scary Pocket identity'),'Canonical mascot CSS marker is missing');
 for(const stale of ['STEP 65 — restored purple horned Pocket identity','STEP 66 — match the refresh/loading mascot exactly','STEP 67 — mascot identity is theme-invariant','STEP 68 — mascot palette follows the active app theme']){
   assert(!pocketCss.includes(stale),'Stale mascot override returned: '+stale);
 }
-assert((pocketCss.match(/STEP 88 — canonical scary Pocket identity/g)||[]).length===1,'Canonical mascot block must exist exactly once');
+assert((pocketCss.match(/STEP 89 — true scary Pocket identity/g)||[]).length===1,'Canonical mascot block must exist exactly once');
 assert(!pocketCss.includes('STEP 62 — cute jelly polish'),'Obsolete STEP 62 mascot override returned');
-assert(pocketCss.includes('STEP 88 — canonical scary Pocket identity'),'Canonical scary Pocket visual layer is missing');
+assert(pocketCss.includes('STEP 89 — true scary Pocket identity'),'Canonical scary Pocket visual layer is missing');
 assert(!pocketCss.includes('STEP 69 — canonical refresh mascot'),'Obsolete STEP 69 mascot override returned');
 assert(!pocketCss.includes('STEP 87 — scary Pocket character'),'Obsolete STEP 87 mascot override returned');
+assert(!pocketCss.includes('STEP 88 — canonical scary Pocket identity'),'Obsolete STEP 88 mascot override returned');
 assert(!uiCore.includes('sound-setting-row'),'Removed sound-settings CSS returned');
 assert(pocketJs.includes('pocket-character__horn--left')&&pocketJs.includes('pocket-character__horn--right'),'Refresh-style mascot horns are missing');
 
