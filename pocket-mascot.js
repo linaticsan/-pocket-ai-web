@@ -18,8 +18,14 @@ const EXPRESSIONS={
 };
 const EXPRESSION_NAMES=Object.keys(EXPRESSIONS);
 const RAPID_SEQUENCE=['happy','surprised','excited','curious','annoyed','annoyed'];
-const RAPID_TAP_WINDOW_MS=1800;
-let lastExpression='normal',lastSpeech='',lastTapAt=0,rapidTapCount=0,expressionResetTimer=0;
+const RAPID_TAP_WINDOW_MS=2400;
+const expressionState=new WeakMap();
+let lastExpression='normal',lastSpeech='';
+function expressionData(el){
+ let data=expressionState.get(el);
+ if(!data){data={lastTapAt:0,rapidTapCount:0,resetTimer:0};expressionState.set(el,data)}
+ return data;
+}
 
 function chooseRandomExpression(){
  const pool=EXPRESSION_NAMES.filter(x=>x!=='normal'&&x!==lastExpression);
@@ -39,23 +45,28 @@ function setClickExpression(el,expression='normal',{temporary=true,intensity=0}=
  el.setAttribute('aria-label','Pocket companion — '+EXPRESSIONS[next].label);
  lastExpression=next;
  window.dispatchEvent(new CustomEvent('pocket-expression-change',{detail:{expression:next,element:el,intensity}}));
- clearTimeout(expressionResetTimer);
+ const data=expressionData(el);
+ clearTimeout(data.resetTimer);
  if(temporary&&next!=='normal'){
-   expressionResetTimer=setTimeout(()=>setClickExpression(el,'normal',{temporary:false}),1200+Math.floor(Math.random()*801));
+   data.resetTimer=setTimeout(()=>{
+     data.rapidTapCount=0;data.lastTapAt=0;data.resetTimer=0;
+     setClickExpression(el,'normal',{temporary:false});
+   },1800);
  }
  return next;
 }
 function reactToPress(el){
- const now=Date.now(),rapid=now-lastTapAt<RAPID_TAP_WINDOW_MS;lastTapAt=now;
- rapidTapCount=rapid?rapidTapCount+1:1;
+ const data=expressionData(el),now=Date.now(),rapid=now-data.lastTapAt<RAPID_TAP_WINDOW_MS;
+ data.lastTapAt=now;
+ data.rapidTapCount=rapid?data.rapidTapCount+1:1;
  let expression;
  if(rapid){
-   expression=RAPID_SEQUENCE[Math.min(rapidTapCount-1,RAPID_SEQUENCE.length-1)];
+   expression=RAPID_SEQUENCE[Math.min(data.rapidTapCount-1,RAPID_SEQUENCE.length-1)];
  }else{
-   rapidTapCount=1;
+   data.rapidTapCount=1;
    expression=chooseRandomExpression();
  }
- const intensity=rapidTapCount>=6?2:rapidTapCount>=5?1:0;
+ const intensity=data.rapidTapCount>=6?2:data.rapidTapCount>=5?1:0;
  setClickExpression(el,expression,{temporary:true,intensity});
  changeHeroSpeech(el,expression);
  return expression;
