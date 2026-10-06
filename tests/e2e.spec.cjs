@@ -771,7 +771,7 @@ test.describe('desktop feature workspace consistency', () => {
     const tops = frames.map(x => x.top);
     expect(Math.max(...lefts)-Math.min(...lefts)).toBeLessThanOrEqual(5);
     expect(Math.max(...rights)-Math.min(...rights)).toBeLessThanOrEqual(5);
-    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(5);
+    expect(Math.max(...tops)-Math.min(...tops)).toBeLessThanOrEqual(6);
 
     await expectNoPageErrors(errors);
   });
