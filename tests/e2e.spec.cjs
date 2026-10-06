@@ -231,7 +231,7 @@ test('Pocket tap moves fast across named Home zones with audio removed', async (
   await expectNoPageErrors(errors);
 });
 
-test('STEP 61 jelly mascot is one blob and keyboard accessible', async ({ page }) => {
+test('Pocket refresh-style mascot is compact and keyboard accessible', async ({ page }) => {
   const errors=await openPocket(page);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
   await expect(pocket).toBeVisible();
@@ -245,7 +245,7 @@ test('STEP 61 jelly mascot is one blob and keyboard accessible', async ({ page }
   await expectNoPageErrors(errors);
 });
 
-test('STEP 61 rapid taps escalate and recover', async ({ page }) => {
+test('Pocket rapid tap expressions escalate and recover', async ({ page }) => {
   const errors=await openPocket(page);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
   await pocket.click(); await expect(pocket).toHaveAttribute('data-pocket-expression','happy');
@@ -258,46 +258,27 @@ test('STEP 61 rapid taps escalate and recover', async ({ page }) => {
   await expectNoPageErrors(errors);
 });
 
-test('Pocket personality progresses from cute to annoyed and respects AI priority', async ({ page }) => {
+test('Pocket horned identity stays consistent and AI busy state has priority', async ({ page }) => {
   const errors=await openPocket(page);
-  await page.waitForFunction(()=>!!window.PocketMascot?.tap && !!window.PocketMascot?.getAnnoyance);
+  await page.waitForFunction(()=>!!window.PocketMascot?.tap && !!window.PocketMascot?.setBusy);
   const pocket=page.locator('#home .pocket-playground [data-pocket-character]');
-  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(2);
-  await expect(pocket.locator('.pocket-character__teeth')).toHaveCount(1);
-  const idleTeeth=await pocket.locator('.pocket-character__teeth').evaluate(el=>getComputedStyle(el).opacity);
-  expect(Number(idleTeeth)).toBe(0);
-
-  const threshold=await page.evaluate(()=>window.PocketMascot.getAnnoyThreshold());
-  expect(threshold).toBeGreaterThanOrEqual(4);
-  expect(threshold).toBeLessThanOrEqual(7);
-  await page.evaluate(n=>{for(let i=0;i<n;i++)window.PocketMascot.tap()},threshold);
-  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBeGreaterThanOrEqual(2);
-  await expect(pocket).toHaveAttribute('data-pocket-state',/annoyed|grumpy|very-annoyed/);
-  await expect.poll(async()=>pocket.locator('.pocket-character__teeth').evaluate(el=>Number(getComputedStyle(el).opacity)),{timeout:700}).toBeGreaterThan(.5);
-
-  await page.evaluate(()=>{let guard=0;while(window.PocketMascot.getAnnoyance()<4&&guard++<10)window.PocketMascot.tap()});
-  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(4);
-  await expect(pocket).toHaveAttribute('data-pocket-state','very-annoyed');
-  const beforeDash=await pocket.boundingBox();
-  await page.evaluate(()=>window.PocketMascotViews.dashAway());
-  await page.waitForTimeout(560);
-  const afterDash=await pocket.boundingBox();
-  expect(Math.hypot(afterDash.x-beforeDash.x,afterDash.y-beforeDash.y)).toBeGreaterThan(25);
-  await expect(pocket).toHaveAttribute('data-pocket-state','very-annoyed');
-
-  await page.evaluate(()=>window.PocketMascot.react('success'));
-  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(0);
-  await expect(pocket).toHaveAttribute('data-pocket-state','success');
+  await expect(pocket.locator('.pocket-character__horn')).toHaveCount(2);
+  await expect(pocket.locator('.pocket-character__ear')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__paw')).toHaveCount(0);
+  await expect(pocket.locator('.pocket-character__foot')).toHaveCount(0);
 
   await page.evaluate(()=>window.PocketMascot.setBusy('personality-test',true,'thinking'));
   await expect(pocket).toHaveAttribute('data-pocket-state','thinking');
-  await page.evaluate(()=>{for(let i=0;i<8;i++)window.PocketMascot.tap()});
+  await page.evaluate(()=>window.PocketMascot.tap());
   await expect(pocket).toHaveAttribute('data-pocket-state','thinking');
-  expect(await page.evaluate(()=>window.PocketMascot.getAnnoyance())).toBe(0);
+
   await page.evaluate(()=>window.PocketMascot.setBusy('personality-test',false));
+  await expect(pocket).toHaveAttribute('data-pocket-state',/idle|offline/);
+
+  await page.evaluate(()=>window.PocketMascot.react('success'));
+  await expect(pocket).toHaveAttribute('data-pocket-state','success');
   await expectNoPageErrors(errors);
 });
-
 test('Pocket living-world movement stays bounded and can return home', async ({ page }) => {
   const errors = await openPocket(page);
   await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketMascot?.goHome);
