@@ -9,7 +9,9 @@ let researchProgressTimer=0;
 function stopResearchProgress(){if(researchProgressTimer){clearInterval(researchProgressTimer);researchProgressTimer=0}}
 f('deepResearch')?.addEventListener('click',()=>{
   if(!f('surfaceQuery').value.trim())return;
-  const steps=f('researchSteps');steps.hidden=false;steps.querySelectorAll('span').forEach((s,i)=>{s.style.opacity=i?'.48':'1'});let i=0;stopResearchProgress();
+  const steps=f('researchSteps');
+  if(!steps)return;
+  steps.hidden=false;steps.querySelectorAll('span').forEach((s,i)=>{s.style.opacity=i?'.48':'1'});let i=0;stopResearchProgress();
   researchProgressTimer=setInterval(()=>{
     if(document.hidden||!f('deepResearch').disabled){stopResearchProgress();steps.querySelectorAll('span').forEach(s=>s.style.opacity='1');return}
     i=Math.min(i+1,3);steps.querySelectorAll('span').forEach((s,n)=>s.style.opacity=n<=i?'1':'.48');
