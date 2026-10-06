@@ -18,6 +18,7 @@ const EXPRESSIONS={
 };
 const EXPRESSION_NAMES=Object.keys(EXPRESSIONS);
 const RAPID_SEQUENCE=['happy','surprised','excited','curious','annoyed','annoyed'];
+const RAPID_TAP_WINDOW_MS=1800;
 let lastExpression='normal',lastSpeech='',lastTapAt=0,rapidTapCount=0,expressionResetTimer=0;
 
 function chooseRandomExpression(){
@@ -45,7 +46,7 @@ function setClickExpression(el,expression='normal',{temporary=true,intensity=0}=
  return next;
 }
 function reactToPress(el){
- const now=Date.now(),rapid=now-lastTapAt<900;lastTapAt=now;
+ const now=Date.now(),rapid=now-lastTapAt<RAPID_TAP_WINDOW_MS;lastTapAt=now;
  rapidTapCount=rapid?rapidTapCount+1:1;
  let expression;
  if(rapid){
