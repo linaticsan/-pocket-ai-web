@@ -503,6 +503,17 @@ test('Code opens even when idle warmup has not run yet', async ({ page }) => {
   await expectNoPageErrors(errors);
 });
 
+
+
+test('Deep Research works when optional progress UI is absent', async ({ page }) => {
+  const errors = await openPocket(page);
+  await page.locator('#paDesktopSidebar [data-pa-side="surface"]').click();
+  await expect(page.locator('#surface')).toBeVisible();
+  await page.locator('#surfaceQuery').fill('artificial intelligence');
+  await page.locator('#deepResearch').click();
+  await page.waitForTimeout(150);
+  await expectNoPageErrors(errors);
+});
 test('service worker serves the Home shell after the browser goes offline', async ({ page, context }) => {
   const errors = await openPocket(page);
   await page.evaluate(async () => {
