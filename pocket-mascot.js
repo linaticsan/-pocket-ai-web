@@ -286,8 +286,6 @@ function handleScrollReset(){
  clearTimeout(scrollResetTimer);
  scrollResetTimer=setTimeout(()=>goHomeAll(false),90);
 }
-document.addEventListener('pointerdown',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
-if(!('PointerEvent' in window))document.addEventListener('touchstart',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)void window.PocketSound?.unlock?.()},{passive:true});
 document.addEventListener('click',e=>{const el=e.target.closest?.('[data-pocket-character]');if(el)tap(el);if(e.target.closest?.('[aria-haspopup="dialog"]'))goHomeAll(true)});
 document.addEventListener('keydown',e=>{const el=e.target.closest?.('[data-pocket-character]');if(!el||(e.key!=='Enter'&&e.key!==' '))return;e.preventDefault();tap(el)});
 document.addEventListener('pointerleave',e=>{const el=e.target.closest?.('[data-pocket-character]');if(!el)return;el.style.setProperty('--pocket-eye-x','0px');el.style.setProperty('--pocket-eye-y','0px');el.style.setProperty('--pocket-lean','0deg')},true);
