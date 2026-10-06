@@ -684,3 +684,132 @@ html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-char
 html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-character__horn--right{animation:pocketHornWiggleR .42s ease}
 @keyframes pocketHornWiggleL{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(-21deg)}}
 @keyframes pocketHornWiggleR{0%,100%{transform:rotate(14deg)}50%{transform:rotate(21deg)}}
+
+
+/* STEP 66 — match the refresh/loading mascot exactly */
+.pocket-character{
+  filter:drop-shadow(0 10px 17px rgba(151,83,237,.22))!important;
+}
+.pocket-character__body{
+  inset:9% 8% 7%!important;
+  overflow:visible!important;
+  border:0!important;
+  border-radius:32%!important;
+  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
+  box-shadow:0 12px 25px rgba(151,83,237,.20)!important;
+}
+[data-theme="dark"] .pocket-character__body,
+[data-theme="oled"] .pocket-character__body{
+  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
+}
+.pocket-character__body::before{
+  content:""!important;
+  left:16%!important;
+  right:16%!important;
+  bottom:-10px!important;
+  height:11px!important;
+  background:rgba(105,58,153,.13)!important;
+  filter:blur(7px)!important;
+}
+.pocket-character__body::after{content:none!important}
+
+.pocket-character__horn{
+  display:block!important;
+  position:absolute!important;
+  z-index:-1!important;
+  top:-15%!important;
+  width:31%!important;
+  height:36%!important;
+  border:0!important;
+  border-radius:18% 66% 12% 12%!important;
+  clip-path:none!important;
+  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
+  filter:none!important;
+  transform-origin:50% 100%!important;
+}
+.pocket-character__horn::after{content:none!important}
+.pocket-character__horn--left{left:7%!important;transform:rotate(-15deg)!important}
+.pocket-character__horn--right{right:7%!important;transform:rotate(15deg)!important}
+
+.pocket-character__eye{
+  top:35%!important;
+  width:20%!important;
+  height:28%!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  transform:translate(var(--pocket-eye-x),var(--pocket-eye-y))!important;
+}
+.pocket-character__eye--left{left:23%!important}
+.pocket-character__eye--right{right:23%!important}
+.pocket-character__eye::before{content:none!important}
+.pocket-character__eye::after{
+  content:""!important;
+  position:absolute!important;
+  width:36%!important;
+  height:42%!important;
+  left:43%!important;
+  top:38%!important;
+  border-radius:50%!important;
+  background:rgba(155,91,234,.34)!important;
+  box-shadow:none!important;
+}
+
+.pocket-character__eyelid{
+  top:35%!important;
+  width:20%!important;
+  height:28%!important;
+  border-radius:50%!important;
+  background:linear-gradient(145deg,#f35da9,#9859ef 72%)!important;
+}
+.pocket-character__eyelid--left{left:23%!important}
+.pocket-character__eyelid--right{right:23%!important}
+
+.pocket-character__brow{display:none!important}
+.pocket-character__blush{display:none!important}
+.pocket-character__mouth{
+  left:50%!important;
+  top:70%!important;
+  width:31%!important;
+  height:12%!important;
+  margin-left:-15.5%!important;
+  border:0!important;
+  border-bottom:4px solid rgba(255,255,255,.92)!important;
+  border-radius:0 0 999px 999px!important;
+}
+.pocket-character__teeth{display:none!important}
+
+.pocket-character[data-pocket-expression="annoyed"] .pocket-character__mouth,
+.pocket-character[data-pocket-state="annoyed"] .pocket-character__mouth,
+.pocket-character[data-pocket-state="grumpy"] .pocket-character__mouth,
+.pocket-character[data-pocket-state="very-annoyed"] .pocket-character__mouth{
+  top:73%!important;
+  border-bottom:0!important;
+  border-top:4px solid rgba(255,255,255,.92)!important;
+  border-radius:999px 999px 0 0!important;
+}
+.pocket-character[data-pocket-expression="happy"] .pocket-character__mouth,
+.pocket-character[data-pocket-expression="excited"] .pocket-character__mouth,
+.pocket-character[data-pocket-state="happy"] .pocket-character__mouth,
+.pocket-character[data-pocket-state="success"] .pocket-character__mouth,
+.pocket-character[data-pocket-state="excited"] .pocket-character__mouth{
+  width:36%!important;
+  margin-left:-18%!important;
+}
+.pocket-character[data-pocket-expression="sleepy"] .pocket-character__eye,
+.pocket-character[data-pocket-state="sleep"] .pocket-character__eye,
+.pocket-character[data-pocket-state="sleepy"] .pocket-character__eye{
+  height:4px!important;
+  top:48%!important;
+  border-radius:999px!important;
+}
+.pocket-character[data-pocket-size="small"] .pocket-character__horn{
+  top:-12%!important;
+  width:29%!important;
+  height:34%!important;
+}
+html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-character__horn--left{animation:pocketBootHornLeft .42s ease!important}
+html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-character__horn--right{animation:pocketBootHornRight .42s ease!important}
+@keyframes pocketBootHornLeft{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(-20deg)}}
+@keyframes pocketBootHornRight{0%,100%{transform:rotate(15deg)}50%{transform:rotate(20deg)}}
