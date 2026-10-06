@@ -814,45 +814,83 @@ html[data-motion="full"] .pocket-character.is-pocket-antenna-wiggle .pocket-char
 @keyframes pocketBootHornLeft{0%,100%{transform:rotate(-15deg)}50%{transform:rotate(-20deg)}}
 @keyframes pocketBootHornRight{0%,100%{transform:rotate(15deg)}50%{transform:rotate(20deg)}}
 
-
-/* STEP 67 — mascot identity is theme-invariant */
-/* Theme may recolor the app, but never Pocket itself. */
+/* STEP 68 — mascot palette follows the active app theme */
+html{
+  --pocket-a:#f35da9;
+  --pocket-b:#9859ef;
+  --pocket-c:#8650df;
+  --pocket-shadow:rgba(151,83,237,.22);
+  --pocket-pupil:rgba(155,91,234,.34);
+  --pocket-ground:rgba(105,58,153,.13);
+}
+html[data-theme="dark"]{
+  --pocket-a:#a86cf5;
+  --pocket-b:#7650d7;
+  --pocket-c:#4d2e91;
+  --pocket-shadow:rgba(121,79,221,.32);
+  --pocket-pupil:rgba(95,57,176,.46);
+  --pocket-ground:rgba(35,22,69,.28);
+}
+html[data-theme="oled"]{
+  --pocket-a:#8d5cf1;
+  --pocket-b:#5a35bf;
+  --pocket-c:#2c176e;
+  --pocket-shadow:rgba(106,67,211,.38);
+  --pocket-pupil:rgba(74,39,153,.52);
+  --pocket-ground:rgba(0,0,0,.42);
+}
+html[data-theme="sakura"]{
+  --pocket-a:#ff8fbc;
+  --pocket-b:#e96aa7;
+  --pocket-c:#b84c86;
+  --pocket-shadow:rgba(223,92,157,.26);
+  --pocket-pupil:rgba(191,73,133,.36);
+  --pocket-ground:rgba(151,59,105,.14);
+}
+html[data-theme="green"]{
+  --pocket-a:#69d6b0;
+  --pocket-b:#35a985;
+  --pocket-c:#24765f;
+  --pocket-shadow:rgba(52,157,125,.25);
+  --pocket-pupil:rgba(34,113,88,.38);
+  --pocket-ground:rgba(30,100,78,.14);
+}
 html[data-theme] .pocket-character{
   color-scheme:light!important;
-  color:#ffffff!important;
-  filter:drop-shadow(0 10px 17px rgba(151,83,237,.22))!important;
+  color:#fff!important;
+  filter:drop-shadow(0 10px 17px var(--pocket-shadow))!important;
+}
+html[data-theme] .pocket-character__body,
+html[data-theme] .pocket-character__horn,
+html[data-theme] .pocket-character__eyelid{
+  background:linear-gradient(145deg,var(--pocket-a) 0%,var(--pocket-b) 72%,var(--pocket-c) 100%)!important;
 }
 html[data-theme] .pocket-character__body{
   border:0!important;
-  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
-  box-shadow:0 12px 25px rgba(151,83,237,.20)!important;
+  box-shadow:0 12px 25px var(--pocket-shadow)!important;
 }
 html[data-theme] .pocket-character__horn{
   border:0!important;
-  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
   filter:none!important;
 }
 html[data-theme] .pocket-character__eye{
   border:0!important;
-  background:#ffffff!important;
+  background:#fff!important;
   box-shadow:none!important;
 }
 html[data-theme] .pocket-character__eye::after{
-  background:rgba(155,91,234,.34)!important;
+  background:var(--pocket-pupil)!important;
   box-shadow:none!important;
-}
-html[data-theme] .pocket-character__eyelid{
-  background:linear-gradient(145deg,#f35da9 0%,#9859ef 72%,#8650df 100%)!important;
 }
 html[data-theme] .pocket-character__mouth{
   border-color:rgba(255,255,255,.92)!important;
 }
 html[data-theme] .pocket-character__body::before{
-  background:rgba(105,58,153,.13)!important;
+  background:var(--pocket-ground)!important;
 }
+/* Top-bar/app logo keeps the same character artwork; its frame follows the theme. */
 html[data-theme] .topbar-pocket-logo{
-  background:#f8f4ff!important;
-  filter:none!important;
+  background:var(--app-panel-2,#f8f4ff)!important;
 }
 html[data-theme] .topbar-pocket-logo img{
   filter:none!important;
