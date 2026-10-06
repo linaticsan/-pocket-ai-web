@@ -267,12 +267,14 @@ function moveRandom(el=q('.pocket-playground [data-pocket-character]'),{autonomo
  void animateMove(el,x,y,{quick:true,zone:dest.zone});return true;
 }
 function tap(el){
- if(!el||el.dataset.pocketTapLock==='1')return;
- const d=initWander(el);clearStay(el);el.dataset.pocketTapLock='1';el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
+ if(!el)return;
+ initWander(el);clearStay(el);
+ el.classList.remove('is-pocket-tapped');void el.offsetWidth;el.classList.add('is-pocket-tapped');
  reactToPress(el);
  if(el.closest('.pocket-playground'))moveRandom(el,{autonomous:false});
  window.PocketMascot?.tap?.({source:'mascot',element:el,expression:el.dataset.pocketExpression});
- setTimeout(()=>{el.classList.remove('is-pocket-tapped');delete el.dataset.pocketTapLock},720);
+ clearTimeout(el._pocketTapVisualTimer);
+ el._pocketTapVisualTimer=setTimeout(()=>el.classList.remove('is-pocket-tapped'),720);
 }
 
 function scheduleAutonomous(){
