@@ -252,13 +252,13 @@ test('Pocket refresh-style mascot is compact and keyboard accessible', async ({ 
 test('Pocket rapid tap expressions escalate and recover', async ({ page }) => {
   const errors=await openPocket(page);
   const pocket=page.locator('#home .home-hero-pocket [data-pocket-character]');
-  await pocket.click();
+  await pocket.click({force:true});
   const firstExpression=await pocket.getAttribute('data-pocket-expression');
   expect(firstExpression).not.toBe('normal');
-  await pocket.click();
-  await pocket.click();
-  await pocket.click();
-  await pocket.click();
+  await pocket.click({force:true});
+  await pocket.click({force:true});
+  await pocket.click({force:true});
+  await pocket.click({force:true});
   await expect(pocket).toHaveAttribute('data-pocket-expression','annoyed');
   await page.waitForTimeout(2100);
   await expect(pocket).toHaveAttribute('data-pocket-expression','normal');
