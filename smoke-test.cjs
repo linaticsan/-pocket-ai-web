@@ -102,7 +102,7 @@ assert(environmentCss.includes("#pocketEnvironment")&&environmentCss.includes("p
 assert(environmentCss.includes('html[data-motion="off"] #pocketEnvironment')&&environmentCss.includes('@media(prefers-reduced-motion:reduce)'), 'Environment motion/reduced-motion guards are missing');
 assert(!environmentJs.includes('weatherapi')&&!environmentJs.includes('openweathermap')&&!environmentJs.includes('fetch('),'Environment base feature must remain offline and API-free');
 assert(!index.match(/id="pocketEnvironment"/g),'Environment container must be created once by the central engine, not duplicated in HTML');
-assert(index.includes('<dd>STEP 61</dd>'),'Visible diagnostics build label is stale');
+assert(index.includes('<dd>STEP 62</dd>'),'Visible diagnostics build label is stale');
 assert(index.includes('data-sound="on"')&&index.includes('data-sound="off"')&&index.includes('id="soundTest"'),'Gesture-gated sound settings are missing');
 assert(workspace.includes('window.AudioContext||window.webkitAudioContext')&&workspace.includes("const SOUND_KEY='pocket-sound-v1'")&&workspace.includes('async function playPocketSound'),'Gesture-gated Web Audio runtime is missing');
 assert(!workspace.includes('setInterval(()=>playPocketSound')&&!workspace.includes('setTimeout(()=>playPocketSound'),'Sound must never retry in the background');
