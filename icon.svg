@@ -1,24 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Pocket AI">
 <defs>
-<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a15be9"/><stop offset=".62" stop-color="#5f2cae"/><stop offset="1" stop-color="#2d104d"/></linearGradient>
-<filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="14" stdDeviation="13" flood-color="#401260" flood-opacity=".28"/></filter>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b05cff"/><stop offset=".55" stop-color="#6b2dc7"/><stop offset="1" stop-color="#26073e"/></linearGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="15" stdDeviation="13" flood-color="#541b8c" flood-opacity=".34"/></filter>
 <clipPath id="app"><rect width="256" height="256" rx="58"/></clipPath>
 </defs>
 <g clip-path="url(#app)">
-<rect width="256" height="256" fill="#f7f3fb"/>
+<rect width="256" height="256" fill="#f8f5fc"/>
 <g filter="url(#shadow)">
-<path d="M66 78 L79 28 L117 58 L102 84 Z" fill="url(#bg)"/>
-<path d="M190 78 L177 28 L139 58 L154 84 Z" fill="url(#bg)"/>
-<rect x="46" y="55" width="164" height="164" rx="48" fill="url(#bg)"/>
+<path d="M62 82 L76 24 L91 51 L116 58 L100 88 Z" fill="url(#bg)"/>
+<path d="M194 82 L180 24 L165 51 L140 58 L156 88 Z" fill="url(#bg)"/>
+<rect x="45" y="55" width="166" height="164" rx="44" fill="url(#bg)"/>
 </g>
-<path d="M77 126 Q98 112 117 124 Q102 148 79 139 Z" fill="#fbf7ff"/>
-<path d="M179 126 Q158 112 139 124 Q154 148 177 139 Z" fill="#fbf7ff"/>
-<ellipse cx="101" cy="131" rx="6" ry="10" fill="#1e082b"/>
-<ellipse cx="155" cy="131" rx="6" ry="10" fill="#1e082b"/>
-<path d="M91 113 L114 119" stroke="#2a0a3d" stroke-width="6" stroke-linecap="round" opacity=".55"/>
-<path d="M165 113 L142 119" stroke="#2a0a3d" stroke-width="6" stroke-linecap="round" opacity=".55"/>
-<path d="M101 166 Q128 184 155 166 Q150 194 128 196 Q106 194 101 166 Z" fill="#23072f" opacity=".72"/>
-<path d="M108 167 L116 181 L122 168 Z" fill="#fff"/>
-<path d="M148 167 L140 181 L134 168 Z" fill="#fff"/>
+<path d="M74 127 Q98 111 118 124 Q103 144 78 139 Z" fill="#fbf8ff"/>
+<path d="M182 127 Q158 111 138 124 Q153 144 178 139 Z" fill="#fbf8ff"/>
+<ellipse cx="101" cy="130" rx="5" ry="10" fill="#120218"/>
+<ellipse cx="155" cy="130" rx="5" ry="10" fill="#120218"/>
+<path d="M89 111 L114 119" stroke="#1a0326" stroke-width="7" stroke-linecap="round" opacity=".72"/>
+<path d="M167 111 L142 119" stroke="#1a0326" stroke-width="7" stroke-linecap="round" opacity=".72"/>
+<path d="M96 164 Q128 190 160 164 Q154 201 128 201 Q102 201 96 164 Z" fill="#160220"/>
+<path d="M104 165 L115 184 L122 166 Z" fill="#fff"/>
+<path d="M152 165 L141 184 L134 166 Z" fill="#fff"/>
 </g>
 </svg>
