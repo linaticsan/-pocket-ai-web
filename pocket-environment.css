@@ -61,14 +61,10 @@ html[data-env-effects="gentle"] #pocketEnvironment{opacity:calc(var(--env-worksp
 .pocket-playground{position:relative;display:grid;place-items:center;width:100%;min-height:174px;overflow:visible;pointer-events:none}
 .pocket-playground [data-pocket-character]{position:relative;transform:translate3d(var(--wander-x,0),var(--wander-y,0),0);transform-origin:50% 75%;z-index:30;pointer-events:auto;touch-action:manipulation}
 .pocket-playground [data-pocket-character].is-pocket-moving{pointer-events:none}
-.pocket-playground [data-pocket-character][data-pocket-facing="left"] .pocket-character__antenna{transform:rotate(-4deg)}
-.pocket-playground [data-pocket-character][data-pocket-facing="right"] .pocket-character__antenna{transform:rotate(4deg)}
 @keyframes pocket-play-jump{0%,100%{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0)}45%{transform:translate3d(var(--wander-x,0),calc(var(--wander-y,0) - 13px),0) scale(.985,1.035)}}
-@keyframes pocket-settle{0%,100%{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0)}45%{transform:translate3d(var(--wander-x,0),calc(var(--wander-y,0) + 2px),0) scale(1.025,.97)}}
-@keyframes pocket-antenna-wiggle{0%,100%{transform:rotate(0)}30%{transform:rotate(-7deg)}65%{transform:rotate(6deg)}}
+@keyframes pocket-settle{0%,100%{transform:translate3d(var(--wander-x,0),var(--wander-y,0),0)}45%{transform:translate3d(var(--wander-x,0),calc(var(--wander-y,0) + 2px),0) scale(1.025,.97)}}30%{transform:rotate(-7deg)}65%{transform:rotate(6deg)}}
 html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-play-jump{animation:pocket-play-jump .58s cubic-bezier(.22,.8,.24,1)}
 html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-settle{animation:pocket-settle .42s ease}
-html[data-motion="full"] .pocket-playground [data-pocket-character].is-pocket-antenna-wiggle .pocket-character__antenna{animation:pocket-antenna-wiggle .62s ease}
 html[data-motion="gentle"] .pocket-playground [data-pocket-character].is-pocket-play-jump{animation:pocket-play-jump .46s ease}
 html[data-motion="off"] .pocket-playground [data-pocket-character]{transform:none!important}
 @media(max-width:767px){
