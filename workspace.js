@@ -153,7 +153,7 @@ window.PocketSound={
  isEnabled:soundEnabled
 };
 
-const POCKET_BUILD='step63-character-logo';
+const POCKET_BUILD='step64-old-icon';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
