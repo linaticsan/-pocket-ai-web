@@ -196,7 +196,7 @@ test('Pocket roam avoids the whole Tools section and recovers safely after scrol
   await expectNoPageErrors(errors);
 });
 
-test('Pocket tap moves fast across named Home zones without silently enabling sound', async ({ page }) => {
+test('Pocket tap moves fast across named Home zones with audio removed', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   const errors = await openPocket(page);
   await page.waitForFunction(() => !!window.PocketMascotViews?.moveRandom && !!window.PocketMascot?.tap);
