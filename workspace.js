@@ -62,7 +62,7 @@ function setMotion(m){
 }
 
 
-const POCKET_BUILD=window.__POCKET_BUILD||'step79-dedup-audit';
+const POCKET_BUILD=window.__POCKET_BUILD||'step80-dead-code-cleanup';
 function standaloneMode(){return !!(window.matchMedia?.('(display-mode: standalone)')?.matches||navigator.standalone===true)}
 async function getDiagnostics(){
  let sw='Unavailable';
